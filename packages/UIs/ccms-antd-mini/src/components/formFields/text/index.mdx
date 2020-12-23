@@ -1,0 +1,24 @@
+---
+name: Input Field
+route: /field/input
+---
+
+import { Playground, Props } from 'docz';
+import { Interface } from '../../../util/docz';
+import InputField from './index';
+
+# Input Field
+
+## 基本用法
+
+<Playground>
+  <InputField config={{}}>
+    {(value, onChange) => (
+      <input value={value} onChange={(e) => onChange(e.currentTarget.value)} />
+    )}
+  </InputField>
+</Playground>
+
+## 参数
+
+<Props of={InputField} />
