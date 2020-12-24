@@ -1,6 +1,5 @@
 export { default as CCMS } from './main'
 export { default as Form } from './steps/form'
-export { default as FormItem } from './steps/form/item'
 export { default as TextField } from './components/formFields/text'
 export { default as FormField } from './components/formFields/form'
 

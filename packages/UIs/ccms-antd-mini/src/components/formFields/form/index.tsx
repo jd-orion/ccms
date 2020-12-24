@@ -5,11 +5,8 @@ import "antd/lib/space/style/index.css"
 import "antd/lib/divider/style/index.css"
 import "antd/lib/button/style/index.css"
 import { IFormField, IFormFieldItem } from "ccms-core/dist/src/components/formFields/form";
-import FormItem from '../../../steps/form/item'
 
 export default class FormFieldComponent extends FormField {
-  FormItem = FormItem
-
   renderItem = (props: IFormFieldItem) => {
     const {
       remove,
