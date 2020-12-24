@@ -13,10 +13,8 @@ import TextField from '../../components/formFields/text';
 import FormField from '../../components/formFields/form'
 
 export default class FormStepComponent extends FormStep {
-  FieldType = {
-    'text': TextField,
-    'form': FormField
-  }
+  TextField = TextField
+  FormField = FormField
 
   renderComponent = (props: IForm) => {
     const {
