@@ -1,24 +1,84 @@
 ---
-name: Input Field
-route: /field/input
+name: TextField 文本框表单项
+route: /component/formFields/text
 ---
 
+import { useState } from 'react'
 import { Playground, Props } from 'docz';
-import { Interface } from '../../../util/docz';
-import InputField from './index';
+import TextField from './index';
+import Form from '../../../steps/form';
 
-# Input Field
+# TextField 文本框表单项
 
 ## 基本用法
 
 <Playground>
-  <InputField config={{}}>
-    {(value, onChange) => (
-      <input value={value} onChange={(e) => onChange(e.currentTarget.value)} />
-    )}
-  </InputField>
+  {() => {
+    const [ value, setValue ] = useState('')
+
+    return (
+      <TextField
+        value={value}
+        onChange={(value) => setValue(value)}
+      />
+    )
+  }}
 </Playground>
 
-## 参数
+## 在表单中使用
 
-<Props of={InputField} />
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '文本框',
+          field: 'text',
+          type: 'text'
+        }
+      ]
+    }}
+  />
+</Playground>
+
+### 默认值
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '文本框',
+          field: 'text',
+          type: 'text',
+          default: {
+            type: 'static',
+            value: 'default'
+          }
+        }
+      ]
+    }}
+  />
+</Playground>
+
+### 字符长度校验
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '文本框',
+          field: 'text',
+          type: 'text',
+          minLength: 3,
+          maxLength: 6
+        }
+      ]
+    }}
+  />
+</Playground>
+
+## APIs
+
+<Props of={TextField} />
