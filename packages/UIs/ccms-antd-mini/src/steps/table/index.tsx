@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { TableStep } from 'ccms-core'
-import { ITable, IColumn } from 'ccms-core/dist/src/steps/table'
+import { ITable } from 'ccms-core/dist/src/steps/table'
 import { Table } from 'antd'
 import 'antd/lib/style/index.css'
 import 'antd/lib/table/style/index.css'
@@ -13,20 +13,23 @@ import 'antd/lib/spin/style/index.css'
 import 'antd/lib/pagination/style/index.css'
 import 'antd/lib/tooltip/style/index.css'
 import TextColumnComponent from '../../components/tableColumns/text'
-import { ColumnType } from 'antd/lib/table'
+import DatetimeColumnComponent from '../../components/tableColumns/datetime'
 
 export default class TableStepComponent extends TableStep {
-  ColumnType = {
-    text: TextColumnComponent
-  }
+  TextColumn = TextColumnComponent
+  DatetimeColumn = DatetimeColumnComponent
+
   renderComponent = (props: ITable) => {
     const {
       columns,
       data
     } = props
+
+    console.log('data', data)
+
     return (
       <Table
-        columns={columns.map((column: IColumn, index:number) => ({
+        columns={columns.map((column, index) => ({
           key: index,
           dataIndex: column.field,
           title: column.label,

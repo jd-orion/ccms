@@ -5,14 +5,13 @@ import { Divider, PageHeader, Space } from 'antd'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/page-header/style/index.css'
 import FormStepComponent from './steps/form'
-import FetchComponent from './steps/fetch'
+import FetchStepComponent from './steps/fetch'
 import TableStepComponent from './steps/table'
 
 export default class CCMSComponent extends CCMS {
   FormStep = FormStepComponent
   TableStep = TableStepComponent
-  
-  Fetch = FetchComponent
+  FetchStep = FetchStepComponent
 
   renderComponent = (props: ICCMS) => {
     const {
