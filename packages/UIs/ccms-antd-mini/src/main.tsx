@@ -1,7 +1,7 @@
 import React from 'react'
 import { CCMS } from 'ccms-core'
 import { ICCMS } from 'ccms-core/dist/src/main'
-import { Divider, PageHeader, Space } from 'antd'
+import { PageHeader, Space } from 'antd'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/page-header/style/index.css'
 import FormStepComponent from './steps/form'

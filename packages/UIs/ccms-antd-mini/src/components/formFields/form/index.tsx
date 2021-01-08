@@ -1,10 +1,10 @@
-import React from "react";
-import { FormField } from 'ccms-core';
-import { Button, Divider, Space } from "antd";
-import "antd/lib/space/style/index.css"
-import "antd/lib/divider/style/index.css"
-import "antd/lib/button/style/index.css"
-import { IFormField, IFormFieldItem } from "ccms-core/dist/src/components/formFields/form";
+import React from 'react'
+import { FormField } from 'ccms-core'
+import { Button, Divider, Space } from 'antd'
+import 'antd/lib/space/style/index.css'
+import 'antd/lib/divider/style/index.css'
+import 'antd/lib/button/style/index.css'
+import { IFormField, IFormFieldItem } from 'ccms-core/dist/src/components/formFields/form'
 
 export default class FormFieldComponent extends FormField {
   renderItem = (props: IFormFieldItem) => {
@@ -19,6 +19,7 @@ export default class FormFieldComponent extends FormField {
       </Space>
     )
   }
+
   renderComponent = (props: IFormField) => {
     const {
       add,

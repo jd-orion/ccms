@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { TableStep } from 'ccms-core'
 import { ITable } from 'ccms-core/dist/src/steps/table'
 import { Table } from 'antd'
@@ -24,8 +24,6 @@ export default class TableStepComponent extends TableStep {
       columns,
       data
     } = props
-
-    console.log('data', data)
 
     return (
       <Table

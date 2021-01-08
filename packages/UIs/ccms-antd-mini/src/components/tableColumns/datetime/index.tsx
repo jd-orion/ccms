@@ -9,7 +9,6 @@ export default class DatetimeColumnComponent extends DatetimeColumn {
       value,
       format
     } = props
-    // console.log('renderComponent', value, format, moment(value).format(format))
     return (
       <React.Fragment>{moment(value).format(format)}</React.Fragment>
     )

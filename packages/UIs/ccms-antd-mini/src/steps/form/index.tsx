@@ -9,7 +9,7 @@ import 'antd/lib/tooltip/style/index.css'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/button/style/index.css'
 import { FormProps } from 'antd/lib/form'
-import TextField from '../../components/formFields/text';
+import TextField from '../../components/formFields/text'
 import FormField from '../../components/formFields/form'
 
 export default class FormStepComponent extends FormStep {
@@ -24,23 +24,14 @@ export default class FormStepComponent extends FormStep {
       children
     } = props
 
-    console.log('FormComponent renderComponent', layout)
-
     const formItemLayout: FormProps | null =
       layout === 'horizontal'
         ? {
-            labelAlign: "left",
+            labelAlign: 'left',
             labelCol: { span: 4 },
-            wrapperCol: { span: 14 },
+            wrapperCol: { span: 14 }
           }
-        : null;
-
-    const buttonItemLayout =
-      layout === 'horizontal'
-        ? {
-            wrapperCol: { span: 14, offset: 4 },
-          }
-        : null;
+        : null
 
     return (
       <Form
