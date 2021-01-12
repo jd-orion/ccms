@@ -1,7 +1,8 @@
 import React from 'react'
 import { TableStep } from 'ccms-core'
-import { ITable } from 'ccms-core/dist/src/steps/table'
-import { Table } from 'antd'
+import { ITable, ITableColumn, ITableStepOperation, ITableStepOperationButton, ITableStepOperationGroup, ITableStepOperationGroupItem } from 'ccms-core/dist/src/steps/table'
+import { Table, Button, Dropdown, Menu } from 'antd'
+import { DownOutlined } from '@ant-design/icons'
 import 'antd/lib/style/index.css'
 import 'antd/lib/table/style/index.css'
 import 'antd/lib/button/style/index.css'
@@ -27,14 +28,67 @@ export default class TableStepComponent extends TableStep {
 
     return (
       <Table
-        columns={columns.map((column, index) => ({
+        columns={columns.map((column: ITableColumn, index: number) => ({
           key: index,
           dataIndex: column.field,
           title: column.label,
           render: (value: any, record: { [field: string]: any }, index: number) => column.render(value, record, index)
         }))}
         dataSource={data}
+        scroll={{ x: 1000 }}
       />
+    )
+  }
+
+  renderOperationComponent = (props: ITableStepOperation) => {
+    const {
+      children
+    } = props
+    return (
+      <Button.Group>
+        {children}
+      </Button.Group>
+    )
+  }
+
+  renderOperationButtonComponent = (props: ITableStepOperationButton) => {
+    const {
+      label,
+      disabled,
+      onClick
+    } = props
+    return <Button disabled={disabled} onClick={() => onClick()}>{label}</Button>
+  }
+
+  renderOperationGroupComponent = (props: ITableStepOperationGroup) => {
+    const {
+      label,
+      children
+    } = props
+    return (
+      <Dropdown
+        overlay={(
+          <Menu>
+            {children}
+          </Menu>
+        )}
+      >
+        <Button>
+          {label}
+          <DownOutlined />
+        </Button>
+      </Dropdown>
+    )
+  }
+
+  renderOperationGroupItemComponent = (props: ITableStepOperationGroupItem) => {
+    const {
+      label,
+      disabled,
+      onClick
+    } = props
+    return (
+      <Menu.Item disabled={disabled} onClick={() => onClick()}>{label}</Menu.Item>
     )
   }
 }
