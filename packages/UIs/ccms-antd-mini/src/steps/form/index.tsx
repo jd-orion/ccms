@@ -9,12 +9,9 @@ import 'antd/lib/tooltip/style/index.css'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/button/style/index.css'
 import { FormProps } from 'antd/lib/form'
-import TextField from '../../components/formFields/text'
-import FormField from '../../components/formFields/form'
-
+import getALLComponents from '../../components/formFields'
 export default class FormStepComponent extends FormStep {
-  TextField = TextField
-  FormField = FormField
+  getALLComponents = (type: any) => getALLComponents[type]
 
   renderComponent = (props: IForm) => {
     const {
