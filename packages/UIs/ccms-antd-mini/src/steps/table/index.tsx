@@ -1,6 +1,6 @@
 import React from 'react'
 import { TableStep } from 'ccms-core'
-import { ITable, ITableColumn, ITableStepOperation, ITableStepOperationButton, ITableStepOperationGroup, ITableStepOperationGroupItem } from 'ccms-core/dist/src/steps/table'
+import { ITable, ITableColumn, ITableStepOperationColumn, ITableStepOperationColumnButton, ITableStepOperationColumnGroup, ITableStepOperationColumnGroupItem, ITableStepOperationColumnConfirm, ITableStepOperationModal } from 'ccms-core/dist/src/steps/table'
 import { Table, Button, Dropdown, Menu, Modal } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import 'antd/lib/style/index.css'
@@ -13,16 +13,15 @@ import 'antd/lib/dropdown/style/index.css'
 import 'antd/lib/spin/style/index.css'
 import 'antd/lib/pagination/style/index.css'
 import 'antd/lib/tooltip/style/index.css'
-import TextColumnComponent from '../../components/tableColumns/text'
-import DatetimeColumnComponent from '../../components/tableColumns/datetime'
+import getALLComponents from '../../components/tableColumns'
 import { IAPIConditionFailModal, IAPIConditionSuccessModal } from 'ccms-core/dist/src/util/request'
-import { ITableStepOperationConfirm } from 'ccms-core/dist/src/steps/table'
+import CCMS from '../../main'
 
 export default class TableStepComponent extends TableStep {
-  TextColumn = TextColumnComponent
-  DatetimeColumn = DatetimeColumnComponent
+  CCMS = CCMS
+  getALLComponents = (type: any) => getALLComponents[type]
 
-  renderOperationCheckSuccessModal = (props: IAPIConditionSuccessModal) => {
+  renderOperationColumnCheckSuccessModal = (props: IAPIConditionSuccessModal) => {
     Modal.success({
       title: props.message,
       onOk: () => {
@@ -31,7 +30,7 @@ export default class TableStepComponent extends TableStep {
     })
   }
 
-  renderOperationCheckFailModal = (props: IAPIConditionFailModal) => {
+  renderOperationColumnCheckFailModal = (props: IAPIConditionFailModal) => {
     Modal.error({
       title: props.message,
       onOk: () => {
@@ -40,7 +39,7 @@ export default class TableStepComponent extends TableStep {
     })
   }
 
-  renderOperationConfirm = (props: ITableStepOperationConfirm) => {
+  renderOperationColumnConfirm = (props: ITableStepOperationColumnConfirm) => {
     Modal.confirm({
       title: props.title,
       okText: props.okText,
@@ -52,12 +51,14 @@ export default class TableStepComponent extends TableStep {
 
   renderComponent = (props: ITable) => {
     const {
+      primary,
       columns,
       data
     } = props
 
     return (
       <Table
+        rowKey={primary}
         columns={columns.map((column: ITableColumn, index: number) => ({
           key: index,
           dataIndex: column.field,
@@ -70,7 +71,7 @@ export default class TableStepComponent extends TableStep {
     )
   }
 
-  renderOperationComponent = (props: ITableStepOperation) => {
+  renderOperationColumnComponent = (props: ITableStepOperationColumn) => {
     const {
       children
     } = props
@@ -81,7 +82,7 @@ export default class TableStepComponent extends TableStep {
     )
   }
 
-  renderOperationButtonComponent = (props: ITableStepOperationButton) => {
+  renderOperationColumnButtonComponent = (props: ITableStepOperationColumnButton) => {
     const {
       label,
       disabled,
@@ -90,7 +91,7 @@ export default class TableStepComponent extends TableStep {
     return <Button disabled={disabled} onClick={() => onClick()}>{label}</Button>
   }
 
-  renderOperationGroupComponent = (props: ITableStepOperationGroup) => {
+  renderOperationColumnGroupComponent = (props: ITableStepOperationColumnGroup) => {
     const {
       label,
       children
@@ -111,7 +112,7 @@ export default class TableStepComponent extends TableStep {
     )
   }
 
-  renderOperationGroupItemComponent = (props: ITableStepOperationGroupItem) => {
+  renderOperationColumnGroupItemComponent = (props: ITableStepOperationColumnGroupItem) => {
     const {
       label,
       disabled,
@@ -119,6 +120,28 @@ export default class TableStepComponent extends TableStep {
     } = props
     return (
       <Menu.Item disabled={disabled} onClick={() => onClick()}>{label}</Menu.Item>
+    )
+  }
+
+  renderOperationModal = (props: ITableStepOperationModal) => {
+    const {
+      title,
+      visible,
+      children,
+      onClose
+    } = props
+
+    return (
+      <Modal
+        title={title}
+        visible={visible}
+        forceRender={true}
+        getContainer={false}
+        footer={false}
+        onCancel={onClose}
+      >
+        {children}
+      </Modal>
     )
   }
 }
