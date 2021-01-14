@@ -2,16 +2,12 @@ import React from 'react'
 import { CCMS } from 'ccms-core'
 import { ICCMS } from 'ccms-core/dist/src/main'
 import { PageHeader, Space } from 'antd'
+import StepComponents from './steps'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/page-header/style/index.css'
-import FormStepComponent from './steps/form'
-import FetchStepComponent from './steps/fetch'
-import TableStepComponent from './steps/table'
 
 export default class CCMSComponent extends CCMS {
-  FormStep = FormStepComponent
-  TableStep = TableStepComponent
-  FetchStep = FetchStepComponent
+  getStepComponent = (key: string) => StepComponents[key]
 
   renderComponent = (props: ICCMS) => {
     const {
