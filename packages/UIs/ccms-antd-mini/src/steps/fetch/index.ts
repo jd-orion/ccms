@@ -1,11 +1,11 @@
-import { Fetch } from 'ccms-core'
+import { FetchStep } from 'ccms-core'
 import { IAPIConditionSuccessModal, IAPIConditionFailModal } from 'ccms-core/dist/src/util/request'
 import { Modal } from 'antd'
 import 'antd/lib/style/index.css'
 import 'antd/lib/modal/style/index.css'
 import 'antd/lib/button/style/index.css'
 
-export default class FetchComponent extends Fetch {
+export default class FetchComponent extends FetchStep {
   renderSuccessModal = (props: IAPIConditionSuccessModal) => {
     Modal.success({
       content: props.message,
