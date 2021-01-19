@@ -8,7 +8,7 @@ import 'antd/lib/grid/style/index.css'
 import 'antd/lib/tooltip/style/index.css'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/button/style/index.css'
-import { FormProps } from 'antd/lib/form'
+import { FormItemProps, FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/formFields'
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
@@ -51,14 +51,22 @@ export default class FormStepComponent extends FormStep {
       label,
       status,
       message,
+      fieldType,
       children
     } = props
+
+    const formItemProps: FormItemProps = {}
+    if (['form', 'table'].includes(fieldType)) {
+      formItemProps.labelCol = { span: 24 }
+      formItemProps.wrapperCol = { span: 24 }
+    }
 
     return (
       <Form.Item
         label={label}
         validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
         help={message}
+        {...formItemProps}
       >
         {children}
       </Form.Item>
