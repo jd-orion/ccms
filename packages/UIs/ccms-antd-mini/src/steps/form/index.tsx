@@ -8,7 +8,6 @@ import 'antd/lib/grid/style/index.css'
 import 'antd/lib/tooltip/style/index.css'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/button/style/index.css'
-import { FormItemProps, FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/formFields'
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
@@ -21,20 +20,8 @@ export default class FormStepComponent extends FormStep {
       children
     } = props
 
-    const formItemLayout: FormProps | null =
-      layout === 'horizontal'
-        ? {
-            labelAlign: 'left',
-            labelCol: { span: 4 },
-            wrapperCol: { span: 14 }
-          }
-        : null
-
     return (
-      <Form
-        {...formItemLayout}
-        layout={layout}
-      >
+      <Form layout="vertical" size="small">
           {children}
           <Form.Item>
             <Space>
@@ -55,18 +42,11 @@ export default class FormStepComponent extends FormStep {
       children
     } = props
 
-    const formItemProps: FormItemProps = {}
-    if (['form', 'table'].includes(fieldType)) {
-      formItemProps.labelCol = { span: 24 }
-      formItemProps.wrapperCol = { span: 24 }
-    }
-
     return (
       <Form.Item
         label={label}
         validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
         help={message}
-        {...formItemProps}
       >
         {children}
       </Form.Item>

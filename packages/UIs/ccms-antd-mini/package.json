@@ -1,5 +1,5 @@
 {
-  "name": "ccms-antd",
+  "name": "ccms-antd-mini",
   "version": "1.0.0-beta",
   "description": "ConfigableCMS",
   "main": "dist/index.js",
@@ -66,10 +66,12 @@
     "@ant-design/icons": "^4.3.0",
     "@types/react": "^16.9.46",
     "@types/react-router-dom": "^5.1.5",
+    "antd": "^4.8.5",
     "axios": "^0.20.0",
-    "ccms-core": "^1.0.0-beta2",
     "moment": "^2.29.0",
     "rc-table": "^7.9.10",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-loadable": "^5.5.0"
   },
   "peerDependencies": {

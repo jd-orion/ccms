@@ -1,9 +1,15 @@
 export { default as CCMS } from './main'
-export { default as Form } from './steps/form'
+export { default as FormStep } from './steps/form'
+export { default as FilterStep } from './steps/filter'
 export { default as TextField } from './components/formFields/text'
 export { default as FormField } from './components/formFields/form'
 export { default as RadioField } from './components/formFields/radio'
+export { default as SelectSingleField } from './components/formFields/select/single'
+export { default as SelectMultipleField } from './components/formFields/select/multiple'
 
-export { default as Table } from './steps/table'
+export { default as TableStep } from './steps/table'
+export { default as TextColumn } from './components/tableColumns/text'
+export { default as DatetimeColumn } from './components/tableColumns/datetime'
+export { default as EnumColumn } from './components/tableColumns/enum'
 
-export { default as Fetch } from './steps/fetch'
+export { default as FetchStep } from './steps/fetch'

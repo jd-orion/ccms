@@ -19,28 +19,14 @@ export default class FormFieldComponent extends FormField {
       label,
       status,
       message,
-      fieldType,
-      layout,
       children
     } = props
-
-    const formItemProps: FormItemProps = {}
-    if (layout === 'horizontal') {
-      formItemProps.labelAlign = 'left'
-      formItemProps.labelCol = { span: 4 }
-      formItemProps.wrapperCol = { span: 14 }
-    }
-    if (['form', 'table'].includes(fieldType)) {
-      formItemProps.labelCol = { span: 24 }
-      formItemProps.wrapperCol = { span: 24 }
-    }
 
     return (
       <Form.Item
         label={label}
         validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
         help={message}
-        {...formItemProps}
       >
         {children}
       </Form.Item>
@@ -57,8 +43,8 @@ export default class FormFieldComponent extends FormField {
     return (
       <div>
         {children}
-        <Form.Item wrapperCol={{ span: 4, offset: 14 }}>
-          <Button block danger type='dashed' icon={<MinusCircleOutlined />} onClick={() => onRemove()}>{removeText}</Button>
+        <Form.Item style={{ textAlign: 'right' }}>
+          <Button danger type='dashed' icon={<MinusCircleOutlined />} onClick={() => onRemove()}>{removeText}</Button>
         </Form.Item>
       </div>
     )
@@ -79,7 +65,7 @@ export default class FormFieldComponent extends FormField {
           split={<Divider style={{ margin: 0 }} />}
         >
           {children}
-          <Form.Item wrapperCol={{ span: 18 }}>
+          <Form.Item>
             <Button block type='dashed' icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
           </Form.Item>
         </Space>
