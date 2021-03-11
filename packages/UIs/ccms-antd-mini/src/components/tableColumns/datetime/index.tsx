@@ -6,11 +6,10 @@ import moment from 'moment'
 export default class DatetimeColumnComponent extends DatetimeColumn {
   renderComponent = (props: IDatetimeColumn) => {
     const {
-      value,
-      format
+      value
     } = props
     return (
-      <React.Fragment>{moment(value).format(format)}</React.Fragment>
+      <React.Fragment>{moment(value)}</React.Fragment>
     )
   }
 }

@@ -1,0 +1,85 @@
+---
+name: TextField 文本框表单项
+route: /component/formFields/text
+---
+
+import { useState } from 'react'
+import { Playground, Props } from 'docz';
+import TextField from './index';
+import Form from '../../../steps/form';
+
+# TextField 文本框表单项
+
+## 基本用法
+
+<Playground>
+  {() => {
+    const [ value, setValue ] = useState('')
+
+    return (
+      <TextField
+        value={value}
+        onChange={(value) => setValue(value)}
+      />
+    )
+  }}
+</Playground>
+
+### 在表单中使用
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '文本框',
+          field: 'text',
+          type: 'text'
+        }
+      ]
+    }}
+  />
+</Playground>
+
+### 默认值
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '文本框',
+          field: 'text',
+          type: 'text',
+          default: {
+            type: 'static',
+            value: 'default'
+          }
+        }
+      ]
+    }}
+  />
+</Playground>
+
+### 字符长度校验
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '文本框',
+          field: 'text',
+          type: 'text',
+          minLength: 3,
+          maxLength: 6
+        }
+      ]
+    }}
+  />
+</Playground>
+
+## APIs
+
+ import {PropsType} from "./index";
+ <Props of={PropsType} />
