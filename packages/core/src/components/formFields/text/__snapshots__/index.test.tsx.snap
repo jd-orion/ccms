@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`文本框渲染 1`] = `
+Array [
+  "您当前使用的UI版本没有实现TextField组件。",
+  <div
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+  >
+    <button
+      onClick={[Function]}
+    >
+      onChange
+    </button>
+  </div>,
+]
+`;

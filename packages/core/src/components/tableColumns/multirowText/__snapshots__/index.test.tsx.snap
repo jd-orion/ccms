@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`多行文本- 有内容 验证dom长度 1`] = `
+Array [
+  <div>
+    您当前使用的UI版本没有实现MultirowColumn组件。
+  </div>,
+  <div>
+    您当前使用的UI版本没有实现MultirowColumn组件。
+  </div>,
+]
+`;
