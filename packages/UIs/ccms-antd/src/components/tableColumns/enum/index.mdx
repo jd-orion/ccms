@@ -1,0 +1,96 @@
+---
+menu: 表格项
+name: Enum 选项
+route: /component/tableColumns/enum
+---
+
+import { useState } from 'react'
+import { Playground, Props } from 'docz';
+import Aenum, { PropsType } from './index';
+import Table from '../../../steps/table';
+
+# Enum 选项
+
+## 基本用法
+
+<Playground>
+  {() => {
+    return (
+      <Aenum
+        value={'info'}
+      />
+    )
+  }}
+</Playground>
+
+
+### 表格中日期配置项
+
+<Playground>
+  <Table
+    data={
+        {
+        0:[{ enum: 'test' }]
+        }
+      }
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'enum',
+            label: '选项-无参数默认值',
+            type: 'Aenum',
+            valueType: "string",
+            multiple: {type: "array"},
+            options:{
+              from: 'manual',
+              data: {
+                key: 1,
+                label: '1',
+                extra:[]
+              }
+            }
+          },
+          {
+            field: 'enum',
+            label: '选项-标准值',
+            multiple: true,
+            type: 'Aenum'
+          },
+          {
+            field: 'enum',
+            label: '选项-定义颜色与字体',
+            type: 'Aenum',
+            format: "YYYY-MM",
+            style: {
+              color: "green",
+              fontSize: 16
+            }
+          },
+          {
+            field: 'enum',
+            label: '选项-定义前缀与后缀',
+            type: 'Aenum',
+            defaultValue: ['暂无数据'],
+            style: {
+              prefix: '开始：',
+              postfix: 'end'
+            }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+## APIs
+
+ <Props of={PropsType} />

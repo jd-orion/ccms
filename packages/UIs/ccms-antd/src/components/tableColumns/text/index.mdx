@@ -1,0 +1,107 @@
+---
+menu: 表格项
+name: Text 文本
+route: /component/tableColumns/text
+---
+
+import { useState } from "react"
+import { Playground, Props } from "docz";
+import Text, { PropsType }  from "./index";
+import Table from "../../../steps/table";
+
+# Text 文本表格项
+
+表格项内的文本选项。
+
+## 何时使用
+表格内需要设置文本选项时。<br/>
+提供了以下可配置项：
+- 文本的前后缀配置
+- 展示字体颜色与样式
+
+## 如何使用
+## 代码演示
+
+### 组件单独调用
+<Playground>
+  <Text value={"文本信息"} />
+</Playground>
+
+
+### 配置化JSON参考
+`data`为表格中获取的参数。 `config`中`columns`为表格列配置信息
+```
+  columns:[
+    {
+      label: "内容",
+      field: "text",
+      type: "text"
+    }
+  ]
+```
+
+### 无参数默认值
+
+<Playground>
+  <Table
+    data={
+      {
+      0:[{ textValue: "文本信息" }]
+      }
+    }
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "textValue1",
+            label: "文本-无参数默认值",
+            type: "text",
+            defaultValue: "暂无数据"
+          },
+          {
+            field: "textValue",
+            label: "文本-标准值",
+            type: "text"
+          },
+          {
+            field: "textValue",
+            label: "文本-格式化",
+            type: "text",
+            format: "YYYY-MM"
+          },
+          {
+            field: "textValue",
+            label: "文本-定义颜色与字体",
+            type: "text",
+            format: "YYYY-MM",
+            style: {
+              color: "green",
+              fontSize: 16
+            }
+          },
+          {
+            field: "textValue",
+            label: "文本-定义前缀与后缀",
+            type: "text",
+            defaultValue: "暂无数据",
+            style: {
+              prefix: "开始：",
+              postfix: "end"
+            }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+## APIs
+ <Props of={PropsType} />

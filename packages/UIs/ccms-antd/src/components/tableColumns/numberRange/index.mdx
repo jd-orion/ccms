@@ -1,0 +1,217 @@
+---
+menu: 表格项
+name: NumberRange 数值范围
+route: /component/tableColumns/numberRange
+---
+
+import { useState } from "react"
+import { Playground, Props } from "docz";
+import NumberRange, { PropsType }  from "./index";
+import Table from "../../../steps/table";
+
+# NumberRange 数值范围表格项
+
+表格项内的数值范围选项。
+
+## 何时使用
+表格内需要设置数值范围选项时。<br/>
+提供了以下可配置项：
+- 前后缀字符
+- 数值范围小数位
+- 函数计算
+
+
+## 如何使用
+### 配置化JSON参考
+`config`中`columns`为表格列配置信息
+```
+  columns:[
+    {
+      field: "numberRange",
+      label: "数值范围",
+      type: "numberRange",
+      precision: 2,
+      style: {
+        prefix: "¥",
+        postfix: "元"
+      },
+      default: {
+        type: "static",
+        value: '20,100'
+      }
+    }
+  ]
+```
+
+## 代码演示
+
+### 组件单独调用
+
+<Playground>
+  {() => {
+    return (
+      <NumberRange
+        value={20}
+      />
+    )
+  }}
+</Playground>
+
+### 无参数默认值
+
+<Playground>
+  <Table
+    data={{
+      0:[{ }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "numberRange",
+            label: "数值范围-无参数默认值",
+            type: "numberRange",
+            defaultValue: "暂无数据"
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 标准值
+
+<Playground>
+  <Table
+    data={{
+      0:[{ numberRange: '20,100' }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "numberRange",
+            label: "数值范围-标准值",
+            type: "numberRange"
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 格式化小数位
+
+<Playground>
+  <Table
+    data={{
+      0:[{ numberRange: '20,100' }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "numberRange",
+            label: "数值范围-格式化",
+            type: "numberRange",
+            precision: 2
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 定义颜色与字体
+
+<Playground>
+  <Table
+    data={{
+      0:[{ numberRange: '20,100' }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "numberRange",
+            label: "数值范围-定义颜色与字体",
+            type: "numberRange",
+            style: {
+              color: "green",
+              fontSize: 16
+            }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 定义前缀与后缀
+
+<Playground>
+  <Table
+    data={{
+      0:[{ numberRange: '20,100' }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "numberRange",
+            label: "数值范围-定义前缀与后缀",
+            type: "numberRange",
+            precision: 2,
+            style: {
+              prefix: "¥",
+              postfix: "元"
+            }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+## APIs
+ <Props of={PropsType} />

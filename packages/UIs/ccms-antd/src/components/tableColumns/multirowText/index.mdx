@@ -1,0 +1,184 @@
+---
+menu: 表格项
+name: MultirowText 多行文本
+route: /component/tableColumns/multirowText
+---
+
+import { useState } from 'react'
+import { Playground, Props } from 'docz';
+import multirowText, { PropsType }  from './index';
+import Table from '../../../steps/table';
+
+# MultirowText 多行文本
+展示表格内的多行文本数据。
+
+## 何时使用
+表格内数据使用多行文本展示时。
+- 支持逗号分隔的字符串、数组
+
+## 如何使用
+### 表格中配置化JSON参考
+`data`为表格中获取的参数。 `config`中`columns`为表格列配置信息
+```
+  columns:[
+     {
+      field: 'multirowText',
+      label: '日期-标准值',
+      type: 'multirowText'
+    }
+  ]
+```
+
+## 代码演示
+
+### 标准值-参数string
+<Playground>
+  <Table
+    data={{
+      0:[{ }]
+    }}
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'multirowText',
+            label: '日期-标准值',
+            type: 'multirowText',
+            defaultValue: '空'
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 标准值-参数string
+<Playground>
+  <Table
+    data={{
+      0:[{ multirowText: "'第一行','第二行','第三行'" }]
+    }}
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'multirowText',
+            label: '日期-标准值',
+            type: 'multirowText'
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 标准值-参数array
+<Playground>
+  <Table
+    data={{
+      0:[{ multirowText: ['第一行','第二行','第三行'] }]
+    }}
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'multirowText',
+            label: '日期-标准值',
+            type: 'multirowText'
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 定义颜色与字体
+<Playground>
+  <Table
+    data={{
+      0:[{ multirowText: ['第一行','第二行','第三行'] }]
+    }}
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'multirowText',
+            label: '日期-定义颜色与字体',
+            type: 'multirowText',
+            style: {
+              color: "green",
+              fontSize: 16
+            }
+          },
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 定义前缀与后缀
+<Playground>
+  <Table
+    data={{
+      0:[{ multirowText: ['第一行','第二行','第三行'] }]
+    }}
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'multirowText',
+            label: '日期-定义前缀与后缀',
+            type: 'multirowText',
+            style: {
+              prefix: '开始：',
+              postfix: ':结束'
+            }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+## APIs
+ <Props of={PropsType} />

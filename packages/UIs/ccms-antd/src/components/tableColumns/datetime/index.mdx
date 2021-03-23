@@ -1,0 +1,214 @@
+---
+menu: 表格项
+name: Datetime 日期时间
+route: /component/tableColumns/datetime
+---
+
+import { useState } from 'react'
+import { Playground, Props } from 'docz';
+import Datetime, { PropsType } from './index';
+import Table from '../../../steps/table';
+
+# Datetime 日期时间表格项
+表格项内的日期时间展示。
+
+## 何时使用
+表格内需要设置日期时间展示时。<br/>
+提供了以下可配置项：
+- 展示格式设置: `YYYY-MM-DD HH:mm:ss`
+- 设置无参数默认值
+- 前缀后缀内容添加
+- 定义颜色与字体
+
+## 如何使用
+### 表格中配置化JSON参考
+`data`为表格中获取的参数。 `config`中`columns`为表格列配置信息
+```
+  columns:[
+     {
+      field: 'datetime',
+      label: '日期-标准值',
+      type: 'datetime'
+    }
+  ]
+```
+
+## 代码演示
+
+<Playground>
+  {() => {
+    return (
+      <Datetime
+        value={new Date()}
+      />
+    )
+  }}
+</Playground>
+
+
+## 表格中日期配置项
+
+### 无参数默认值
+<Playground>
+  <Table
+    data={
+        {
+        0:[{ }]
+        }
+      }
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'datetime',
+            label: '日期-无参数默认值',
+            type: 'datetime',
+            defaultValue: '暂无数据'
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 标准值
+<Playground>
+  <Table
+    data={
+        {
+        0:[{ datetime: new Date() }]
+        }
+      }
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'datetime',
+            label: '日期-标准值',
+            type: 'datetime'
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 格式化显示
+<Playground>
+  <Table
+    data={
+        {
+        0:[{ datetime: new Date() }]
+        }
+      }
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'datetime',
+            label: '日期-格式化',
+            type: 'datetime',
+            format: "YYYY年MM月"
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 定义颜色与字体
+<Playground>
+  <Table
+    data={
+        {
+        0:[{ datetime: new Date() }]
+        }
+      }
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'datetime',
+            label: '日期-定义颜色与字体',
+            type: 'datetime',
+            format: "YYYY-MM",
+            style: {
+              color: "green",
+              fontSize: 16
+            }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 定义前缀与后缀
+<Playground>
+  <Table
+    data={
+        {
+        0:[{ datetime: new Date() }]
+        }
+      }
+    config={
+      {
+        primary: 'index',
+        columns:[
+          {
+            field: 'datetime',
+            label: '日期-定义前缀与后缀',
+            type: 'datetime',
+            defaultValue: '暂无数据',
+            style: {
+              prefix: '开始：',
+              postfix: 'end'
+            }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+## APIs
+ <Props of={PropsType} />

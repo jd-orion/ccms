@@ -1,0 +1,217 @@
+---
+menu: 表格项
+name: Number 数值
+route: /component/tableColumns/Number
+---
+
+import { useState } from "react"
+import { Playground, Props } from "docz";
+import Number, { PropsType }  from "./index";
+import Table from "../../../steps/table";
+
+# Number 数值表格项
+
+表格项内的数值选项。
+
+## 何时使用
+表格内需要设置数值选项时。<br/>
+提供了以下可配置项：
+- 前后缀字符
+- 数值小数位
+- 函数计算
+
+
+## 如何使用
+### 配置化JSON参考
+`config`中`columns`为表格列配置信息
+```
+  columns:[
+    {
+      field: "number",
+      label: "数值",
+      type: "number",
+      precision: 2,
+      style: {
+        prefix: "¥",
+        postfix: "元"
+      },
+      default: {
+        type: "static",
+        value: 20
+      }
+    }
+  ]
+```
+
+## 代码演示
+
+### 组件单独调用
+
+<Playground>
+  {() => {
+    return (
+      <Number
+        value={20}
+      />
+    )
+  }}
+</Playground>
+
+### 无参数默认值
+
+<Playground>
+  <Table
+    data={{
+      0:[{ }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "number",
+            label: "数值-无参数默认值",
+            type: "number",
+            defaultValue: "暂无数据"
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 标准值
+
+<Playground>
+  <Table
+    data={{
+      0:[{ number: 20 }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "number",
+            label: "数值-标准值",
+            type: "number"
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 格式化小数位
+
+<Playground>
+  <Table
+    data={{
+      0:[{ number: 20 }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "number",
+            label: "数值-格式化",
+            type: "number",
+            precision: 2
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 定义颜色与字体
+
+<Playground>
+  <Table
+    data={{
+      0:[{ number: 20 }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "number",
+            label: "数值-定义颜色与字体",
+            type: "number",
+            style: {
+              color: "green",
+              fontSize: 16
+            }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 定义前缀与后缀
+
+<Playground>
+  <Table
+    data={{
+      0:[{ number: 20 }]
+    }}
+    config={
+      {
+        primary: "index",
+        columns:[
+          {
+            field: "number",
+            label: "数值-定义前缀与后缀",
+            type: "number",
+            precision: 2,
+            style: {
+              prefix: "¥",
+              postfix: "元"
+            }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+## APIs
+ <Props of={PropsType} />
