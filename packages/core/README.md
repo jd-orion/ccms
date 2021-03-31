@@ -47,6 +47,7 @@ const App = () => (
       checkPageAuth={async () => true}
       loadPageURL={async (id) => `/url?id=${id}&type=page`}
       loadPageFrameURL={async (id) => `/url?id=${id}&type=open`}
+      // 界面操作更新CCMS config 
       loadPageConfig={async (page) => newConfig }
       sourceData={{}}
       callback={() => {
@@ -56,10 +57,137 @@ const App = () => (
           window.close()
         }
       }}
+      //后附config的demo 详见api文档
       config={config}
     />
   </>
 );
+```
+
+config参数DEMO
+
+```
+{
+  "basic": {
+      "title": "我的表单"
+  },
+  "steps": [
+    {
+      type: "form",
+      layout: "horizontal",
+      fields:[
+            {
+                type:'text',
+                "field": "text",
+                "label": "这是一个提交步骤"
+            }
+        ]
+    },
+    {
+        "type": "fetch",
+        "request": {
+            "url": "https://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do",
+            "method": "GET"
+        },
+        "response": {
+            "root": "result"
+        },
+        "condition": {
+            "enable": true,
+            "field": "code",
+            "value": 0,
+            "success": {
+                "type": "none",
+                "content": {
+                    "type": "static",
+                    "content": "成功"
+                }
+            },
+            "fail": {
+                "type": "modal",
+                "content": {
+                    "type": "field",
+                    "field": "msg"
+                }
+            }
+        }
+    }, {
+        "type": "table",
+        "primary": "index",
+        "columns": [
+            {
+                "label": "id",
+                "field": "id",
+                "type": "text",
+                "defaultValue": "暂无数据"
+            },
+            {
+                "label": "datetime",
+                "field": "datetime",
+                "type": "text",
+                "defaultValue": "暂无数据"
+            },
+            {
+                "label": "name",
+                "field": "name",
+                "type": "text",
+                "defaultValue": "暂无数据"
+            }
+        ],
+        "operations": {
+            "rowOperations": [
+                {
+                    "type": "button",
+                    "label": "编辑",
+                    "handle": {
+                        "type": "ccms","callback":true,
+                        "page": "o_manage_list_edit",
+                        "target": "current",
+                        "data": {
+                            "id": {
+                                "source": "record",
+                                "field": "id"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "label": "删除",
+                    "handle": {
+                        "type": "ccms","callback":true,
+                        "page": "o_manage_list_delete",
+                        "target": "current",
+                        "data": {
+                            "id": {
+                                "source": "record",
+                                "field": "id"
+                            }
+                        }
+                    },
+                    "confirm": {
+                        "enable": true,
+                        "titleText": "确定删除应用吗？删除后无法恢复"
+                    }
+                }
+            ],
+            "tableOperations": [
+                {
+                    "type": "button",
+                    "label": "+ 可以新建应用",
+                    "handle": {
+                        "type": "ccms",
+                        "callback":true,
+                        "page": "o_manage_list_create",
+                        "target": "current",
+                        "data": {}
+                    }
+                }
+            ]
+        }
+    }
+  ]
+}
 ```
 
 ## 📖 API文档
