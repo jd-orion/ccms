@@ -12,7 +12,7 @@ import FormFields from '../'
 export default class FormFieldComponent extends FormField {
   getFormFields = (type: string) => FormFields[type]
 
-  remove: () => Promise<void> = async () => {}
+  remove: () => Promise<void> = async () => { }
 
   renderItemFieldComponent = (props: IFormFieldItemField) => {
     const {
@@ -25,7 +25,7 @@ export default class FormFieldComponent extends FormField {
     return (
       <Form.Item
         label={label}
-        validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
+        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={message}
       >
         {children}
@@ -62,12 +62,14 @@ export default class FormFieldComponent extends FormField {
         <Space
           style={{ width: '100%' }}
           direction="vertical"
-          split={<Divider style={{ margin: 0 }} />}
+          split={<Divider style={{ margin: 0, height: '3px' }} />}
         >
           {children}
-          <Form.Item>
+          {
+          insertText && <Form.Item>
             <Button block type='dashed' icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
           </Form.Item>
+          }
         </Space>
       </React.Fragment>
     )

@@ -5,6 +5,7 @@ type Props = {
   value: string,
   readonly?: boolean
   disabled?: boolean
+  placeholder?: string
   onChange: (value: string) => Promise<void>
 };
 
@@ -48,7 +49,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
   }
 
   render() {
-    const { value, readonly, disabled } = this.props
+    const { value, readonly, disabled, placeholder } = this.props
     const { flag, input } = this.state
 
     let Component = Input
@@ -56,6 +57,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
     return <Component
       readOnly={readonly}
       disabled={disabled}
+      placeholder={placeholder}
       value={!flag ? value : input}
       onCompositionStart={this.handleComposition}
       onCompositionUpdate={this.handleComposition}

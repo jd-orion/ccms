@@ -12,6 +12,7 @@
     "build": "father build",
     "docs": "father doc build",
     "lint": "eslint --init",
+    "ccms": "npm link ccms-core",
     "test": "jest"
   },
   "author": "niuweb",
@@ -68,6 +69,7 @@
     "@types/react-router-dom": "^5.1.5",
     "antd": "^4.8.5",
     "axios": "^0.20.0",
+    "ccms": "^1.0.2",
     "moment": "^2.29.0",
     "rc-table": "^7.9.10",
     "react": "^16.13.1",
