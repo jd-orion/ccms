@@ -1,32 +1,40 @@
 import React from 'react'
-import { FormField } from 'ccms-core'
+import { FormField } from 'ccms'
 import { Form, Button, Divider, Space } from 'antd'
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import { FormItemProps } from 'antd/lib/form'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/divider/style/index.css'
 import 'antd/lib/button/style/index.css'
-import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms-core/dist/src/components/formFields/form'
+import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
 import FormFields from '../'
 
 export default class FormFieldComponent extends FormField {
   getFormFields = (type: string) => FormFields[type]
 
-  remove: () => Promise<void> = async () => { }
+  remove: () => Promise<void> = async () => {}
 
   renderItemFieldComponent = (props: IFormFieldItemField) => {
     const {
       label,
       status,
       message,
-      children
+      children,
+      layout = "horizontal"
     } = props
 
+    const formItemProps: FormItemProps = {}
+    if (layout === 'horizontal') {
+      formItemProps.labelAlign = 'left'
+      formItemProps.labelCol = { span: 6 }
+      formItemProps.wrapperCol = { span: 18 }
+    }
     return (
       <Form.Item
         label={label}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+        validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
         help={message}
+        {...formItemProps}
       >
         {children}
       </Form.Item>
@@ -65,11 +73,9 @@ export default class FormFieldComponent extends FormField {
           split={<Divider style={{ margin: 0, height: '3px' }} />}
         >
           {children}
-          {
-          insertText && <Form.Item>
+          <Form.Item>
             <Button block type='dashed' icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
           </Form.Item>
-          }
         </Space>
       </React.Fragment>
     )

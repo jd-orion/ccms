@@ -20,15 +20,27 @@ export default class FormStepComponent extends FormStep {
       children
     } = props
 
+    const formItemLayout: any | null =
+      layout === 'horizontal'
+        ? {
+          labelAlign: 'left',
+          labelCol: { span: 6 },
+          wrapperCol: { span: 18 }
+        }
+        : null
+
     return (
-      <Form layout="vertical" size="small">
-          {children}
-          <Form.Item>
-            <Space>
-              <Button type="primary" onClick={() => onSubmit()}>Submit</Button>
-              <Button onClick={() => onCancel()}>Cancel</Button>
-            </Space>
-          </Form.Item>
+      <Form
+        layout={layout}
+        {...formItemLayout}
+        size="small">
+        {children}
+        {true ? null : <Form.Item>
+          <Space>
+            <Button type="primary" onClick={() => onSubmit()}>Submit</Button>
+            <Button onClick={() => onCancel()}>Cancel</Button>
+          </Space>
+        </Form.Item>}
       </Form>
     )
   }
@@ -45,7 +57,7 @@ export default class FormStepComponent extends FormStep {
     return (
       <Form.Item
         label={label}
-        validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
+        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={message}
       >
         {children}
