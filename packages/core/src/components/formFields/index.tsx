@@ -8,6 +8,7 @@ import DatetimeField, { DatetimeFieldConfig } from './datetime'
 import DatetimeRangeField, { DatetimeRangeFieldConfig } from './datetimeRange'
 import SelectSingleField, { SelectSingleFieldConfig } from './select/single'
 import SelectMultipleField, { SelectMultipleFieldConfig } from './select/multiple'
+import DescField, { DescFieldConfig } from './description'
 import { FieldConfig } from "./common";
 
 export interface HiddenFieldConfig extends FieldConfig {
@@ -27,6 +28,7 @@ export type FieldConfigs = TextFieldConfig
     | SelectSingleFieldConfig
     | SelectMultipleFieldConfig
     | HiddenFieldConfig
+    | DescFieldConfig
 
 export interface componentType {
     type: 'text'
@@ -40,6 +42,7 @@ export interface componentType {
     | 'select_multiple'
     | 'hidden'
     | 'none'
+    | 'desc'
 }
 
 export default {
@@ -51,5 +54,6 @@ export default {
     datetime: DatetimeField,
     datetimeRange: DatetimeRangeField,
     select_single: SelectSingleField,
-    select_multiple: SelectMultipleField
+    select_multiple: SelectMultipleField,
+    desc: DescField
 }

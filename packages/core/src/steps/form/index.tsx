@@ -242,8 +242,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
     for (const formFieldIndex in formFieldsConfig) {
       if (this.formFields[formFieldIndex]) {
         const formField = this.formFields[formFieldIndex]
-        if (formField) {
-          const formFieldConfig = formFieldsConfig[formFieldIndex]
+        const formFieldConfig = formFieldsConfig[formFieldIndex]
+        if (formField && formFieldConfig.field) {
           const value = await formField.get()
           const validation = await formField.validate(value)
           const submitFieldFormat = await formField.fieldFormat();
@@ -296,8 +296,9 @@ export default class FormStep extends Step<FormConfig, FormState> {
     } = this.props
 
     const formField = this.formFields[formFieldIndex]
-    if (formField) {
-      const formFieldConfig = formFieldsConfig[formFieldIndex]
+    const formFieldConfig = formFieldsConfig[formFieldIndex]
+    if (formField && formFieldConfig.field) {
+
       const validation = await formField.validate(value)
       set(this.formValue, formFieldConfig.field, value)
       if (validation === true) {
@@ -396,38 +397,44 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
               const FormField = this.getALLComponents(formFieldConfig.type) || React.Fragment
 
+
+
+
+              const renderData = {
+                  label: formFieldConfig.label,
+                  status: formFieldConfig.field ? getValue(formData, formFieldConfig.field, {}).status || 'normal' : 'normal',
+                  message: formFieldConfig.field ? getValue(formData, formFieldConfig.field, {}).message || '' : '',
+                  layout,
+                  fieldType: formFieldConfig.type,
+                  children: (
+                    <FormField
+                      key={formFieldIndex}
+                      ref={(formField: Field<FieldConfigs, any, any> | null) => {
+                        if (formFieldIndex !== null) {
+                          this.formFields[formFieldIndex] = formField
+                          this.handleFormFieldMount(formFieldIndex)
+                        }
+                      }}
+                      formLayout={layout}
+                      value={formFieldConfig.field ? getValue(formValue, formFieldConfig.field) : undefined}
+                      record={formValue}
+                      data={data}
+                      step={step}
+                      config={formFieldConfig}
+                      onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
+                    />
+                  )
+                }
               // 渲染表单项容器
               return (
-                hidden ? <div key={formFieldIndex} style={display ? {}: {
+                hidden ? <div key={formFieldIndex} style={display ? { position: 'relative' } : {
                   overflow: 'hidden',
-                  height: 0
+                  height: 0,
+                  width: 0
                 }}>
+                  <span style={{ color: '#ff7070', float: 'left', width: '9px', paddingTop: '5px' }}>{`${formFieldConfig.required ? '*' : ''}`}</span>
                   {
-                    this.renderItemComponent({
-                      label: formFieldConfig.label,
-                      status: getValue(formData, formFieldConfig.field, {}).status || 'normal',
-                      message: getValue(formData, formFieldConfig.field, {}).message,
-                      layout,
-                      fieldType: formFieldConfig.type,
-                      children: (
-                        <FormField
-                          key={formFieldIndex}
-                          ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                            if (formFieldIndex !== null) {
-                              this.formFields[formFieldIndex] = formField
-                              this.handleFormFieldMount(formFieldIndex)
-                            }
-                          }}
-                          formLayout={layout}
-                          value={getValue(formValue, formFieldConfig.field)}
-                          record={formValue}
-                          data={data}
-                          step={step}
-                          config={formFieldConfig}
-                          onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
-                        />
-                      )
-                    })
+                    this.renderItemComponent(renderData)
                   }
                 </div> : <></>
               )

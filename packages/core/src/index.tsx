@@ -11,6 +11,7 @@ export { default as DatetimeField } from './components/formFields/datetime'
 export { default as DatetimeRangeField } from './components/formFields/datetimeRange'
 export { default as SelectSingleField } from './components/formFields/select/single'
 export { default as SelectMultipleField } from './components/formFields/select/multiple'
+export { default as DescField } from './components/formFields/description'
 
 export { default as TableStep } from './steps/table'
 export { default as TextColumn } from './components/tableColumns/text'

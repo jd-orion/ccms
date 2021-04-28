@@ -54,7 +54,7 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn> {
     let theValue = value;
     let rsValue = value;
     if (Object.prototype.toString.call(theValue) !== "[object Array]") {
-      if (typeof theValue !== 'string') { theValue = theValue.toString() }
+      if (typeof theValue !== 'string' && theValue) { theValue = theValue.toString() }
       if (multiple && typeof multiple !== 'boolean' && multiple.type === 'split' && multiple.split) {
         theValue = theValue.split(multiple.split)
       }else{
@@ -69,7 +69,7 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn> {
           options.data.forEach((o: any) => {
             const getKey = options.getKey || 'value'
             const getValue = options.getValue || 'label'
-            if (v.toString() === o[getKey].toString() && o[getValue]) {
+            if (v && o && v.toString() === o[getKey].toString() && o[getValue]) {
               rsValue +=  `${o[getValue]},`
             }
           });

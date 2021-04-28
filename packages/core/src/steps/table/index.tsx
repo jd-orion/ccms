@@ -16,6 +16,7 @@ import CCMS, { CCMSConfig } from '../../main'
  */
 export interface TableConfig extends StepConfig {
   type: 'table'
+  width: string
   field: string
   primary: string
   columns: ColumnConfigs[]
@@ -135,6 +136,7 @@ export interface ITableStepOperationColumnConfirm {
 export interface ITableStepOperationModal {
   title: string
   visible: boolean
+  width: string
   children: React.ReactNode
   onClose: () => void
 }
@@ -369,7 +371,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     mask.style.position = 'fixed'
     mask.style.left = '0px'
     mask.style.top = '0px'
-    mask.style.width = '100%'
+    mask.style.width = props.width || '100%'
     mask.style.height = '100%'
     mask.style.backgroundColor = 'white'
     mask.innerText = '您当前使用的UI版本没有实现Table的OperationModal组件。'
@@ -385,6 +387,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     const {
       config: {
         field,
+        width,
         primary,
         columns,
         operations
@@ -489,6 +492,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         {this.renderComponent(props)}
         {operationEnable && this.renderOperationModal({
           title: operationTitle,
+          width,
           visible: operationVisible,
           children: (
             <CCMS

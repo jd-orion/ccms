@@ -5,8 +5,8 @@ import { Field, FieldConfig, FieldError, IField, FieldInterface } from "../commo
 export interface NumberFieldConfig extends FieldConfig, FieldInterface {
     type: 'number'
     regExp?: { expression?: string, message?: string }
-    max?: number
-    min?: number
+    max?: number | ""
+    min?: number | ""
     precision?: number
     step?: number
 }
@@ -73,10 +73,10 @@ export default class NumberField extends Field<NumberFieldConfig, INumberField, 
 
         if (value) {
 
-            if (min && value < min) {
+            if (min !== undefined && min !== "" && value < min) {
                 errors.push(new FieldError(`值不能小于${min}`))
             }
-            if (max && value > max) {
+            if (max !== undefined && max !== "" && value > max) {
                 errors.push(new FieldError(`值不能大于${max}`))
             }
 

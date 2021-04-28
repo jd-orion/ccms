@@ -77,7 +77,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
    * 初始化表单的值
    * @param props
    */
-  constructor (props: StepProps<FilterConfig>) {
+  constructor(props: StepProps<FilterConfig>) {
     super(props)
     this.state = {
       filterData: {}
@@ -214,7 +214,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
     </React.Fragment>
   }
 
-  render () {
+  render() {
     const {
       data,
       step,
@@ -235,7 +235,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
           onReset: async () => this.handleReset(),
           children: fields.map((field, index) => {
             let children = <React.Fragment></React.Fragment>
-
+            let display: boolean = true
             const FieldComponent = this.getFieldComponents(field.type)
 
             if (FieldComponent) {
@@ -250,9 +250,18 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
               />
             }
 
+            if (field.display === 'none') {
+              display = false
+            }
+
             // 渲染表单项容器
             return (
-              <React.Fragment key={index}>
+              <React.Fragment key={index} >
+                <div style={display ? {} : {
+                  overflow: 'hidden',
+                  height: 0,
+                  width: 0
+                }} >
                 {
                   this.renderItemComponent({
                     label: field.label,
@@ -261,6 +270,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
                     children
                   })
                 }
+                </div>
               </React.Fragment>
             )
           })
