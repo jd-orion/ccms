@@ -1,6 +1,6 @@
 import React from 'react'
-import { FilterStep } from 'ccms-core'
-import { IFilter, IFilterItem } from 'ccms-core/dist/src/steps/filter'
+import { FilterStep } from 'ccms'
+import { IFilter, IFilterItem } from 'ccms/dist/src/steps/filter'
 import { Button, Form, Space } from 'antd'
 import 'antd/lib/style/index.css'
 import 'antd/lib/form/style/index.css'

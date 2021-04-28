@@ -1,6 +1,6 @@
 import React from 'react'
-import { CCMS } from 'ccms-core'
-import { ICCMS } from 'ccms-core/dist/src/main'
+import { CCMS } from 'ccms'
+import { ICCMS } from 'ccms/dist/src/main'
 import { PageHeader, Space } from 'antd'
 import StepComponents from './steps'
 import 'antd/lib/space/style/index.css'

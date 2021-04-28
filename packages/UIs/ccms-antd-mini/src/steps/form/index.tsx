@@ -1,6 +1,6 @@
 import React from 'react'
-import { FormStep } from 'ccms-core'
-import { IForm, IFormItem } from 'ccms-core/dist/src/steps/form'
+import { FormStep } from 'ccms'
+import { IForm, IFormItem } from 'ccms/dist/src/steps/form'
 import { Button, Form, Space } from 'antd'
 import 'antd/lib/style/index.css'
 import 'antd/lib/form/style/index.css'

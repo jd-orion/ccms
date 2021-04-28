@@ -1,7 +1,7 @@
 import React from 'react'
-import { SelectMultipleField } from 'ccms-core'
+import { SelectMultipleField } from 'ccms'
 import { Checkbox, Select } from 'antd'
-import { ISelectMultipleField } from 'ccms-core/dist/src/components/formFields/select/multiple'
+import { ISelectMultipleField } from 'ccms/dist/src/components/formFields/select/multiple'
 
 export default class SelectSingleFieldComponent extends SelectMultipleField {
   renderDorpdownComponent = (props: ISelectMultipleField) => {

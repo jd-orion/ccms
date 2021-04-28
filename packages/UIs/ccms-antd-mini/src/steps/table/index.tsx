@@ -1,6 +1,6 @@
 import React from 'react'
-import { TableStep } from 'ccms-core'
-import { ITable, ITableColumn, ITableStepOperationColumn, ITableStepOperationColumnButton, ITableStepOperationColumnGroup, ITableStepOperationColumnGroupItem, ITableStepOperationColumnConfirm, ITableStepOperationModal } from 'ccms-core/dist/src/steps/table'
+import { TableStep } from 'ccms'
+import { ITable, ITableColumn, ITableStepOperationColumn, ITableStepOperationColumnButton, ITableStepOperationColumnGroup, ITableStepOperationColumnGroupItem, ITableStepOperationColumnConfirm, ITableStepOperationModal } from 'ccms/dist/src/steps/table'
 import { Table, Button, Dropdown, Menu, Modal } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import 'antd/lib/style/index.css'
@@ -14,7 +14,7 @@ import 'antd/lib/spin/style/index.css'
 import 'antd/lib/pagination/style/index.css'
 import 'antd/lib/tooltip/style/index.css'
 import getALLComponents from '../../components/tableColumns'
-import { IAPIConditionFailModal, IAPIConditionSuccessModal } from 'ccms-core/dist/src/util/request'
+import { IAPIConditionFailModal, IAPIConditionSuccessModal } from 'ccms/dist/src/util/request'
 import CCMS from '../../main'
 
 export default class TableStepComponent extends TableStep {

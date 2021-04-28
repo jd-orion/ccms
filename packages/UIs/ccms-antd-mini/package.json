@@ -12,7 +12,7 @@
     "build": "father build",
     "docs": "father doc build",
     "lint": "eslint --init",
-    "ccms": "npm link ccms-core",
+    "ccms": "npm link ccms",
     "test": "jest"
   },
   "author": "niuweb",

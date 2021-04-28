@@ -1,0 +1,199 @@
+---
+menu: 表单项
+name: LongText 长文本
+route: /component/formFields/longtext
+order: 2
+---
+
+import { useState } from "react"
+import { Playground, Props } from "docz";
+import LongText, {PropsType} from "./index";
+import Form from "../../../steps/form";
+
+# LongText 长文本表单项
+
+表单项内的长文本组件。
+
+## 何时使用
+表单内需要设置日期时间选项时。<br/>
+提供了以下可配置项：
+- 输入长度最小最大值的限制
+- 支持正则校验内容
+- 默认值：支持五种获取方式
+  - static 
+  - data
+  - hash
+  - query
+  - interface
+
+
+## 如何使用
+### 配置化JSON参考
+`config`中`fields`为表单项配置信息
+```
+  fields:[
+    {
+      label: "开始时间",
+      field: "longtext",
+      type: "longtext",
+      placeholder: "请输入",
+      default: {
+        type: "static",
+        value: "2020-01-01"
+      }
+    }
+  ]
+```
+
+## 代码演示
+
+### 组件单独调用
+
+<Playground>
+  {() => {
+    const [ value, setValue ] = useState("test")
+
+    return (
+      <LongText
+        value={value}
+        onChange={(value) => setValue(value)}
+      />
+    )
+  }}
+</Playground>
+
+#### 在表单中使用
+
+<Playground>
+  <Form layout="horizontal" 
+    config={{
+      fields: [
+        {
+          label: "长文本",
+          field: "type",
+          placeholder: "请输入相关信息",
+          type: "longtext",
+          type: "longtext"
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 默认值
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: "长文本",
+          field: "longtext",
+          type: "longtext",
+          default: {
+            type: "static",
+            value: "设置默认值",
+
+          }
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 字符长度校验 - 最少三个字符，最大6个字符
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: "长文本",
+          field: "longtext",
+          type: "longtext",
+          minLength: 3,
+          maxLength: 6
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 正则校验 - 只能输入数字
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: "长文本",
+          field: "longtext",
+          type: "longtext",
+          regExp:{
+            expression: "\\d+",
+            message: "只能输入数字"
+          }
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 字符接口获取
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: "长文本",
+          field: "longtext",
+          type: "longtext",
+          default: {
+            type: "interface",
+            api: {
+              url: "https://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do",
+              method: "GET",
+              contentType: "json",
+              withCredentials: true
+            },
+            apiResponse: "result.0.datetime"
+          }
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+## APIs
+ <Props of={PropsType} />

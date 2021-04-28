@@ -1,8 +1,8 @@
 import React from 'react'
-import { TextField } from 'ccms-core'
+import { TextField } from 'ccms'
 import { Input } from 'antd'
 import 'antd/lib/input/style/index.css'
-import { ITextField } from 'ccms-core/dist/src/components/formFields/text'
+import { ITextField } from 'ccms/dist/src/components/formFields/text'
 
 export default class TextFieldComponent extends TextField {
   renderComponent = (props: ITextField) => {
