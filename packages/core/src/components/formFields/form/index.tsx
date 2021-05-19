@@ -2,6 +2,7 @@ import React from 'react'
 import { Field, FieldConfig, FieldConfigs, FieldError, IField } from '../common'
 import FormFields from '../'
 import { getParamText, getValue, setValue } from '../../../util/value'
+import { set } from '../../../util/request'
 
 export interface FormFieldConfig extends FieldConfig {
   type: 'form'
@@ -63,8 +64,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
           }
         } = this.props
         for (const field of fields) {
-          setValue(value, field.field, getValue(item, field.field))
-          setValue(formDataList, field.field, { value: getValue(item, field.field), status: 'normal' })
+          set(value, field.field, getValue(item, field.field))
+          set(formDataList, field.field, { value: getValue(item, field.field), status: 'normal' })
         }
         this.formItemsMounted.push(false)
         valueList.push(value)
@@ -148,11 +149,11 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
             _value = await formItem.reset()
           }
           const validation = await formItem.validate(_value)
-          setValue(value[index], field.field, _value)
+          set(value[index], field.field, _value)
           if (validation === true) {
-            setValue(formDataList[index], field.field, { value: _value, status: 'normal' })
+            set(formDataList[index], field.field, { value: _value, status: 'normal' })
           } else {
-            setValue(formDataList[index], field.field, { value: _value, status: 'error', message: validation[0].message })
+            set(formDataList[index], field.field, { value: _value, status: 'error', message: validation[0].message })
           }
         }
       }
@@ -186,32 +187,6 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       await onChange(value)
     }
 
-    // if (this.formItemsList[index]) {
-    //   for (const field of fields) {
-    //     if (this.formItemsList[index][field.field]) {
-    //       const formItem = this.formItemsList[index][field.field]
-    //       if (formItem) {
-    //         const _value = await formItem.reset()
-    //         const validation = await formItem.validate(_value)
-
-    //         setValue(value[index], field.field, _value)
-    //         if (validation === true) {
-    //           setValue(formDataList[index], field.field, { value: _value, status: 'normal' })
-    //         } else {
-    //           setValue(formDataList[index], field.field, { value: _value, status: 'error', message: validation[0].message })
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
-    // this.setState({
-    //   formDataList
-    // })
-
-    // if (onChange) {
-    //   onChange(value)
-    // }
   }
 
   handleRemove = async (index: number) => {
@@ -251,12 +226,12 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     const fieldRef = this.formItemsList[index][field.field]
     if (fieldRef) {
       const validation = await fieldRef.validate(value)
-      setValue(_value[index], field.field, value)
+      set(_value[index], field.field, value)
       if (!formDataList[index]) formDataList[index] = {}
       if (validation === true) {
-        setValue(formDataList[index], field.field, { value, status: 'normal' })
+        set(formDataList[index], field.field, { value, status: 'normal' })
       } else {
-        setValue(formDataList[index], field.field, { value, status: 'error', message: validation[0].message })
+        set(formDataList[index], field.field, { value, status: 'error', message: validation[0].message })
       }
       this.setState({
         formDataList

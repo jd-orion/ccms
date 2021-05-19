@@ -413,7 +413,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     const props = {
       primary,
       data: getDate,
-      columns: columns.map((column, index) => {
+      columns: columns && columns.length > 0 ? columns.map((column, index) => {
         const field = column.field.split('.')[0]
 
         return {
@@ -422,7 +422,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
           render: (value: any, record: { [field: string]: any }) => {
 
             if (value && Object.prototype.toString.call(value) === '[object Object]') {
-              value = getValue(value, column.field.replace(field,'').slice(1))
+              value = getValue(value, column.field.replace(field, '').slice(1))
             }
 
             const Column = this.getALLComponents(column.type)
@@ -440,7 +440,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
             }
           }
         }
-      })
+      }) : []
     }
 
     if (operations && operations.rowOperations && operations.rowOperations.length > 0) {

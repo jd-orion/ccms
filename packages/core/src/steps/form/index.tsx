@@ -3,7 +3,7 @@ import QueryString from 'query-string'
 import { Field, FieldConfigs } from '../../components/formFields/common'
 import Step, { StepConfig, StepProps } from '../common'
 import getALLComponents from '../../components/formFields'
-import { getParamText, getValue, setValue } from '../../util/value'
+import { getParamText, getValue } from '../../util/value'
 import * as _ from "lodash";
 import { set } from '../../util/request'
 
@@ -127,7 +127,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
       step,
       onMount
     } = this.props
-
+    
     let formDefault: any
 
     if (defaultConfig) {
@@ -142,7 +142,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
             if (defaultField) {
               formDefault = getValue(data[step], defaultField)
             } else {
-              formDefault = data[step]
+              formDefault = _.cloneDeep(data[step])
             }
           }
           break
@@ -418,7 +418,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                       formLayout={layout}
                       value={formFieldConfig.field ? getValue(formValue, formFieldConfig.field) : undefined}
                       record={formValue}
-                      data={data}
+                      data={_.cloneDeep(data)}
                       step={step}
                       config={formFieldConfig}
                       onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}

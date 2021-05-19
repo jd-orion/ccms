@@ -52,7 +52,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
             }
           }
         })
-        return interfaceOptionsData[options.defaultIndex || 0].value || undefined
+        return options.defaultIndex === undefined ? undefined : interfaceOptionsData[options.defaultIndex || 0].value
       }
       return undefined
     } else {

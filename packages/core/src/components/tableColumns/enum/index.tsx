@@ -51,26 +51,33 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn> {
       }
     } = this.props
 
+    if (value === '' || value === undefined) return defaultValue
+
     let theValue = value;
     let rsValue = value;
     if (Object.prototype.toString.call(theValue) !== "[object Array]") {
       if (typeof theValue !== 'string' && theValue) { theValue = theValue.toString() }
       if (multiple && typeof multiple !== 'boolean' && multiple.type === 'split' && multiple.split) {
         theValue = theValue.split(multiple.split)
-      }else{
+      } else {
         theValue = theValue.split(',')
       }
     }
 
-    if (options) {
+    let getoptions = options
+    // if (Object.prototype.toString.call(options) === "[object Array]") {
+    //   getoptions = options[0]
+    // }
+
+    if (getoptions) {
       rsValue = ''
-      if (options.data.length > 0) {
+      if (getoptions.data.length > 0) {
         theValue.forEach((v: any) => {
-          options.data.forEach((o: any) => {
-            const getKey = options.getKey || 'value'
-            const getValue = options.getValue || 'label'
+          getoptions.data.forEach((o: any) => {
+            const getKey = getoptions.getKey || 'value'
+            const getValue = getoptions.getValue || 'label'
             if (v && o && v.toString() === o[getKey].toString() && o[getValue]) {
-              rsValue +=  `${o[getValue]},`
+              rsValue += `${o[getValue]},`
             }
           });
         });
