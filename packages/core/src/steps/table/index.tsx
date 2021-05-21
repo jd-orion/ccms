@@ -408,7 +408,10 @@ export default class TableStep extends Step<TableConfig, TableState> {
       }
     } = this.state
 
-    const getDate = getValue(data[step], field);
+    let getDate = field ? getValue(data[step], field) : data[step];
+    if (Object.prototype.toString.call(getDate) !== '[object Array]') {
+      getDate = []
+    }
 
     const props = {
       primary,

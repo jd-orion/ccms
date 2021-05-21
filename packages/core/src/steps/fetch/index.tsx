@@ -32,7 +32,8 @@ export default class FetchStep extends Step<FetchConfig, FetchState> {
       if (config.condition && config.condition.enable) {
         const condition = await requestCondition(config.condition, response, this.renderSuccessModal, this.renderFailModal)
         if (condition) {
-          onSubmit(getValue(response, config.response.root), false)
+          const root = config.response.root || "";
+          onSubmit(getValue(response, root), false)
         } else {
           onUnmount()
         }

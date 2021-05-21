@@ -3,7 +3,6 @@ import marked from 'marked'
 import Step, { StepProps } from './steps/common'
 import StepComponents, { StepConfigs } from './steps'
 import { RichStringConfig } from './interface'
-import { config } from 'process'
 
 /**
  * 页面配置文件格式定义

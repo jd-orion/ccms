@@ -9,6 +9,7 @@ export interface FormFieldConfig extends FieldConfig {
   fields: FieldConfigs[]
   insertText?: string
   removeText?: string
+  mode?: "show"
 }
 
 export interface IFormField {
@@ -37,11 +38,15 @@ export interface IFormFieldItemField {
 
 interface FormState {
   formDataList: Array<{ [field: string]: { value: any, status: 'normal' | 'error' | 'loading', message?: string } }>
+  showItem: boolean
+  showIndex: number
 }
 
 export default class FormField extends Field<FormFieldConfig, IFormField, Array<any>, FormState> implements IField<Array<any>> {
   state: FormState = {
-    formDataList: []
+    formDataList: [],
+    showItem: false,
+    showIndex: 0
   }
 
   getFormFields = (type: string) => FormFields[type]
@@ -183,10 +188,40 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     this.formItemsMounted[index] = false
     value[index] = {}
     formDataList[index] = {}
+    this.setState({
+      showItem: true,
+      showIndex: index
+    })
     if (onChange) {
       await onChange(value)
     }
 
+    // if (this.formItemsList[index]) {
+    //   for (const field of fields) {
+    //     if (this.formItemsList[index][field.field]) {
+    //       const formItem = this.formItemsList[index][field.field]
+    //       if (formItem) {
+    //         const _value = await formItem.reset()
+    //         const validation = await formItem.validate(_value)
+
+    //         set(value[index], field.field, _value)
+    //         if (validation === true) {
+    //           set(formDataList[index], field.field, { value: _value, status: 'normal' })
+    //         } else {
+    //           set(formDataList[index], field.field, { value: _value, status: 'error', message: validation[0].message })
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+
+    // this.setState({
+    //   formDataList
+    // })
+
+    // if (onChange) {
+    //   onChange(value)
+    // }
   }
 
   handleRemove = async (index: number) => {
@@ -205,12 +240,21 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     this.formItemsList.splice(index, 1)
 
     this.setState({
-      formDataList
+      formDataList,
+      showItem: false
     })
 
     if (onChange) {
       onChange(value)
     }
+  }
+
+  showItemFn(index: number) {
+    const { showItem, showIndex } = this.state;
+    this.setState({
+      showItem: index === showIndex ? !showItem : true,
+      showIndex: index
+    })
   }
 
   handleChange = async (index: number, field: FieldConfigs, value: any) => {
@@ -268,6 +312,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       step,
       config: {
         label,
+        mode,
         fields,
         insertText,
         removeText
@@ -275,79 +320,95 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     } = this.props
 
     const {
-      formDataList
+      formDataList,
+      showItem,
+      showIndex
     } = this.state
 
     return (
       <React.Fragment>
-        {this.renderComponent({
-          insertText: insertText === undefined ? `插入 ${label}` : insertText,
-          onInsert: async () => await this.handleInsert(),
-          children: (
-            value.map((itemValue, index: number) => (
-              <div ref={(e) => this.handleMount(index)} key={index}>
-                {this.renderItemComponent({
-                  index,
-                  removeText: removeText === undefined ? `删除 ${label}` : removeText,
-                  onRemove: async () => await this.handleRemove(index),
-                  children: (fields.map((formFieldConfig, fieldIndex) => {
-                    let display: boolean = true
-                    if (formFieldConfig.condition && formFieldConfig.condition.statement) {
-                      let statement = formFieldConfig.condition.statement
-                      if (formFieldConfig.condition.params && Array.isArray(formFieldConfig.condition.params)) {
-                        statement = getParamText(formFieldConfig.condition.statement, formFieldConfig.condition.params, { record: itemValue, data, step })
-                      }
-                      try {
-                        // eslint-disable-next-line no-eval
-                        const result = eval(statement)
-                        if (!result) {
-                          display = false
-                        }
-                      } catch (e) {
-                        console.error('表单项展示条件语句执行错误。', statement)
-                        display = false
-                      }
-                    }
+        {
+          this.renderComponent({
+            insertText: insertText === undefined ? `插入 ${label}` : insertText,
+            onInsert: async () => await this.handleInsert(),
+            children: (
+              value && value.map((itemValue: any, index: number) => (
+                <div ref={(e) => this.handleMount(index)} key={index} >
 
-                    const FormField = this.getFormFields(formFieldConfig.type)
-
-                    // 渲染表单项容器
-                    return (
-                      <div key={fieldIndex} style={{ display: display ? 'block' : 'none' }}>
-                        {
-                          this.renderItemFieldComponent({
-                            index: fieldIndex,
-                            label: formFieldConfig.label,
-                            status: getValue(formDataList[index], formFieldConfig.field, {}).status || 'normal',
-                            message: getValue(formDataList[index], formFieldConfig.field, {}).message,
-                            layout: formLayout,
-                            fieldType: formFieldConfig.type,
-                            children: (
-                              <FormField
-                                ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
-                                  if (!this.formItemsList[index]) this.formItemsList[index] = {}
-                                  this.formItemsList[index][formFieldConfig.field] = fieldRef
-                                }}
-                                formLayout={formLayout}
-                                value={getValue(value[index], formFieldConfig.field)}
-                                record={value[index]}
-                                data={data}
-                                step={step}
-                                config={formFieldConfig}
-                                onChange={(value: any) => this.handleChange(index, formFieldConfig, value)}
-                              />
-                            )
-                          })
-                        }
+                  { mode === "show" &&
+                    <div onClick={() => this.showItemFn(index)} style={{ height: "30px", cursor: "pointer", background: "#f1f1f1", padding: "5px", marginBottom: showItem && index === showIndex ? "10px" : 0 }}>
+                      {itemValue.label}
+                      <div style={{ float: "right" }}>
+                        <span onClick={() => this.handleRemove(index)} style={{ textDecoration: "underline", color: "#7e93a9" }}>删除</span>
                       </div>
-                    )
-                  }))
-                })}
-              </div>
-            ))
-          )
-        })}
-      </React.Fragment>
+                    </div>
+                  }
+
+                  { (showItem && index === showIndex && mode === "show") || mode !== "show" ?
+                    this.renderItemComponent({
+                      index,
+                      removeText: removeText === undefined ? `删除 ${label}` : removeText,
+                      onRemove: async () => await this.handleRemove(index),
+                      children: (fields.map((formFieldConfig, fieldIndex) => {
+                        let display: boolean = true
+                        if (formFieldConfig.condition && formFieldConfig.condition.statement) {
+                          let statement = formFieldConfig.condition.statement
+                          if (formFieldConfig.condition.params && Array.isArray(formFieldConfig.condition.params)) {
+                            statement = getParamText(formFieldConfig.condition.statement, formFieldConfig.condition.params, { record: itemValue, data, step })
+                          }
+                          try {
+                            // eslint-disable-next-line no-eval
+                            const result = eval(statement)
+                            if (!result) {
+                              display = false
+                            }
+                          } catch (e) {
+                            console.error('表单项展示条件语句执行错误。', statement)
+                            display = false
+                          }
+                        }
+
+                        const FormField = this.getFormFields(formFieldConfig.type)
+
+                        // 渲染表单项容器
+                        return (
+                          <div key={fieldIndex} style={{ display: display ? 'block' : 'none' }}>
+                            {
+                              this.renderItemFieldComponent({
+                                index: fieldIndex,
+                                label: formFieldConfig.label,
+                                status: getValue(formDataList[index], formFieldConfig.field, {}).status || 'normal',
+                                message: getValue(formDataList[index], formFieldConfig.field, {}).message,
+                                layout: formLayout,
+                                fieldType: formFieldConfig.type,
+                                children: (
+                                  <FormField
+                                    ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
+                                      if (!this.formItemsList[index]) this.formItemsList[index] = {}
+                                      this.formItemsList[index][formFieldConfig.field] = fieldRef
+                                    }}
+                                    formLayout={formLayout}
+                                    value={getValue(value[index], formFieldConfig.field)}
+                                    record={value[index]}
+                                    data={data}
+                                    step={step}
+                                    config={formFieldConfig}
+                                    onChange={(value: any) => this.handleChange(index, formFieldConfig, value)}
+                                  />
+                                )
+                              })
+                            }
+                          </div>
+                        )
+                      }))
+                    }) : null
+                  }
+                </div>
+              ))
+            )
+          })
+        }
+      </React.Fragment >
     )
   }
 }
