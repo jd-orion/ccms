@@ -12,7 +12,7 @@ import FormFields from '../'
 export default class FormFieldComponent extends FormField {
   getFormFields = (type: string) => FormFields[type]
 
-  remove: () => Promise<void> = async () => {}
+  remove: () => Promise<void> = async () => { }
 
   renderItemFieldComponent = (props: IFormFieldItemField) => {
     const {
@@ -32,7 +32,7 @@ export default class FormFieldComponent extends FormField {
     return (
       <Form.Item
         label={label}
-        validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
+        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={message}
         {...formItemProps}
       >

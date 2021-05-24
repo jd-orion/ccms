@@ -5,6 +5,7 @@ import FormField from './form'
 import RadioField from './radio'
 import SelectSingleField from './select/single'
 import SelectMultipleField from './select/multiple'
+import TreeSelectField from './treeSelect'
 
 export default {
   text: TextField,
@@ -13,5 +14,6 @@ export default {
   select_single: SelectSingleField,
   select_multiple: SelectMultipleField,
   longtext: LongTextField,
-  desc: DescField
+  desc: DescField,
+  tree_select: TreeSelectField
 }

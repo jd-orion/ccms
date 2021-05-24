@@ -1,6 +1,6 @@
 {
   "name": "ccms-antd-mini",
-  "version": "1.0.0-beta",
+  "version": "1.0.1-beta",
   "description": "ConfigableCMS",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
