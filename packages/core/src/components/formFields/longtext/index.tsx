@@ -96,7 +96,7 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
         }
         valueMaxLength = valueMaxLength.replace(/[\u4e00-\u9fa5]/g, valueMaxCJKLength)
       }
-      if (valueMaxLength && valueMaxLength.length > maxLength) {
+      if (valueMaxLength && maxLength >= 0 && valueMaxLength.length > maxLength) {
         errors.push(new FieldError(`最长可输入${maxLength}个字符。`))
       }
     }
@@ -110,7 +110,7 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
         }
         valueMinLength = valueMinLength.replace(/[\u4e00-\u9fa5]/g, valueMinCJKLength)
       }
-      if (valueMinLength && valueMinLength.length < minLength) {
+      if (valueMinLength && minLength >= 0 && valueMinLength.length < minLength) {
         errors.push(new FieldError(`最短需输入${minLength}个字符。`))
       }
     }

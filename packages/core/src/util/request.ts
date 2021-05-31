@@ -64,7 +64,7 @@ export interface IAPIConditionFailModal {
 /* istanbul ignore file */
 export const requestCondition: (config: APIConditionConfig, data: any, renderSuccessModal: (props: IAPIConditionSuccessModal) => React.ReactNode | void, renderFailModal: (props: IAPIConditionFailModal) => React.ReactNode | void) => Promise<boolean> = (config, data, renderSuccessModal, renderFailModal) => {
   return new Promise((resolve, reject) => {
-    if (getValue(data, config.field) === config.value) {
+    if (getValue(data, config.field) == config.value) {
       if (config.success.type === 'none') {
         resolve(true)
       } else if (config.success.type === 'modal') {
