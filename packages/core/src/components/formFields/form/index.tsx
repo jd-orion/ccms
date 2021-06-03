@@ -9,7 +9,8 @@ export interface FormFieldConfig extends FieldConfig {
   fields: FieldConfigs[]
   insertText?: string
   removeText?: string
-  mode?: "show"
+  mode?: "show",
+  modeValue?: string
 }
 
 export interface IFormField {
@@ -313,6 +314,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       config: {
         label,
         mode,
+        modeValue,
         fields,
         insertText,
         removeText
@@ -332,19 +334,19 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
             insertText: insertText === undefined ? `插入 ${label}` : insertText,
             onInsert: async () => await this.handleInsert(),
             children: (
-              value && value.map((itemValue: any, index: number) => (
-                <div ref={(e) => this.handleMount(index)} key={index} >
+              value && value.map((itemValue: any, index: number) => {
+                return <div ref={(e) => this.handleMount(index)} key={index} >
 
-                  { mode === "show" &&
+                  {mode === "show" &&
                     <div onClick={() => this.showItemFn(index)} style={{ height: "30px", cursor: "pointer", background: "#f1f1f1", padding: "5px", marginBottom: showItem && index === showIndex ? "10px" : 0 }}>
-                      {itemValue.label}
+                      {itemValue.label || (modeValue && itemValue[modeValue]) || (index + 1)}
                       <div style={{ float: "right" }}>
                         <span onClick={() => this.handleRemove(index)} style={{ textDecoration: "underline", color: "#7e93a9" }}>删除</span>
                       </div>
                     </div>
                   }
 
-                  { (showItem && index === showIndex && mode === "show") || mode !== "show" ?
+                  {(showItem && index === showIndex && mode === "show") || mode !== "show" ?
                     this.renderItemComponent({
                       index,
                       removeText: removeText === undefined ? `删除 ${label}` : removeText,
@@ -404,7 +406,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                     }) : null
                   }
                 </div>
-              ))
+              }
+              )
             )
           })
         }

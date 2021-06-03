@@ -2,6 +2,7 @@
 import FormField, { FormFieldConfig } from './form'
 import TextField, { TextFieldConfig } from './text'
 import RadioField, { RadioFieldConfig } from './radio'
+import ColorField, { ColorFieldConfig } from './color'
 import TreeSelectField, { TreeSelectFieldConfig } from './treeSelect'
 import LongtextField, { LongtextFieldConfig } from './longtext'
 import NumberField, { NumberFieldConfig } from './number'
@@ -31,6 +32,7 @@ export type FieldConfigs = TextFieldConfig
     | HiddenFieldConfig
     | DescFieldConfig
     | TreeSelectFieldConfig
+    | ColorFieldConfig
 
 export interface componentType {
     type: 'text'
@@ -46,6 +48,7 @@ export interface componentType {
     | 'none'
     | 'desc'
     | 'tree_select'
+    | 'color'
 }
 
 export default {
@@ -59,5 +62,6 @@ export default {
     select_single: SelectSingleField,
     select_multiple: SelectMultipleField,
     desc: DescField,
-    tree_select: TreeSelectField
+    tree_select: TreeSelectField,
+    color: ColorField
 }
