@@ -15,7 +15,6 @@ export interface IDescField {
 }
 
 export default class DescField extends Field<DescFieldConfig, IDescField, string> implements IField<string> {
-
   validate = async (value: string): Promise<true | FieldError[]> => {
     return true
   }
@@ -51,4 +50,3 @@ export default class DescField extends Field<DescFieldConfig, IDescField, string
     )
   }
 }
-

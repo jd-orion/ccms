@@ -1,7 +1,7 @@
 import React from 'react'
 import { Field, FieldConfig, FieldConfigs, FieldError, IField } from '../common'
 import FormFields from '../'
-import { getParamText, getValue, setValue } from '../../../util/value'
+import { getBoolean, getParamText, getValue } from '../../../util/value'
 import { set } from '../../../util/request'
 
 export interface FormFieldConfig extends FieldConfig {
@@ -9,7 +9,7 @@ export interface FormFieldConfig extends FieldConfig {
   fields: FieldConfigs[]
   insertText?: string
   removeText?: string
-  mode?: "show",
+  mode?: 'show',
   modeValue?: string
 }
 
@@ -21,7 +21,7 @@ export interface IFormField {
 
 export interface IFormFieldItem {
   index: number
-  removeText: String
+  removeText: string
   onRemove: () => Promise<void>
   children: React.ReactNode[]
 }
@@ -97,7 +97,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
 
     const errors: FieldError[] = []
 
-    if (required) {
+    if (getBoolean(required)) {
       if (value.length === 0) {
         errors.push(new FieldError('不能为空'))
       }
@@ -250,8 +250,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     }
   }
 
-  showItemFn(index: number) {
-    const { showItem, showIndex } = this.state;
+  showItemFn (index: number) {
+    const { showItem, showIndex } = this.state
     this.setState({
       showItem: index === showIndex ? !showItem : true,
       showIndex: index
@@ -337,19 +337,22 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
               value && value.map((itemValue: any, index: number) => {
                 return <div ref={(e) => this.handleMount(index)} key={index} >
 
-                  {mode === "show" &&
-                    <div onClick={() => this.showItemFn(index)} style={{ height: "30px", cursor: "pointer", background: "#f1f1f1", padding: "5px", marginBottom: showItem && index === showIndex ? "10px" : 0 }}>
+                  {mode === 'show' &&
+                    <div onClick={() => this.showItemFn(index)} style={{ height: '30px', cursor: 'pointer', background: '#f1f1f1', padding: '5px', marginBottom: showItem && index === showIndex ? '10px' : 0 }}>
                       {itemValue.label || (modeValue && itemValue[modeValue]) || (index + 1)}
-                      <div style={{ float: "right" }}>
-                        <span onClick={() => this.handleRemove(index)} style={{ textDecoration: "underline", color: "#7e93a9" }}>删除</span>
+                      <div style={{ float: 'right' }}>
+                        <span onClick={() => this.handleRemove(index)} style={{ textDecoration: 'underline', color: '#7e93a9' }}>删除</span>
                       </div>
                     </div>
                   }
 
-                  {(showItem && index === showIndex && mode === "show") || mode !== "show" ?
-                    this.renderItemComponent({
+                  {(showItem && index === showIndex && mode === 'show') || mode !== 'show'
+                    // eslint-disable-next-line multiline-ternary
+                    ? this.renderItemComponent({
                       index,
-                      removeText: removeText === undefined ? `删除 ${label}` : removeText,
+                      removeText: removeText === undefined
+                        ? `删除 ${label}`
+                        : removeText,
                       onRemove: async () => await this.handleRemove(index),
                       children: (fields.map((formFieldConfig, fieldIndex) => {
                         let display: boolean = true

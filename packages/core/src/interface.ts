@@ -35,7 +35,6 @@ export interface APIResponseConfig {
   responseArrayValue?: string
 }
 
-
 /**
  *
  */
@@ -61,7 +60,7 @@ export interface APIConditionConfig {
   }
 }
 
-export type ParamConfig = RecordParamConfig | DataParamConfig | StepParamConfig | SourceParamConfig | URLParamConfig
+export type ParamConfig = RecordParamConfig | DataParamConfig | StepParamConfig | SourceParamConfig | URLParamConfig | StaticParamConfig
 
 interface RecordParamConfig {
   source: 'record'
@@ -87,4 +86,10 @@ interface SourceParamConfig {
 interface URLParamConfig {
   source: 'url',
   field: string
+}
+
+interface StaticParamConfig {
+  source: 'static'
+  field: string
+  value: string
 }

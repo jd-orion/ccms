@@ -16,16 +16,16 @@ export default class TextColumn extends Column<TextColumnConfig, ITextColumn> {
     </React.Fragment>
   }
 
-  getValue= ()=>{
+  getValue= () => {
     const {
       value,
       config: {
         defaultValue
       }
     } = this.props
-    
-    if(value === undefined || value === null || value === ''){
-      return  defaultValue !== undefined ? defaultValue : ''
+
+    if (value === undefined || value === null || value === '') {
+      return defaultValue !== undefined ? defaultValue : ''
     }
     return value
   }

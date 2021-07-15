@@ -1,6 +1,7 @@
 import React from "react";
 import { Field, FieldConfig, FieldError, IField, FieldInterface } from "../common";
 import moment from 'moment'
+import { getBoolean } from "../../../util/value";
 
 export interface DatetimeFieldConfig extends FieldConfig, FieldInterface {
     type: 'datetime'
@@ -17,8 +18,8 @@ export interface IDatetimeField {
     value: string
     format?: string
     submitFormat?: string
-    readonly?: boolean,
-    disabled?: boolean,
+    readonly?: boolean
+    disabled?: boolean
     mode?: 'time' | 'date' | 'month' | 'year'
     placeholder?: string
     onChange: (value: string) => Promise<void>
@@ -38,7 +39,7 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
                 format
             }
         } = this.props
-        
+
         const rsFormat = submitFormat || format || "YYYY-MM-DD HH:mm:ss"
         const setValue = value ? moment(value).format(rsFormat) : ''
         return setValue
@@ -54,7 +55,7 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
 
         const errors: FieldError[] = []
 
-        if (required) {
+        if (getBoolean(required)) {
             if (value === null || value === '' || value === undefined) {
                 errors.push(new FieldError('不能为空'))
             }
@@ -104,8 +105,8 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
                     value,
                     format,
                     mode,
-                    readonly,
-                    disabled,
+                    disabled: getBoolean(disabled),
+                    readonly: getBoolean(readonly),
                     placeholder,
                     onChange: async (value: string) => onChange(value)
                 })}

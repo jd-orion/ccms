@@ -1,4 +1,5 @@
 import React from 'react'
+import { getBoolean } from '../../../util/value'
 import { Field, FieldConfig, FieldError, IField } from '../common'
 
 export interface TextFieldConfig extends FieldConfig {
@@ -21,8 +22,8 @@ export interface TextFieldConfig extends FieldConfig {
 
 export interface ITextField {
   value: string,
-  disabled?: boolean,
-  readonly?: boolean,
+  disabled?: boolean
+  readonly?: boolean
   placeholder?: string
   onChange: (value: string) => Promise<void>
 }
@@ -52,7 +53,7 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
 
     const errors: FieldError[] = []
 
-    if (required) {
+    if (getBoolean(required)) {
       if (value === '' || value === undefined) {
         errors.push(new FieldError('不能为空'))
       }
@@ -141,7 +142,6 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
   }
 
   render = () => {
-
     const {
       value,
       config: {
@@ -156,8 +156,8 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
       <React.Fragment>
         {this.renderComponent({
           value,
-          disabled,
-          readonly,
+          disabled: getBoolean(disabled),
+          readonly: getBoolean(readonly),
           placeholder,
           onChange: async (value: string) => await onChange(value)
         })}
@@ -165,4 +165,3 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
     )
   }
 }
-

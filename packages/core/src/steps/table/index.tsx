@@ -1,11 +1,11 @@
 import React from 'react'
 import queryString from 'query-string'
-import { getParam, getParamText, getValue, setValue } from '../../util/value'
-import { ColumnConfigs } from '../../components/tableColumns'
+import { getParam, getParamText, getValue } from '../../util/value'
+import getALLComponents, { ColumnConfigs } from '../../components/tableColumns'
 import Step, { StepConfig } from '../common'
 import { APIConditionConfig, APIConfig, ParamConfig } from '../../interface'
 import { IAPIConditionFailModal, IAPIConditionSuccessModal, request, requestCondition, set } from '../../util/request'
-import getALLComponents from '../../components/tableColumns'
+
 import ColumnStyleComponent from './common/columnStyle'
 import CCMS, { CCMSConfig } from '../../main'
 
@@ -45,12 +45,20 @@ export interface TableOperationConfig {
   check?: { enable: false } | TableOperationCheckConfig
   confirm?: { enable: false } | TableOperationConfirmConfig
   handle: TableCCMSOperationConfig
+  condition?: {
+    statement?: string
+    params?: Array<{
+      field?: string
+      data?: ParamConfig
+    }>
+  }
 }
 
 export interface TableCCMSOperationConfig {
   type: 'ccms'
   page: any
   target: 'current' | 'page' | 'open'
+  targetURL: string
   data: { [key: string]: ParamConfig }
   callback?: boolean
 }
@@ -60,6 +68,7 @@ interface TableOperationCheckConfig {
   api: APIConfig
   request?: { [field: string]: ParamConfig }
   condition: APIConditionConfig
+
 }
 
 interface TableOperationConfirmConfig {
@@ -225,7 +234,6 @@ export default class TableStep extends Step<TableConfig, TableState> {
       for (const [field, param] of Object.entries(operation.handle.data)) {
         set(params, field, getParam(param, { record, data, step }))
       }
-
       if (operation.handle.target === 'current') {
         const operationConfig = await this.props.loadPageConfig(operation.handle.page)
         this.setState({
@@ -241,13 +249,15 @@ export default class TableStep extends Step<TableConfig, TableState> {
       } else if (operation.handle.target === 'page') {
         const sourceURL = await this.props.loadPageURL(operation.handle.page)
         const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
-        const targetURL = queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' })
-        window.location.href = targetURL
+        const targetURL = operation.handle.targetURL || ''
+        const targetKey = queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
+        window.location.href = `${targetURL}${targetKey}`
       } else if (operation.handle.target === 'open') {
         const sourceURL = await this.props.loadPageFrameURL(operation.handle.page)
         const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
-        const targetURL = queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' })
-        window.open(targetURL)
+        const targetURL = operation.handle.targetURL || ''
+        const targetKey = queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
+        window.open(`${targetURL}${targetKey}`)
       }
     }
   }
@@ -315,7 +325,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     </React.Fragment>
   }
 
-  renderOperationsTableComponent = (operations: Array<TableOperationConfig | TableOperationGroupConfig> | undefined) => {
+  renderOperationsTableComponent = (operations: Array<TableOperationConfig | TableOperationGroupConfig> | undefined, getDate: any) => {
     if (!operations) return <></>
 
     return this.renderOperationColumnComponent({
@@ -325,7 +335,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
             <React.Fragment key={index}>
               {this.renderOperationColumnButtonComponent({
                 label: operation.label,
-                onClick: async () => { await this.handleRowOperation(operation, {}) }
+                onClick: async () => {
+                  await this.handleRowOperation(operation, getDate)
+                }
               })}
             </React.Fragment>
           )
@@ -337,7 +349,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 children: operation.operations.map((operation) => {
                   return this.renderOperationColumnGroupItemComponent({
                     label: operation.label,
-                    onClick: async () => { await this.handleRowOperation(operation, {}) }
+                    onClick: async () => { await this.handleRowOperation(operation, getDate) }
                   })
                 })
               })}
@@ -383,7 +395,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     document.body.appendChild(mask)
   }
 
-  render() {
+  render () {
     const {
       config: {
         field,
@@ -408,7 +420,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
       }
     } = this.state
 
-    let getDate = field ? getValue(data[step], field) : data[step];
+    let getDate = field ? getValue(data[step], field) : data[step]
     if (Object.prototype.toString.call(getDate) !== '[object Array]') {
       getDate = []
     }
@@ -416,22 +428,22 @@ export default class TableStep extends Step<TableConfig, TableState> {
     const props = {
       primary,
       data: getDate,
-      columns: columns && columns.length > 0 ? columns.map((column, index) => {
-        const field = column.field.split('.')[0]
+      columns: columns && columns.length > 0
+        ? columns.map((column, index) => {
+          const field = column.field.split('.')[0]
 
-        return {
-          field,
-          label: column.label,
-          render: (value: any, record: { [field: string]: any }) => {
+          return {
+            field,
+            label: column.label,
+            render: (value: any, record: { [field: string]: any }) => {
+              if (value && Object.prototype.toString.call(value) === '[object Object]') {
+                value = getValue(value, column.field.replace(field, '').slice(1))
+              }
 
-            if (value && Object.prototype.toString.call(value) === '[object Object]') {
-              value = getValue(value, column.field.replace(field, '').slice(1))
-            }
-
-            const Column = this.getALLComponents(column.type)
-            if (Column) {
-              const addfix = ['multirowText'].some((val) => val !== column.field);
-              return <ColumnStyleComponent key={index} style={column.style} addfix={addfix} >
+              const Column = this.getALLComponents(column.type)
+              if (Column) {
+                const addfix = ['multirowText'].some((val) => val !== column.field)
+                return <ColumnStyleComponent key={index} style={column.style} addfix={addfix} >
                 <Column
                   record={record}
                   value={value}
@@ -440,10 +452,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   config={column}
                 />
               </ColumnStyleComponent>
+              }
             }
           }
-        }
-      }) : []
+        })
+        : []
     }
 
     if (operations && operations.rowOperations && operations.rowOperations.length > 0) {
@@ -455,12 +468,31 @@ export default class TableStep extends Step<TableConfig, TableState> {
             return this.renderOperationColumnComponent({
               children: operations.rowOperations?.map((operation, index) => {
                 if (operation.type === 'button') {
+                  let hidden = false
+                  if (operation.condition && operation.condition.statement) {
+                    let statement = operation.condition.statement
+                    if (operation.condition.params && Array.isArray(operation.condition.params)) {
+                      statement = getParamText(operation.condition.statement, operation.condition.params, { record: record, data, step })
+                    }
+                    try {
+                      // eslint-disable-next-line no-eval
+                      const result = eval(statement)
+                      if (!result) {
+                        hidden = true
+                      }
+                    } catch (e) {
+                      console.error('表格列的参数', statement)
+                      hidden = false
+                    }
+                  }
                   return (
                     <React.Fragment key={index}>
-                      {this.renderOperationColumnButtonComponent({
-                        label: operation.label,
-                        onClick: async () => { await this.handleRowOperation(operation, record) }
-                      })}
+                      {hidden
+                        ? null
+                        : this.renderOperationColumnButtonComponent({
+                          label: operation.label,
+                          onClick: async () => { await this.handleRowOperation(operation, record) }
+                        })}
                     </React.Fragment>
                   )
                 } else {
@@ -491,7 +523,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
 
     return (
       <React.Fragment>
-        {this.renderOperationsTableComponent(operations?.tableOperations)}
+        {this.renderOperationsTableComponent(operations?.tableOperations, getDate)}
         {this.renderComponent(props)}
         {operationEnable && this.renderOperationModal({
           title: operationTitle,
@@ -516,7 +548,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 operation.visible = false
                 this.setState({ operation })
 
-                if (operationCallback && operationCallback === true) {
+                if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
                   onUnmount(true)
                 }
               }}

@@ -6,7 +6,7 @@ import { FieldError, FieldProps } from '../common'
 
 // 默认入参
 const defaultProps: FieldProps<LongtextFieldConfig, string> = {
-  ref: async (ref) => { },
+  ref: async (ref: any) => { },
   formLayout: 'horizontal',
   value: '',
   data: [{}],
@@ -21,7 +21,7 @@ test('长文本- 默认值 - 未配置', () => {
     render(
       <LongTextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
             expect(value).toEqual('')
@@ -39,7 +39,7 @@ test('长文本- 默认值 - 静态值', () => {
     render(
       <LongTextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
             expect(value).toEqual('default')
@@ -58,7 +58,7 @@ test('长文本- 解析', () => {
     render(
       <LongTextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             await ref.set('test')
           }
@@ -79,7 +79,7 @@ const validateTest = (message: string, config: LongtextFieldConfig, successValue
       render(
         <LongTextField
           {...defaultProps}
-          ref={async (ref) => {
+          ref={async (ref: any) => {
             if (ref) {
               const success = await ref.validate(successValue)
               expect(success).toEqual(true)
@@ -114,7 +114,7 @@ validateTest('长文本- 正则校验-自定提示', Object.assign({ regExp: { e
 
 test('长文本- 渲染', async () => {
   const component = renderer.create(
-    <LongTextField {...defaultProps} ref={async (ref) => { }} />
+    <LongTextField {...defaultProps} ref={async (ref: any) => { }} />
   )
 
   const o = component.toJSON()
@@ -126,7 +126,7 @@ test('长文本- onChange', () => {
     const component = renderer.create(
       <LongTextField
         {...defaultProps}
-        ref={async (ref) => { }}
+        ref={async (ref: any) => { }}
         onChange={async (value) => {
           expect(value).toEqual('onChange')
           cleanup()

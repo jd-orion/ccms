@@ -3,15 +3,17 @@ import QueryString from 'query-string'
 import { FieldConfigs } from '../../components/formFields'
 import TextField from '../../components/formFields/text'
 import Step, { StepConfig } from '../common'
-import { getValue, setValue } from '../../util/value'
+import { getValue } from '../../util/value'
+import { set } from '../../util/request'
 
 export interface SkipConfig extends StepConfig {
   type: 'skip'
   fields: FieldConfigs[],
   default?: {
-    type: 'static' | 'data' | 'query' | 'hash'
+    type: 'static' | 'data' | 'query' | 'hash' | 'step'
     value?: any
     field?: string
+    step?: string | number
   }
 }
 
@@ -29,7 +31,8 @@ export default class SkipStep extends Step<SkipConfig> {
         default: {
           type: defaultType,
           value: defaultValue,
-          field: defaultField
+          field: defaultField,
+          step: defaultStep
         } = {},
         default: defaultConfig
       },
@@ -80,18 +83,20 @@ export default class SkipStep extends Step<SkipConfig> {
             }
           }
           break
+        case 'step':
+          formDefault = defaultStep && getValue(data[defaultStep] || {}, defaultField)
+          break
       }
       for (const formFieldIndex in fields) {
         const formFieldConfig = fields[formFieldIndex]
         const value = getValue(formDefault, formFieldConfig.field)
-        setValue(result, formFieldConfig.field, value)
+        set(result, formFieldConfig.field, value)
       }
     }
-
-    onSubmit(result, false)
+    onSubmit(result)
   }
 
-  render() {
+  render () {
     return (
       <React.Fragment></React.Fragment>
     )

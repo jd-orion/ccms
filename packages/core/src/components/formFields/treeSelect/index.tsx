@@ -1,10 +1,8 @@
-import React from 'react'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { APIConfig, ParamConfig } from '../../../interface'
 import { request } from '../../../util/request'
 import { getParam, getValue, setValue } from '../../../util/value'
-import { Field, FieldConfig, IField } from '../common'
-import { FieldError } from '../common'
+import { Field, FieldConfig, IField, FieldError } from '../common'
 
 export interface TreeSelectFieldConfig extends FieldConfig {
   type: 'tree_select'
@@ -71,10 +69,10 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
   }
 
   formatTree = (treeList: any, value: string, title: string) => {
-    let rsMenu: any = []
+    const rsMenu: any = []
 
     treeList.forEach((val: any) => {
-      let theMenu: any = {
+      const theMenu: any = {
         title: '',
         value: null
       }
@@ -100,7 +98,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
     if (config) {
       if (config.from === 'manual') {
         if (config.data) {
-          return this.formatTree(config.data, "value", "title")
+          return this.formatTree(config.data, 'value', 'title')
         }
       } else if (config.from === 'interface') {
         if (config.api) {
@@ -158,11 +156,11 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
     }
     return []
   }
+
   reset = async () => {
     const defaults = await this.defaultValue()
 
     if (defaults === undefined) {
-
       const {
         config: {
           treeData
@@ -171,7 +169,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
 
       if (treeData && treeData.from === 'interface' && treeData.api) {
         let interfaceOptionsData: any = []
-        const res: any = await request(treeData.api, {}).then((_response: any) => {
+        await request(treeData.api, {}).then((_response: any) => {
           if (treeData.response) {
             const response = getValue(_response, treeData.response.root || '')
             if (treeData.response.data) {
@@ -188,6 +186,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
                       label: getValue(item, treeData.response.data.titleField)
                     })
                   }
+                  return {}
                 })
               }
             }
@@ -228,7 +227,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
     return <React.Fragment>
       您当前使用的UI版本没有实现TreeSelectSingleField组件的SelectSingle模式。
       <div style={{ display: 'none' }}>
-        <button onClick={() => props.onChange("")}>onChange</button>
+        <button onClick={() => props.onChange('')}>onChange</button>
       </div>
     </React.Fragment>
   }
@@ -245,7 +244,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
       step
     } = this.props
 
-    const treeData = this.options(optionsConfig, { record, data, step });
+    const treeData = this.options(optionsConfig, { record, data, step })
 
     return (
       <React.Fragment>

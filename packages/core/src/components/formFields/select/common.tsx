@@ -74,7 +74,7 @@ export default class SelectField<C extends SelectFieldConfig, E, T> extends Fiel
         if (config.data) {
           return config.data.map((option) => {
             return {
-              value: option.value,
+              value: option.value.toString(),
               label: option.label
             }
           })
@@ -109,10 +109,10 @@ export default class SelectField<C extends SelectFieldConfig, E, T> extends Fiel
                     })
                   } else if (config.response.data.type === 'list') {
                     this.setState({
-                      interfaceOptionsData: response.map((item: any) => {
+                      interfaceOptionsData: response?.map((item: any) => {
                         if (config.response.data?.type === 'list') {
                           return ({
-                            value: getValue(item, config.response.data.keyField),
+                            value: getValue(item, config.response.data.keyField).toString(),
                             label: getValue(item, config.response.data.labelField)
                           })
                         } else {
@@ -127,7 +127,7 @@ export default class SelectField<C extends SelectFieldConfig, E, T> extends Fiel
           }
           return this.state.interfaceOptionsData.map((option) => {
             return {
-              value: option.value,
+              value: option.value.toString(),
               label: option.label
             }
           })

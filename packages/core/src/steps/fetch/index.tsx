@@ -1,7 +1,7 @@
 import Step, { StepConfig } from '../common'
 import { APIConditionConfig, APIConfig } from '../../interface'
 import { IAPIConditionFailModal, IAPIConditionSuccessModal, request, requestCondition } from '../../util/request'
-import { getValue } from '../../util/value'
+import { getBoolean, getValue } from '../../util/value'
 
 export interface FetchConfig extends StepConfig {
   type: 'fetch'
@@ -10,6 +10,7 @@ export interface FetchConfig extends StepConfig {
     root: string
   }
   condition?: { enable: false } | APIConditionConfig
+  nextStep: boolean | string
 }
 
 interface FetchState {
@@ -31,14 +32,21 @@ export default class FetchStep extends Step<FetchConfig, FetchState> {
 
       if (config.condition && config.condition.enable) {
         const condition = await requestCondition(config.condition, response, this.renderSuccessModal, this.renderFailModal)
+        const nextStep = getBoolean(config.nextStep)
+        const root = config.response.root || "";
         if (condition) {
-          const root = config.response.root || "";
-          onSubmit(getValue(response, root), false)
+          onSubmit(getValue(response, root))
+        } if (nextStep) {
+          if(response){
+            onSubmit(getValue(response, root))
+          }else{
+            onSubmit(data[step])
+          }
         } else {
           onUnmount()
         }
       } else {
-        onSubmit(response, false)
+        onSubmit(response)
       }
     } catch (e) {
       this.renderFailModal({

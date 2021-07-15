@@ -1,4 +1,5 @@
 import React from 'react'
+import { getBoolean } from '../../../../util/value'
 import { FieldError } from '../../common'
 import SelectField, { ISelectFieldOption, SelectFieldConfig } from '../common'
 
@@ -21,6 +22,7 @@ export interface ISelectMultipleField {
   value: undefined | Array<string | number>,
   options: Array<ISelectFieldOption>
   onChange: (value: Array<string | number>) => Promise<void>
+  disabled: boolean
 }
 
 export default class SelectMultipleField extends SelectField<SelectMultipleFieldConfig, {}, string | Array<string | number> | undefined> {
@@ -63,7 +65,7 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
 
     const errors: FieldError[] = []
 
-    if (required) {
+    if (getBoolean(required)) {
       if (_value === '' || _value === undefined) {
         errors.push(new FieldError('不能为空'))
       }
@@ -96,7 +98,8 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
       config: {
         mode = 'dropdown',
         multiple,
-        options: optionsConfig
+        options: optionsConfig,
+        disabled
       },
       onChange,
       record,
@@ -107,7 +110,8 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
     const props: ISelectMultipleField = {
       value: undefined,
       options: this.options(optionsConfig, { record, data, step }),
-      onChange: async (value) => { await onChange(value) }
+      onChange: async (value) => { await onChange(value) },
+      disabled: getBoolean(disabled)
     }
 
     if (multiple === true || multiple?.type === 'array') {
@@ -128,7 +132,7 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
 
     if (props.value !== undefined) {
       props.value = props.value.filter((v) => {
-        if (props.options.map((option) => option.value).includes(v)) {
+        if (props.options.map((option) => option.value).includes(v.toString())) {
           return true
         } else {
           console.warn(`选择框的当前值中${v}不在选项中。`)

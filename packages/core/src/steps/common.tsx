@@ -36,11 +36,11 @@ export interface StepProps<C extends StepConfig> {
  * 页面步骤基类
  */
 export default class Step<C extends StepConfig, S = {}> extends React.Component<StepProps<C>, S> {
-
   static defaultProps = {
     config: {
     }
   };
+
   willMount = () => {
     const {
       onMount

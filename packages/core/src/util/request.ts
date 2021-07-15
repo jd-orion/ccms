@@ -3,7 +3,6 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { APIConditionConfig, APIConfig } from '../interface'
 import { getValue } from './value'
 
-
 export const request: (config: APIConfig, data?: any) => Promise<any> = (config, data) => {
   return new Promise((resolve, reject) => {
     if (config.globalInterface && window[config.globalInterface]) {
@@ -11,16 +10,17 @@ export const request: (config: APIConfig, data?: any) => Promise<any> = (config,
       return
     }
 
-    let url = config.url;
-
+    let url = config.url
     if (config.concatUrl) {
       if (url.slice(url.length - 1) !== '/') { url += '/' }
-      if (Object.prototype.toString.call(config.concatUrl) === "[object Array]") {
+      if (Object.prototype.toString.call(config.concatUrl) === '[object Array]') {
         config.concatUrl.forEach((value, index) => {
-          const concatMst = data?.[value] && config.concatUrl?.length === index + 1 ? `${data[value]}`
-            : data?.[value] ? `${data[value]}/`
+          const concatMst = data?.[value] && config.concatUrl?.length === index + 1
+            ? `${data[value]}`
+            : data?.[value]
+              ? `${data[value]}/`
               : ''
-          url += concatMst;
+          url += concatMst
         })
       }
     }
@@ -64,7 +64,7 @@ export interface IAPIConditionFailModal {
 /* istanbul ignore file */
 export const requestCondition: (config: APIConditionConfig, data: any, renderSuccessModal: (props: IAPIConditionSuccessModal) => React.ReactNode | void, renderFailModal: (props: IAPIConditionFailModal) => React.ReactNode | void) => Promise<boolean> = (config, data, renderSuccessModal, renderFailModal) => {
   return new Promise((resolve, reject) => {
-    if (getValue(data, config.field) == config.value) {
+    if (getValue(data, config.field).toString() === config.value.toString()) {
       if (config.success.type === 'none') {
         resolve(true)
       } else if (config.success.type === 'modal') {
@@ -105,7 +105,6 @@ export const set = (obj: any, path: any, value: any) => {
       if (Object.prototype.toString.call(obj) !== '[object Array]') {
         obj = []
       }
-
     } else {
       if (Object.prototype.toString.call(obj) !== '[object Object]') {
         obj = {}

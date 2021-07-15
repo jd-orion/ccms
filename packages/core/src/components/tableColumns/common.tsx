@@ -39,12 +39,12 @@ export default class Column<T, E> extends React.Component<ColumnProps<T>, Column
     super(props)
     this.state = {}
   }
-  
+
   static defaultProps = {
     config: {}
   }
 
-  getValue= ()=>{
+  getValue= () => {
     return this.props.value
   }
 

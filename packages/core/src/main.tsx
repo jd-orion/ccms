@@ -83,7 +83,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
    * 界面当前所在步骤 初始为 -1 - 界面0需要在数据0执行结束（componentDidMount）后展示
    * 各步骤数据 初始为 sourceData
    */
-  constructor(props: CCMSProps) {
+  constructor (props: CCMSProps) {
     super(props)
     this.state = {
       realStep: 0,
@@ -95,7 +95,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
   /**
    * 执行界面0的挂载
    */
-  componentDidMount() {
+  componentDidMount () {
     this.steps[0]?.willMount()
   }
 
@@ -122,7 +122,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
       } = this.state
 
       data[step + 1] = result
-      
+
       await this.setState({
         realStep: step + 1,
         viewStep: unmountView ? viewStep.filter((_step) => _step !== step || steps[step].type === 'fetch') : viewStep,
@@ -216,7 +216,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
     )
   }
 
-  render() {
+  render () {
     // 处理配置文件默认值
     const {
       config: {

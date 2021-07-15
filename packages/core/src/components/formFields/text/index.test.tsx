@@ -6,7 +6,7 @@ import { FieldError, FieldProps } from '../common'
 
 // 默认入参
 const defaultProps: FieldProps<TextFieldConfig, string> = {
-  ref: async (ref) => { },
+  ref: async (ref: any) => { },
   formLayout: 'horizontal',
   value: '',
   data: [{}],
@@ -21,7 +21,7 @@ test('文本框默认值 - 未配置', () => {
     render(
       <TextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
             expect(value).toEqual('')
@@ -39,7 +39,7 @@ test('文本框默认值 - 静态值', () => {
     render(
       <TextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
             expect(value).toEqual('default')
@@ -57,7 +57,7 @@ test('文本框默认值 -数据值', () => {
     render(
       <TextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
             expect(value).toEqual('')
@@ -75,7 +75,7 @@ test('文本框默认值 -数据值 query', () => {
     render(
       <TextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
             expect(value).toEqual('')
@@ -94,10 +94,10 @@ test('文本框默认值 -数据值 hash', () => {
     render(
       <TextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
-            expect(value).toEqual("")
+            expect(value).toEqual('')
           }
           cleanup()
           resolve(true)
@@ -112,7 +112,7 @@ test('文本框默认值 - 接口值 -GET', () => {
     render(
       <TextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
             expect(typeof value).toEqual('string')
@@ -121,15 +121,18 @@ test('文本框默认值 - 接口值 -GET', () => {
           resolve(true)
         }}
         config={{
-          field: 'jest', label: 'jest', type: 'text', default: {
-            type: "interface",
+          field: 'jest',
+          label: 'jest',
+          type: 'text',
+          default: {
+            type: 'interface',
             api: {
-              url: "http://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do",
-              method: "GET",
-              contentType: "json",
+              url: 'http://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do',
+              method: 'GET',
+              contentType: 'json',
               withCredentials: true
             },
-            apiResponse: "result.0.datetime"
+            apiResponse: 'result.0.datetime'
           }
         }}
       />
@@ -141,7 +144,7 @@ test('文本框默认值 - 接口值 -POST', () => {
     render(
       <TextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
             expect(typeof value).toEqual('string')
@@ -150,15 +153,18 @@ test('文本框默认值 - 接口值 -POST', () => {
           resolve(true)
         }}
         config={{
-          field: 'jest', label: 'jest', type: 'text', default: {
-            type: "interface",
+          field: 'jest',
+          label: 'jest',
+          type: 'text',
+          default: {
+            type: 'interface',
             api: {
-              url: "http://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do",
-              method: "POST",
-              contentType: "json",
+              url: 'http://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do',
+              method: 'POST',
+              contentType: 'json',
               withCredentials: true
             },
-            apiResponse: "result.0.datetime"
+            apiResponse: 'result.0.datetime'
           }
         }}
       />
@@ -170,7 +176,7 @@ test('文本框默认值 - 接口值 -fial', () => {
     render(
       <TextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             const value = await ref.reset()
             expect(typeof value).toEqual('string')
@@ -179,15 +185,18 @@ test('文本框默认值 - 接口值 -fial', () => {
           resolve(true)
         }}
         config={{
-          field: 'jest', label: 'jest', type: 'text', default: {
-            type: "interface",
+          field: 'jest',
+          label: 'jest',
+          type: 'text',
+          default: {
+            type: 'interface',
             api: {
-              url: "http://j-api.jd.com/mocker/data/",
-              method: "POST",
-              contentType: "json",
+              url: 'http://j-api.jd.com/mocker/data/',
+              method: 'POST',
+              contentType: 'json',
               withCredentials: true
             },
-            apiResponse: "result.0.datetime"
+            apiResponse: 'result.0.datetime'
           }
         }}
       />
@@ -199,7 +208,7 @@ test('文本框解析', () => {
     render(
       <TextField
         {...defaultProps}
-        ref={async (ref) => {
+        ref={async (ref: any) => {
           if (ref) {
             await ref.set('test')
           }
@@ -220,7 +229,7 @@ const validateTest = (message: string, config: TextFieldConfig, successValue: st
       render(
         <TextField
           {...defaultProps}
-          ref={async (ref) => {
+          ref={async (ref: any) => {
             if (ref) {
               const success = await ref.validate(successValue)
               expect(success).toEqual(true)
@@ -255,7 +264,7 @@ validateTest('文本框正则校验-自定提示', Object.assign({ regExp: { exp
 
 test('文本框渲染', async () => {
   const component = renderer.create(
-    <TextField {...defaultProps} ref={async (ref) => { }} />
+    <TextField {...defaultProps} ref={async (ref: any) => { }} />
   )
 
   const o = component.toJSON()
@@ -267,7 +276,7 @@ test('文本框onChange', () => {
     const component = renderer.create(
       <TextField
         {...defaultProps}
-        ref={async (ref) => { }}
+        ref={async (ref: any) => { }}
         onChange={async (value) => {
           expect(value).toEqual('onChange')
           cleanup()

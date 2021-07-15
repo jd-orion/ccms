@@ -2,7 +2,7 @@ import React from 'react'
 import { FieldError } from '../../common'
 import SelectField, { SelectFieldConfig, ISelectFieldOption } from '../common'
 import { request } from '../../../../util/request'
-import { getValue } from '../../../../util/value'
+import { getBoolean, getValue } from '../../../../util/value'
 
 export interface SelectSingleFieldConfig extends SelectFieldConfig {
   type: 'select_single'
@@ -11,9 +11,10 @@ export interface SelectSingleFieldConfig extends SelectFieldConfig {
 }
 
 export interface ISelectSingleField {
-  value: undefined | string | number,
+  value: undefined | string | number
   options: Array<ISelectFieldOption>
   onChange: (value: string | number) => Promise<void>
+  disabled: boolean
 }
 
 export default class SelectSingleField extends SelectField<SelectSingleFieldConfig, {}, string | number | undefined> {
@@ -21,7 +22,6 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
     const defaults = await this.defaultValue()
 
     if (defaults === undefined) {
-
       const {
         config: {
           options
@@ -30,7 +30,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
 
       if (options && options.from === 'interface' && options.api) {
         let interfaceOptionsData: any = []
-        const res: any = await request(options.api, {}).then((_response: any) => {
+        await request(options.api, {}).then((_response: any) => {
           if (options.response) {
             const response = getValue(_response, options.response.root || '')
             if (options.response.data) {
@@ -39,7 +39,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
                   value: key,
                   label: response[key]
                 }))
-              } else if (options.response.data.type === 'list') {
+              } else if (options.response.data?.type === 'list') {
                 interfaceOptionsData = response.map((item: any) => {
                   if (options.response.data?.type === 'list') {
                     return ({
@@ -47,6 +47,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
                       label: getValue(item, options.response.data.labelField)
                     })
                   }
+                  return {}
                 })
               }
             }
@@ -74,7 +75,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
 
     const errors: FieldError[] = []
 
-    if (required) {
+    if (getBoolean(required)) {
       if (_value === '' || _value === undefined) {
         errors.push(new FieldError('不能为空'))
       }
@@ -115,7 +116,8 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       value,
       config: {
         mode = 'dropdown',
-        options: optionsConfig
+        options: optionsConfig,
+        disabled
       },
       onChange,
       record,
@@ -126,12 +128,13 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
     const props: ISelectSingleField = {
       value: undefined,
       options: this.options(optionsConfig, { record, data, step }),
-      onChange: async (value) => { await onChange(value) }
+      onChange: async (value) => { await onChange(value) },
+      disabled: getBoolean(disabled)
     }
 
     if (typeof value === 'string' || typeof value === 'number') {
-      if (props.options.map((option) => option.value).includes(value)) {
-        props.value = value
+      if (props.options.map((option) => option.value).includes(value.toString())) {
+        props.value = value.toString()
       } else {
         console.warn(`选择框的当前值${value}不在选项中。`)
         props.value = undefined
@@ -140,7 +143,6 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       props.value = undefined
       console.warn('单项选择框的值需要是字符串或数值。')
     }
-
 
     if (mode === 'radio') {
       return this.renderRadioComponent(props)

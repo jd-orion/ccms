@@ -6,6 +6,7 @@ import NumberRangeColumn, { NumberRangeColumnConfig } from './numberRange'
 import DatetimeColumn, { DatetimeColumnConfig } from './datetime'
 import DatetimeRangeColumn, { DatetimeRangeColumnConfig } from './datetimeRange'
 import MultirowColumn, { MultirowColumnConfig } from './multirowText'
+import ImageColumn, { ImageColumnConfig } from './image'
 
 export interface componentType {
     type: 'text'
@@ -15,6 +16,7 @@ export interface componentType {
     | 'datetimeRange'
     | 'Aenum'
     | 'multirowText'
+    | 'image'
 }
 
 export type ColumnConfigs = TextColumnConfig
@@ -24,13 +26,15 @@ export type ColumnConfigs = TextColumnConfig
     | EnumColumnConfig
     | NumberColumnConfig
     | NumberRangeColumnConfig
+    | ImageColumnConfig
 
 export default {
-    text: TextColumn,
-    multirowText: MultirowColumn,
-    datetime: DatetimeColumn,
-    datetimeRange: DatetimeRangeColumn,
-    Aenum: EnumColumn,
-    number: NumberColumn,
-    numberRange: NumberRangeColumn
+  text: TextColumn,
+  multirowText: MultirowColumn,
+  datetime: DatetimeColumn,
+  datetimeRange: DatetimeRangeColumn,
+  Aenum: EnumColumn,
+  number: NumberColumn,
+  numberRange: NumberRangeColumn,
+  image: ImageColumn
 }

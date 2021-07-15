@@ -1,7 +1,6 @@
 import React from 'react'
-import { request } from '../../../util/request';
-import { APIConfig } from '../../../interface';
 import { Field, FieldConfig, FieldError, IField } from '../common'
+import { getBoolean } from '../../../util/value'
 
 export interface LongtextFieldConfig extends FieldConfig {
   type: 'longtext'
@@ -31,8 +30,8 @@ export interface ILongtextField {
 
 export default class LongTextField extends Field<LongtextFieldConfig, ILongtextField, string> implements IField<string> {
   reset: () => Promise<string> = async () => {
-    let defaults = await this.defaultValue()
-    return (defaults === undefined) ? '' : defaults;
+    const defaults = await this.defaultValue()
+    return (defaults === undefined) ? '' : defaults
   }
 
   validate = async (value: string): Promise<true | FieldError[]> => {
@@ -49,7 +48,7 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
 
     const errors: FieldError[] = []
 
-    if (required) {
+    if (getBoolean(required)) {
       if (value === '') {
         errors.push(new FieldError('不能为空'))
       }
@@ -152,9 +151,9 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
       <React.Fragment>
         { this.renderComponent({
           value,
-          disabled,
           placeholder,
-          readonly,
+          disabled: getBoolean(disabled),
+          readonly: getBoolean(readonly),
           onChange: async (value: string) => await onChange(value)
         })}
       </React.Fragment>

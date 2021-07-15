@@ -6,6 +6,7 @@ export { default as TextField } from './components/formFields/text'
 export { default as FormField } from './components/formFields/form'
 export { default as RadioField } from './components/formFields/radio'
 export { default as ColorField } from './components/formFields/color'
+export { default as UploadField } from './components/formFields/upload'
 export { default as NumberField } from './components/formFields/number'
 export { default as LongTextField } from './components/formFields/longtext'
 export { default as DatetimeField } from './components/formFields/datetime'
@@ -14,6 +15,7 @@ export { default as SelectSingleField } from './components/formFields/select/sin
 export { default as SelectMultipleField } from './components/formFields/select/multiple'
 export { default as DescField } from './components/formFields/description'
 export { default as TreeSelectField } from './components/formFields/treeSelect'
+export { default as ImageUrlField } from './components/formFields/imageurl'
 
 export { default as TableStep } from './steps/table'
 export { default as TextColumn } from './components/tableColumns/text'
@@ -24,5 +26,6 @@ export { default as LongtextColumn } from './components/tableColumns/multirowTex
 export { default as NumberRangeColumn } from './components/tableColumns/numberRange'
 export { default as MultirowTextColumn } from './components/tableColumns/multirowText'
 export { default as DatetimeRangeColumn } from './components/tableColumns/datetimeRange'
+export { default as ImageColumn } from './components/tableColumns/image'
 
 export { default as FetchStep } from './steps/fetch'

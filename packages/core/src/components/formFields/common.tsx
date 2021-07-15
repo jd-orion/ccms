@@ -1,10 +1,9 @@
-import React, { ReactNode } from "react";
-import QueryString from 'query-string';
-import { getValue } from "../../util/value";
-import { componentType } from "."
-import { request } from "../../util/request";
-import { APIConfig } from "../../interface";
-import { ParamConfig } from '../../interface'
+import React from 'react'
+import QueryString from 'query-string'
+import { getValue } from '../../util/value'
+import { componentType } from '.'
+import { request } from '../../util/request'
+import { APIConfig, ParamConfig } from '../../interface'
 
 import { FieldConfigs as getFieldConfigs } from './'
 /**
@@ -35,11 +34,12 @@ export interface FieldConfig extends componentType {
   disabled?: boolean
   display?: 'none'
   default?: {
-    type: 'static' | 'data' | 'query' | 'hash' | 'interface'
+    type: 'static' | 'data' | 'query' | 'hash' | 'interface' | 'step' | 'all'
     value?: any
     field?: string
     api?: APIConfig
     apiResponse?: string
+    step?: string | number
   },
   condition?: {
     statement?: string
@@ -124,6 +124,7 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
   static defaultProps = {
     config: {}
   };
+
   /**
    * 获取默认值
    */
@@ -137,7 +138,7 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
     if (config.default !== undefined) {
       switch (config.default.type) {
         case 'static':
-          if (config.default.value) return config.default.value
+          if (config.default.value !== '' || config.default.value !== null || config.default.value !== undefined) return config.default.value
           break
         case 'data':
           if (data && data[step] && config.default.field) {
@@ -162,12 +163,22 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
             }
           }
           break
+        case 'step':
+          if (config.default.step) {
+            if (data && data[config.default.step] && config.default.field) {
+              return getValue(data[config.default.step], config.default.field)
+            }
+          }
+          break
+        case 'all':
+          return data
         case 'interface':
           if (config.default.api) {
-            let res = await request(config.default.api);
+            let res = await request(config.default.api)
             res = getValue(res, config.default.apiResponse)
             return res
           }
+          break
       }
     }
 
@@ -212,7 +223,7 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
 
 export class FieldError {
   message: string
-  constructor(message: string) {
+  constructor (message: string) {
     this.message = message
   }
 }

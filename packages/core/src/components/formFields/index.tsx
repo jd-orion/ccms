@@ -3,6 +3,7 @@ import FormField, { FormFieldConfig } from './form'
 import TextField, { TextFieldConfig } from './text'
 import RadioField, { RadioFieldConfig } from './radio'
 import ColorField, { ColorFieldConfig } from './color'
+import UploadField, { UploadFieldConfig } from './upload'
 import TreeSelectField, { TreeSelectFieldConfig } from './treeSelect'
 import LongtextField, { LongtextFieldConfig } from './longtext'
 import NumberField, { NumberFieldConfig } from './number'
@@ -11,6 +12,7 @@ import DatetimeRangeField, { DatetimeRangeFieldConfig } from './datetimeRange'
 import SelectSingleField, { SelectSingleFieldConfig } from './select/single'
 import SelectMultipleField, { SelectMultipleFieldConfig } from './select/multiple'
 import DescField, { DescFieldConfig } from './description'
+import ImageUrlField, { ImageUrlFieldConfig } from './imageurl'
 import { FieldConfig } from "./common";
 
 export interface HiddenFieldConfig extends FieldConfig {
@@ -33,6 +35,9 @@ export type FieldConfigs = TextFieldConfig
     | DescFieldConfig
     | TreeSelectFieldConfig
     | ColorFieldConfig
+    | UploadFieldConfig
+    | ImageUrlFieldConfig
+
 
 export interface componentType {
     type: 'text'
@@ -49,6 +54,8 @@ export interface componentType {
     | 'desc'
     | 'tree_select'
     | 'color'
+    | 'upload'
+    | 'imageurl'
 }
 
 export default {
@@ -63,5 +70,7 @@ export default {
     select_multiple: SelectMultipleField,
     desc: DescField,
     tree_select: TreeSelectField,
-    color: ColorField
+    color: ColorField,
+    upload: UploadField,
+    imageurl: ImageUrlField
 }

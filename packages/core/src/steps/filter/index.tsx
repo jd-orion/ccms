@@ -2,6 +2,7 @@ import React from 'react'
 import { Field, FieldConfigs } from '../../components/formFields/common'
 import Step, { StepConfig, StepProps } from '../common'
 import FieldComponents from '../../components/formFields'
+import { set } from '../../util/request'
 
 /**
  * 表单步骤配置文件格式定义
@@ -77,7 +78,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
    * 初始化表单的值
    * @param props
    */
-  constructor(props: StepProps<FilterConfig>) {
+  constructor (props: StepProps<FilterConfig>) {
     super(props)
     this.state = {
       filterData: {}
@@ -145,7 +146,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
             console.warn('表单项中存在问题')
             return
           }
-          data[field.field] = value
+          set(data, field.field, value)
         }
       }
     }
@@ -214,7 +215,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
     </React.Fragment>
   }
 
-  render() {
+  render () {
     const {
       data,
       step,
@@ -257,11 +258,13 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
             // 渲染表单项容器
             return (
               <React.Fragment key={index} >
-                <div style={display ? {} : {
-                  overflow: 'hidden',
-                  height: 0,
-                  width: 0
-                }} >
+                <div style={display
+                  ? {}
+                  : {
+                      overflow: 'hidden',
+                      height: 0,
+                      width: 0
+                    }} >
                 {
                   this.renderItemComponent({
                     label: field.label,

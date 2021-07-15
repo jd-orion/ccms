@@ -58,6 +58,8 @@ export const getParam = (
         queryString.parse(window.location.search, { arrayFormat: 'bracket' }),
         config.field
       )
+    case 'static':
+      return config.value
   }
 }
 
@@ -74,9 +76,20 @@ export const getParamText = (
     if (field && data) {
       const paramValue = getParam(data, datas)
       // text = text.replaceAll('${' + field + '}', paramValue)
-      const reg = new RegExp(`{${field}}`, "gm")
+      const reg = new RegExp(`{${field}}`, 'gm')
       text = text.replace(reg, paramValue)
     }
   }
   return text
+}
+
+export const getBoolean = (value: any) => {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') {
+    return !(value === 'false' || value === '0')
+  }
+  if (typeof value === 'number') {
+    return Boolean(value)
+  }
+  return false
 }
