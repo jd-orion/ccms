@@ -4,7 +4,7 @@ import { Field, FieldConfigs } from '../../components/formFields/common'
 import Step, { StepConfig, StepProps } from '../common'
 import getALLComponents from '../../components/formFields'
 import { getParamText, getValue } from '../../util/value'
-import * as _ from "lodash";
+import * as _ from 'lodash'
 import { set } from '../../util/request'
 
 /**
@@ -99,7 +99,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
    * 初始化表单的值
    * @param props
    */
-  constructor(props: StepProps<FormConfig>) {
+  constructor (props: StepProps<FormConfig>) {
     super(props)
     this.state = {
       ready: false,
@@ -127,7 +127,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
       step,
       onMount
     } = this.props
-    
+
     let formDefault: any
 
     if (defaultConfig) {
@@ -199,8 +199,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
     const {
       config: {
         fields: formFieldsConfig = []
-      },
-      data
+      }
     } = this.props
 
     if (this.formFields[formFieldIndex]) {
@@ -246,7 +245,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
         if (formField && formFieldConfig.field) {
           const value = await formField.get()
           const validation = await formField.validate(value)
-          const submitFieldFormat = await formField.fieldFormat();
+          const submitFieldFormat = await formField.fieldFormat()
           if (validation !== true) {
             console.warn('表单项中存在问题', value, formFieldConfig)
             set(this.formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message })
@@ -267,7 +266,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
       }
     }
     console.info('表单参数信息', data)
-    if (canSubmit === false) return;
+    if (canSubmit === false) return
     onSubmit(data)
   }
 
@@ -298,7 +297,6 @@ export default class FormStep extends Step<FormConfig, FormState> {
     const formField = this.formFields[formFieldIndex]
     const formFieldConfig = formFieldsConfig[formFieldIndex]
     if (formField && formFieldConfig.field) {
-
       const validation = await formField.validate(value)
       set(this.formValue, formFieldConfig.field, value)
       if (validation === true) {
@@ -339,10 +337,10 @@ export default class FormStep extends Step<FormConfig, FormState> {
     </React.Fragment>
   }
 
-  render() {
+  render () {
     const {
       data,
-      step,
+      step
       // config: {
       //   layout = 'horizontal',
       //   fields = []
@@ -397,16 +395,13 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
               const FormField = this.getALLComponents(formFieldConfig.type) || React.Fragment
 
-
-
-
               const renderData = {
-                  label: formFieldConfig.label,
-                  status: formFieldConfig.field ? getValue(formData, formFieldConfig.field, {}).status || 'normal' : 'normal',
-                  message: formFieldConfig.field ? getValue(formData, formFieldConfig.field, {}).message || '' : '',
-                  layout,
-                  fieldType: formFieldConfig.type,
-                  children: (
+                label: formFieldConfig.label,
+                status: formFieldConfig.field ? getValue(formData, formFieldConfig.field, {}).status || 'normal' : 'normal',
+                message: formFieldConfig.field ? getValue(formData, formFieldConfig.field, {}).message || '' : '',
+                layout,
+                fieldType: formFieldConfig.type,
+                children: (
                     <FormField
                       key={formFieldIndex}
                       ref={(formField: Field<FieldConfigs, any, any> | null) => {
@@ -423,20 +418,24 @@ export default class FormStep extends Step<FormConfig, FormState> {
                       config={formFieldConfig}
                       onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
                     />
-                  )
-                }
+                )
+              }
               // 渲染表单项容器
               return (
-                hidden ? <div key={formFieldIndex} style={display ? { position: 'relative' } : {
-                  overflow: 'hidden',
-                  height: 0,
-                  width: 0
-                }}>
+                hidden
+                  ? <div key={formFieldIndex} style={display
+                    ? { position: 'relative' }
+                    : {
+                        overflow: 'hidden',
+                        height: 0,
+                        width: 0
+                      }}>
                   <span style={{ color: '#ff7070', float: 'left', width: '9px', paddingTop: '5px' }}>{`${formFieldConfig.required ? '*' : ''}`}</span>
                   {
                     this.renderItemComponent(renderData)
                   }
-                </div> : <></>
+                </div>
+                  : <></>
               )
             })
           })}

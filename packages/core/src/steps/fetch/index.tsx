@@ -33,13 +33,13 @@ export default class FetchStep extends Step<FetchConfig, FetchState> {
       if (config.condition && config.condition.enable) {
         const condition = await requestCondition(config.condition, response, this.renderSuccessModal, this.renderFailModal)
         const nextStep = getBoolean(config.nextStep)
-        const root = config.response.root || "";
+        const root = config.response.root || ''
         if (condition) {
           onSubmit(getValue(response, root))
         } if (nextStep) {
-          if(response){
+          if (response) {
             onSubmit(getValue(response, root))
-          }else{
+          } else {
             onSubmit(data[step])
           }
         } else {
