@@ -1,0 +1,706 @@
+---
+name: 0-现在开始
+route: /steps/ccms
+---
+import { Playground, Props } from "docz"
+
+import {CCMS} from "../index";
+
+## 安装
+```
+npm install ccms-antd
+```
+
+## 引入及使用
+```
+import { CCMS } from 'ccms-antd'
+
+<CCMS
+    checkPageAuth={async () => true}
+    loadPageURL={async (id) => `/url?id=${id}&type=page`}
+    loadPageFrameURL={async (id) => `/url?id=${id}&type=open`}
+    // 配置当前config链入的config
+    loadPageConfig={async (page) => newConfig }
+    sourceData={{}}
+    callback={() => {
+    if (window.history.length > 1) {
+        window.history.back()
+    } else {
+        window.close()
+    }
+    }}
+    //配置当前config
+    config={config}
+/>
+
+```
+
+
+
+## 展示
+
+### form + fetch + table
+  <CCMS
+    checkPageAuth={async () => true}
+    loadPageURL={async (id) => `/url?id=${id}&type=page`}
+    loadPageFrameURL={async (id) => `/url?id=${id}&type=open`}
+    loadPageConfig={async (page) => {}}
+    sourceData={{}}
+    callback={() => {
+      if (window.history.length > 1) {
+        window.history.back()
+      } else {
+        window.close()
+      }
+    }}
+    config={{
+      "basic": {
+          "title": "我的表单"
+      },
+      "steps": [
+        {
+          type: "form",
+          layout: "horizontal",
+          fields:[
+                {
+                    type:'text',
+                    "field": "text",
+                    "label": "这是一个提交步骤"
+                }
+            ]
+        },
+        {
+            "type": "fetch",
+            "request": {
+                "url": "https://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do",
+                "method": "GET"
+            },
+            "response": {
+                "root": "result"
+            },
+            "condition": {
+                "enable": true,
+                "field": "code",
+                "value": 0,
+                "success": {
+                   "type": "none",
+                    "content": {
+                        "type": "static",
+                        "content": "成功"
+                    }
+                },
+                "fail": {
+                    "type": "modal",
+                    "content": {
+                        "type": "field",
+                        "field": "msg"
+                    }
+                }
+            }
+        }, {
+            "type": "table",
+            "primary": "index",
+            "columns": [
+                {
+                    "label": "id",
+                    "field": "id",
+                    "type": "text",
+                    "defaultValue": "暂无数据"
+                },
+                {
+                    "label": "datetime",
+                    "field": "datetime",
+                    "type": "text",
+                    "defaultValue": "暂无数据"
+                },
+                {
+                    "label": "name",
+                    "field": "name",
+                    "type": "text",
+                    "defaultValue": "暂无数据"
+                }
+            ],
+            "operations": {
+                "rowOperations": [
+                    {
+                        "type": "button",
+                        "label": "编辑",
+                        "handle": {
+                            "type": "ccms","callback":true,
+                            "page": "o_manage_list_edit",
+                            "target": "current",
+                            "data": {
+                                "id": {
+                                    "source": "record",
+                                    "field": "id"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "label": "删除",
+                        "handle": {
+                            "type": "ccms","callback":true,
+                            "page": "o_manage_list_delete",
+                            "target": "current",
+                            "data": {
+                                "id": {
+                                    "source": "record",
+                                    "field": "id"
+                                }
+                            }
+                        },
+                        "confirm": {
+                            "enable": true,
+                            "titleText": "确定删除应用吗？删除后无法恢复"
+                        }
+                    }
+                ],
+                "tableOperations": [
+                    {
+                        "type": "button",
+                        "label": "+ 可以新建应用",
+                        "handle": {
+                            "type": "ccms",
+                            "callback":true,
+                            "page": "o_manage_list_create",
+                            "target": "current",
+                            "data": {}
+                        }
+                    }
+                ]
+            }
+        }
+      ]
+    }}/>
+
+```
+{
+      "basic": {
+          "title": "我的表单"
+      },
+      "steps": [
+        {
+          type: "form",
+          layout: "horizontal",
+          fields:[
+                {
+                    type:'text',
+                    "field": "text",
+                    "label": "这是一个提交步骤"
+                }
+            ]
+        },
+        {
+            "type": "fetch",
+            "request": {
+                "url": "https://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do",
+                "method": "GET"
+            },
+            "response": {
+                "root": "result"
+            },
+            "condition": {
+                "enable": true,
+                "field": "code",
+                "value": 0,
+                "success": {
+                   "type": "none",
+                    "content": {
+                        "type": "static",
+                        "content": "成功"
+                    }
+                },
+                "fail": {
+                    "type": "modal",
+                    "content": {
+                        "type": "field",
+                        "field": "msg"
+                    }
+                }
+            }
+        }, {
+            "type": "table",
+            "primary": "index",
+            "columns": [
+                {
+                    "label": "id",
+                    "field": "id",
+                    "type": "text",
+                    "defaultValue": "暂无数据"
+                },
+                {
+                    "label": "datetime",
+                    "field": "datetime",
+                    "type": "text",
+                    "defaultValue": "暂无数据"
+                },
+                {
+                    "label": "name",
+                    "field": "name",
+                    "type": "text",
+                    "defaultValue": "暂无数据"
+                }
+            ],
+            "operations": {
+                "rowOperations": [
+                    {
+                        "type": "button",
+                        "label": "编辑",
+                        "handle": {
+                            "type": "ccms","callback":true,
+                            "page": "o_manage_list_edit",
+                            "target": "current",
+                            "data": {
+                                "id": {
+                                    "source": "record",
+                                    "field": "id"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "label": "删除",
+                        "handle": {
+                            "type": "ccms","callback":true,
+                            "page": "o_manage_list_delete",
+                            "target": "current",
+                            "data": {
+                                "id": {
+                                    "source": "record",
+                                    "field": "id"
+                                }
+                            }
+                        },
+                        "confirm": {
+                            "enable": true,
+                            "titleText": "确定删除应用吗？删除后无法恢复"
+                        }
+                    }
+                ],
+                "tableOperations": [
+                    {
+                        "type": "button",
+                        "label": "+ 可以新建应用",
+                        "handle": {
+                            "type": "ccms",
+                            "callback":true,
+                            "page": "o_manage_list_create",
+                            "target": "current",
+                            "data": {}
+                        }
+                    }
+                ]
+            }
+        }
+      ]
+    }
+```
+
+## 组件总览
+### 组件列表
+
+#### 表单组件（8个）
+import Datetime from "./formFields/datetime";
+import Number from "./formFields/number";
+import Text from "./formFields/text";
+import DatetimeRange from "./formFields/datetimeRange";
+import LongText from "./formFields/longtext";
+import SingileSelect from "./formFields/select/single";
+
+*****
+<table style={{boxShadow: "none","textAlign": "left"}}>
+  <tbody>
+    <tr style={{border:0, borderBottom: "1px solid #f0f0f0", height: "60px"}}>
+        <td style={{width:"160px",}}>
+          <a href="./component/formFields/datetime">
+              时间选择 >>
+          </a>
+        </td>
+        <td>
+          <a href="./component/formFields/datetime">
+            <Datetime
+              onChange={(value) => {
+                location.href =  "./component/formFields/datetime"
+              }}
+            />
+          </a>
+        </td>
+    </tr>
+    <tr style={{border:0, borderBottom: "1px solid #f0f0f0", height: "60px"}}>
+      <td style={{width:"160px",}}>
+        <a href="./component/formFields/datetimeRange">
+            时间范围选择 >>
+        </a>
+      </td>
+      <td>
+        <a href="./component/formFields/datetimeRange">
+          <DatetimeRange
+            onChange={(value) => {
+              location.href =  "./component/formFields/datetimeRange"
+            }}
+          />
+        </a>
+      </td>
+    </tr>
+    <tr style={{border:0, borderBottom: "1px solid #f0f0f0", height: "60px"}}>
+      <td style={{width:"160px",}}>
+        <a href="./component/formFields/number">
+            数值 >>
+        </a>
+      </td>
+      <td>
+        <a href="./component/formFields/number">
+          <Number
+            onChange={(value) => {
+              // location.href =  "./component/formFields/number"
+            }}
+          />
+        </a>
+      </td>
+    </tr>
+    <tr style={{border:0, borderBottom: "1px solid #f0f0f0", height: "60px"}}>
+      <td style={{width:"160px",}}>
+        <a href="./component/formFields/text">
+            文本 >>
+        </a>
+      </td>
+      <td>
+        <a href="./component/formFields/text">
+          <Text 
+            onChange={(value) => {
+              // location.href =  "./component/formFields/text"
+            }}
+          />
+        </a>
+      </td>
+    </tr>
+    <tr style={{border:0, borderBottom: "1px solid #f0f0f0", height: "90px"}}>
+      <td style={{width:"160px",}}>
+        <a href="./component/formFields/longtext">
+            长文本 >>
+        </a>
+      </td>
+      <td>
+        <a href="./component/formFields/longtext">
+          <LongText
+            onChange={(value) => {
+            // location.href =  "./component/formFields/longtext"
+            }}
+          />
+        </a>
+      </td>
+    </tr>
+    <tr style={{border:0, borderBottom: "1px solid #f0f0f0", height: "90px"}}>
+      <td style={{width:"160px",}}>
+        <a href="./component/formFields/select">
+            单选/多选 >>
+        </a>
+      </td>
+      <td>
+        <a href="./component/formFields/select">
+          <SingileSelect />
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+#### 表单组件展示
+import Form from "../steps/form";
+
+<Playground>
+  <Form
+    data={{dropdown:['radio'], datetime: new Date()}}
+    config={{
+      fields: [
+        {
+          label: "日期时间",
+          field: "datetime",
+          type: "datetime",
+          default: {
+            type: "data",
+            value: "2020-01-01"
+          }
+        },
+        {
+          label: "时间范围",
+          field: "datetimeRange",
+          type: "datetimeRange"
+        },
+        {
+          label: "数值",
+          field: "number",
+          type: "number"
+        },
+        {
+          label: "文本",
+          field: "text",
+          type: "text"
+        },
+        {
+          label: "长文本",
+          field: "longtext",
+          type: "longtext"
+        },
+        {
+          label: "单选展示模式",
+          field: "radio",
+          type: "select_single",
+          mode: "radio",
+          default: {
+            type: "static",
+            value: "radio"
+          },
+          options: {
+            from: "manual",
+            data: [
+              {
+                value: "dropdown",
+                label: "下拉选框"
+              },
+              {
+                value: "radio",
+                label: "单选框"
+              },
+              {
+                value: "button",
+                label: "按钮"
+              }
+            ]
+          }
+        },
+        {
+          label: "多选展示模式",
+          field: "checkbox",
+          type: "select_multiple",
+          mode: "checkbox",
+          options: {
+            from: "manual",
+            data: [
+              {
+                value: "dropdown",
+                label: "下拉选框"
+              },
+              {
+                value: "checkbox",
+                label: "复选框"
+              }
+            ]
+          }
+        },
+        {
+          label: "多选下拉展示模式",
+          field: "dropdown",
+          type: "select_multiple",
+          mode: "dropdown",
+          default: {
+            type: "static",
+            value: ["radio"]
+          },
+          options: {
+            from: "manual",
+            data: [
+              {
+                value: "dropdown",
+                label: "下拉选框"
+              },
+              {
+                value: "checkbox",
+                label: "复选框"
+              }
+            ]
+          }
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+
+#### 表格组件（7个）
+
+import TDatetime from "./tableColumns/datetime";
+import TNumber from "./tableColumns/number";
+import TText from "./tableColumns/text";
+import TDatetimeRange from "./tableColumns/datetimeRange";
+import MultirowText from "./tableColumns/multirowText";
+
+<table style={{boxShadow: "none","textAlign": "left"}}>
+  <tbody>
+    <tr style={{border:0, borderBottom: "1px solid #f0f0f0", height: "60px"}}>
+        <td style={{width:"160px",}}>
+          <a href="./component/tableColumns/datetime">
+              时间 >>
+          </a>
+        </td>
+        <td style={{width:"160px",}}>
+          <a href="./component/tableColumns/datetimeRange">
+              时间范围 >>
+          </a>
+        </td>
+        <td style={{width:"160px",}}>
+          <a href="./component/tableColumns/text">
+              文本 >>
+          </a>
+        </td>
+        <td style={{width:"160px",}}>
+          <a href="./component/tableColumns/multirowText">
+              多行文本 >>
+          </a>
+        </td>
+    </tr>
+    <tr style={{border:0, borderBottom: "1px solid #f0f0f0", height: "90px"}}>
+      <td style={{width:"160px",}}>
+        <a href="./component/tableColumns/enum">
+            选项 >>
+        </a>
+      </td>
+        <td style={{width:"160px",}}>
+          <a href="./component/tableColumns/number">
+              数值 >>
+          </a>
+        </td>
+      <td>
+        <a href="./component/tableColumns/numberRange">
+            数值区间 >>
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+*****
+
+### 表格组件展示
+import Table from "../steps/table";
+
+<Playground>
+  <Table
+    data={
+      {
+      0:[{ 
+          text: "文本信息",
+          number: 20,
+          datetimeRange: "2020-10,2020-11",
+          datetime: new Date(),
+          multirowText: '1,2,3',
+          numberRange: '10,100',
+          Aenum: 0
+        }]
+      }
+    }
+    config={
+      {
+        primary: "index",
+        operations: {
+          rowOperations:[
+            {
+              type: 'button',
+              label: 'test',
+              handle: {
+                type: 'ccms',
+                page: 'test',
+                target: 'current'
+              },
+              confirm: {
+                enable:true,
+                titleText:'111'
+              }
+            }
+          ]
+        },
+        columns:[
+          {
+            label: "文本",
+            field: "text",
+            type: "text",
+            defaultValue: "暂无数据"
+          },
+          {
+            label: "多行文本",
+            field: "multirowText",
+            type: "multirowText",
+            defaultValue: "暂无数据"
+          },
+          {
+            label: "数值",
+            field: "number",
+            type: "number"
+          },
+          {
+            label: "数值范围",
+            field: "numberRange",
+            type: "numberRange",
+            defaultValue: "暂无数据"
+          },
+          {
+            label: "时间",
+            field: "datetime",
+            type: "datetime",
+            format: "YYYY-MM"
+          },
+          {
+            label: "时间范围",
+            field: "datetimeRange",
+            type: "datetimeRange",
+            format: "YYYY-MM-DD",
+            split: '~'
+          },
+          {
+              "label": "授权类型",
+              "field": "Aenum",
+              "type": "Aenum",
+              "defaultValue": "暂无数据",
+              "options": {
+                  "from": "manual",
+                  "data": [
+                      {
+                          "value": 0,
+                          "label": "白名单"
+                      },
+                      {
+                          "value": 1,
+                          "label": "黑名单"
+                      }
+                  ]
+              }
+          }
+        ]
+      }
+    }
+    step={0}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+*****
+
+index.html:
+/static
+/swm-plus/oriondoc/static
+
+Apps
+文档打标
+static/js/
+swm-plus/oriondoc/static/js/
+
+Jsname: assets.json
+~src-components-form-fields-datetime-range-index~src-compon~
+[-]
+~src-components-table-columns-datetime-index~src-components-table-columns-dateti~
+[-]

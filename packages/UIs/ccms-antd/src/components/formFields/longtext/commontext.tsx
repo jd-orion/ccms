@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Input } from 'antd'
-const { TextArea } = Input;
+import 'antd/lib/input/style/index.css'
+const { TextArea } = Input
 type Props = {
   defaultValue?: string
   value: string
@@ -20,7 +21,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
 
   handleComposition = (e: any) => {
     const { flag } = this.state
-    if ('compositionend' === e.type) {
+    if (e.type === 'compositionend') {
       this.isOnComposition = false
       this.handleChange(e)
     } else {
@@ -42,6 +43,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
       input: value
     })
   }
+
   handleChange = (e: any) => {
     const { onChange } = this.props
     this.setInput(e.target.value)
@@ -49,11 +51,11 @@ export default class TextComponent extends PureComponent<Props, {}> {
     onChange && onChange(e.target.value)
   }
 
-  render() {
+  render () {
     const { value, readonly, disabled, placeholder } = this.props
     const { flag, input } = this.state
 
-    let Component = TextArea
+    const Component = TextArea
 
     return <Component
       readOnly={readonly}
@@ -67,4 +69,3 @@ export default class TextComponent extends PureComponent<Props, {}> {
     />
   }
 }
-

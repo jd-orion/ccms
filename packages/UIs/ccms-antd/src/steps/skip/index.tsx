@@ -1,13 +1,6 @@
 import React from 'react'
 import { SkipStep } from 'ccms'
-import { IFilter, IFilterItem } from 'ccms/dist/src/steps/filter'
-import { Button, Form, Space } from 'antd'
-// import 'antd/lib/style/index.css'
-// import 'antd/lib/form/style/index.css'
-// import 'antd/lib/grid/style/index.css'
-// import 'antd/lib/tooltip/style/index.css'
-// import 'antd/lib/space/style/index.css'
-// import 'antd/lib/button/style/index.css'
+import { SkipConfig } from 'ccms/dist/src/steps/skip'
 import FieldComponents from '../../components/formFields'
 
 export default class SkipStepComponent extends SkipStep {
@@ -21,3 +14,4 @@ export default class SkipStepComponent extends SkipStep {
     return <></>
   }
 }
+export const PropsType = (props: SkipConfig ) => { };

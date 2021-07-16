@@ -1,5 +1,5 @@
 ---
-name: 1-form模板
+name: 2-form模板
 route: /steps/form
 ---
 import { Playground, Props } from "docz";
@@ -8,56 +8,277 @@ import { Playground, Props } from "docz";
 CMS表单提交模板
 常用的提交表单项 <br/>
 
+## 使用方式
+- 可通过(type:form) + (type:fetch)完成表单提交
+- 可通过(type:form) + (type:fetch) + (type:table)完成表单查询并展示
+
 ## 表单提交展示
 import Form, { PropsType, PropsTypeFormConfig, PropsTypeStep } from "./";
-import CCMS from "../../main";
+import {CCMS} from "../../index";
+
 
 ### 水平展示
+  <CCMS
+    checkPageAuth={async () => true}
+    loadPageURL={async (id) => `/url?id=${id}&type=page`}
+    loadPageFrameURL={async (id) => `/url?id=${id}&type=open`}
+    loadPageConfig={async (page) => {}}
+    sourceData={{}}
+    callback={() => {
+      if (window.history.length > 1) {
+        window.history.back()
+      } else {
+        window.close()
+      }
+    }}
+    config={{
+      "basic": {
+          "title": "我的表单"
+      },
+      "steps": [
+        {
+          type: "form",
+          layout: "horizontal",
+          fields:[
+        {
+          label: "日期时间",
+          field: "datetime",
+          type: "datetime",
+          default: {
+            type: "data",
+            value: "2020-01-01"
+          }
+        },
+        {
+          label: "时间范围",
+          field: "datetimeRange",
+          type: "datetimeRange"
+        },
+        {
+          label: "数值",
+          field: "number",
+          type: "number"
+        },
+        {
+          label: "文本",
+          field: "text",
+          type: "text"
+        },
+        {
+          label: "长文本",
+          field: "longtext",
+          type: "longtext"
+        },
+        {
+          label: "单选展示模式",
+          field: "radio",
+          type: "select_single",
+          mode: "radio",
+          default: {
+            type: "static",
+            value: "radio"
+          },
+          options: {
+            from: "manual",
+            data: [
+              {
+                value: "dropdown",
+                label: "下拉选框"
+              },
+              {
+                value: "radio",
+                label: "单选框"
+              },
+              {
+                value: "button",
+                label: "按钮"
+              }
+            ]
+          }
+        },
+        {
+          label: "多选展示模式",
+          field: "checkbox",
+          type: "select_multiple",
+          mode: "checkbox",
+          options: {
+            from: "manual",
+            data: [
+              {
+                value: "dropdown",
+                label: "下拉选框"
+              },
+              {
+                value: "checkbox",
+                label: "复选框"
+              }
+            ]
+          }
+        },
+        {
+          label: "多选下拉展示模式",
+          field: "dropdown",
+          type: "select_multiple",
+          mode: "dropdown",
+          default: {
+            type: "static",
+            value: ["radio"]
+          },
+          options: {
+            from: "manual",
+            data: [
+              {
+                value: "dropdown",
+                label: "下拉选框"
+              },
+              {
+                value: "checkbox",
+                label: "复选框"
+              }
+            ]
+          }
+        }
+      ]
+        }
+      ]
+    }}/>
 
-<Playground>
-  {() => {
-    return(
-      <div>
-         <CCMS
-            checkPageAuth={async () => true}
-            loadPageURL={async (id) => `/url?id=${id}&type=page`}
-            loadPageFrameURL={async (id) => `/url?id=${id}&type=open`}
-            loadPageConfig={async (page) => {
-                return {
-                type: "form",
-                layout: "horizontal",
-                fields:[]
-              }
-            }}
-            sourceData={{}}
-            callback={() => {
-              if (window.history.length > 1) {
-                window.history.back()
-              } else {
-                window.close()
-              }
-            }}
-            config={{
-              type: "form",
-              layout: "horizontal",
-              fields:[
+```
+  const config {
+    "basic": {
+        "title": "我的表单"
+    },
+    "steps": [
+      {
+        type: "form",
+        layout: "horizontal",
+        fields:[
+          {
+            label: "日期时间",
+            field: "datetime",
+            type: "datetime",
+            default: {
+              type: "data",
+              value: "2020-01-01"
+            }
+          },
+          {
+            label: "时间范围",
+            field: "datetimeRange",
+            type: "datetimeRange"
+          },
+          {
+            label: "数值",
+            field: "number",
+            type: "number"
+          },
+          {
+            label: "文本",
+            field: "text",
+            type: "text"
+          },
+          {
+            label: "长文本",
+            field: "longtext",
+            type: "longtext"
+          },
+          {
+            label: "单选展示模式",
+            field: "radio",
+            type: "select_single",
+            mode: "radio",
+            default: {
+              type: "static",
+              value: "radio"
+            },
+            options: {
+              from: "manual",
+              data: [
+                {
+                  value: "dropdown",
+                  label: "下拉选框"
+                },
+                {
+                  value: "radio",
+                  label: "单选框"
+                },
+                {
+                  value: "button",
+                  label: "按钮"
+                }
               ]
-            }}
-          />
-      </div>
-    )
-  }}
-</Playground>
-  
+            }
+          },
+          {
+            label: "多选展示模式",
+            field: "checkbox",
+            type: "select_multiple",
+            mode: "checkbox",
+            options: {
+              from: "manual",
+              data: [
+                {
+                  value: "dropdown",
+                  label: "下拉选框"
+                },
+                {
+                  value: "checkbox",
+                  label: "复选框"
+                }
+              ]
+            }
+          },
+          {
+            label: "多选下拉展示模式",
+            field: "dropdown",
+            type: "select_multiple",
+            mode: "dropdown",
+            default: {
+              type: "static",
+              value: ["radio"]
+            },
+            options: {
+              from: "manual",
+              data: [
+                {
+                  value: "dropdown",
+                  label: "下拉选框"
+                },
+                {
+                  value: "checkbox",
+                  label: "复选框"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
 
+  render() =>{
+    return <CCMS
+      checkPageAuth={async () => true}
+      loadPageURL={async (id) => `/url?id=${id}&type=page`}
+      loadPageFrameURL={async (id) => `/url?id=${id}&type=open`}
+      loadPageConfig={async (page) => {}}
+      sourceData={{}}
+      callback={() => {
+        if (window.history.length > 1) {
+          window.history.back()
+        } else {
+          window.close()
+        }
+      }}
+      config={config}
+    /> 
+  }
 
+```
 
 *****
 
 ## APIs- 模板默认值
-
- <Props of={PropsType} />
- 
 
 ```
 {

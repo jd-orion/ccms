@@ -1,0 +1,61 @@
+---
+name: 1-fetch模板
+route: /steps/fetch
+---
+import { Playground, Props } from "docz";
+
+# fetch模板
+CCMS表单提交模板
+常用的提交表单项 <br/>
+
+## 使用方式
+- (type:fetch) 接口调用
+- (type:fetch) + (type:table)无条件直接查询
+- (type:form) + (type:fetch)完成表单提交查询
+- (type:skip) + (type:fetch)完成自动查询
+- (type:filter) + (type:fetch)完成筛选条件查询
+
+
+
+## 表单提交展示
+import  { PropsType } from "./";
+import {CCMS} from "../../index";
+
+*****
+
+## APIs- 模板默认值
+
+```
+{
+            "type": "fetch",
+            "request": {
+                "url": "url",
+                "method": "GET"
+            },
+            "response": {
+                "root": "result"
+            },
+            "condition": {
+                "enable": true,
+                "field": "code",
+                "value": 0,
+                "success": {
+                   "type": "modal",
+                    "content": {
+                        "type": "static",
+                        "content": "成功"
+                    }
+                },
+                "fail": {
+                    "type": "modal",
+                    "content": {
+                        "type": "field",
+                        "field": "msg"
+                    }
+                }
+            }
+        }
+```
+## APIs- 模板默认值
+
+ <Props of={PropsType} />

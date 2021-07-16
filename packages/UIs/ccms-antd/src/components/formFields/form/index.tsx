@@ -5,6 +5,10 @@ import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import { FormItemProps } from 'antd/lib/form'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
 import FormFields from '../'
+import 'antd/lib/button/style/index.css'
+import 'antd/lib/form/style/index.css'
+import 'antd/lib/divider/style/index.css'
+import 'antd/lib/space/style/index.css'
 
 export default class FormFieldComponent extends FormField {
   getFormFields = (type: string) => FormFields[type]

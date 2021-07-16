@@ -3,16 +3,16 @@ import { TableStep } from 'ccms'
 import { ITable, ITableColumn, ITableStepOperationColumn, ITableStepOperationColumnButton, ITableStepOperationColumnGroup, ITableStepOperationColumnGroupItem, ITableStepOperationColumnConfirm, ITableStepOperationModal } from 'ccms/dist/src/steps/table'
 import { Table, Button, Dropdown, Menu, Modal } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
-// import 'antd/lib/style/index.css'
-// import 'antd/lib/table/style/index.css'
-// import 'antd/lib/button/style/index.css'
-// import 'antd/lib/empty/style/index.css'
-// import 'antd/lib/radio/style/index.css'
-// import 'antd/lib/checkbox/style/index.css'
-// import 'antd/lib/dropdown/style/index.css'
-// import 'antd/lib/spin/style/index.css'
-// import 'antd/lib/pagination/style/index.css'
-// import 'antd/lib/tooltip/style/index.css'
+import 'antd/lib/style/index.css'
+import 'antd/lib/table/style/index.css'
+import 'antd/lib/button/style/index.css'
+import 'antd/lib/empty/style/index.css'
+import 'antd/lib/radio/style/index.css'
+import 'antd/lib/checkbox/style/index.css'
+import 'antd/lib/dropdown/style/index.css'
+import 'antd/lib/spin/style/index.css'
+import 'antd/lib/pagination/style/index.css'
+import 'antd/lib/tooltip/style/index.css'
 import getALLComponents from '../../components/tableColumns'
 import { IAPIConditionFailModal, IAPIConditionSuccessModal } from 'ccms/dist/src/util/request'
 import CCMS from '../../main'
@@ -67,6 +67,7 @@ export default class TableStepComponent extends TableStep {
         }))}
         dataSource={data}
         scroll={{ x: 1000 }}
+        style={{marginTop: "10px"}}
       />
     )
   }
@@ -103,8 +104,9 @@ export default class TableStepComponent extends TableStep {
             {children}
           </Menu>
         )}
+
       >
-        <Button>
+        <Button style={{ marginBottom: "10px" }}>
           {label}
           <DownOutlined />
         </Button>

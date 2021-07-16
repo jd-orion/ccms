@@ -23,7 +23,7 @@ export default class CCMSComponent extends CCMS {
             </PageHeader>
           </div>
         }
-        <div style={{ padding: '16px 0', margin: '0 24px'}}>
+        <div style={{ padding: '16px 0', margin: '0 24px' }}>
           {children}
         </div>
       </Space>
@@ -31,5 +31,5 @@ export default class CCMSComponent extends CCMS {
   }
 }
 
-export const PropsType = (props: CCMSProps) => { };
-export const PropsTypeCCMS = (props: CCMS) => { };
+export const PropsType = (props: CCMSProps) => { }
+export const PropsTypeCCMS = (props: CCMS) => { }

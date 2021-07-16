@@ -1,0 +1,35 @@
+---
+name: 3-filter模板
+route: /steps/filter
+---
+import { Playground, Props } from "docz";
+
+# filter模板
+CCMS表单提交模板
+常用的提交表单项 <br/>
+
+## 使用方式
+- (type:filter) 直接调用和form一致
+- (type:filter) + (type:fetch) + (type:table)完成筛选条件查询与展示
+
+
+
+## 表单提交展示
+import  { PropsType } from "./";
+import {CCMS} from "../../index";
+
+*****
+
+## APIs- 模板默认值
+field配置同from
+```
+{
+  "type": "filter",
+  "layout": "horizontal",
+  "fields":[]
+}
+
+```
+## APIs- 模板默认值
+
+ <Props of={PropsType} />

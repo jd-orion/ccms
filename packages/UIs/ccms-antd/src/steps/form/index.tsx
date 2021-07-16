@@ -63,19 +63,27 @@ export default class FormStepComponent extends FormStep {
     }
 
     return (
-      <Form.Item
+      message ? <Form.Item
         label={label}
+        colon={false}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={message}
         {...formItemProps}
       >
         {children}
-      </Form.Item>
+      </Form.Item> : <Form.Item
+        label={label}
+        colon={false}
+        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+        {...formItemProps}
+      >
+          {children}
+        </Form.Item>
     )
   }
 }
 // <FormConfig, IForm>
-export const PropsType = (props: IForm ) => { };
+export const PropsType = (props: IForm) => { };
 
 export const PropsTypeFormConfig = (props: FormConfig) => { };
 export const PropsTypeStep = (props: FormStep) => { };
