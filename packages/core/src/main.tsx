@@ -12,11 +12,13 @@ import { RichStringConfig } from './interface'
  * - steps: 页面流转步骤
  */
 export interface CCMSConfig {
-  basic?: {
-    title?: string
-    description?: RichStringConfig
-  }
+  basic?: BasicConfig
   steps?: StepConfigs[]
+}
+
+export interface BasicConfig {
+  title?: string
+  description?: RichStringConfig
 }
 
 /**
