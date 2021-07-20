@@ -11,6 +11,7 @@ export interface FormFieldConfig extends FieldConfig {
   removeText?: string
   mode?: 'show',
   modeValue?: string
+  initalValues?: any // 新增子项时的默认值
 }
 
 export interface IFormField {
@@ -176,6 +177,9 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
 
   handleInsert = async () => {
     const {
+      config: {
+        initalValues
+      },
       onChange,
       value = []
     } = this.props
@@ -187,8 +191,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     const index = value.length
 
     this.formItemsMounted[index] = false
-    value[index] = {}
-    formDataList[index] = {}
+    value[index] = initalValues ? initalValues : {}
+    formDataList[index] = initalValues ? { value: initalValues } : {}
     this.setState({
       showItem: true,
       showIndex: index
@@ -383,7 +387,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                                 index: fieldIndex,
                                 label: formFieldConfig.label,
                                 status: getValue(formDataList[index], formFieldConfig.field, {}).status || 'normal',
-                                message: getValue(formDataList[index], formFieldConfig.field, {}).message,
+                                message: getValue(formDataList[index], formFieldConfig.field, {}).message || '',
                                 layout: formLayout,
                                 fieldType: formFieldConfig.type,
                                 children: (
