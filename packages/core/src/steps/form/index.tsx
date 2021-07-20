@@ -432,10 +432,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                         height: 0,
                         width: 0
                       }}>
-                  <span style={{ color: '#ff7070', float: 'left', width: '9px', paddingTop: '5px' }}>{`${formFieldConfig.required ? '*' : ''}`}</span>
-                  {
-                    this.renderItemComponent(renderData)
-                  }
+                  {this.renderItemComponent(renderData)}
                 </div>
                   : <></>
               )
