@@ -7,11 +7,11 @@ import { set } from '../../../util/request'
 export interface FormFieldConfig extends FieldConfig {
   type: 'form'
   fields: FieldConfigs[]
+  primaryField?: string
   insertText?: string
   removeText?: string
-  mode?: 'show',
   modeValue?: string
-  initalValues?: any // 新增子项时的默认值
+  initialValues?: any // 新增子项时的默认值
 }
 
 export interface IFormField {
@@ -22,6 +22,7 @@ export interface IFormField {
 
 export interface IFormFieldItem {
   index: number
+  title: string
   removeText: string
   onRemove: () => Promise<void>
   children: React.ReactNode[]
@@ -178,7 +179,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
   handleInsert = async () => {
     const {
       config: {
-        initalValues
+        initialValues
       },
       onChange,
       value = []
@@ -191,8 +192,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     const index = value.length
 
     this.formItemsMounted[index] = false
-    value[index] = initalValues ? initalValues : {}
-    formDataList[index] = initalValues ? { value: initalValues } : {}
+    value[index] = initialValues ? initialValues : {}
+    formDataList[index] = initialValues ? { value: initialValues } : {}
     this.setState({
       showItem: true,
       showIndex: index
@@ -291,19 +292,34 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     }
   }
 
+  /**
+   * 用于展示子表单组件中的每一子项中的每一个子表单项组件
+   * @param props 
+   * @returns 
+   */
   renderItemFieldComponent = (props: IFormFieldItemField) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现FormField组件的renderItemFieldComponent方法。
     </React.Fragment>
   }
 
+  /**
+   * 用于展示子表单组件中的每一个子项
+   * @param props 
+   * @returns 
+   */
   renderItemComponent = (props: IFormFieldItem) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现FormField组件的renderItemComponent方法。
     </React.Fragment>
   }
 
-  renderComponent = (props: IFormField) => {
+  /**
+   * 用于展示子表单组件
+   * @param _props 
+   * @returns 
+   */
+  renderComponent = (_props: IFormField) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现FormField组件。
     </React.Fragment>
@@ -317,9 +333,9 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       step,
       config: {
         label,
-        mode,
         modeValue,
         fields,
+        primaryField,
         insertText,
         removeText
       }
@@ -339,80 +355,69 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
             onInsert: async () => await this.handleInsert(),
             children: (
               value && value.map((itemValue: any, index: number) => {
-                return <div ref={(e) => this.handleMount(index)} key={index} >
-
-                  {mode === 'show' &&
-                    <div onClick={() => this.showItemFn(index)} style={{ height: '30px', cursor: 'pointer', background: '#f1f1f1', padding: '5px', marginBottom: showItem && index === showIndex ? '10px' : 0 }}>
-                      {itemValue.label || (modeValue && itemValue[modeValue]) || (index + 1)}
-                      <div style={{ float: 'right' }}>
-                        <span onClick={() => this.handleRemove(index)} style={{ textDecoration: 'underline', color: '#7e93a9' }}>删除</span>
-                      </div>
-                    </div>
-                  }
-
-                  {(showItem && index === showIndex && mode === 'show') || mode !== 'show'
-                    // eslint-disable-next-line multiline-ternary
-                    ? this.renderItemComponent({
-                      index,
-                      removeText: removeText === undefined
-                        ? `删除 ${label}`
-                        : removeText,
-                      onRemove: async () => await this.handleRemove(index),
-                      children: (fields.map((formFieldConfig, fieldIndex) => {
-                        let display: boolean = true
-                        if (formFieldConfig.condition && formFieldConfig.condition.statement) {
-                          let statement = formFieldConfig.condition.statement
-                          if (formFieldConfig.condition.params && Array.isArray(formFieldConfig.condition.params)) {
-                            statement = getParamText(formFieldConfig.condition.statement, formFieldConfig.condition.params, { record: itemValue, data, step })
-                          }
-                          try {
-                            // eslint-disable-next-line no-eval
-                            const result = eval(statement)
-                            if (!result) {
-                              display = false
-                            }
-                          } catch (e) {
-                            console.error('表单项展示条件语句执行错误。', statement)
+                return <React.Fragment key={index} >
+                  {this.renderItemComponent({
+                    index,
+                    title: primaryField !== undefined ? getValue(itemValue, primaryField) : index.toString(),
+                    removeText: removeText === undefined
+                      ? `删除 ${label}`
+                      : removeText,
+                    onRemove: async () => await this.handleRemove(index),
+                    children: (fields.map((formFieldConfig, fieldIndex) => {
+                      let display: boolean = true
+                      if (formFieldConfig.condition && formFieldConfig.condition.statement) {
+                        let statement = formFieldConfig.condition.statement
+                        if (formFieldConfig.condition.params && Array.isArray(formFieldConfig.condition.params)) {
+                          statement = getParamText(formFieldConfig.condition.statement, formFieldConfig.condition.params, { record: itemValue, data, step })
+                        }
+                        try {
+                          // eslint-disable-next-line no-eval
+                          const result = eval(statement)
+                          if (!result) {
                             display = false
                           }
+                        } catch (e) {
+                          console.error('表单项展示条件语句执行错误。', statement)
+                          display = false
                         }
+                      }
 
-                        const FormField = this.getFormFields(formFieldConfig.type)
+                      const FormField = this.getFormFields(formFieldConfig.type)
 
-                        // 渲染表单项容器
-                        return (
-                          <div key={fieldIndex} style={{ display: display ? 'block' : 'none' }}>
-                            {
-                              this.renderItemFieldComponent({
-                                index: fieldIndex,
-                                label: formFieldConfig.label,
-                                status: getValue(formDataList[index], formFieldConfig.field, {}).status || 'normal',
-                                message: getValue(formDataList[index], formFieldConfig.field, {}).message || '',
-                                layout: formLayout,
-                                fieldType: formFieldConfig.type,
-                                children: (
-                                  <FormField
-                                    ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
-                                      if (!this.formItemsList[index]) this.formItemsList[index] = {}
-                                      this.formItemsList[index][formFieldConfig.field] = fieldRef
-                                    }}
-                                    formLayout={formLayout}
-                                    value={getValue(value[index], formFieldConfig.field)}
-                                    record={value[index]}
-                                    data={data}
-                                    step={step}
-                                    config={formFieldConfig}
-                                    onChange={(value: any) => this.handleChange(index, formFieldConfig, value)}
-                                  />
-                                )
-                              })
-                            }
-                          </div>
-                        )
-                      }))
-                    }) : null
+                      // 渲染表单项容器
+                      return (
+                        <div key={fieldIndex} style={{ display: display ? 'block' : 'none' }}>
+                          {
+                            this.renderItemFieldComponent({
+                              index: fieldIndex,
+                              label: formFieldConfig.label,
+                              status: getValue(formDataList[index], formFieldConfig.field, {}).status || 'normal',
+                              message: getValue(formDataList[index], formFieldConfig.field, {}).message || '',
+                              layout: formLayout,
+                              fieldType: formFieldConfig.type,
+                              children: (
+                                <FormField
+                                  ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
+                                    if (!this.formItemsList[index]) this.formItemsList[index] = {}
+                                    this.formItemsList[index][formFieldConfig.field] = fieldRef
+                                  }}
+                                  formLayout={formLayout}
+                                  value={getValue(value[index], formFieldConfig.field)}
+                                  record={value[index]}
+                                  data={data}
+                                  step={step}
+                                  config={formFieldConfig}
+                                  onChange={(value: any) => this.handleChange(index, formFieldConfig, value)}
+                                />
+                              )
+                            })
+                          }
+                        </div>
+                      )
+                    }))
+                  })
                   }
-                </div>
+                </React.Fragment>
               }
               )
             )
