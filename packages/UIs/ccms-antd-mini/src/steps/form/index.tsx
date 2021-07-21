@@ -9,6 +9,8 @@ import 'antd/lib/tooltip/style/index.css'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/button/style/index.css'
 import getALLComponents from '../../components/formFields'
+import { FormItemProps } from 'antd/lib/form'
+import styles from "./index.less"
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
 
@@ -28,19 +30,19 @@ export default class FormStepComponent extends FormStep {
           wrapperCol: { span: 18 }
         }
         : null
-
+    
     return (
       <Form
         layout={layout}
         {...formItemLayout}
         size="small">
         {children}
-        {true ? null : <Form.Item>
+        {(onSubmit || onCancel) && (<Form.Item>
           <Space>
-            <Button type="primary" onClick={() => onSubmit()}>Submit</Button>
-            <Button onClick={() => onCancel()}>Cancel</Button>
+            {onSubmit && <Button type="primary" onClick={() => onSubmit()}>Submit</Button>}
+            {onCancel && <Button onClick={() => onCancel()}>Cancel</Button>}
           </Space>
-        </Form.Item>}
+        </Form.Item>)}
       </Form>
     )
   }
@@ -48,17 +50,24 @@ export default class FormStepComponent extends FormStep {
   renderItemComponent = (props: IFormItem) => {
     const {
       label,
-      status,
       message,
       fieldType,
       children
     } = props
 
+    const formItemLayout: FormItemProps = {}
+    if (fieldType === 'form' || fieldType === 'group' || fieldType === 'import_subform') {
+      formItemLayout.labelCol = { span: 24 }
+      formItemLayout.wrapperCol = { span: 24 }
+    }
+
     return (
       <Form.Item
         label={label}
+        {...formItemLayout}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={message}
+        help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
+        className={styles[`ccms-antd-mini-form-${fieldType}`]}
       >
         {children}
       </Form.Item>

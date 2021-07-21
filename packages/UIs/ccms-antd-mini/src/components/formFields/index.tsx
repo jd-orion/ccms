@@ -6,6 +6,8 @@ import RadioField from './radio'
 import SelectSingleField from './select/single'
 import SelectMultipleField from './select/multiple'
 import TreeSelectField from './treeSelect'
+import ImportSubformField from './importSubform'
+import GroupField from './group'
 
 export default {
   text: TextField,
@@ -15,5 +17,7 @@ export default {
   select_multiple: SelectMultipleField,
   longtext: LongTextField,
   desc: DescField,
-  tree_select: TreeSelectField
+  tree_select: TreeSelectField,
+  import_subform: ImportSubformField,
+  group: GroupField
 }

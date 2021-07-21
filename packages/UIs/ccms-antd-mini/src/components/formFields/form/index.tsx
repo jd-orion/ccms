@@ -1,13 +1,15 @@
 import React from 'react'
 import { FormField } from 'ccms'
-import { Form, Button, Divider, Space } from 'antd'
-import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons'
+import { Form, Button, Divider, Space, Collapse } from 'antd'
+import { PlusOutlined, MinusCircleOutlined, DeleteOutlined } from '@ant-design/icons'
 import { FormItemProps } from 'antd/lib/form'
+import 'antd/lib/collapse/style/index.css'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/divider/style/index.css'
 import 'antd/lib/button/style/index.css'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
 import FormFields from '../'
+import styles from './index.less'
 
 export default class FormFieldComponent extends FormField {
   getFormFields = (type: string) => FormFields[type]
@@ -43,18 +45,21 @@ export default class FormFieldComponent extends FormField {
 
   renderItemComponent = (props: IFormFieldItem) => {
     const {
-      removeText,
+      index,
+      title,
       onRemove,
       children
     } = props
 
     return (
-      <div>
+      <Collapse.Panel
+        header={title}
+        key={index}
+        forceRender={true}
+        extra={(<DeleteOutlined onClick={() => onRemove()} />)}
+      >
         {children}
-        <Form.Item style={{ textAlign: 'right' }}>
-          <Button danger type='dashed' icon={<MinusCircleOutlined />} onClick={() => onRemove()}>{removeText}</Button>
-        </Form.Item>
-      </div>
+      </Collapse.Panel>
     )
   }
 
@@ -67,16 +72,12 @@ export default class FormFieldComponent extends FormField {
 
     return (
       <React.Fragment>
-        <Space
-          style={{ width: '100%' }}
-          direction="vertical"
-          split={<Divider style={{ margin: 0, height: '3px' }} />}
-        >
+        <Collapse accordion={true} bordered={false} className={styles['ccms-antd-mini-formField-form']}>
           {children}
-          <Form.Item>
-            <Button block type='dashed' icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
-          </Form.Item>
-        </Space>
+        </Collapse>
+        <Form.Item>
+          <Button block type='dashed' icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
+        </Form.Item>
       </React.Fragment>
     )
   }
