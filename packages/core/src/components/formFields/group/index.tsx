@@ -1,33 +1,24 @@
 import React from 'react'
-import { APIConfig, ParamConfig } from '../../../interface'
-import { request } from '../../../util/request'
-import { getParam, getParamText, getValue, setValue } from '../../../util/value'
+import { getParamText, getValue, setValue } from '../../../util/value'
 import { Field, FieldConfig, FieldError, FieldProps, IField } from '../common'
 import getALLComponents, { FieldConfigs } from '../'
 import { IFormItem } from '../../../steps/form'
 import * as _ from 'lodash'
 
-export interface ImportSubformFieldConfig extends FieldConfig {
-  type: 'import_subform',
-  api?: APIConfig,
-  request?: {
-    data?: { [key: string]: ParamConfig }
-  },
-  response?: {
-    root?: string
-  }
+export interface GroupFieldConfig extends FieldConfig {
+  type: 'group'
+  fields: FieldConfig[]
 }
 
-export interface IImportSubformField {
+export interface IGroupField {
   children: React.ReactNode[]
 }
 
-interface IImportSubformFieldState {
-  fields: FieldConfig[]
+interface IGroupFieldState {
   formData: { [field: string]: { value: any, status: 'normal' | 'error' | 'loading', message?: string } }
 }
 
-export default class ImportSubformField extends Field<ImportSubformFieldConfig, IImportSubformField, any, IImportSubformFieldState> implements IField<string> {
+export default class GroupField extends Field<GroupFieldConfig, IGroupField, any, IGroupFieldState> implements IField<string> {
   // 各表单项对应的类型所使用的UI组件的类
   getALLComponents = (type: any) => getALLComponents[type]
 
@@ -39,11 +30,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
   formFields: Array<Field<FieldConfigs, {}, any> | null> = []
   formFieldsMounted: Array<boolean> = []
 
-  constructor (props: FieldProps<ImportSubformFieldConfig, any>) {
+  constructor (props: FieldProps<GroupFieldConfig, any>) {
     super(props)
 
     this.state = {
-      fields: [],
       formData: {}
     }
   }
@@ -60,7 +50,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     if (this.formFields[formFieldIndex]) {
       const formField = this.formFields[formFieldIndex]
       if (formField) {
-        const formFieldConfig = this.state.fields[formFieldIndex]
+        const formFieldConfig = this.props.config.fields[formFieldIndex]
         let value = getValue(formData, formFieldConfig.field, {}).value
         if (formFieldConfig.default) {
           value = await formField.reset()
@@ -84,7 +74,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     } = this.props
 
     const formField = this.formFields[formFieldIndex]
-    const formFieldConfig = this.state.fields[formFieldIndex]
+    const formFieldConfig = this.props.config.fields[formFieldIndex]
 
     const formData = _.cloneDeep(this.state.formData)
     const _value = _.cloneDeep(this.props.value)
@@ -111,9 +101,9 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     return true
   }
 
-  renderComponent = (props: IImportSubformField) => {
+  renderComponent = (props: IGroupField) => {
     return <React.Fragment>
-      您当前使用的UI版本没有实现ImportSubformField组件。
+      您当前使用的UI版本没有实现GroupField组件。
     </React.Fragment>
   }
 
@@ -138,42 +128,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       step
     } = this.props
 
-    if (config.api) {
-      const requestParams: { [key: string]: any } = {}
-      if (config.request && config.request.data) {
-        const fields = config.request.data
-        for (const field in fields) {
-          const param = fields[field]
-          setValue(requestParams, field, getParam(param, {
-            record: data[step],
-            data,
-            step
-          }))
-        }
-      }
-
-      const requestConfig: string = JSON.stringify({
-        api: config.api,
-        params: requestParams
-      })
-
-      if (requestConfig !== this.requestConfig) {
-        this.requestConfig = requestConfig
-        request(config.api, requestParams).then((_response) => {
-          if (config.response) {
-            const response = getValue(_response, config.response.root || '')
-            this.setState({
-              fields: response
-            })
-          }
-        })
-      }
-    }
-
     return (
       <React.Fragment>
         {this.renderComponent({
-          children: this.state.fields.map((formFieldConfig, formFieldIndex) => {
+          children: this.props.config.fields.map((formFieldConfig, formFieldIndex) => {
             let hidden: boolean = true
             let display: boolean = true
             if (formFieldConfig.condition && formFieldConfig.condition.statement) {

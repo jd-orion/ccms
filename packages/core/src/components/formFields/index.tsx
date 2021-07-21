@@ -15,6 +15,7 @@ import DescField, { DescFieldConfig } from './description'
 import ImageUrlField, { ImageUrlFieldConfig } from './imageurl'
 import { FieldConfig } from "./common";
 import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
+import GroupField, { GroupFieldConfig } from './group'
 
 export interface HiddenFieldConfig extends FieldConfig {
     type: 'hidden' | 'none'
@@ -39,6 +40,7 @@ export type FieldConfigs = TextFieldConfig
     | UploadFieldConfig
     | ImageUrlFieldConfig
     | ImportSubformFieldConfig
+    | GroupFieldConfig
 
 
 export interface componentType {
@@ -59,6 +61,7 @@ export interface componentType {
     | 'upload'
     | 'imageurl'
     | 'import_subform'
+    | 'group'
 }
 
 export default {
@@ -76,5 +79,6 @@ export default {
     color: ColorField,
     upload: UploadField,
     imageurl: ImageUrlField,
-    import_subform: ImportSubformField
+    import_subform: ImportSubformField,
+    group: GroupField
 }
