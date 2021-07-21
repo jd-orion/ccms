@@ -173,10 +173,11 @@ export default class FormStep extends Step<FormConfig, FormState> {
           break
       }
 
+      this.formValue = formDefault
+
       for (const formFieldIndex in formFieldsConfig) {
         const formFieldConfig = formFieldsConfig[formFieldIndex]
         const value = getValue(formDefault, formFieldConfig.field)
-        set(this.formValue, formFieldConfig.field, value)
         set(this.formData, formFieldConfig.field, { value, status: 'normal' })
       }
     }
@@ -399,8 +400,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
               const renderData = {
                 label: formFieldConfig.label,
-                status: formFieldConfig.field ? getValue(formData, formFieldConfig.field, {}).status || 'normal' : 'normal',
-                message: formFieldConfig.field ? getValue(formData, formFieldConfig.field, {}).message || '' : '',
+                status: formFieldConfig.field !== undefined ? getValue(formData, formFieldConfig.field, {}).status || 'normal' : 'normal',
+                message: formFieldConfig.field !== undefined ? getValue(formData, formFieldConfig.field, {}).message || '' : '',
                 layout,
                 fieldType: formFieldConfig.type,
                 children: (
@@ -413,7 +414,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                         }
                       }}
                       formLayout={layout}
-                      value={formFieldConfig.field ? getValue(formValue, formFieldConfig.field) : undefined}
+                      value={formFieldConfig.field !== undefined ? getValue(formValue, formFieldConfig.field) : undefined}
                       record={formValue}
                       data={_.cloneDeep(data)}
                       step={step}
