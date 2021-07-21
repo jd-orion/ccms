@@ -14,6 +14,7 @@ import SelectMultipleField, { SelectMultipleFieldConfig } from './select/multipl
 import DescField, { DescFieldConfig } from './description'
 import ImageUrlField, { ImageUrlFieldConfig } from './imageurl'
 import { FieldConfig } from "./common";
+import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
 
 export interface HiddenFieldConfig extends FieldConfig {
     type: 'hidden' | 'none'
@@ -37,6 +38,7 @@ export type FieldConfigs = TextFieldConfig
     | ColorFieldConfig
     | UploadFieldConfig
     | ImageUrlFieldConfig
+    | ImportSubformFieldConfig
 
 
 export interface componentType {
@@ -56,6 +58,7 @@ export interface componentType {
     | 'color'
     | 'upload'
     | 'imageurl'
+    | 'import_subform'
 }
 
 export default {
@@ -72,5 +75,6 @@ export default {
     tree_select: TreeSelectField,
     color: ColorField,
     upload: UploadField,
-    imageurl: ImageUrlField
+    imageurl: ImageUrlField,
+    import_subform: ImportSubformField
 }

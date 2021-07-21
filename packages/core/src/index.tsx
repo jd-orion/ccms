@@ -16,6 +16,7 @@ export { default as SelectMultipleField } from './components/formFields/select/m
 export { default as DescField } from './components/formFields/description'
 export { default as TreeSelectField } from './components/formFields/treeSelect'
 export { default as ImageUrlField } from './components/formFields/imageurl'
+export { default as ImportSubformField } from './components/formFields/importSubform';
 
 export { default as TableStep } from './steps/table'
 export { default as TextColumn } from './components/tableColumns/text'
