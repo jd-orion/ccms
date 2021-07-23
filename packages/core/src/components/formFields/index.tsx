@@ -16,6 +16,7 @@ import ImageUrlField, { ImageUrlFieldConfig } from './imageurl'
 import { FieldConfig } from "./common";
 import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
 import GroupField, { GroupFieldConfig } from './group'
+import AnyField, { AnyFieldConfig } from './any'
 
 export interface HiddenFieldConfig extends FieldConfig {
     type: 'hidden' | 'none'
@@ -41,6 +42,7 @@ export type FieldConfigs = TextFieldConfig
     | ImageUrlFieldConfig
     | ImportSubformFieldConfig
     | GroupFieldConfig
+    | AnyFieldConfig
 
 
 export interface componentType {
@@ -62,6 +64,7 @@ export interface componentType {
     | 'imageurl'
     | 'import_subform'
     | 'group'
+    | 'any'
 }
 
 export default {
@@ -80,5 +83,6 @@ export default {
     upload: UploadField,
     imageurl: ImageUrlField,
     import_subform: ImportSubformField,
-    group: GroupField
+    group: GroupField,
+    any: AnyField
 }
