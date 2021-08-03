@@ -71,10 +71,10 @@
     "axios": "^0.20.0",
     "moment": "^2.29.0",
     "rc-table": "^7.9.10",
+    "react-color": "^2.19.3",
     "react-loadable": "^5.5.0"
   },
   "peerDependencies": {
-    "react-color": "^2.19.3",
     "antd": "^4.8.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"

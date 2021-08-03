@@ -1,8 +1,8 @@
 import React from "react";
 import { UploadField } from 'ccms';
 import { Upload as AntdUpload, message, Button } from 'antd'
-import { IUploadField } from "ccms/dist/src/components/formFields/upload";
-export const PropsType = (props: IUploadField) => { };
+import { IUploadField, UploadFieldConfig } from "ccms/dist/src/components/formFields/upload";
+export const PropsType = (props: UploadFieldConfig) => { };
 import 'antd/lib/upload/style/index.css'
 
 export default class UploadFieldComponent extends UploadField {
@@ -46,7 +46,6 @@ export default class UploadFieldComponent extends UploadField {
                         showUploadList={false}
                         withCredentials={uploadwithCredentials}
                         onChange={async (e) => {
-                            debugger
                             const rs = getValue && await getValue(e.file.response)
                             onChange(rs)
                         }}
