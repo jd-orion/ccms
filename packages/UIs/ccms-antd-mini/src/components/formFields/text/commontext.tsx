@@ -11,6 +11,8 @@ type Props = {
 
 export default class TextComponent extends PureComponent<Props, {}> {
   isOnComposition = false
+  selectionStart: number | null = null
+  selectionEnd: number | null = null
 
   state = {
     flag: false,
@@ -41,7 +43,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
       input: value
     })
   }
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { onChange } = this.props
     this.setInput(e.target.value)
     if (this.isOnComposition) return
@@ -62,7 +64,15 @@ export default class TextComponent extends PureComponent<Props, {}> {
       onCompositionStart={this.handleComposition}
       onCompositionUpdate={this.handleComposition}
       onCompositionEnd={this.handleComposition}
-      onChange={this.handleChange}
+      onChange={(e) => {
+        this.selectionStart = e.target.selectionStart
+        this.selectionEnd = e.target.selectionEnd
+        this.handleChange(e)
+        setTimeout(() => {
+          e.target.selectionStart = this.selectionStart
+          e.target.selectionEnd = this.selectionEnd
+        })
+      }}
     />
   }
 }

@@ -1,0 +1,208 @@
+---
+menu: 表单项
+name: Number 数值
+route: /component/formFields/number
+order: 2
+---
+
+import { useState } from 'react'
+import { Playground, Props } from 'docz';
+import NumberField, {PropsType} from './index';
+import Form from '../../../steps/form';
+
+# Number 数值表单项
+表单项内的数值选项。
+
+## 何时使用
+表单内需要设置数值选项时。<br/>
+提供了以下可配置项：
+- 支持小数位、步长、最大最小值限制
+- 默认值：默认值支持五种获取方式
+
+
+## 如何使用
+### 配置化JSON参考
+`config`中`fields`为表单项配置信息
+```
+  fields:[
+    {
+      label: '数值',
+      field: 'number',
+      type: 'number'
+    }
+  ]
+```
+
+## 代码演示
+
+### 组件单独调用
+
+<Playground>
+  {() => {
+    const [ value, setValue ] = useState(1)
+
+    return (
+      <NumberField
+        value={value}
+        onChange={(value) => setValue(value)}
+      />
+    )
+  }}
+</Playground>
+
+### 在表单中使用
+
+<Playground>
+  <Form layout="horizontal" 
+    config={{
+      fields: [
+        {
+          label: '数值',
+          field: 'number',
+          type: 'number'
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 默认值
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '数值',
+          field: 'number',
+          type: 'number',
+          default: {
+            type: "static",
+            value: 1
+          }
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 校验-最小值3最大值6
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '数值',
+          field: 'number',
+          type: 'number',
+          min: 3,
+          max: 6
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 步长
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '数值',
+          field: 'number',
+          type: 'number',
+          step: 3
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 小数位设置
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '数值',
+          field: 'number',
+          type: 'number',
+          precision: 2,
+          default: {
+            type: "static",
+            value: 1
+          }
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+### 字符接口获取
+
+<Playground>
+  <Form
+    config={{
+      fields: [
+        {
+          label: '数值',
+          field: 'number',
+          type: 'number',
+          default: {
+            type: 'interface',
+            api: {
+              url: 'https://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do',
+              method: 'GET',
+              contentType: 'json',
+              withCredentials: true
+            },
+            apiResponse: 'result.0.id'
+          }
+        }
+      ]
+    }}
+    onSubmit={()=>{}}
+    onUnmount={()=>{}}
+    onMount={()=>{}}
+    ref={(form) => {
+      form.willMount()
+    }}
+  />
+</Playground>
+
+## APIs
+ <Props of={PropsType} />

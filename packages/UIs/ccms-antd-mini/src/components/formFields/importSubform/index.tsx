@@ -25,6 +25,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
   renderItemComponent = (props: IFormItem) => {
     const {
       label,
+      status,
       message,
       fieldType,
       children

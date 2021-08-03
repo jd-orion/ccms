@@ -8,6 +8,8 @@ import SelectMultipleField from './select/multiple'
 import TreeSelectField from './treeSelect'
 import ImportSubformField from './importSubform'
 import GroupField from './group'
+import AnyField from './any'
+import NumberField from './number'
 
 export default {
   text: TextField,
@@ -19,5 +21,7 @@ export default {
   desc: DescField,
   tree_select: TreeSelectField,
   import_subform: ImportSubformField,
-  group: GroupField
+  group: GroupField,
+  any: AnyField,
+  number: NumberField
 }

@@ -12,6 +12,8 @@ type Props = {
 
 export default class TextComponent extends PureComponent<Props, {}> {
   isOnComposition = false
+  selectionStart: number = 0
+  selectionEnd: number = 0
 
   state = {
     flag: false,
@@ -63,7 +65,15 @@ export default class TextComponent extends PureComponent<Props, {}> {
       onCompositionStart={this.handleComposition}
       onCompositionUpdate={this.handleComposition}
       onCompositionEnd={this.handleComposition}
-      onChange={this.handleChange}
+      onChange={(e) => {
+        this.selectionStart = e.target.selectionStart
+        this.selectionEnd = e.target.selectionEnd
+        this.handleChange(e)
+        setTimeout(() => {
+          e.target.selectionStart = this.selectionStart
+          e.target.selectionEnd = this.selectionEnd
+        })
+      }}
     />
   }
 }

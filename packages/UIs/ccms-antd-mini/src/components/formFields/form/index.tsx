@@ -21,22 +21,27 @@ export default class FormFieldComponent extends FormField {
       label,
       status,
       message,
+      fieldType,
       children,
       layout = "horizontal"
     } = props
 
-    const formItemProps: FormItemProps = {}
+    const formItemLayout: FormItemProps = {}
     if (layout === 'horizontal') {
-      formItemProps.labelAlign = 'left'
-      formItemProps.labelCol = { span: 6 }
-      formItemProps.wrapperCol = { span: 18 }
+      formItemLayout.labelAlign = 'left'
+      formItemLayout.labelCol = { span: 6 }
+      formItemLayout.wrapperCol = { span: 18 }
+    }
+    if (fieldType === 'form' || fieldType === 'group' || fieldType === 'import_subform') {
+      formItemLayout.labelCol = { span: 24 }
+      formItemLayout.wrapperCol = { span: 24 }
     }
     return (
       <Form.Item
         label={label}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={message}
-        {...formItemProps}
+        {...formItemLayout}
       >
         {children}
       </Form.Item>
