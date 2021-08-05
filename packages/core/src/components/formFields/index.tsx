@@ -13,7 +13,7 @@ import SelectSingleField, { SelectSingleFieldConfig } from './select/single'
 import SelectMultipleField, { SelectMultipleFieldConfig } from './select/multiple'
 import DescField, { DescFieldConfig } from './description'
 import ImageUrlField, { ImageUrlFieldConfig } from './imageurl'
-import { FieldConfig } from "./common";
+import { FieldConfig } from './common'
 import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
 import GroupField, { GroupFieldConfig } from './group'
 import AnyField, { AnyFieldConfig } from './any'
@@ -44,7 +44,6 @@ export type FieldConfigs = TextFieldConfig
     | GroupFieldConfig
     | AnyFieldConfig
 
-
 export interface componentType {
     type: 'text'
     | 'form'
@@ -68,21 +67,21 @@ export interface componentType {
 }
 
 export default {
-    text: TextField,
-    radio: RadioField,
-    form: FormField,
-    longtext: LongtextField,
-    number: NumberField,
-    datetime: DatetimeField,
-    datetimeRange: DatetimeRangeField,
-    select_single: SelectSingleField,
-    select_multiple: SelectMultipleField,
-    desc: DescField,
-    tree_select: TreeSelectField,
-    color: ColorField,
-    upload: UploadField,
-    imageurl: ImageUrlField,
-    import_subform: ImportSubformField,
-    group: GroupField,
-    any: AnyField
+  text: TextField,
+  radio: RadioField,
+  form: FormField,
+  longtext: LongtextField,
+  number: NumberField,
+  datetime: DatetimeField,
+  datetimeRange: DatetimeRangeField,
+  select_single: SelectSingleField,
+  select_multiple: SelectMultipleField,
+  desc: DescField,
+  tree_select: TreeSelectField,
+  color: ColorField,
+  upload: UploadField,
+  imageurl: ImageUrlField,
+  import_subform: ImportSubformField,
+  group: GroupField,
+  any: AnyField
 }

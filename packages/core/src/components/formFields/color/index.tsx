@@ -10,14 +10,14 @@ export interface ColorFieldConfig extends FieldConfig, FieldInterface {
 export interface IColorField {
     value: string
     onChange: (value: string) => Promise<void>
-    readonly: any
-    disabled: any
+    readonly: boolean
+    disabled: boolean
 }
 
 export default class ColorField extends Field<ColorFieldConfig, IColorField, string> implements IField<string> {
     reset: () => Promise<string> = async () => {
       const defaults = await this.defaultValue()
-
+      console.log(defaults, 'color default')
       if (defaults === undefined) {
         return ''
       } else {

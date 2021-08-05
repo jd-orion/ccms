@@ -15,7 +15,7 @@ export interface IGroupField {
 }
 
 interface IGroupFieldState {
-  formData: { [field: string]: { value: any, status: 'normal' | 'error' | 'loading', message?: string } }
+  formData: { [field: string]: { value: any, name: 'string', status: 'normal' | 'error' | 'loading', message?: string } }
 }
 
 export default class GroupField extends Field<GroupFieldConfig, IGroupField, any, IGroupFieldState> implements IField<string> {
@@ -25,7 +25,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
   // 用于请求防频的判断条件
   requestConfig: string = ''
   value: string = ''
-
 
   formFields: Array<Field<FieldConfigs, {}, any> | null> = []
   formFieldsMounted: Array<boolean> = []
@@ -57,9 +56,9 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
         }
         const validation = await formField.validate(value)
         if (validation === true) {
-          setValue(formData, formFieldConfig.field, { value, status: 'normal' })
+          setValue(formData, formFieldConfig.field, { value, status: 'normal', name: formFieldConfig.label })
         } else {
-          setValue(formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message })
+          setValue(formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message, name: formFieldConfig.label })
         }
       }
     }
@@ -83,9 +82,9 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
       const validation = await formField.validate(value)
       setValue(_value, formFieldConfig.field, value)
       if (validation === true) {
-        setValue(formData, formFieldConfig.field, { status: 'normal' })
+        setValue(formData, formFieldConfig.field, { status: 'normal', name: formFieldConfig.label })
       } else {
-        setValue(formData, formFieldConfig.field, { status: 'error', message: validation[0].message })
+        setValue(formData, formFieldConfig.field, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
       }
 
       await this.setState({
@@ -112,7 +111,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
    * 各UI库需重写该方法
    * @param props
    */
-   renderItemComponent = (props: IFormItem) => {
+  renderItemComponent = (props: IFormItem) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现FormItem组件。
     </React.Fragment>
@@ -171,22 +170,22 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
               layout: formLayout,
               fieldType: formFieldConfig.type,
               children: (
-                  <FormField
-                    key={formFieldIndex}
-                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                      if (formFieldIndex !== null) {
-                        this.formFields[formFieldIndex] = formField
-                        this.handleFormFieldMount(formFieldIndex)
-                      }
-                    }}
-                    formLayout={formLayout}
-                    value={formFieldConfig.field !== undefined ? getValue(value, formFieldConfig.field) : undefined}
-                    record={record}
-                    data={_.cloneDeep(data)}
-                    step={step}
-                    config={formFieldConfig}
-                    onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
-                  />
+                <FormField
+                  key={formFieldIndex}
+                  ref={(formField: Field<FieldConfigs, any, any> | null) => {
+                    if (formFieldIndex !== null) {
+                      this.formFields[formFieldIndex] = formField
+                      this.handleFormFieldMount(formFieldIndex)
+                    }
+                  }}
+                  formLayout={formLayout}
+                  value={formFieldConfig.field !== undefined ? getValue(value, formFieldConfig.field) : undefined}
+                  record={record}
+                  data={_.cloneDeep(data)}
+                  step={step}
+                  config={formFieldConfig}
+                  onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
+                />
               )
             }
             // 渲染表单项容器
@@ -199,8 +198,8 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                       height: 0,
                       width: 0
                     }}>
-                {this.renderItemComponent(renderData)}
-              </div>
+                  {this.renderItemComponent(renderData)}
+                </div>
                 : <></>
             )
           })

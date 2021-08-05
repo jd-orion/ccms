@@ -10,8 +10,9 @@ export interface FormFieldConfig extends FieldConfig {
   primaryField?: string
   insertText?: string
   removeText?: string
-  modeValue?: string
   initialValues?: any // 新增子项时的默认值
+  mode?: 'show' // 子项仅显示列表
+  modeValue?: string
 }
 
 export interface IFormField {
@@ -73,7 +74,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
         } = this.props
         for (const field of fields) {
           set(value, field.field, getValue(item, field.field))
-          set(formDataList, field.field, { value: getValue(item, field.field), status: 'normal' })
+          set(formDataList, field.field, { value: getValue(item, field.field), status: 'normal', name: field.label })
         }
         this.formItemsMounted.push(false)
         valueList.push(value)
@@ -159,9 +160,9 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
           const validation = await formItem.validate(_value)
           set(value[index], field.field, _value)
           if (validation === true) {
-            set(formDataList[index], field.field, { value: _value, status: 'normal' })
+            set(formDataList[index], field.field, { value: _value, status: 'normal', name: field.label })
           } else {
-            set(formDataList[index], field.field, { value: _value, status: 'error', message: validation[0].message })
+            set(formDataList[index], field.field, { value: _value, status: 'error', message: validation[0].message, name: field.label })
           }
         }
       }
@@ -192,7 +193,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     const index = value.length
 
     this.formItemsMounted[index] = false
-    value[index] = initialValues ? initialValues : {}
+    value[index] = initialValues || {}
     formDataList[index] = initialValues ? { value: initialValues } : {}
     this.setState({
       showItem: true,
@@ -255,7 +256,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     }
   }
 
-  showItemFn (index: number) {
+  showItemFn(index: number) {
     const { showItem, showIndex } = this.state
     this.setState({
       showItem: index === showIndex ? !showItem : true,
@@ -279,9 +280,9 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       set(_value[index], field.field, value)
       if (!formDataList[index]) formDataList[index] = {}
       if (validation === true) {
-        set(formDataList[index], field.field, { value, status: 'normal' })
+        set(formDataList[index], field.field, { value, status: 'normal', name: field.label })
       } else {
-        set(formDataList[index], field.field, { value, status: 'error', message: validation[0].message })
+        set(formDataList[index], field.field, { value, status: 'error', message: validation[0].message, name: field.label })
       }
       this.setState({
         formDataList
@@ -294,8 +295,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
 
   /**
    * 用于展示子表单组件中的每一子项中的每一个子表单项组件
-   * @param props 
-   * @returns 
+   * @param props
+   * @returns
    */
   renderItemFieldComponent = (props: IFormFieldItemField) => {
     return <React.Fragment>
@@ -305,8 +306,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
 
   /**
    * 用于展示子表单组件中的每一个子项
-   * @param props 
-   * @returns 
+   * @param props
+   * @returns
    */
   renderItemComponent = (props: IFormFieldItem) => {
     return <React.Fragment>
@@ -316,8 +317,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
 
   /**
    * 用于展示子表单组件
-   * @param _props 
-   * @returns 
+   * @param _props
+   * @returns
    */
   renderComponent = (_props: IFormField) => {
     return <React.Fragment>
@@ -333,6 +334,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       step,
       config: {
         label,
+        mode,
         modeValue,
         fields,
         primaryField,
@@ -355,69 +357,81 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
             onInsert: async () => await this.handleInsert(),
             children: (
               value && value.map((itemValue: any, index: number) => {
-                return <React.Fragment key={index} >
-                  {this.renderItemComponent({
-                    index,
-                    title: primaryField !== undefined ? getValue(itemValue, primaryField) : index.toString(),
-                    removeText: removeText === undefined
-                      ? `删除 ${label}`
-                      : removeText,
-                    onRemove: async () => await this.handleRemove(index),
-                    children: (fields.map((formFieldConfig, fieldIndex) => {
-                      let display: boolean = true
-                      if (formFieldConfig.condition && formFieldConfig.condition.statement) {
-                        let statement = formFieldConfig.condition.statement
-                        if (formFieldConfig.condition.params && Array.isArray(formFieldConfig.condition.params)) {
-                          statement = getParamText(formFieldConfig.condition.statement, formFieldConfig.condition.params, { record: itemValue, data, step })
-                        }
-                        try {
-                          // eslint-disable-next-line no-eval
-                          const result = eval(statement)
-                          if (!result) {
+                return <div ref={(e) => this.handleMount(index)} key={index} >
+
+                  {mode === 'show' &&
+                    <div onClick={() => this.showItemFn(index)} style={{ height: '30px', cursor: 'pointer', background: '#f1f1f1', padding: '5px', marginBottom: showItem && index === showIndex ? '10px' : 0 }}>
+                      {itemValue.label || (modeValue && itemValue[modeValue]) || (index + 1)}
+                      <div style={{ float: 'right' }}>
+                        <span onClick={() => this.handleRemove(index)} style={{ textDecoration: 'underline', color: '#7e93a9' }}>删除</span>
+                      </div>
+                    </div>
+                  }
+
+                  {(showItem && index === showIndex && mode === 'show') || mode !== 'show'
+                    // eslint-disable-next-line multiline-ternary
+                    ? this.renderItemComponent({
+                      index,
+                      title: primaryField !== undefined ? getValue(itemValue, primaryField) : index.toString(),
+                      removeText: removeText === undefined
+                        ? `删除 ${label}`
+                        : removeText,
+                      onRemove: async () => await this.handleRemove(index),
+                      children: (fields.map((formFieldConfig, fieldIndex) => {
+                        let display: boolean = true
+                        if (formFieldConfig.condition && formFieldConfig.condition.statement) {
+                          let statement = formFieldConfig.condition.statement
+                          if (formFieldConfig.condition.params && Array.isArray(formFieldConfig.condition.params)) {
+                            statement = getParamText(formFieldConfig.condition.statement, formFieldConfig.condition.params, { record: itemValue, data, step })
+                          }
+                          try {
+                            // eslint-disable-next-line no-eval
+                            const result = eval(statement)
+                            if (!result) {
+                              display = false
+                            }
+                          } catch (e) {
+                            console.error('表单项展示条件语句执行错误。', statement)
                             display = false
                           }
-                        } catch (e) {
-                          console.error('表单项展示条件语句执行错误。', statement)
-                          display = false
                         }
-                      }
 
-                      const FormField = this.getFormFields(formFieldConfig.type)
+                        const FormField = this.getFormFields(formFieldConfig.type)
 
-                      // 渲染表单项容器
-                      return (
-                        <div key={fieldIndex} style={{ display: display ? 'block' : 'none' }}>
-                          {
-                            this.renderItemFieldComponent({
-                              index: fieldIndex,
-                              label: formFieldConfig.label,
-                              status: getValue(formDataList[index], formFieldConfig.field, {}).status || 'normal',
-                              message: getValue(formDataList[index], formFieldConfig.field, {}).message || '',
-                              layout: formLayout,
-                              fieldType: formFieldConfig.type,
-                              children: (
-                                <FormField
-                                  ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
-                                    if (!this.formItemsList[index]) this.formItemsList[index] = {}
-                                    this.formItemsList[index][formFieldConfig.field] = fieldRef
-                                  }}
-                                  formLayout={formLayout}
-                                  value={getValue(value[index], formFieldConfig.field)}
-                                  record={value[index]}
-                                  data={data}
-                                  step={step}
-                                  config={formFieldConfig}
-                                  onChange={(value: any) => this.handleChange(index, formFieldConfig, value)}
-                                />
-                              )
-                            })
-                          }
-                        </div>
-                      )
-                    }))
-                  })
+                        // 渲染表单项容器
+                        return (
+                          <div key={fieldIndex} style={{ display: display ? 'block' : 'none' }}>
+                            {
+                              this.renderItemFieldComponent({
+                                index: fieldIndex,
+                                label: formFieldConfig.label,
+                                status: getValue(formDataList[index], formFieldConfig.field, {}).status || 'normal',
+                                message: getValue(formDataList[index], formFieldConfig.field, {}).message || '',
+                                layout: formLayout,
+                                fieldType: formFieldConfig.type,
+                                children: (
+                                  <FormField
+                                    ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
+                                      if (!this.formItemsList[index]) this.formItemsList[index] = {}
+                                      this.formItemsList[index][formFieldConfig.field] = fieldRef
+                                    }}
+                                    formLayout={formLayout}
+                                    value={getValue(value[index], formFieldConfig.field)}
+                                    record={value[index]}
+                                    data={data}
+                                    step={step}
+                                    config={formFieldConfig}
+                                    onChange={(value: any) => this.handleChange(index, formFieldConfig, value)}
+                                  />
+                                )
+                              })
+                            }
+                          </div>
+                        )
+                      }))
+                    }) : null
                   }
-                </React.Fragment>
+                </div>
               }
               )
             )
