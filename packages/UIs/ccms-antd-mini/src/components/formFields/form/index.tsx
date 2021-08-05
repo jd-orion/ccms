@@ -40,8 +40,9 @@ export default class FormFieldComponent extends FormField {
       <Form.Item
         label={label}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={message}
+        help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
         {...formItemLayout}
+        className={styles[`ccms-antd-mini-form-${fieldType}`]}
       >
         {children}
       </Form.Item>
@@ -60,7 +61,7 @@ export default class FormFieldComponent extends FormField {
       <Collapse.Panel
         header={title}
         key={index}
-        forceRender={true}
+        forceRender={false}
         extra={(<DeleteOutlined onClick={() => onRemove()} />)}
       >
         {children}
@@ -77,12 +78,17 @@ export default class FormFieldComponent extends FormField {
 
     return (
       <React.Fragment>
+        <div className={styles['ccms-antd-mini-formField-form-before-button']}>
+          <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
+        </div>
         <Collapse accordion={true} bordered={false} className={styles['ccms-antd-mini-formField-form']}>
           {children}
         </Collapse>
-        <Form.Item>
-          <Button block type='dashed' icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
-        </Form.Item>
+        {children.length > 0 && (
+          <div className={styles['ccms-antd-mini-formField-form-after-button']}>
+            <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
+          </div>
+        )}
       </React.Fragment>
     )
   }

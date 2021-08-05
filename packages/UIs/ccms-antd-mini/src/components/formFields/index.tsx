@@ -10,6 +10,7 @@ import ImportSubformField from './importSubform'
 import GroupField from './group'
 import AnyField from './any'
 import NumberField from './number'
+import SwitchField from './switch'
 
 export default {
   text: TextField,
@@ -23,5 +24,6 @@ export default {
   import_subform: ImportSubformField,
   group: GroupField,
   any: AnyField,
-  number: NumberField
+  number: NumberField,
+  switch: SwitchField
 }

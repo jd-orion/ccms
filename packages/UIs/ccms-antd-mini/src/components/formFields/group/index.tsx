@@ -5,6 +5,7 @@ import { IFormItem } from "ccms/dist/src/steps/form";
 import { Form } from "antd"
 import { FormItemProps } from "antd/lib/form";
 import getALLComponents from '../'
+import styles from './index.less'
 
 export const PropsType = (props: GroupFieldConfig) => { };
 
@@ -45,6 +46,7 @@ export default class GroupFieldComponent extends GroupField {
         {...formItemLayout}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={fieldType === 'import_subform' ? null : message}
+        className={styles[`ccms-antd-mini-form-${fieldType}`]}
       >
         {children}
       </Form.Item>

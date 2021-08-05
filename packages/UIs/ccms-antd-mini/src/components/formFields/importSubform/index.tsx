@@ -5,6 +5,7 @@ import { IFormItem } from "ccms/dist/src/steps/form";
 import { Form } from "antd"
 import { FormItemProps } from "antd/lib/form";
 import getALLComponents from '../'
+import styles from './index.less'
 
 export const PropsType = (props: ImportSubformFieldConfig) => { };
 
@@ -32,7 +33,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
     } = props
 
     const formItemLayout: FormItemProps = { labelAlign: 'left' }
-    if (fieldType === 'form' || fieldType === 'import_subform') {
+    if (fieldType === 'form' || fieldType === 'group' || fieldType === 'import_subform') {
       formItemLayout.labelCol = { span: 24 }
       formItemLayout.wrapperCol = { span: 24 }
     } else {
@@ -45,7 +46,8 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
         label={label}
         {...formItemLayout}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={fieldType === 'import_subform' ? null : message}
+        help={fieldType === 'form' || fieldType === 'group' || fieldType === 'import_subform' ? null : message}
+        className={styles[`ccms-antd-mini-form-${fieldType}`]}
       >
         {children}
       </Form.Item>

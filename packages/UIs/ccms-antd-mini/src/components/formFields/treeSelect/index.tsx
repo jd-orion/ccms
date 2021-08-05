@@ -11,6 +11,7 @@ export default class TreeSelectComponent extends TreeSelectField {
       value,
       onChange
     } = props
+
     return (
       <div>
         <TreeSelect
