@@ -265,14 +265,15 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
                       height: 0,
                       width: 0
                     }} >
-                {
-                  this.renderItemComponent({
-                    label: field.label,
-                    status: (filterData[field.field] || {}).status || 'normal',
-                    message: (filterData[field.field] || {}).message,
-                    children
-                  })
-                }
+                  <span style={{ color: '#ff7070', float: 'left', width: '9px', paddingTop: '5px' }}>{`${field.required ? '*' : ''}`}</span>
+                  {
+                    this.renderItemComponent({
+                      label: field.label,
+                      status: (filterData[field.field] || {}).status || 'normal',
+                      message: (filterData[field.field] || {}).message,
+                      children
+                    })
+                  }
                 </div>
               </React.Fragment>
             )

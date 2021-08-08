@@ -256,7 +256,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     }
   }
 
-  showItemFn(index: number) {
+  showItemFn (index: number) {
     const { showItem, showIndex } = this.state
     this.setState({
       showItem: index === showIndex ? !showItem : true,
