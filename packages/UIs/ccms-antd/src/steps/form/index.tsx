@@ -40,8 +40,8 @@ export default class FormStepComponent extends FormStep {
         {children}
         <Form.Item>
           <Space>
-            <Button type="primary" onClick={() =>onSubmit && onSubmit()}>确定</Button>
-            <Button onClick={() => onCancel && onCancel()}>取消</Button>
+            {onSubmit && <Button type="primary" onClick={() => onSubmit()}>确定</Button>}
+            {onCancel && <Button onClick={() => onCancel()}>取消</Button>}
           </Space>
         </Form.Item>
       </Form>
@@ -70,15 +70,15 @@ export default class FormStepComponent extends FormStep {
         help={message}
         {...formItemProps}
       >
-       test {children}
+        test {children}
       </Form.Item> : <Form.Item
         label={label}
         colon={false}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         {...formItemProps}
       >
-          {children}
-        </Form.Item>
+        {children}
+      </Form.Item>
     )
   }
 }
