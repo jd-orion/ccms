@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import { Button } from 'antd'
 import { SketchPicker } from 'react-color'
 import style from './style.js'
@@ -12,7 +12,7 @@ type Props = {
     onChange: (value: string) => Promise<void>
 };
 
-export default class ColorComponent extends PureComponent<Props, {}> {
+export default class ColorComponent extends Component<Props, {}> {
     isOnComposition = false
 
     state = {
@@ -34,9 +34,11 @@ export default class ColorComponent extends PureComponent<Props, {}> {
 
     render () {
       const { show, color } = this.state
+      const { value } = this.props
+      
       return <div className="color-input" style={style.color_input as React.CSSProperties}>
             <div className="color-dom" onClick={() => this.showPicker(true)} style={style.color_dom}>
-                <div style={{ backgroundColor: color, width: '100%', height: '100%' }} />
+                <div style={{ backgroundColor: value, width: '100%', height: '100%' }} />
             </div>
             {
                 show && <div className="color-picker" style={style.color_picker as React.CSSProperties}>

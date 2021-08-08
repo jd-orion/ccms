@@ -6,7 +6,7 @@ export const PropsType = (props: UploadFieldConfig) => { };
 import 'antd/lib/upload/style/index.css'
 
 export default class UploadFieldComponent extends UploadField {
-    uploadButton = (value: string, prefix: string) => {
+    uploadButton = (value: string, prefix: string, props: any) => {
         return value ?
             <div>
                 <img src={value} width="200" height="auto" />
@@ -16,6 +16,7 @@ export default class UploadFieldComponent extends UploadField {
             :
             <div>
                 <Button>点击上传</Button>
+                {props.ploaceholder && <p>{props.ploaceholder}</p>}
             </div>
     }
 
@@ -52,7 +53,7 @@ export default class UploadFieldComponent extends UploadField {
                         className='ccms-upload'
                         {...{ disabled: disabled || readonly }}
                     >
-                        <div className='ccms-upload-image'>{this.uploadButton(value, uploadImagePrefix)}</div>
+                        <div className='ccms-upload-image'>{this.uploadButton(value, uploadImagePrefix, props)}</div>
                     </AntdUpload>
                 </div>
             </div>
