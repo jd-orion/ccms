@@ -69,6 +69,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
   validate = async (_value: string | number | undefined): Promise<true | FieldError[]> => {
     const {
       config: {
+        label,
         required
       }
     } = this.props
@@ -77,7 +78,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
 
     if (getBoolean(required)) {
       if (_value === '' || _value === undefined) {
-        errors.push(new FieldError('不能为空'))
+        errors.push(new FieldError(`请选择${label}`))
       }
     }
 

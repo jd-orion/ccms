@@ -37,6 +37,7 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
   validate = async (value: string): Promise<true | FieldError[]> => {
     const {
       config: {
+        label,
         required,
         characterType,
         maxLength,
@@ -50,7 +51,7 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
 
     if (getBoolean(required)) {
       if (value === '') {
-        errors.push(new FieldError('不能为空'))
+        errors.push(new FieldError(`输入${label}`))
       }
     }
 

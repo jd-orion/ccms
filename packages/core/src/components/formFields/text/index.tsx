@@ -42,6 +42,7 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
   validate = async (value: string): Promise<true | FieldError[]> => {
     const {
       config: {
+        label,
         required,
         characterType,
         maxLength,
@@ -55,7 +56,7 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
 
     if (getBoolean(required)) {
       if (value === '' || value === undefined) {
-        errors.push(new FieldError('不能为空'))
+        errors.push(new FieldError(`请输入${label}`))
       }
     }
 

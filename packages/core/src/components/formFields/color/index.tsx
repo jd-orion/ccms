@@ -28,6 +28,7 @@ export default class ColorField extends Field<ColorFieldConfig, IColorField, str
     validate = async (value: string): Promise<true | FieldError[]> => {
       const {
         config: {
+          label,
           required
         }
       } = this.props
@@ -36,7 +37,7 @@ export default class ColorField extends Field<ColorFieldConfig, IColorField, str
 
       if (getBoolean(required)) {
         if (value === '') {
-          errors.push(new FieldError('不能为空'))
+          errors.push(new FieldError(`请输入${label}`))
         }
       }
 
