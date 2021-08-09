@@ -2,9 +2,11 @@ import React from "react";
 import { TreeSelectField } from 'ccms';
 import { ITreeSelectField, TreeSelectFieldConfig } from "ccms/dist/src/components/formFields/treeSelect";
 import { TreeSelect } from 'antd';
-export const PropsType = (props: TreeSelectFieldConfig) => { };
+import InterfaceHelper from "../../../util/interface";
 
 export default class TreeSelectComponent extends TreeSelectField {
+  interfaceInstance = new InterfaceHelper()
+  
   renderComponent = (props: ITreeSelectField) => {
     const {
       treeData,
