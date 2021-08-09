@@ -11,6 +11,7 @@ import GroupField from './group'
 import AnyField from './any'
 import NumberField from './number'
 import SwitchField from './switch'
+import ObjectField from './object'
 
 export default {
   text: TextField,
@@ -25,5 +26,6 @@ export default {
   group: GroupField,
   any: AnyField,
   number: NumberField,
-  switch: SwitchField
+  switch: SwitchField,
+  object: ObjectField
 }
