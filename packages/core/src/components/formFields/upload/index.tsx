@@ -57,7 +57,7 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
         errors.push(new FieldError(`${this.err}`))
       }
 
-      if (required) {
+      if (getBoolean(required)) {
         if (rsvalue === '') {
           errors.push(new FieldError('不能为空'))
         }
