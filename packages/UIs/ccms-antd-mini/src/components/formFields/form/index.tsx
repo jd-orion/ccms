@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormField } from 'ccms'
-import { Form, Button, Divider, Space, Collapse } from 'antd'
-import { PlusOutlined, MinusCircleOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Form, Button, Collapse } from 'antd'
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import { FormItemProps } from 'antd/lib/form'
 import 'antd/lib/collapse/style/index.css'
 import 'antd/lib/space/style/index.css'
@@ -32,7 +32,7 @@ export default class FormFieldComponent extends FormField {
       formItemLayout.labelCol = { span: 6 }
       formItemLayout.wrapperCol = { span: 18 }
     }
-    if (fieldType === 'form' || fieldType === 'group' || fieldType === 'import_subform') {
+    if (fieldType === 'form' || fieldType === 'group' || fieldType === 'object' || fieldType === 'import_subform') {
       formItemLayout.labelCol = { span: 24 }
       formItemLayout.wrapperCol = { span: 24 }
     }

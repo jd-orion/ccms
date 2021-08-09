@@ -32,7 +32,7 @@ export default class GroupFieldComponent extends GroupField {
     } = props
 
     const formItemLayout: FormItemProps = { labelAlign: 'left' }
-    if (fieldType === 'form' || fieldType === 'import_subform') {
+    if (fieldType === 'form' || fieldType === 'group' || fieldType === 'object' || fieldType === 'import_subform') {
       formItemLayout.labelCol = { span: 24 }
       formItemLayout.wrapperCol = { span: 24 }
     } else {
@@ -45,7 +45,7 @@ export default class GroupFieldComponent extends GroupField {
         label={label}
         {...formItemLayout}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={fieldType === 'import_subform' ? null : message}
+        help={fieldType === 'import_subform' || fieldType === 'group' ? null : message}
         className={styles[`ccms-antd-mini-form-${fieldType}`]}
       >
         {children}
