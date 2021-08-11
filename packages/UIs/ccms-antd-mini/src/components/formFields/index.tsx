@@ -12,6 +12,7 @@ import AnyField from './any'
 import NumberField from './number'
 import SwitchField from './switch'
 import ObjectField from './object'
+import HiddenField from './hidden'
 
 export default {
   text: TextField,
@@ -27,5 +28,6 @@ export default {
   any: AnyField,
   number: NumberField,
   switch: SwitchField,
-  object: ObjectField
+  object: ObjectField,
+  hidden: HiddenField
 }
