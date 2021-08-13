@@ -11,12 +11,17 @@ export default class NumberFieldComponent extends NumberField {
         const {
             value,
             onChange,
-            step
+            step,
+            readonly,
+            precision,
+            disabled
         } = props
         return (
             <InputNumber
                 style={{ width: '100%' }}
-                {...props}
+                readOnly={readonly}
+                disabled={disabled}
+                precision={precision}
                 value={value}
                 step={step}
                 onChange={async (e) => {
