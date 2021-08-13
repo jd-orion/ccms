@@ -15,12 +15,12 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
       onChange,
       disabled
     } = props
-
+    
     return (
       <Select
         disabled={disabled}
         value={value}
-        onChange={(value) => onChange(value)}
+        onChange={(value) => {onChange(value);console.log(value)}}
         style={{ minWidth: '100px' }}
         dropdownMatchSelectWidth={false}
         mode='multiple'
