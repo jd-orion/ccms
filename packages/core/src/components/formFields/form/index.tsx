@@ -92,6 +92,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
   validate = async (): Promise<true | FieldError[]> => {
     const {
       config: {
+        label,
         required,
         fields
       },
@@ -101,8 +102,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     const errors: FieldError[] = []
 
     if (getBoolean(required)) {
-      if (value.length === 0) {
-        errors.push(new FieldError('不能为空'))
+      if (value === undefined || (value && value.length === 0)) {
+        errors.push(new FieldError(`请设置${label}`))
       }
     }
 
@@ -360,7 +361,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                 return <div ref={(e) => this.handleMount(index)} key={index} >
 
                   {mode === 'show' &&
-                    <div onClick={() => this.showItemFn(index)} style={{ height: '30px', cursor: 'pointer', background: '#f1f1f1', padding: '5px', marginBottom: showItem && index === showIndex ? '10px' : 0 }}>
+                    <div onClick={() => this.showItemFn(index)} style={{ cursor: 'pointer', background: '#f1f1f1', padding: '5px', marginBottom: showItem && index === showIndex ? '10px' : 0 }}>
                       {itemValue.label || (modeValue && itemValue[modeValue]) || (index + 1)}
                       <div style={{ float: 'right' }}>
                         <span onClick={() => this.handleRemove(index)} style={{ textDecoration: 'underline', color: '#7e93a9' }}>删除</span>

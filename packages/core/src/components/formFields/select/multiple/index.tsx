@@ -41,6 +41,7 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
       } else if (multiple?.type === 'split') {
         return ''
       }
+      return undefined
     } else {
       if (multiple === true || multiple?.type === 'array') {
         if (Array.isArray(defaults)) {
@@ -51,9 +52,8 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
       } else if (multiple?.type === 'split') {
         return String(defaults)
       }
+      return defaults
     }
-
-    return undefined
   }
 
   validate = async (_value: string | Array<string | number> | undefined): Promise<true | FieldError[]> => {
@@ -67,7 +67,7 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
     const errors: FieldError[] = []
 
     if (getBoolean(required)) {
-      if (_value === '' || _value === undefined) {
+      if (_value === '' || _value === undefined || (_value && _value.length === 0)) {
         errors.push(new FieldError(`请选择${label}`))
       }
     }
@@ -129,10 +129,12 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
         props.value = undefined
         console.warn('字符串分隔类型的多项选择框的值需要是字符串。')
       }
+    } else {
+      props.value = Array.isArray(value) ? value : undefined
     }
 
     if (props.value !== undefined) {
-      props.value = props.value.filter((v) => {
+      props.value.filter((v) => {
         if (props.options.map((option) => option.value).includes(v.toString())) {
           return true
         } else {

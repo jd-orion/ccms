@@ -3,7 +3,7 @@ import QueryString from 'query-string'
 import { Field, FieldConfigs } from '../../components/formFields/common'
 import Step, { StepConfig, StepProps } from '../common'
 import getALLComponents from '../../components/formFields'
-import { getParamText, getValue } from '../../util/value'
+import { getBoolean, getParamText, getValue } from '../../util/value'
 import * as _ from 'lodash'
 import { set } from '../../util/request'
 
@@ -81,7 +81,7 @@ export interface IFormItem {
 interface FormState {
   ready: boolean
   formValue: { [field: string]: any }
-  formData: { [field: string]: { value: any, status: 'normal' | 'error' | 'loading', message?: string } }
+  formData: { [field: string]: { value: any, status: 'normal' | 'error' | 'loading', message?: string, name: string } }
 }
 
 /**
@@ -93,7 +93,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
   // 各表单项所使用的UI组件的实例
   formValue: { [field: string]: any } = {}
-  formData: { [field: string]: { value: any, status: 'normal' | 'error' | 'loading', message?: string } } = {}
+  formData: { [field: string]: { value: any, status: 'normal' | 'error' | 'loading', message?: string, name: string } } = {}
   formFields: Array<Field<FieldConfigs, {}, any> | null> = []
   formFieldsMounted: Array<boolean> = []
 
@@ -101,7 +101,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
    * 初始化表单的值
    * @param props
    */
-  constructor (props: StepProps<FormConfig>) {
+  constructor(props: StepProps<FormConfig>) {
     super(props)
     this.state = {
       ready: false,
@@ -174,11 +174,11 @@ export default class FormStep extends Step<FormConfig, FormState> {
       }
 
       this.formValue = formDefault
-
+      this.formData = {}
       for (const formFieldIndex in formFieldsConfig) {
         const formFieldConfig = formFieldsConfig[formFieldIndex]
         const value = getValue(formDefault, formFieldConfig.field)
-        set(this.formData, formFieldConfig.field, { value, status: 'normal' })
+        set(this.formData, formFieldConfig.field, { value, status: 'normal', name: formFieldConfig.label })
       }
     }
 
@@ -210,15 +210,16 @@ export default class FormStep extends Step<FormConfig, FormState> {
       if (formField) {
         const formFieldConfig = formFieldsConfig[formFieldIndex]
         let value = getValue(this.formValue, formFieldConfig.field)
-        if (formFieldConfig.default) {
+        if ((value === undefined || value === '' || value === null) && formFieldConfig.default) {
           value = await formField.reset()
         }
         const validation = await formField.validate(value)
         set(this.formValue, formFieldConfig.field, value)
         if (validation === true) {
-          set(this.formData, formFieldConfig.field, { value, status: 'normal' })
+          set(this.formData, formFieldConfig.field, { value, status: 'normal', name: formFieldConfig.label })
         } else {
-          // setValue(this.formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message })
+          // 首次进入不显示错误提示
+          // set(this.formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message })
         }
       }
     }
@@ -340,7 +341,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
     </React.Fragment>
   }
 
-  render () {
+  render() {
     const {
       data,
       step
@@ -405,37 +406,37 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 layout,
                 fieldType: formFieldConfig.type,
                 children: (
-                    <FormField
-                      key={formFieldIndex}
-                      ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                        if (formFieldIndex !== null) {
-                          this.formFields[formFieldIndex] = formField
-                          this.handleFormFieldMount(formFieldIndex)
-                        }
-                      }}
-                      formLayout={layout}
-                      value={formFieldConfig.field !== undefined ? getValue(formValue, formFieldConfig.field) : undefined}
-                      record={formValue}
-                      data={_.cloneDeep(data)}
-                      step={step}
-                      config={formFieldConfig}
-                      onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
-                    />
+                  <FormField
+                    key={formFieldIndex}
+                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
+                      if (formFieldIndex !== null) {
+                        this.formFields[formFieldIndex] = formField
+                        this.handleFormFieldMount(formFieldIndex)
+                      }
+                    }}
+                    formLayout={layout}
+                    value={formFieldConfig.field !== undefined ? getValue(formValue, formFieldConfig.field) : undefined}
+                    record={formValue}
+                    data={_.cloneDeep(data)}
+                    step={step}
+                    config={formFieldConfig}
+                    onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
+                  />
                 )
               }
               // 渲染表单项容器
               return (
                 hidden
-                  ? <div key={formFieldIndex} style={display
+                  ? <div key={formFieldIndex} className='ccms_item' style={display
                     ? { position: 'relative' }
                     : {
-                        overflow: 'hidden',
-                        height: 0,
-                        width: 0
-                      }}>
-                  <span style={{ color: '#ff7070', float: 'left', width: '9px', paddingTop: '5px' }}>{`${formFieldConfig.required ? '*' : ''}`}</span>
-                  {this.renderItemComponent(renderData)}
-                </div>
+                      overflow: 'hidden',
+                      height: 0,
+                      width: 0
+                    }}>
+                    <span style={{ color: '#ff7070', float: 'left', width: '9px', paddingTop: '5px' }}>{`${getBoolean(formFieldConfig.required) ? '*' : ''}`}</span>
+                    {this.renderItemComponent(renderData)}
+                  </div>
                   : <></>
               )
             })

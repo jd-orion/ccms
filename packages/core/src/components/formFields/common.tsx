@@ -223,7 +223,7 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
 
 export class FieldError {
   message: string
-  constructor (message: string) {
+  constructor(message: string) {
     this.message = message
   }
 }

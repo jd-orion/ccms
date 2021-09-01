@@ -19,8 +19,8 @@ export interface ISelectSingleField {
 
 export default class SelectSingleField extends SelectField<SelectSingleFieldConfig, {}, string | number | undefined> {
   reset = async () => {
-    const defaults = await this.defaultValue()
-
+    const { value } = this.props
+    let defaults = await this.defaultValue()
     if (defaults === undefined) {
       const {
         config: {
@@ -53,17 +53,17 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
             }
           }
         })
-        return options.defaultIndex === undefined ? undefined : interfaceOptionsData[options.defaultIndex || 0].value
+        defaults = options.defaultIndex === undefined ? undefined : interfaceOptionsData[options.defaultIndex || 0].value
       }
-      return undefined
+      defaults = undefined
     } else {
-      if (typeof defaults === 'string' || typeof defaults === 'number') {
-        return defaults
-      } else {
+      if (typeof defaults !== 'string' || typeof defaults !== 'number') {
         console.warn('单项选择框的值需要是字符串或数值。')
-        return undefined
+        defaults = undefined
       }
     }
+
+    return value || defaults
   }
 
   validate = async (_value: string | number | undefined): Promise<true | FieldError[]> => {
@@ -77,7 +77,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
     const errors: FieldError[] = []
 
     if (getBoolean(required)) {
-      if (_value === '' || _value === undefined) {
+      if (_value === '' || _value === undefined || (_value && _value.toString().length === 0)) {
         errors.push(new FieldError(`请选择${label}`))
       }
     }
