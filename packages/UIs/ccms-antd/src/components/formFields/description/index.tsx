@@ -11,7 +11,6 @@ export default class DescFieldComponent extends DescField {
       link,
       style
     } = props
-    console.log(desc)
     return (
       <div style={{ ...style }}>
         {link

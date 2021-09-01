@@ -50,7 +50,6 @@ export default class UploadFieldComponent extends UploadField {
                         action={uploadUrl || ""}
                         beforeUpload={async (file) => {
                             const rs: any = await beforeUpload(file);
-                            console.log(rs, 'beforeUpload')
                             if (rs?.type === false) message.error(rs?.err || "上传内容不符合，请重新上传")
                             return rs.type
                         }}
@@ -70,16 +69,18 @@ export default class UploadFieldComponent extends UploadField {
                         <div className='ccms-upload-image'>{this.uploadButton(value, uploadImagePrefix, props)}</div>
                     </AntdUpload>
 
-                    <a href={imgUrl} target={"_blank"} rel="noreferrer">
-                        <div style={{
-                            marginLeft: '10px',
-                            height: '35px',
-                            width: '35px',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: 'contain',
-                            backgroundImage: `url(${imgUrl})`
-                        }} />
-                    </a>
+                    {
+                        imgUrl && <a href={imgUrl} target={"_blank"} rel="noreferrer">
+                            <div style={{
+                                marginLeft: '10px',
+                                height: '35px',
+                                width: '35px',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundSize: 'contain',
+                                backgroundImage: `url(${imgUrl})`
+                            }} />
+                        </a>
+                    }
                 </div>
             </div>
         );

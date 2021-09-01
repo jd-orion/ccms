@@ -13,7 +13,7 @@ import 'antd/lib/space/style/index.css'
 export default class FormFieldComponent extends FormField {
   getFormFields = (type: string) => FormFields[type]
 
-  remove: () => Promise<void> = async () => {}
+  remove: () => Promise<void> = async () => { }
 
   renderItemFieldComponent = (props: IFormFieldItemField) => {
     const {
@@ -39,7 +39,7 @@ export default class FormFieldComponent extends FormField {
     return (
       <Form.Item
         label={label}
-        validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
+        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={message}
         {...formItemProps}
       >
@@ -58,9 +58,11 @@ export default class FormFieldComponent extends FormField {
     return (
       <div>
         {children}
-        <Form.Item wrapperCol={{ span: 4, offset: 14 }}>
-          <Button block danger type='dashed' icon={<MinusCircleOutlined />} onClick={() => onRemove()}>{removeText}</Button>
-        </Form.Item>
+        {
+          removeText && <Form.Item wrapperCol={{ span: 4, offset: 14 }}>
+            <Button block danger type='dashed' icon={<MinusCircleOutlined />} onClick={() => onRemove()}>{removeText}</Button>
+          </Form.Item>
+        }
       </div>
     )
   }
