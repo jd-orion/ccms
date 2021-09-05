@@ -252,7 +252,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
           const submitFieldFormat = await formField.fieldFormat()
           if (validation !== true) {
             console.warn('表单项中存在问题', value, formFieldConfig)
-            set(this.formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message })
+            set(this.formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message, name: formFieldConfig.label })
             await this.setState({
               formData: _.cloneDeep(this.formData)
             })
@@ -304,9 +304,9 @@ export default class FormStep extends Step<FormConfig, FormState> {
       const validation = await formField.validate(value)
       set(this.formValue, formFieldConfig.field, value)
       if (validation === true) {
-        set(this.formData, formFieldConfig.field, { value, status: 'normal' })
+        set(this.formData, formFieldConfig.field, { value, status: 'normal', name: formFieldConfig.label })
       } else {
-        set(this.formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message })
+        set(this.formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message, name: formFieldConfig.label })
       }
 
       await this.setState({
