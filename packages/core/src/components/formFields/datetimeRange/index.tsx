@@ -9,6 +9,7 @@ export interface DatetimeRangeFieldConfig extends FieldConfig, FieldInterface {
     format?: string
     submitFormat?: string
     submitFormatMode?: 'comma' | 'array'
+    placeholder?: string
     fieldRange?: string
 }
 
@@ -17,6 +18,7 @@ export interface IDatetimeRangeField {
     format?: string
     disabled?: boolean
     readonly?: boolean
+    placeholder?: string
     onChange: (value: IDatetimeRangeField['value']) => Promise<void>
 }
 
@@ -153,7 +155,8 @@ export default class DatetimeRangeField extends Field<DatetimeRangeFieldConfig, 
         config: {
           format,
           disabled,
-          readonly
+          readonly,
+          placeholder
         },
         onChange
       } = this.props
@@ -164,6 +167,7 @@ export default class DatetimeRangeField extends Field<DatetimeRangeFieldConfig, 
                   format,
                   disabled: getBoolean(disabled),
                   readonly: getBoolean(readonly),
+                  placeholder,
                   onChange: async (value: IDatetimeRangeField['value']) => onChange(value)
                 })}
             </React.Fragment>

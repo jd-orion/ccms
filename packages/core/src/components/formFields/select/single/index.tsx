@@ -7,7 +7,7 @@ import { getBoolean, getValue } from '../../../../util/value'
 export interface SelectSingleFieldConfig extends SelectFieldConfig {
   type: 'select_single'
   mode?: 'dropdown' | 'radio' | 'button'
-
+  placeholder?: string
 }
 
 export interface ISelectSingleField {
@@ -15,6 +15,7 @@ export interface ISelectSingleField {
   options: Array<ISelectFieldOption>
   onChange: (value: string | number) => Promise<void>
   disabled: boolean
+  placeholder?: string
 }
 
 export default class SelectSingleField extends SelectField<SelectSingleFieldConfig, {}, string | number | undefined> {
@@ -118,7 +119,8 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       config: {
         mode = 'dropdown',
         options: optionsConfig,
-        disabled
+        disabled,
+        placeholder
       },
       onChange,
       record,
@@ -130,7 +132,8 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       value: undefined,
       options: this.options(optionsConfig, { record, data, step }),
       onChange: async (value) => { await onChange(value) },
-      disabled: getBoolean(disabled)
+      disabled: getBoolean(disabled),
+      placeholder
     }
 
     if (typeof value === 'string' || typeof value === 'number') {

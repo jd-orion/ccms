@@ -7,6 +7,7 @@ export interface SelectMultipleFieldConfig extends SelectFieldConfig {
   type: 'select_multiple'
   mode?: 'dropdown' | 'checkbox'
   multiple?: true | SelectMultipleArrayConfig | SelectMultipleSplitConfig
+  placeholder?: string
 }
 
 interface SelectMultipleArrayConfig {
@@ -23,6 +24,7 @@ export interface ISelectMultipleField {
   options: Array<ISelectFieldOption>
   onChange: (value: Array<string | number>) => Promise<void>
   disabled: boolean
+  placeholder?: string
 }
 
 export default class SelectMultipleField extends SelectField<SelectMultipleFieldConfig, {}, string | Array<string | number> | undefined> {
@@ -100,7 +102,8 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
         mode = 'dropdown',
         multiple,
         options: optionsConfig,
-        disabled
+        disabled,
+        placeholder
       },
       onChange,
       record,
@@ -112,7 +115,8 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
       value: undefined,
       options: this.options(optionsConfig, { record, data, step }),
       onChange: async (value) => { await onChange(value) },
-      disabled: getBoolean(disabled)
+      disabled: getBoolean(disabled),
+      placeholder
     }
 
     if (multiple === true || multiple?.type === 'array') {

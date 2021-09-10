@@ -1,6 +1,6 @@
 {
   "name": "ccms",
-  "version": "1.0.8-beta13",
+  "version": "1.0.8-beta18",
   "description": "ConfigableCMS",
   "main": "lib/index.js",
   "module": "dist/index.js",

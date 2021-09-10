@@ -93,7 +93,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
   // 各表单项所使用的UI组件的实例
   formValue: { [field: string]: any } = {}
-  formData: { [field: string]: { value: any, status: 'normal' | 'error' | 'loading', message?: string, name: string } } = {}
+  formData: { [field: string]: { value: any, status: 'normal' | 'error' | 'loading', message?: string, name: string, hidden: boolean } } = {}
   formFields: Array<Field<FieldConfigs, {}, any> | null> = []
   formFieldsMounted: Array<boolean> = []
 
@@ -266,6 +266,10 @@ export default class FormStep extends Step<FormConfig, FormState> {
               set(data, formFieldConfig.field, value)
             }
           }
+          if (this.formData[formFieldConfig.field]?.hidden === false) {
+            // 页面不显示的数据在提交数据时清空
+            delete data[formFieldConfig.field]
+          }
         }
       }
     }
@@ -308,13 +312,20 @@ export default class FormStep extends Step<FormConfig, FormState> {
       } else {
         set(this.formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message, name: formFieldConfig.label })
       }
-
+      console.log(this.formData[formFieldConfig.field], 'this.formData[formFieldConfig.field]')
       await this.setState({
         formValue: _.cloneDeep(this.formValue),
         formData: _.cloneDeep(this.formData)
       })
       if (onChange) {
-        onChange(this.formValue)
+        const data: { [key: string]: any } = {}
+        for (const theValue in this.formValue) {
+          if (this.formData[theValue]?.hidden !== false) {
+            // 页面不显示的数据在提交数据时清空
+            data[theValue] = this.formValue[theValue]
+          }
+        }
+        onChange(data)
       }
     }
   }
@@ -395,6 +406,11 @@ export default class FormStep extends Step<FormConfig, FormState> {
               if (formFieldConfig.display === 'none') {
                 hidden = true
                 display = false
+              }
+
+              // 隐藏项同时打标录入数据并清空填写项
+              if (hidden === false) {
+                set(this.formData, formFieldConfig.field, { value: this.formValue[formFieldConfig.field], status: 'normal', name: formFieldConfig.label, hidden })
               }
 
               const FormField = this.getALLComponents(formFieldConfig.type) || React.Fragment
