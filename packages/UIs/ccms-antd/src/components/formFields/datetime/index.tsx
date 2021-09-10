@@ -20,7 +20,7 @@ export default class DatetimeFieldComponent extends DatetimeField {
                 {...props}
                 value={value ? moment(value) : null}
                 picker={mode || 'date'}
-                placeholder={placeholder}
+                placeholder={placeholder || '选择时间'}
                 onChange={async (time) => {
                   const rs = time === null ? '' : moment(time).format()
                   await onChange(rs)

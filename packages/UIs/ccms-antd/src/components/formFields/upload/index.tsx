@@ -41,7 +41,7 @@ export default class UploadFieldComponent extends UploadField {
             getValue
         } = props
 
-        const imgUrl = `${uploadImagePrefix || ''}${value}`
+        const imgUrl = `${uploadImagePrefix || ''}${value || ''}`
         return (
             <div>
                 <div style={{ display: 'flex' }}>
@@ -61,7 +61,7 @@ export default class UploadFieldComponent extends UploadField {
                             if (response?.code === -1 || !rs) {
                                 // message.error(response?.msg || '系统异常')
                             }
-                            onChange(rs)
+                            rs && onChange(rs)
                         }}
                         className='ccms-upload'
                         {...{ disabled: disabled || readonly }}

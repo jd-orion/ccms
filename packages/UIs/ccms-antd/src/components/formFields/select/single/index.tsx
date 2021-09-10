@@ -13,12 +13,14 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
       value,
       options,
       onChange,
-      disabled
+      disabled,
+      placeholder
     } = props
 
     return (
       <Select
         disabled={disabled}
+        placeholder={placeholder}
         value={value}
         onChange={(value) => onChange(value)}
         dropdownMatchSelectWidth={false}

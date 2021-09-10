@@ -13,12 +13,14 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
       value,
       options,
       onChange,
-      disabled
+      disabled,
+      placeholder
     } = props
     
     return (
       <Select
         disabled={disabled}
+        placeholder={placeholder}
         value={value}
         onChange={(value) => onChange(value)}
         style={{ minWidth: '100px' }}

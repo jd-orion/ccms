@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button } from 'antd'
-import { SketchPicker } from 'react-color'
+import { ChromePicker } from 'react-color'
 import style from './style.js'
 
 type Props = {
@@ -17,38 +17,56 @@ export default class ColorComponent extends Component<Props, {}> {
 
   state = {
     show: false,
-    color: this.props.value || ''
+    color: this.props.value || '#ffffff',
+    position: { top: '10', left: '50' }
   }
 
   onChange = () => {
     const { onChange } = this.props
-    this.showPicker(false)
+    this.showPicker(false, '')
     onChange && onChange(this.state.color)
   }
 
-  showPicker = (type: boolean) => {
+  showPicker = (type: boolean, e: any) => {
     const { readonly, disabled } = this.props
     if (readonly || disabled) return
-    this.setState({ show: type })
+
+    if (e) {
+      this.setState({
+        position: {
+          top: e.clientY,
+          left: e.clientX
+        }
+      })
+    }
+
+    this.setState({
+      show: type
+    })
   }
 
   render() {
-    const { show, color } = this.state
+    const { show, color, position } = this.state
     const { value } = this.props
-
     return <div className="color-input" style={style.color_input as React.CSSProperties}>
-      <div className="color-dom" onClick={() => this.showPicker(true)} style={style.color_dom}>
+      <div className="color-dom" onClick={(e) => this.showPicker(true, e)} style={style.color_dom}>
         <div style={{ backgroundColor: value, width: '100%', height: '100%' }} />
       </div>
+      <div>{value}</div>
       {
-        show && <div className="color-picker" style={style.color_picker as React.CSSProperties}>
-          <SketchPicker color={color} onChange={(color) => {
+        show && <div className="color-picker" style={{
+          backgroundColor: '#fff',
+          padding: '10px',
+          position: 'fixed',
+          zIndex: 1000, top: `${position.top}px`, left: `${position.left}px`
+        } as React.CSSProperties}>
+          <ChromePicker color={color} onChange={(color) => {
             this.setState({
               color: color.hex
             })
           }} />
           <div style={style.btn}>
-            <Button onClick={() => this.showPicker(false)}>取消</Button>
+            <Button onClick={() => this.showPicker(false, '')}>取消</Button>
             <Button onClick={this.onChange}>确定</Button>
           </div>
         </div>
