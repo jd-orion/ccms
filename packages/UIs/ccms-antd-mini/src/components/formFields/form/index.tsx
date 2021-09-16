@@ -8,11 +8,11 @@ import 'antd/lib/space/style/index.css'
 import 'antd/lib/divider/style/index.css'
 import 'antd/lib/button/style/index.css'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
-import FormFields from '../'
+import getALLComponents from '../'
 import styles from './index.less'
 
 export default class FormFieldComponent extends FormField {
-  getFormFields = (type: string) => FormFields[type]
+  getALLComponents = (type: any) => getALLComponents[type]
 
   remove: () => Promise<void> = async () => { }
 
@@ -62,7 +62,10 @@ export default class FormFieldComponent extends FormField {
         header={title}
         key={index}
         forceRender={false}
-        extra={(<DeleteOutlined onClick={() => onRemove()} />)}
+        extra={(<DeleteOutlined onClick={(e) => {
+          e.stopPropagation()
+          onRemove()
+        }} />)}
       >
         {children}
       </Collapse.Panel>
