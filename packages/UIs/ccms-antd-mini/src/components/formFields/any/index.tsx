@@ -4,12 +4,14 @@ import { AnyField } from 'ccms';
 import { IAnyField, AnyFieldConfig, IAnyTypeField } from "ccms/dist/src/components/formFields/any";
 import TextField from '../text'
 import NumberField from '../number'
+import BooleanField from '../switch'
 
 export const PropsType = (props: AnyFieldConfig) => { };
 
 export default class AnyFieldComponent extends AnyField {
   TextField = TextField
   NumberField = NumberField
+  BooleanField = BooleanField
 
   renderTypeComponent = (props: IAnyTypeField) => {
     return (
