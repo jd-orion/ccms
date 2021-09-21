@@ -16,10 +16,9 @@ export default {
     marginRight: '10px'
   },
   color_picker: {
-    backgroundColor: '#fff',
+    backgroundColor: '#fffff',
     padding: '10px',
-    position: 'fixed',
-    top: 0,
+    // position: 'fixed',
     zIndex: 1000
   },
   btn: {

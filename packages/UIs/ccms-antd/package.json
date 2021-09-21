@@ -1,6 +1,6 @@
 {
   "name": "ccms-antd",
-  "version": "1.0.8-beta18",
+  "version": "1.0.9-beta4",
   "description": "ConfigableCMS",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",

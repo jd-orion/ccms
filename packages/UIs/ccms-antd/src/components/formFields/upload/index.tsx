@@ -6,6 +6,7 @@ export const PropsType = (props: UploadFieldConfig) => { };
 import 'antd/lib/upload/style/index.css'
 
 export default class UploadFieldComponent extends UploadField {
+    file: any
     uploadButton = (value: string, prefix: string, props: any) => {
         const imgUrl = `${prefix || ''}${value}`
         return value ?
@@ -13,7 +14,6 @@ export default class UploadFieldComponent extends UploadField {
                 <div>
                     <Button>重新上传</Button>
                 </div>
-                {props.placeholder && <p style={{ color: '#888' }}>{props.placeholder}</p>}
                 {
                     props.showURL && <div>
                         <hr />
@@ -24,7 +24,6 @@ export default class UploadFieldComponent extends UploadField {
             :
             <div>
                 <Button>点击上传</Button>
-                {props.placeholder && <p style={{ color: '#888' }}>{props.placeholder}</p>}
             </div>
     }
 
@@ -50,7 +49,12 @@ export default class UploadFieldComponent extends UploadField {
                         action={uploadUrl || ""}
                         beforeUpload={async (file) => {
                             const rs: any = await beforeUpload(file);
-                            if (rs?.type === false) message.error(rs?.err || "上传内容不符合，请重新上传")
+                            if (value && rs.type) onChange('')
+                            rs.type && (this.file = file)
+                            if (rs?.type === false) {
+                                message.error(rs?.err || "上传内容不符合，请重新上传");
+                                onChange('')
+                            }
                             return rs.type
                         }}
                         showUploadList={false}
@@ -58,10 +62,11 @@ export default class UploadFieldComponent extends UploadField {
                         onChange={async (e) => {
                             const response = e.file.response
                             const rs = getValue && await getValue(e.file.response)
-                            if (response?.code === -1 || !rs) {
-                                // message.error(response?.msg || '系统异常')
+                            if (response?.code === -1) {
+                                message.error(response?.msg || '系统异常')
+                            } else {
+                                rs && onChange(rs)
                             }
-                            rs && onChange(rs)
                         }}
                         className='ccms-upload'
                         {...{ disabled: disabled || readonly }}
@@ -77,11 +82,14 @@ export default class UploadFieldComponent extends UploadField {
                                 width: '35px',
                                 backgroundRepeat: 'no-repeat',
                                 backgroundSize: 'contain',
-                                backgroundImage: `url(${imgUrl})`
+                                backgroundImage: `url(${imgUrl})`,
+                                float: 'left'
                             }} />
+                            {this.file ? this.file?.name : ''}
                         </a>
                     }
                 </div>
+                {props.placeholder && <p style={{ color: '#888' }}>{props.placeholder}</p>}
             </div>
         );
     }

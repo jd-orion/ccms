@@ -14,7 +14,8 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
       value,
       onChange,
       format,
-      placeholder
+      placeholder,
+      showTime
     } = props
     const theValue: any = []
     if (value) {
@@ -27,8 +28,8 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
       <RangePicker
         placeholder={[theplaceholder, theplaceholder]}
         value={theValue}
-        showTime={true}
         format={format}
+        showTime={showTime}
         onChange={async (time) => {
           const changeValue: any = []
           if (time) {

@@ -4,6 +4,7 @@ import { ICCMS, CCMSProps } from 'ccms/dist/src/main'
 import { PageHeader, Space } from 'antd'
 import StepComponents from './steps'
 import './style'
+
 export default class CCMSComponent extends CCMS {
   getStepComponent = (key: string) => StepComponents[key]
 

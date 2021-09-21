@@ -30,13 +30,21 @@ export default class ColorComponent extends Component<Props, {}> {
   showPicker = (type: boolean, e: any) => {
     const { readonly, disabled } = this.props
     if (readonly || disabled) return
-
     if (e) {
-      this.setState({
-        position: {
-          top: e.clientY,
-          left: e.clientX
+      let position;
+      if (document.body.clientHeight - e.clientY > 421) {
+        position = {
+          top: `${e.clientY}px`,
+          left: `${e.clientX}px`
         }
+      } else {
+        position = {
+          bottom: `0px`,
+          left: `${e.clientX}px`
+        }
+      }
+      this.setState({
+        position
       })
     }
 
@@ -54,12 +62,7 @@ export default class ColorComponent extends Component<Props, {}> {
       </div>
       <div>{value}</div>
       {
-        show && <div className="color-picker" style={{
-          backgroundColor: '#fff',
-          padding: '10px',
-          position: 'fixed',
-          zIndex: 1000, top: `${position.top}px`, left: `${position.left}px`
-        } as React.CSSProperties}>
+        show && <div className="color-picker" style={{ ...style.color_picker, position: 'fixed', ...position }}>
           <ChromePicker color={color} onChange={(color) => {
             this.setState({
               color: color.hex
