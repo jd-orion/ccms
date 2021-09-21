@@ -312,7 +312,6 @@ export default class FormStep extends Step<FormConfig, FormState> {
       } else {
         set(this.formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message, name: formFieldConfig.label })
       }
-      console.log(this.formData[formFieldConfig.field], 'this.formData[formFieldConfig.field]')
       await this.setState({
         formValue: _.cloneDeep(this.formValue),
         formData: _.cloneDeep(this.formData)

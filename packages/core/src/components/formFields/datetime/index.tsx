@@ -23,6 +23,7 @@ export interface IDatetimeField {
     mode?: 'time' | 'date' | 'month' | 'year'
     placeholder?: string
     onChange: (value: string) => Promise<void>
+    showTime: boolean
 }
 
 export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeField, string> implements IField<string> {
@@ -100,6 +101,7 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
         },
         onChange
       } = this.props
+      const showTime = !(format === 'YYYY-MM-DD' || format === '')
       return (
             <React.Fragment>
                 {this.renderComponent({
@@ -109,6 +111,7 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
                   disabled: getBoolean(disabled),
                   readonly: getBoolean(readonly),
                   placeholder,
+                  showTime,
                   onChange: async (value: string) => onChange(value)
                 })}
             </React.Fragment>

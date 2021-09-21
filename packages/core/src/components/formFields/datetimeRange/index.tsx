@@ -19,6 +19,7 @@ export interface IDatetimeRangeField {
     disabled?: boolean
     readonly?: boolean
     placeholder?: string
+    showTime: boolean
     onChange: (value: IDatetimeRangeField['value']) => Promise<void>
 }
 
@@ -160,6 +161,7 @@ export default class DatetimeRangeField extends Field<DatetimeRangeFieldConfig, 
         },
         onChange
       } = this.props
+      const showTime = !(format === 'YYYY-MM-DD' || format === '')
       return (
             <React.Fragment>
                 {this.renderComponent({
@@ -168,6 +170,7 @@ export default class DatetimeRangeField extends Field<DatetimeRangeFieldConfig, 
                   disabled: getBoolean(disabled),
                   readonly: getBoolean(readonly),
                   placeholder,
+                  showTime,
                   onChange: async (value: IDatetimeRangeField['value']) => onChange(value)
                 })}
             </React.Fragment>

@@ -58,8 +58,10 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
     const rsvalue = value
 
     const errors: FieldError[] = []
+    console.log(this.err, 'this.err')
     if (this.err) {
       errors.push(new FieldError(`${this.err}`))
+      if (!getBoolean(required)) { return true }
       return errors
     }
 
@@ -74,7 +76,6 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
 
   beforeUpload = async (file: any) => {
     const {
-      value,
       config
     } = this.props
     this.err = ''
@@ -82,7 +83,6 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
     const imgType = file.type.indexOf('jpg') >= 0 || file.type.indexOf('png') >= 0 || file.type.indexOf('jpeg') >= 0
     if (!imgType) {
       this.err = `${config.label}只能上传图片`
-      this.validate(value)
       return {
         err: this.err,
         type: false
@@ -116,7 +116,6 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
         }
 
         this.err = `文件大小超过${sizeString}`
-        this.validate(value)
         return {
           err: this.err,
           type: false
@@ -143,7 +142,6 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
         await checkSize()
       } catch (e) {
         this.err = `图片尺寸需要：${imageWidth}×${imageHeight}px`
-        this.validate(value)
         return {
           err: this.err,
           type: false
@@ -161,7 +159,8 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
       config: {
         resposeName,
         uploadImagePrefix
-      }
+      },
+      onChange
     } = this.props
     if (typeof file === 'string') {
       try {
@@ -171,9 +170,12 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
       }
     }
     const imgUrl = `${resposeName ? getValue(file, `${resposeName}`) || '' : ''}`
+    console.log(imgUrl, 'imgurl')
     if (imgUrl === '') return ''
 
     const rs = `${uploadImagePrefix || ''}${imgUrl}`
+    this.validate(rs)
+    onChange(rs)
     return rs
   }
 
