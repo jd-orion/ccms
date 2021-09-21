@@ -18,7 +18,6 @@ export default {
   color_picker: {
     backgroundColor: '#fffff',
     padding: '10px',
-    // position: 'fixed',
     zIndex: 1000
   },
   btn: {

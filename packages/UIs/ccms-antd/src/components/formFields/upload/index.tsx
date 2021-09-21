@@ -2,6 +2,7 @@ import React from "react";
 import { UploadField } from 'ccms';
 import { Upload as AntdUpload, message, Button } from 'antd'
 import { IUploadField, UploadFieldConfig } from "ccms/dist/src/components/formFields/upload";
+import { PaperClipOutlined } from '@ant-design/icons'
 export const PropsType = (props: UploadFieldConfig) => { };
 import 'antd/lib/upload/style/index.css'
 
@@ -49,7 +50,7 @@ export default class UploadFieldComponent extends UploadField {
                         action={uploadUrl || ""}
                         beforeUpload={async (file) => {
                             const rs: any = await beforeUpload(file);
-                            if (value && rs.type) onChange('')
+                            if (value && rs.type) onChange('loading')
                             rs.type && (this.file = file)
                             if (rs?.type === false) {
                                 message.error(rs?.err || "上传内容不符合，请重新上传");
@@ -64,6 +65,7 @@ export default class UploadFieldComponent extends UploadField {
                             const rs = getValue && await getValue(e.file.response)
                             if (response?.code === -1) {
                                 message.error(response?.msg || '系统异常')
+                                onChange('')
                             } else {
                                 rs && onChange(rs)
                             }
@@ -75,22 +77,21 @@ export default class UploadFieldComponent extends UploadField {
                     </AntdUpload>
 
                     {
-                        imgUrl && <a href={imgUrl} target={"_blank"} rel="noreferrer">
-                            <div style={{
-                                marginLeft: '10px',
-                                height: '35px',
-                                width: '35px',
-                                backgroundRepeat: 'no-repeat',
-                                backgroundSize: 'contain',
-                                backgroundImage: `url(${imgUrl})`,
-                                float: 'left'
-                            }} />
-                            {this.file ? this.file?.name : ''}
+                        imgUrl && <a href={imgUrl} style={{
+                            lineHeight: '30px',
+                            paddingLeft: '10px',
+                            textOverflow: 'ellipsis',
+                            overflow: 'hidden',    
+                            maxWidth: '200px',
+                            whiteSpace: 'nowrap'
+                        }} target={"_blank"} rel="noreferrer">
+                            <PaperClipOutlined />
+                            {this.file ? this.file?.name : imgUrl}
                         </a>
                     }
                 </div>
                 {props.placeholder && <p style={{ color: '#888' }}>{props.placeholder}</p>}
-            </div>
+            </div >
         );
     }
 }
