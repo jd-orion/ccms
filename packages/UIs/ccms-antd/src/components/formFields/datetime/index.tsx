@@ -4,9 +4,10 @@ import { DatePicker } from 'antd'
 import { IDatetimeField, DatetimeFieldConfig } from 'ccms/dist/src/components/formFields/datetime'
 import moment from 'moment'
 import 'antd/lib/date-picker/style/index.css'
-export const PropsType = (props: DatetimeFieldConfig) => { }
 import "moment/locale/zh-cn";
 import locale from 'antd/es/date-picker/locale/zh_CN'
+export const PropsType = (props: DatetimeFieldConfig) => { }
+
 export default class DatetimeFieldComponent extends DatetimeField {
   renderComponent = (props: IDatetimeField) => {
     const {
