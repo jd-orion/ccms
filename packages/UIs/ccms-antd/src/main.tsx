@@ -1,7 +1,7 @@
 import React from 'react'
 import { CCMS } from 'ccms'
 import { ICCMS, CCMSProps } from 'ccms/dist/src/main'
-import { PageHeader, Space } from 'antd'
+import { PageHeader, Space, ConfigProvider } from 'antd'
 import StepComponents from './steps'
 import './style'
 
