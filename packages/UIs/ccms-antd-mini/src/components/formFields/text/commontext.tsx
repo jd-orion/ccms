@@ -13,8 +13,10 @@ export default class TextComponent extends PureComponent<Props, {}> {
   isOnComposition = false
   selectionStart: number | null = null
   selectionEnd: number | null = null
+  timer: NodeJS.Timeout | null = null
 
   state = {
+    wait: false,
     flag: false,
     input: ''
   }
@@ -38,21 +40,30 @@ export default class TextComponent extends PureComponent<Props, {}> {
     })
   }
 
-  setInput = (value: string) => {
-    this.setState({
-      input: value
-    })
-  }
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { onChange } = this.props
-    this.setInput(e.target.value)
+    const value = e.target.value
+
+    this.setState({
+      input: value,
+      wait: true
+    })
     if (this.isOnComposition) return
-    onChange && onChange(e.target.value)
+
+    if (this.timer !== null) clearTimeout(this.timer)
+    this.timer = setTimeout(() => {
+      this.setState({
+        wait: false
+      })
+      if (this.props.onChange) {
+        this.props.onChange(value)
+      }
+
+    }, 500)
   }
 
   render() {
     const { value, readonly, disabled, placeholder } = this.props
-    const { flag, input } = this.state
+    const { wait, flag, input } = this.state
 
     let Component = Input
 
@@ -60,7 +71,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
       readOnly={readonly}
       disabled={disabled}
       placeholder={placeholder}
-      value={!flag ? value : input}
+      value={!flag && !wait ? value : input}
       onCompositionStart={this.handleComposition}
       onCompositionUpdate={this.handleComposition}
       onCompositionEnd={this.handleComposition}
