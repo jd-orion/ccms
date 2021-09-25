@@ -7,21 +7,28 @@ import 'antd/lib/collapse/style/index.css'
 import 'antd/lib/space/style/index.css'
 import 'antd/lib/divider/style/index.css'
 import 'antd/lib/button/style/index.css'
-import { IObjectField, IObjectFieldItem, IObjectFieldItemField, ObjectFieldState } from 'ccms/dist/src/components/formFields/object'
-import FormFields from '../'
+import { IObjectField, IObjectFieldItem, IObjectFieldItemField, ObjectFieldConfig, ObjectFieldState } from 'ccms/dist/src/components/formFields/object'
+import getALLComponents from '../'
 import styles from './index.less'
+import { FieldProps } from 'ccms/dist/src/components/formFields/common'
 
-interface _ObjectFieldState extends ObjectFieldState {
+interface _ObjectFieldState {
   activeKey: string
 }
 
 export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState> {
-  state = {
-    ...this.state,
-    activeKey: ''
-  } as _ObjectFieldState
+  getALLComponents = (type: any) => getALLComponents[type]
 
-  getFormFields = (type: string) => FormFields[type]
+  constructor (props: FieldProps<ObjectFieldConfig, any>) {
+    super(props)
+
+    this.state = {
+      ...this.state,
+      extra: {
+        activeKey: ''
+      }
+    }
+  }
 
   remove: () => Promise<void> = async () => { }
 
@@ -84,7 +91,9 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
             defaultValue={key}
             onBlur={async (e) => {
               this.setState({
-                activeKey: e.target.value
+                extra: {
+                  activeKey: e.target.value
+                }
               })
               await onChange(e.target.value)
             }}
@@ -107,7 +116,9 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
         <div className={styles['ccms-antd-mini-formField-object-before-button']}>
           <Button type="link" icon={<PlusOutlined />} onClick={() => {
             onInsert().then((key) => this.setState({
-              activeKey: key
+              extra: {
+                activeKey: key
+              }
             }))
           }}>{insertText}</Button>
         </div>
@@ -115,12 +126,12 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
           accordion={true}
           bordered={false}
           className={styles['ccms-antd-mini-formField-object']}
-          activeKey={this.state.activeKey}
+          activeKey={this.state.extra?.activeKey}
           onChange={(key) => {
             if (Array.isArray(key)) {
-              this.setState({ activeKey: key[0] })
+              this.setState({ extra: {activeKey: key[0]} })
             } else {
-              this.setState({ activeKey: key })
+              this.setState({ extra: {activeKey: key} })
             }
           }}
         >
@@ -130,7 +141,9 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
           <div className={styles['ccms-antd-mini-formField-object-after-button']}>
             <Button type="link" icon={<PlusOutlined />} onClick={() => {
               onInsert().then((key) => this.setState({
-                activeKey: key
+                extra: {
+                  activeKey: key
+                }
               }))
             }}>{insertText}</Button>
           </div>
