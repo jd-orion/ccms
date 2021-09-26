@@ -6,11 +6,14 @@ import { Form } from "antd"
 import { FormItemProps } from "antd/lib/form";
 import getALLComponents from '../'
 import styles from './index.less'
+import InterfaceHelper from "../../../util/interface";
 
 export const PropsType = (props: ImportSubformFieldConfig) => { };
 
 export default class ImportSubformFieldComponent extends ImportSubformField {
   getALLComponents = (type: any) => getALLComponents[type]
+
+  interfaceHelper = new InterfaceHelper()
 
   renderComponent = (props: IImportSubformField) => {
     const {

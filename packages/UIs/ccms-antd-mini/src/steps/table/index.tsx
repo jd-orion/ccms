@@ -14,30 +14,14 @@ import 'antd/lib/spin/style/index.css'
 import 'antd/lib/pagination/style/index.css'
 import 'antd/lib/tooltip/style/index.css'
 import getALLComponents from '../../components/tableColumns'
-import { IAPIConditionFailModal, IAPIConditionSuccessModal } from 'ccms/dist/src/util/request'
 import CCMS from '../../main'
+import InterfaceHelper from '../../util/interface'
 
 export default class TableStepComponent extends TableStep {
   CCMS = CCMS
   getALLComponents = (type: any) => getALLComponents[type]
 
-  renderOperationColumnCheckSuccessModal = (props: IAPIConditionSuccessModal) => {
-    Modal.success({
-      title: props.message,
-      onOk: () => {
-        props.onOk()
-      }
-    })
-  }
-
-  renderOperationColumnCheckFailModal = (props: IAPIConditionFailModal) => {
-    Modal.error({
-      title: props.message,
-      onOk: () => {
-        props.onOk()
-      }
-    })
-  }
+  interfaceHelper = new InterfaceHelper()
 
   renderOperationColumnConfirm = (props: ITableStepOperationColumnConfirm) => {
     Modal.confirm({
