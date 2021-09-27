@@ -5,7 +5,7 @@ import { TreeSelect } from 'antd';
 import InterfaceHelper from "../../../util/interface";
 
 export default class TreeSelectComponent extends TreeSelectField {
-  interfaceInstance = new InterfaceHelper()
+  interfaceHelper = new InterfaceHelper()
   
   renderComponent = (props: ITreeSelectField) => {
     const {
