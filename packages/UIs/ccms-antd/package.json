@@ -1,7 +1,7 @@
 {
   "name": "ccms-antd",
   "version": "1.0.9-beta10",
-  "description": "更新时间组件汉化",
+  "description": "更新时间组件汉化 belt online",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
