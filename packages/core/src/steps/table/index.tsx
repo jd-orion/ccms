@@ -123,7 +123,7 @@ export interface ITableStepRowOperation {
 /**
  * 表格步骤组件 - 操作 - UI渲染方法 - 入参
  */
- export interface ITableStepTableOperation {
+export interface ITableStepTableOperation {
   children: (React.ReactNode | undefined)[]
 }
 
@@ -241,9 +241,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
 
   /**
    * 执行操作
-   * @param operation 
-   * @param record 
-   * @returns 
+   * @param operation
+   * @param record
+   * @returns
    */
   handleRowOperation = async (operation: TableOperationConfig, record: { [field: string]: any }) => {
     const {
@@ -321,7 +321,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
 
   /**
    * 渲染 操作二次确认弹窗
-   * @param props 
+   * @param props
    */
   renderOperationConfirm = (props: ITableStepOperationConfirm) => {
     const mask = document.createElement('DIV')
@@ -342,8 +342,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
 
   /**
    * 渲染 表格
-   * @param props 
-   * @returns 
+   * @param props
+   * @returns
    */
   renderComponent = (props: ITable) => {
     return <React.Fragment>
@@ -480,9 +480,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
           }
         }
       }),
-      tableOperations: operations && operations.tableOperations ? this.renderTableOperationComponent({ children: operations.tableOperations.map((operation, index) => {
-        if (operation.type === 'button') {
-          return (
+      tableOperations: operations && operations.tableOperations
+        ? this.renderTableOperationComponent({
+          children: operations.tableOperations.map((operation, index) => {
+            if (operation.type === 'button') {
+              return (
             <React.Fragment key={index}>
               {this.renderTableOperationButtonComponent({
                 label: operation.label,
@@ -492,9 +494,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 }
               })}
             </React.Fragment>
-          )
-        } else if (operation.type === 'group') {
-          return (
+              )
+            } else if (operation.type === 'group') {
+              return (
             <React.Fragment key={index}>
               {this.renderTableOperationGroupComponent({
                 label: operation.label,
@@ -507,11 +509,13 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 })
               })}
             </React.Fragment>
-          )
-        } else {
-          return <React.Fragment key={index} />
-        }
-      }) }) : null,
+              )
+            } else {
+              return <React.Fragment key={index} />
+            }
+          })
+        })
+        : null,
       multirowOperations: null
     }
 
@@ -525,7 +529,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         pageSize: Number.isNaN(paginationPageSize) ? 20 : paginationPageSize,
         total: Number.isNaN(paginationTotal) ? 0 : paginationTotal,
         onChange: (page, pageSize) => {
-          this.props.onUnmount(true,{
+          this.props.onUnmount(true, {
             [pagination.current || '']: page,
             [pagination.pageSize || '']: pageSize
           })
@@ -601,12 +605,13 @@ export default class TableStep extends Step<TableConfig, TableState> {
       <React.Fragment>
         {this.renderComponent(props)}
         {operationEnable && (
-          operationTarget === 'current' ? (
-            this.renderOperationModal({
-              title: operationTitle,
-              width,
-              visible: operationVisible,
-              children: (
+          operationTarget === 'current'
+            ? (
+                this.renderOperationModal({
+                  title: operationTitle,
+                  width,
+                  visible: operationVisible,
+                  children: (
                 <CCMS
                   config={operationConfig}
                   sourceData={operationData}
@@ -631,15 +636,16 @@ export default class TableStep extends Step<TableConfig, TableState> {
                     }
                   }}
                 />
-              ),
-              onClose: () => {
-                const { operation } = this.state
-                operation.enable = false
-                operation.visible = false
-                this.setState({ operation })
-              }
-            })
-          ) : (
+                  ),
+                  onClose: () => {
+                    const { operation } = this.state
+                    operation.enable = false
+                    operation.visible = false
+                    this.setState({ operation })
+                  }
+                })
+              )
+            : (
             <CCMS
               config={operationConfig}
               sourceData={operationData}
@@ -664,7 +670,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 }
               }}
             />
-          ) 
+              )
         )}
       </React.Fragment >
     )

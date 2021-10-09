@@ -291,7 +291,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
         {
           this.renderComponent({
             children: (
-              (this.props.config.tabs || []).map((tab, index) => {
+              (this.props.config.tabs || []).map((tab: any, index: number) => {
                 const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[index] || {}).fields || [])
                 return (
                   <React.Fragment key={index}>
