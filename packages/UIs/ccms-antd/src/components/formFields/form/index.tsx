@@ -2,13 +2,9 @@ import React from 'react'
 import { FormField } from 'ccms'
 import { Form, Button, Divider, Space } from 'antd'
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons'
-import { FormItemProps } from 'antd/lib/form'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
 import FormFields from '../'
-import 'antd/lib/button/style/index.css'
-import 'antd/lib/form/style/index.css'
-import 'antd/lib/divider/style/index.css'
-import 'antd/lib/space/style/index.css'
+import { formItemLayout } from '../common'
 
 export default class FormFieldComponent extends FormField {
   getFormFields = (type: string) => FormFields[type]
@@ -25,23 +21,12 @@ export default class FormFieldComponent extends FormField {
       children
     } = props
 
-    const formItemProps: FormItemProps = {}
-    if (layout === 'horizontal') {
-      formItemProps.labelAlign = 'left'
-      formItemProps.labelCol = { span: 4 }
-      formItemProps.wrapperCol = { span: 14 }
-    }
-    if (['form', 'table'].includes(fieldType)) {
-      formItemProps.labelCol = { span: 24 }
-      formItemProps.wrapperCol = { span: 24 }
-    }
-
     return (
       <Form.Item
         label={label}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={message}
-        {...formItemProps}
+        validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
+        help={ message === '' ? null : message}
+        {...formItemLayout(layout, fieldType, label)}
       >
         {children}
       </Form.Item>

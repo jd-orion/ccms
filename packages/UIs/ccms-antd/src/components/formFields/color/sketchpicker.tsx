@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import { Button } from 'antd'
-import { ChromePicker } from 'react-color'
-import style from './style.js'
+import React, { PureComponent } from 'react'
+import { Input } from 'antd'
+import { SketchPicker } from 'react-color'
+import styles from './index.less'
 
 type Props = {
   defaultValue?: string,
@@ -12,22 +12,19 @@ type Props = {
   onChange: (value: string) => Promise<void>
 };
 
-export default class ColorComponent extends Component<Props, {}> {
+export default class ColorComponent extends PureComponent<Props, {}> {
   isOnComposition = false
+  selectionStart: number | null = null
+  selectionEnd: number | null = null
 
   state = {
+    flag: false,
     show: false,
     color: this.props.value || '#ffffff',
     position: { top: '10', left: '50' }
   }
 
-  onChange = () => {
-    const { onChange } = this.props
-    this.showPicker(false, '')
-    onChange && onChange(this.state.color)
-  }
-
-  showPicker = (type: boolean, e: any) => {
+  showPicker = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { readonly, disabled } = this.props
     if (readonly || disabled) return
     if (e) {
@@ -44,36 +41,97 @@ export default class ColorComponent extends Component<Props, {}> {
         }
       }
       this.setState({
-        position
+        position,
+        show: true 
       })
     }
+  }
+  handleComposition = (e: any) => {
+    const { flag } = this.state
+    if (e.type === 'compositionend') {
+      this.isOnComposition = false
+      this.handleChange(e)
+    } else {
+      this.isOnComposition = true
+    }
+    if (flag !== this.isOnComposition) {
+      this.setState({
+        flag: this.isOnComposition
+      })
+    }
+  }
 
+  handleChange = (e: any) => {
+    const { onChange } = this.props
     this.setState({
-      show: type
+      color: e.target.value
     })
+    if (this.isOnComposition) return
+    onChange && onChange(e.target.value)
   }
 
   render() {
-    const { show, color, position } = this.state
-    const { value } = this.props
-    return <div className="color-input" style={style.color_input as React.CSSProperties}>
-      <div className="color-dom" onClick={(e) => this.showPicker(true, e)} style={style.color_dom}>
-        <div style={{ backgroundColor: value, width: '100%', height: '100%' }} />
-      </div>
-      <div>{value}</div>
-      {
-        show && <div className="color-picker" style={{ ...style.color_picker, position: 'fixed', ...position }}>
-          <ChromePicker color={color} onChange={(color) => {
-            this.setState({
-              color: color.hex
+    return (
+      <React.Fragment>
+        <Input
+          prefix={(
+            <div
+              className={styles['ccms-antd-color-preview']}
+              style={{ background: this.state.flag ? this.state.color : this.props.value }}
+              onClick={(e) => this.showPicker(e)}
+            ></div>
+          )}
+          value={this.state.flag ? this.state.color : this.props.value}
+          onCompositionStart={this.handleComposition}
+          onCompositionUpdate={this.handleComposition}
+          onCompositionEnd={this.handleComposition}
+          onChange={(e) => {
+            this.selectionStart = e.target.selectionStart
+            this.selectionEnd = e.target.selectionEnd
+            this.handleChange(e)
+            setTimeout(() => {
+              e.target.selectionStart = this.selectionStart
+              e.target.selectionEnd = this.selectionEnd
             })
-          }} />
-          <div style={style.btn}>
-            <Button onClick={() => this.showPicker(false, '')}>取消</Button>
-            <Button onClick={this.onChange}>确定</Button>
-          </div>
-        </div>
-      }
-    </div>
+          }}
+        />
+        {
+          this.state.show && (
+            <div
+              className={styles['ccms-antd-color-picker']}
+              ref={(node) => {
+                if (node) {
+                  const picker = node.children[1] as HTMLDivElement
+                  const handle = node.parentElement
+                  if (picker && handle) {
+                    const { bottom, height } = picker.getBoundingClientRect()
+                    if (bottom > window.innerHeight) {
+                      picker.style.marginTop = `${0 - handle.clientHeight - height}px`
+                    }
+                  }
+                }
+              }}
+            >
+              <div
+                className={styles['mask']}
+                onClick={() => {
+                  this.setState({
+                    show: false
+                  })
+                }}
+              ></div>
+              <div className={styles['picker']}>
+                <SketchPicker
+                  color={this.state.flag ? this.state.color : this.props.value}
+                  onChange={(color) => {
+                    this.props.onChange(color.hex)
+                  }}
+                />
+              </div>
+            </div>
+          )
+        }
+      </React.Fragment>
+    )
   }
 }

@@ -2,12 +2,13 @@ import React from 'react'
 import { SelectMultipleField } from 'ccms'
 import { Checkbox, Select } from 'antd'
 import { ISelectMultipleField, SelectMultipleFieldConfig } from 'ccms/dist/src/components/formFields/select/multiple'
-import 'antd/lib/select/style/index.css'
-import 'antd/lib/checkbox/style/index.css'
+import InterfaceHelper from '../../../../util/interface'
 
 export const MultiplePropsType = (props: SelectMultipleFieldConfig) => { }
 
 export default class SelectSingleFieldComponent extends SelectMultipleField {
+  interfaceHelper = new InterfaceHelper()
+  
   renderDorpdownComponent = (props: ISelectMultipleField) => {
     const {
       value,

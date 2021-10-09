@@ -1,97 +1,76 @@
 import React from "react";
 import { UploadField } from 'ccms';
-import { Upload as AntdUpload, message, Button } from 'antd'
+import { Upload as AntdUpload, Input, Button, Space, Tooltip } from 'antd'
+import { UploadOutlined, EyeOutlined, DeleteOutlined, CloseCircleFilled } from "@ant-design/icons"
 import { IUploadField, UploadFieldConfig } from "ccms/dist/src/components/formFields/upload";
 import { PaperClipOutlined } from '@ant-design/icons'
 export const PropsType = (props: UploadFieldConfig) => { };
-import 'antd/lib/upload/style/index.css'
+import styles from "./index.less"
+import InterfaceHelper from "../../../util/interface";
 
 export default class UploadFieldComponent extends UploadField {
-    file: any
-    uploadButton = (value: string, prefix: string, props: any) => {
-        const imgUrl = `${prefix || ''}${value}`
-        return value ?
-            <div>
-                <div>
-                    <Button>重新上传</Button>
+  interfaceHelper = new InterfaceHelper()
+  
+  renderComponent = (props: IUploadField) => {
+    const {
+      mode = 'file',
+      value,
+      onChange,
+      onCancel
+    } = props
+
+    return (
+      <React.Fragment>
+        <AntdUpload
+          className={styles['ccms-antd-upload']}
+          beforeUpload={async (file) => {
+            await onChange(file)
+          }}
+          showUploadList={false}
+        >
+          {mode === 'image' ? (
+            value ? (
+              <div className={styles['ccms-antd-upload-image']}>
+                <img className={styles['image']} src={value} alt={value} />
+                <div className={styles['mask']}>
+                  <Space>
+                    <Tooltip overlay="上传"><UploadOutlined /></Tooltip>
+                    <Tooltip overlay="查看">
+                      <EyeOutlined onClick={(e) => {
+                        e.stopPropagation()
+                        window.open(value)
+                      }} />
+                    </Tooltip>
+                    <Tooltip overlay="清除">
+                      <DeleteOutlined onClick={(e) => {
+                        e.stopPropagation()
+                        onCancel()
+                      }} />
+                    </Tooltip>
+                  </Space>
                 </div>
-                {
-                    props.showURL && <div>
-                        <hr />
-                        <p>图片链接地址: {imgUrl}</p>
-                    </div>
-                }
-            </div>
-            :
-            <div>
-                <Button>点击上传</Button>
-            </div>
-    }
-
-    renderComponent = (props: IUploadField) => {
-        const {
-            value,
-            onChange,
-            readonly,
-            disabled,
-            uploadName,
-            uploadwithCredentials,
-            uploadUrl,
-            uploadImagePrefix, beforeUpload,
-            getValue
-        } = props
-
-        const imgUrl = `${uploadImagePrefix || ''}${value || ''}`
-        return (
-            <div>
-                <div style={{ display: 'flex' }}>
-                    <AntdUpload
-                        name={uploadName || "image"}
-                        action={uploadUrl || ""}
-                        beforeUpload={async (file) => {
-                            const rs: any = await beforeUpload(file);
-                            if (value && rs.type) onChange('loading')
-                            rs.type && (this.file = file)
-                            if (rs?.type === false) {
-                                message.error(rs?.err || "上传内容不符合，请重新上传");
-                                onChange('')
-                            }
-                            return rs.type
-                        }}
-                        showUploadList={false}
-                        withCredentials={uploadwithCredentials}
-                        onChange={async (e) => {
-                            const response = e.file.response
-                            const rs = getValue && await getValue(e.file.response)
-                            if (response?.code === -1) {
-                                message.error(response?.msg || '系统异常')
-                                onChange('')
-                            } else {
-                                rs && onChange(rs)
-                            }
-                        }}
-                        className='ccms-upload'
-                        {...{ disabled: disabled || readonly }}
-                    >
-                        <div className='ccms-upload-image'>{this.uploadButton(value, uploadImagePrefix, props)}</div>
-                    </AntdUpload>
-
-                    {
-                        imgUrl && <a href={imgUrl} style={{
-                            lineHeight: '30px',
-                            paddingLeft: '10px',
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',    
-                            maxWidth: '200px',
-                            whiteSpace: 'nowrap'
-                        }} target={"_blank"} rel="noreferrer">
-                            <PaperClipOutlined />
-                            {this.file ? this.file?.name : imgUrl}
-                        </a>
-                    }
+              </div>
+            ) : (
+              <div className={styles['ccms-antd-upload-image']}>
+                <div className={styles['empty']}>
+                  <span><UploadOutlined /> 点击上传</span>
                 </div>
-                {props.placeholder && <p style={{ color: '#888' }}>{props.placeholder}</p>}
-            </div >
-        );
-    }
+              </div>
+            )
+          ) : (
+            <Input
+              prefix={<UploadOutlined />}
+              suffix={value ? <CloseCircleFilled style={{ color: '#d9d9d9' }} onClick={(e) => {
+                e.stopPropagation()
+                onCancel()
+              }} /> : null}
+              placeholder="点击上传"
+              value={value}
+              readOnly
+            />
+          )}
+        </AntdUpload>
+      </React.Fragment>
+    );
+  }
 }

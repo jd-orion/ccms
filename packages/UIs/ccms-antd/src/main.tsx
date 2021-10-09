@@ -3,8 +3,7 @@ import { CCMS } from 'ccms'
 import { ICCMS, CCMSProps } from 'ccms/dist/src/main'
 import { PageHeader, Space } from 'antd'
 import StepComponents from './steps'
-import './style'
-
+import styles from "./main.less"
 export default class CCMSComponent extends CCMS {
   getStepComponent = (key: string) => StepComponents[key]
 
@@ -15,19 +14,19 @@ export default class CCMSComponent extends CCMS {
       children
     } = props
     return (
-      <Space style={{ width: '100%' }} direction="vertical">
+      <div className={styles['ccms_antd']}>
         {
           (title || description) &&
-          <div style={{ borderBottom: '1px solid rgba(0,0,0,.06)' }}>
-            <PageHeader title={title} >
+          <div className={styles['header']}>
+            <PageHeader title={title} style={{ padding: 0 }}>
               {description}
             </PageHeader>
           </div>
         }
-        <div style={{ padding: '16px 0', margin: '0 24px' }}>
+        <div className={styles['content']}>
           {children}
         </div>
-      </Space>
+      </div>
     )
   }
 }

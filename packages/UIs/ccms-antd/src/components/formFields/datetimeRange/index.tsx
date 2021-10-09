@@ -4,7 +4,6 @@ import { DatePicker, ConfigProvider } from 'antd'
 import { IDatetimeRangeField, DatetimeRangeFieldConfig } from 'ccms/dist/src/components/formFields/datetimeRange'
 import moment from 'moment'
 import locale from 'antd/lib/locale/zh_CN';
-import 'antd/lib/date-picker/style/index.css'
 const { RangePicker } = DatePicker
 
 export const PropsType = (props: DatetimeRangeFieldConfig) => { }
@@ -15,8 +14,7 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
       value,
       onChange,
       format,
-      placeholder,
-      showTime
+      placeholder
     } = props
     const theValue: any = []
     if (value) {
@@ -31,7 +29,6 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
           placeholder={[theplaceholder, theplaceholder]}
           value={theValue}
           format={format}
-          showTime={showTime}
           onChange={async (time) => {
             const changeValue: any = []
             if (time) {

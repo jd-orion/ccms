@@ -2,12 +2,13 @@ import React from 'react'
 import { SelectSingleField } from 'ccms'
 import { ISelectSingleField, SelectSingleFieldConfig } from 'ccms/dist/src/components/formFields/select/single'
 import { Radio, Select } from 'antd'
-import 'antd/lib/select/style/index.css'
-import 'antd/lib/radio/style/index.css'
+import InterfaceHelper from '../../../../util/interface'
 
 export const SinglePropsType = (props: SelectSingleFieldConfig) => { }
 
 export default class SelectSingleFieldComponent extends SelectSingleField {
+  interfaceHelper = new InterfaceHelper()
+  
   renderDorpdownComponent = (props: ISelectSingleField) => {
     const {
       value,

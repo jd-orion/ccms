@@ -1,7 +1,6 @@
 import React from 'react'
 import { RadioField } from 'ccms'
 import { Radio } from 'antd'
-import 'antd/lib/radio/style/index.css'
 import { IRadioField } from 'ccms/dist/src/components/formFields/radio'
 
 export const PropsType = (props: IRadioField) => { }

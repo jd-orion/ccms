@@ -2,10 +2,10 @@ import React from 'react'
 import { FilterStep } from 'ccms'
 import { IFilter, IFilterItem, FilterConfig } from 'ccms/dist/src/steps/filter'
 import { Button, Form, Space } from 'antd'
-import FieldComponents from '../../components/formFields'
+import getALLComponents from '../../components/formFields'
 
 export default class FilterStepComponent extends FilterStep {
-  getFieldComponents = (type: string) => FieldComponents[type]
+  getALLComponents = (type: any) => getALLComponents[type]
 
   renderComponent = (props: IFilter) => {
     const {

@@ -1,0 +1,33 @@
+.ccms-antd-mini-form-import_subform, .ccms-antd-mini-form-group {
+  margin-bottom: 0 !important;
+
+  &>:global(.ant-form-item-label) {
+    width: calc(100% + 16px) !important;
+    max-width: calc(100% + 16px) !important;
+    margin-left: -8px !important;
+    padding: 2px 8px !important;
+    flex: 0 0 auto !important;
+    background-color: #00000008 !important;
+  }
+  &>:global(.ant-form-item-control) {
+    margin-left: -8px !important;
+    margin-right: -8px !important;
+    padding: 8px !important;
+    max-width: calc(100% + 16px) !important;
+    background-color: #00000004 !important;
+  }
+  &>:global(.ant-form-item-control):first-child {
+    padding-top: 0 !important;
+    background-color: #00000000 !important;
+  }
+}
+
+.ccms-antd-mini-form-form, .ccms-antd-mini-form-object {
+  &>:global(.ant-form-item-control) {
+    &>:global(.ant-form-item-control-input) {
+      &>:global(.ant-form-item-control-input-content) {
+        min-height: 24px !important;
+      }
+    }
+  }
+}

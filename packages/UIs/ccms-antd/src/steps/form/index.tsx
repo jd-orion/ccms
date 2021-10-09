@@ -2,16 +2,11 @@ import React from 'react'
 import { FormStep } from 'ccms'
 import { IForm, IFormItem, FormConfig } from 'ccms/dist/src/steps/form'
 import { Button, Form, Space } from 'antd'
-import 'antd/lib/style/index.css'
-import 'antd/lib/form/style/index.css'
-import 'antd/lib/grid/style/index.css'
-import 'antd/lib/tooltip/style/index.css'
-import 'antd/lib/space/style/index.css'
-import 'antd/lib/button/style/index.css'
-import '../../style'
 
-import { FormItemProps, FormProps } from 'antd/lib/form'
+import { FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/formFields'
+import styles from "./index.less"
+import { formItemLayout } from '../../components/formFields/common'
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
 
@@ -52,32 +47,21 @@ export default class FormStepComponent extends FormStep {
 
   renderItemComponent = (props: IFormItem) => {
     const {
+      layout,
       label,
       status,
       message,
       fieldType,
       children
     } = props
-    const formItemProps: FormItemProps = {}
-    if (['form', 'table'].includes(fieldType)) {
-      formItemProps.labelCol = { span: 24 }
-      formItemProps.wrapperCol = { span: 24 }
-    }
 
     return (
-      message ? <Form.Item
+      <Form.Item
         label={label}
-        colon={false}
+        {...formItemLayout(layout, fieldType, label)}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={message}
-        {...formItemProps}
-      >
-        {children}
-      </Form.Item> : <Form.Item
-        label={label}
-        colon={false}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        {...formItemProps}
+        help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
+        className={styles[`ccms-antd-mini-form-${fieldType}`]}
       >
         {children}
       </Form.Item>
@@ -85,7 +69,7 @@ export default class FormStepComponent extends FormStep {
   }
 }
 // <FormConfig, IForm>
-export const PropsType = (props: IForm) => { };
+export const PropsType = (props: IForm) => {};
 
-export const PropsTypeFormConfig = (props: FormConfig) => { };
-export const PropsTypeStep = (props: FormStep) => { };
+export const PropsTypeFormConfig = (props: FormConfig) => {};
+export const PropsTypeStep = (props: FormStep) => {};

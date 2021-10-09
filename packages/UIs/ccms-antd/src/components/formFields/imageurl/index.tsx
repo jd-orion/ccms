@@ -1,9 +1,7 @@
 import React from 'react'
 import { ImageUrlField } from 'ccms'
-// import 'antd/lib/input/style/index.css'
 import { IImageUrlField, ImageUrlFieldConfig } from 'ccms/dist/src/components/formFields/imageurl'
 import TextCompnent from './commontext'
-import 'antd/lib/input/style/index.css'
 
 export const PropsType = (props: ImageUrlFieldConfig) => { }
 

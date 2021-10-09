@@ -11,6 +11,11 @@ import SelectSingleField from './select/single'
 import SelectMultipleField from './select/multiple'
 import DescField from './description'
 import ImageUrlField from './imageurl'
+import SwitchField from './switch'
+import GroupField from './group'
+import HiddenField from './hidden'
+import TabsField from './tabs'
+import MultipleTextField from './multipleText'
 
 export default {
   text: TextField,
@@ -18,6 +23,7 @@ export default {
   radio: RadioField,
   longtext: LongTextField,
   number: NumberField,
+  switch: SwitchField,
   datetime: DatetimeField,
   datetimeRange: DatetimeRangeField,
   select_single: SelectSingleField,
@@ -25,5 +31,9 @@ export default {
   desc: DescField,
   color: ColorField,
   upload: UploadField,
-  imageurl: ImageUrlField
+  imageurl: ImageUrlField,
+  group: GroupField,
+  hidden: HiddenField,
+  tabs: TabsField,
+  multiple_text: MultipleTextField
 }

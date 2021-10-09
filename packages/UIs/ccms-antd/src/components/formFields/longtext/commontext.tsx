@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import { Input } from 'antd'
-import 'antd/lib/input/style/index.css'
 const { TextArea } = Input
 type Props = {
   defaultValue?: string

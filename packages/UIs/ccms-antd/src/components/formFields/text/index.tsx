@@ -2,7 +2,6 @@ import React from 'react'
 import { TextField } from 'ccms'
 import { ITextField, TextFieldConfig } from 'ccms/dist/src/components/formFields/text'
 import TextCompnent from './commontext'
-import 'antd/lib/input/style/index.css'
 
 export const PropsType = (props: TextFieldConfig) => {}
 

@@ -1,0 +1,53 @@
+.ccms-antd-upload {
+  &>:global(.ant-upload) {
+    width: 100%;
+  }
+}
+.ccms-antd-upload-image {
+  width: 120px;
+  height: 120px;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  padding: 4px;
+  position: relative;
+
+  &>.image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &>.mask {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: rgba(0,0,0,.6);
+    color: white;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .5s;
+
+    &>:global(.ant-space) {
+      &>:global(.ant-space-item) {
+        cursor: pointer;
+      }
+    }
+  }
+  &:hover>.mask {
+    opacity: 1;
+  }
+
+  &>.empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+}

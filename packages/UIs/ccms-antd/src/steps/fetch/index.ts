@@ -1,26 +1,9 @@
 
 import { FetchStep } from 'ccms'
-import { IAPIConditionSuccessModal, IAPIConditionFailModal } from 'ccms/dist/src/util/request'
 import { FetchConfig } from 'ccms/dist/src/steps/fetch'
-import { Modal } from 'antd'
+import InterfaceHelper from '../../util/interface'
 
 export default class FetchComponent extends FetchStep {
-  renderSuccessModal = (props: IAPIConditionSuccessModal) => {
-    Modal.success({
-      content: props.message,
-      onOk: () => {
-        props.onOk()
-      }
-    })
-  }
-
-  renderFailModal = (props: IAPIConditionFailModal) => {
-    Modal.error({
-      content: props.message,
-      onOk: () => {
-        props.onOk()
-      }
-    })
-  }
+  interfaceHelper = new InterfaceHelper()
 }
 export const PropsType = (props: FetchConfig) => { };

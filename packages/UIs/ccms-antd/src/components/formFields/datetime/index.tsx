@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { DatetimeField } from 'ccms'
-import { DatePicker, ConfigProvider } from 'antd'
+import { DatePicker, TimePicker } from 'antd'
 import { IDatetimeField, DatetimeFieldConfig } from 'ccms/dist/src/components/formFields/datetime'
-import moment from 'moment'
-import locale from 'antd/lib/locale/zh_CN';
-import 'antd/lib/date-picker/style/index.css'
+import pickerLocale from 'antd/lib/date-picker/locale/zh_CN'
+
 export const PropsType = (props: DatetimeFieldConfig) => { }
 
 export default class DatetimeFieldComponent extends DatetimeField {
@@ -12,24 +11,57 @@ export default class DatetimeFieldComponent extends DatetimeField {
     const {
       value,
       mode,
-      placeholder,
-      onChange,
-      showTime
+      placeholder
     } = props
-    return (
-      <ConfigProvider locale={locale}>
-        <DatePicker
-          {...props}
-          value={value ? moment(value) : null}
-          picker={mode || 'date'}
-          showTime={showTime}
-          placeholder={placeholder || '选择时间'}
-          onChange={async (time) => {
-            const rs = time === null ? '' : moment(time).format()
-            await onChange(rs)
-          }}
+
+    if (mode === 'time') {
+      return (
+        <TimePicker
+          style={{ width: '100%' }}
+          value={value}
+          format={props.format}
+          locale={pickerLocale}
+          placeholder={placeholder}
+          onChange={async (time) => await props.onChange(time)}
+          getPopupContainer={(trigger) => trigger.parentElement || document.body}
         />
-      </ConfigProvider>
-    )
+      )
+    } else if (mode === 'date') {
+      return (
+        <DatePicker
+          style={{ width: '100%' }}
+          value={value}
+          format={props.format}
+          placeholder={placeholder}
+          onChange={async (time) => await props.onChange(time)}
+          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+        />
+      )
+    } else if (mode === 'datetime') {
+      return (
+        <DatePicker
+          style={{ width: '100%' }}
+          value={value}
+          format={props.format}
+          locale={pickerLocale}
+          placeholder={placeholder}
+          showTime={true}
+          onChange={async (time) => await props.onChange(time)}
+          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+        />
+      )
+    } else {
+      return (
+        <DatePicker
+          style={{ width: '100%' }}
+          value={value}
+          format={props.format}
+          picker={mode}
+          locale={pickerLocale}
+          placeholder={placeholder}
+          onChange={async (time) => await props.onChange(time)}
+          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+        />)
+    }
   }
 }
