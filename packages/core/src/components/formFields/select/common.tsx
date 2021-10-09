@@ -1,8 +1,7 @@
 import { ReactNode } from 'react'
-import { APIConfig, ParamConfig } from '../../../interface'
-import { request } from '../../../util/request'
-import { getParam, getValue, setValue } from '../../../util/value'
-import { Field, FieldConfig, IField } from '../common'
+import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
+import { getValue } from '../../../util/value'
+import { Field, FieldConfig, FieldProps, IField } from '../common'
 
 export interface SelectFieldConfig extends FieldConfig {
   options?: ManualOptionsConfig | InterfaceOptionsConfig
@@ -20,15 +19,9 @@ export interface ManualOptionsConfig {
 
 export interface InterfaceOptionsConfig {
   from: 'interface'
-  api?: APIConfig
-  defaultIndex?: string | number
-  request?: {
-    data?: { [key: string]: ParamConfig }
-  }
-  response: {
-    root?: string
-    data?: InterfaceOptionsKVConfig | InterfaceOptionsListConfig
-  }
+  interface?: InterfaceConfig
+  format?: InterfaceOptionsKVConfig | InterfaceOptionsListConfig
+  defaultSelect?: boolean
 }
 
 export interface InterfaceOptionsKVConfig {
@@ -56,78 +49,64 @@ interface SelectSingleFieldState {
 }
 
 export default class SelectField<C extends SelectFieldConfig, E, T> extends Field<C, E, T, SelectSingleFieldState> implements IField<T> {
+  interfaceHelper = new InterfaceHelper()
+  
   interfaceOptionsConfig: string = ''
-  state: SelectSingleFieldState = {
-    interfaceOptionsData: []
+
+  constructor (props: FieldProps<C, T>) {
+    super(props)
+
+    this.state = {
+      interfaceOptionsData: []
+    }
   }
 
   options = (
-    config: ManualOptionsConfig | InterfaceOptionsConfig | undefined,
-    datas: {
-      record?: object
-      data: object[]
-      step: number
-    }
+    config: ManualOptionsConfig | InterfaceOptionsConfig | undefined
   ) => {
     if (config) {
       if (config.from === 'manual') {
         if (config.data) {
           return config.data.map((option) => {
             return {
-              value: option.value.toString(),
+              value: option.value,
               label: option.label
             }
           })
         }
       } else if (config.from === 'interface') {
-        if (config.api) {
-          const interfaceOptionsParams: { [key: string]: any } = {}
-          if (config.request && config.request.data) {
-            for (const field in config.request.data) {
-              const param = config.request.data[field]
-              setValue(interfaceOptionsParams, field, getParam(param, datas))
-            }
-          }
-
-          const interfaceOptionsConfig: string = JSON.stringify({
-            api: config.api,
-            params: interfaceOptionsParams
-          })
-
-          if (interfaceOptionsConfig !== this.interfaceOptionsConfig) {
-            this.interfaceOptionsConfig = interfaceOptionsConfig
-            request(config.api, interfaceOptionsParams).then((_response) => {
-              if (config.response) {
-                const response = getValue(_response, config.response.root || '')
-                if (config.response.data) {
-                  if (config.response.data.type === 'kv') {
-                    this.setState({
-                      interfaceOptionsData: Object.keys(response).map((key) => ({
-                        value: key,
-                        label: response[key]
-                      }))
-                    })
-                  } else if (config.response.data.type === 'list') {
-                    this.setState({
-                      interfaceOptionsData: response?.map((item: any) => {
-                        if (config.response.data?.type === 'list') {
-                          return ({
-                            value: getValue(item, config.response.data.keyField).toString(),
-                            label: getValue(item, config.response.data.labelField)
-                          })
-                        } else {
-                          return {}
-                        }
+        if (config.interface) {
+          this.interfaceHelper.request(
+            config.interface,
+            {},
+            { record: this.props.record, data: this.props.data, step: this.props.step },
+            { loadDomain: this.props.loadDomain }
+          ).then((data: any) => {
+            if (config.format) {
+              if (config.format.type === 'kv') {
+                this.setState({
+                  interfaceOptionsData: Object.keys(data).map((key) => ({
+                    value: key,
+                    label: data[key]
+                  }))
+                })
+              } else if (config.format.type === 'list') {
+                this.setState({
+                  interfaceOptionsData: data.map((item: any) => {
+                    if (config.format && config.format.type === 'list') {
+                      return ({
+                        value: getValue(item, config.format.keyField),
+                        label: getValue(item, config.format.labelField)
                       })
-                    })
-                  }
-                }
+                    }
+                  })
+                })
               }
-            })
-          }
+            }
+          })
           return this.state.interfaceOptionsData.map((option) => {
             return {
-              value: option.value.toString(),
+              value: option.value,
               label: option.label
             }
           })

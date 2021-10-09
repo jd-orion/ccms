@@ -82,7 +82,7 @@ export default class ImageUrlField extends Field<ImageUrlFieldConfig, IImageUrlF
           placeholder,
           height,
           width,
-          onChange: async (value: string) => await onChange(value)
+          onChange: async (value: string) => await this.props.onValueSet('', value, await this.validate(value))
         })}
       </React.Fragment>
     )

@@ -4,7 +4,7 @@ import { FieldConfigs } from '../../components/formFields'
 import TextField from '../../components/formFields/text'
 import Step, { StepConfig } from '../common'
 import { getValue } from '../../util/value'
-import { set } from '../../util/request'
+import { set } from 'lodash'
 
 export interface SkipConfig extends StepConfig {
   type: 'skip'
@@ -22,7 +22,7 @@ export default class SkipStep extends Step<SkipConfig> {
     text: TextField
   }
 
-  willMount = async () => {
+  stepPush = async () => {
     // async componentDidMount() {
     const {
       data,
@@ -40,7 +40,7 @@ export default class SkipStep extends Step<SkipConfig> {
       onSubmit
     } = this.props
 
-    const result: { [key: string]: any } = {}
+    let result: { [key: string]: any } = {}
 
     let formDefault: any
 
@@ -90,7 +90,11 @@ export default class SkipStep extends Step<SkipConfig> {
       for (const formFieldIndex in fields) {
         const formFieldConfig = fields[formFieldIndex]
         const value = getValue(formDefault, formFieldConfig.field)
-        set(result, formFieldConfig.field, value)
+        if (formFieldConfig.field === '') {
+          result = value
+        } else {
+          set(result, formFieldConfig.field, value)
+        }
       }
     }
     onSubmit(result)

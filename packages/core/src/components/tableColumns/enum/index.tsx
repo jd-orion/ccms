@@ -1,6 +1,5 @@
 import React from 'react'
 import Column, { ColumnConfig } from '../common'
-import { APIConfig } from '../../../interface'
 
 export interface EnumColumnConfig extends ColumnConfig {
   type: 'Aenum'
@@ -24,7 +23,7 @@ interface ManualOptionsConfig {
     key: string | number | boolean
     label: string
     [extra: string]: any
-  },
+  }[],
   getKey?: string
   getValue?: string
 }
@@ -64,30 +63,27 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn> {
       }
     }
 
-    let getoptions = options
-    // if (Object.prototype.toString.call(options) === "[object Array]") {
-    //   getoptions = options[0]
-    // }
-
-    if (getoptions) {
-      rsValue = ''
-      if (getoptions.data.length > 0) {
-        theValue.forEach((v: any) => {
-          getoptions.data.forEach((o: any) => {
-            const getKey = getoptions.getKey || 'value'
-            const getValue = getoptions.getValue || 'label'
-            if (v && o && v?.toString() === o[getKey]?.toString() && o[getValue]) {
-              rsValue += `${o[getValue]},`
-            }
-          });
-        });
+    if (options && options.from === 'manual') {
+      if (options.data) {
+        if (multiple === undefined || multiple === false) {
+          const option = options.data.find((option) => option.key === value)
+          return option ? option.label : value.toString()
+        } else if (multiple === true || multiple.type === 'array') {
+          if (Array.isArray(value)) {
+            return value.map((item) => {
+              const option = options.data.find((option) => option.key === item)
+              return option ? option.label : item.toString()
+            })
+          } else {
+            return '-'
+          }
+        }
+      } else {
+        return value
       }
-      rsValue = rsValue.slice(0, rsValue.length - 1)
+    } else {
+      return '-'
     }
-
-    rsValue = rsValue ? rsValue : defaultValue !== undefined ? defaultValue : ''
-
-    return rsValue
   }
 
   render = () => {

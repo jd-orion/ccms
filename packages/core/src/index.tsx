@@ -19,6 +19,11 @@ export { default as ImageUrlField } from './components/formFields/imageurl'
 export { default as ImportSubformField } from './components/formFields/importSubform';
 export { default as GroupField } from './components/formFields/group'
 export { default as AnyField } from './components/formFields/any'
+export { default as SwitchField } from './components/formFields/switch'
+export { default as ObjectField } from './components/formFields/object'
+export { default as HiddenField } from './components/formFields/hidden'
+export { default as TabsField } from './components/formFields/tabs'
+export { default as MultipleTextField } from './components/formFields/multipleText'
 
 export { default as TableStep } from './steps/table'
 export { default as TextColumn } from './components/tableColumns/text'
@@ -32,3 +37,5 @@ export { default as DatetimeRangeColumn } from './components/tableColumns/dateti
 export { default as ImageColumn } from './components/tableColumns/image'
 
 export { default as FetchStep } from './steps/fetch'
+
+export { default as InterfaceHelper } from "./util/interface"

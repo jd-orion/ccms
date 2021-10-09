@@ -97,7 +97,7 @@ export default class NumberRangeField extends Field<NumberRangeFieldConfig, INum
                   value,
                   step: config.step,
                   precision: config.precision,
-                  onChange: async (value: string | undefined) => onChange(value)
+                  onChange: async (value: string | undefined) => await this.props.onValueSet('', value, await this.validate(value))
                 })}
             </React.Fragment>
       )

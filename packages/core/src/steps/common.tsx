@@ -25,11 +25,12 @@ export interface StepProps<C extends StepConfig> {
   onChange?: (data: any) => Promise<void>
   onSubmit: (data: any, unmountView?: boolean) => Promise<void>
   onMount: () => Promise<void>
-  onUnmount: (reload?: boolean) => Promise<void>
+  onUnmount: (reload?: boolean, data?: any) => Promise<void>
   checkPageAuth: (pageID: any) => Promise<boolean>
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  loadDomain: (domain: string) => Promise<string>
 }
 
 /**
@@ -41,12 +42,16 @@ export default class Step<C extends StepConfig, S = {}> extends React.Component<
     }
   };
 
-  willMount = () => {
-    const {
-      onMount
-    } = this.props
+  stepPush = () => {
+    this.props.onMount()
+  }
 
-    onMount()
+  stepPop = (reload: boolean = false, data?: any) => {
+    if (reload) {
+      this.props.onMount()
+    } else {
+      this.props.onUnmount()
+    }
   }
 
   render () {

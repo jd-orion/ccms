@@ -19,13 +19,13 @@ export interface ColumnConfig extends componentType {
  * - get:      表格项获取展示值
  */
 export interface IColumn<T> {
-  getValue: () => Promise<T>
+  getValue: () => T
 }
 
-export interface ColumnProps<T> {
+export interface ColumnProps<T, V = any> {
   ref: (instance: Column<T, any> | null) => void
   record: { [field: string]: any }
-  value: any
+  value: V
   data: any[],
   step: number,
   config: T
@@ -34,7 +34,7 @@ export interface ColumnProps<T> {
 interface ColumnState {
 }
 
-export default class Column<T, E> extends React.Component<ColumnProps<T>, ColumnState> implements IColumn<T> {
+export default class Column<T, E, V = any> extends React.Component<ColumnProps<T, V>, ColumnState> implements IColumn<V> {
   constructor (props: ColumnProps<T>) {
     super(props)
     this.state = {}
@@ -44,7 +44,7 @@ export default class Column<T, E> extends React.Component<ColumnProps<T>, Column
     config: {}
   }
 
-  getValue= () => {
+  getValue = () => {
     return this.props.value
   }
 

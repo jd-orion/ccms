@@ -1,13 +1,22 @@
 import React from 'react'
-import { getParamText, getValue, setValue } from '../../../util/value'
+import { setValue, getValue } from '../../../util/value'
 import { Field, FieldConfig, FieldError, FieldProps, IField } from '../common'
 import getALLComponents, { FieldConfigs } from '../'
 import { IFormItem } from '../../../steps/form'
-import * as _ from 'lodash'
+import { cloneDeep } from 'lodash'
+import ConditionHelper from '../../../util/condition'
+
+class DefaultFormField extends React.Component {
+  render () {
+    return (
+      <React.Fragment>当前UI库未实现该表单类型</React.Fragment>
+    )
+  }
+}
 
 export interface GroupFieldConfig extends FieldConfig {
   type: 'group'
-  fields: FieldConfig[]
+  fields: FieldConfigs[]
 }
 
 export interface IGroupField {
@@ -15,16 +24,12 @@ export interface IGroupField {
 }
 
 interface IGroupFieldState {
-  formData: { [field: string]: { value: any, name: 'string', status: 'normal' | 'error' | 'loading', message?: string } }
+  formData: { status: 'normal' | 'error' | 'loading', message?: string }[]
 }
 
 export default class GroupField extends Field<GroupFieldConfig, IGroupField, any, IGroupFieldState> implements IField<string> {
   // 各表单项对应的类型所使用的UI组件的类
-  getALLComponents = (type: any) => getALLComponents[type]
-
-  // 用于请求防频的判断条件
-  requestConfig: string = ''
-  value: string = ''
+  getALLComponents = (type: any): typeof Field => getALLComponents[type]
 
   formFields: Array<Field<FieldConfigs, {}, any> | null> = []
   formFieldsMounted: Array<boolean> = []
@@ -33,71 +38,167 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     super(props)
 
     this.state = {
-      formData: {}
+      formData: []
     }
   }
 
-  handleFormFieldMount = async (formFieldIndex: number) => {
+  get = async () => {
+    let data: any = {};
+
+    if (Array.isArray(this.props.config.fields)) {
+      for (const formFieldIndex in this.props.config.fields) {
+        const formFieldConfig = this.props.config.fields[formFieldIndex]
+        if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step })) {
+          continue
+        }
+        const formField = this.formFields[formFieldIndex]
+        if (formField) {
+          const value = await formField.get()
+          data = setValue(data, formFieldConfig.field, value)
+        }
+      }
+    }
+    
+    return data
+  }
+
+  handleMount = async (formFieldIndex: number) => {
     if (this.formFieldsMounted[formFieldIndex]) {
       return true
     }
-
+    
     this.formFieldsMounted[formFieldIndex] = true
-
-    const formData = _.cloneDeep(this.state.formData)
 
     if (this.formFields[formFieldIndex]) {
       const formField = this.formFields[formFieldIndex]
       if (formField) {
         const formFieldConfig = this.props.config.fields[formFieldIndex]
-        let value = getValue(formData, formFieldConfig.field, {}).value
-        if (formFieldConfig.default) {
+
+        let value = getValue(this.props.value, formFieldConfig.field)
+        if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
+          this.props.onValueSet(formFieldConfig.field, value, true)
         }
+        
         const validation = await formField.validate(value)
-        if (validation === true) {
-          setValue(formData, formFieldConfig.field, { value, status: 'normal', name: formFieldConfig.label })
+        if (value === undefined || validation === true) {
+          await this.setState(({ formData }) => {
+            formData[formFieldIndex] = { status: 'normal' }
+            return { formData: cloneDeep(formData) }
+          })
         } else {
-          setValue(formData, formFieldConfig.field, { value, status: 'error', message: validation[0].message, name: formFieldConfig.label })
+          await this.setState(({ formData }) => {
+            formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+            return { formData: cloneDeep(formData) }
+          })
         }
       }
     }
-    await this.setState({
-      formData
-    })
   }
 
   handleChange = async (formFieldIndex: number, value: any) => {
-    const {
-      onChange
-    } = this.props
+    // const formField = this.formFields[formFieldIndex]
+    // const formFieldConfig = this.props.config.fields[formFieldIndex]
 
-    const formField = this.formFields[formFieldIndex]
-    const formFieldConfig = this.props.config.fields[formFieldIndex]
+    // const formData = cloneDeep(this.state.formData)
 
-    const formData = _.cloneDeep(this.state.formData)
-    const _value = _.cloneDeep(this.props.value)
+    // if (formField && formFieldConfig) {
+    //   if (this.props.onChange) {
+    //     if (formFieldConfig.field === '') {
+    //       await this.props.onChange(value)
+    //     } else {
+    //       const changeValue = setValue({}, formFieldConfig.field, value)
+    //       await this.props.onChange(changeValue)
+    //     }
+    //   }
 
-    if (formField && formFieldConfig.field) {
-      const validation = await formField.validate(value)
-      setValue(_value, formFieldConfig.field, value)
+    //   const validation = await formField.validate(value)
+    //   if (validation === true) {
+    //     formData[formFieldIndex] = { value, status: 'normal' }
+    //   } else {
+    //     formData[formFieldIndex] = { value, status: 'error', message: validation[0].message }
+    //   }
+
+    //   await this.setState({
+    //     formData
+    //   })
+    // }
+  }
+
+  handleValueSet = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
+    const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
+    if (formFieldConfig) {
+      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      await this.props.onValueSet(fullPath, value, true)
+      
+      const formData = cloneDeep(this.state.formData)
       if (validation === true) {
-        setValue(formData, formFieldConfig.field, { status: 'normal', name: formFieldConfig.label })
+        formData[formFieldIndex] = { status: 'normal' }
       } else {
-        setValue(formData, formFieldConfig.field, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
+        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
       }
 
-      await this.setState({
+      this.setState({
         formData
       })
-      if (onChange) {
-        onChange(_value)
-      }
     }
   }
 
-  validate = async (value: string): Promise<true | FieldError[]> => {
-    return true
+  handleValueUnset = async (formFieldIndex: number, path: string, validation: true | FieldError[]) => {
+    const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
+    if (formFieldConfig) {
+      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      await this.props.onValueUnset(fullPath, true)
+      
+      const formData = cloneDeep(this.state.formData)
+      if (validation === true) {
+        formData[formFieldIndex] = { status: 'normal' }
+      } else {
+        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+      }
+
+      this.setState({
+        formData
+      })
+    }
+  }
+
+  handleValueListAppend = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
+    const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
+    if (formFieldConfig) {
+      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      await this.props.onValueListAppend(fullPath, value, true)
+      
+      const formData = cloneDeep(this.state.formData)
+      if (validation === true) {
+        formData[formFieldIndex] = { status: 'normal' }
+      } else {
+        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+      }
+
+      this.setState({
+        formData
+      })
+    }
+  }
+
+  handleValueListSplice = async (formFieldIndex: number, path: string, index: number, count: number, validation: true | FieldError[]) => {
+    const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
+    if (formFieldConfig) {
+      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      await this.props.onValueListSplice(fullPath, index, count, true)
+      
+      const formData = cloneDeep(this.state.formData)
+      if (validation === true) {
+        formData[formFieldIndex] = { status: 'normal' }
+      } else {
+        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+      }
+
+      this.setState({
+        formData
+      })
+    }
   }
 
   renderComponent = (props: IGroupField) => {
@@ -130,28 +231,16 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     return (
       <React.Fragment>
         {this.renderComponent({
-          children: this.props.config.fields.map((formFieldConfig, formFieldIndex) => {
+          children: (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
+            if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
+              return null
+            }
             let hidden: boolean = true
             let display: boolean = true
-            if (formFieldConfig.condition && formFieldConfig.condition.statement) {
-              let statement = formFieldConfig.condition.statement
-              if (formFieldConfig.condition.params && Array.isArray(formFieldConfig.condition.params)) {
-                statement = getParamText(formFieldConfig.condition.statement, formFieldConfig.condition.params, { record, data, step })
-              }
-              try {
-                // eslint-disable-next-line no-eval
-                const result = eval(statement)
-                if (!result) {
-                  hidden = false
-                }
-              } catch (e) {
-                console.error('表单项展示条件语句执行错误。', statement)
-                hidden = false
-              }
-            }
 
             if (formFieldConfig.type === 'hidden') {
-              hidden = false
+              hidden = true
+              display = false
             }
 
             if (formFieldConfig.display === 'none') {
@@ -159,48 +248,44 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
               display = false
             }
 
-            const FormField = this.getALLComponents(formFieldConfig.type) || React.Fragment
-
-            const fieldData = formFieldConfig.field !== undefined ? getValue(this.state.formData, formFieldConfig.field, {}) : {}
+            const FormField = this.getALLComponents(formFieldConfig.type) || DefaultFormField
 
             const renderData = {
               label: formFieldConfig.label,
-              status: fieldData.status || 'normal',
-              message: fieldData.message || '',
+              status: (this.state.formData[formFieldIndex] || {}).status || 'normal',
+              message: (this.state.formData[formFieldIndex] || {}).message || '',
               layout: formLayout,
+              visitable: display,
               fieldType: formFieldConfig.type,
               children: (
-                <FormField
-                  key={formFieldIndex}
-                  ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                    if (formFieldIndex !== null) {
-                      this.formFields[formFieldIndex] = formField
-                      this.handleFormFieldMount(formFieldIndex)
-                    }
-                  }}
-                  formLayout={formLayout}
-                  value={formFieldConfig.field !== undefined ? getValue(value, formFieldConfig.field) : undefined}
-                  record={record}
-                  data={_.cloneDeep(data)}
-                  step={step}
-                  config={formFieldConfig}
-                  onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
-                />
+                  <FormField
+                    key={formFieldIndex}
+                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
+                      if (formFieldIndex !== null) {
+                        this.formFields[formFieldIndex] = formField
+                        this.handleMount(formFieldIndex)
+                      }
+                    }}
+                    formLayout={formLayout}
+                    value={getValue(value, formFieldConfig.field)}
+                    record={record}
+                    data={cloneDeep(data)}
+                    step={step}
+                    config={formFieldConfig}
+                    onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
+                    onValueSet={async (path, value, validation) => this.handleValueSet(formFieldIndex, path, value, validation)}
+                    onValueUnset={async (path, validation) => this.handleValueUnset(formFieldIndex, path, validation)}
+                    onValueListAppend={async (path, value, validation) => this.handleValueListAppend(formFieldIndex, path, value, validation)}
+                    onValueListSplice={async (path, index, count, validation) => this.handleValueListSplice(formFieldIndex, path, index, count, validation)}
+                    loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                  />
               )
             }
             // 渲染表单项容器
             return (
               hidden
-                ? <div key={formFieldIndex} style={display
-                  ? { position: 'relative' }
-                  : {
-                      overflow: 'hidden',
-                      height: 0,
-                      width: 0
-                    }}>
-                  {this.renderItemComponent(renderData)}
-                </div>
-                : <></>
+                ? this.renderItemComponent(renderData)
+                : <React.Fragment key={formFieldIndex} />
             )
           })
         })}

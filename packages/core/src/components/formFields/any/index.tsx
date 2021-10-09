@@ -4,6 +4,7 @@ import { Field, FieldConfig, IField, FieldInterface } from '../common'
 import TextField from '../text'
 import * as _ from 'lodash'
 import NumberField from '../number'
+import BooleanField from '../switch'
 
 export interface AnyFieldConfig extends FieldConfig, FieldInterface {
   type: 'any'
@@ -24,6 +25,7 @@ export interface IAnyTypeField {
 export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | string | number | boolean> implements IField<null | string | number | boolean> {
   TextField = TextField
   NumberField = NumberField
+  BooleanField = BooleanField
 
   handleChangeType = (type: 'null' | 'string' | 'number' | 'boolean') => {
     const {
@@ -31,18 +33,18 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
       onChange
     } = this.props
     if (type === 'null') {
-      onChange(null)
+      this.props.onValueSet('', null, true)
     } else if (type === 'string') {
-      onChange(value?.toString() || '')
+      this.props.onValueSet('', value?.toString() || '', true)
     } else if (type === 'number') {
       const number = Number(value)
       if (Number.isNaN(number)) {
-        onChange(0)
+        this.props.onValueSet('', 0, true)
       } else {
-        onChange(number)
+        this.props.onValueSet('', number, true)
       }
     } else if (type === 'boolean') {
-      onChange(!!value)
+      this.props.onValueSet('', !!value, true)
     }
   }
 
@@ -87,6 +89,11 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
             step={step}
             config={{ type: 'text', field: '', label: '' }}
             onChange={async (value: string) => { await onChange(value) }}
+            onValueSet={this.props.onValueSet}
+            onValueUnset={this.props.onValueUnset}
+            onValueListAppend={this.props.onValueListAppend}
+            onValueListSplice={this.props.onValueListSplice}
+            loadDomain={this.props.loadDomain}
           /> : (
             type === 'number' ? <this.NumberField
               ref={() => {}}
@@ -97,7 +104,26 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
               step={step}
               config={{ type: 'number', field: '', label: '' }}
               onChange={async (value) => { await onChange(Number(value)) }}
-            /> : null
+              onValueSet={async (path, value, validation) => await this.props.onValueSet(path, Number(value), validation)}
+              onValueUnset={this.props.onValueUnset}
+              onValueListAppend={this.props.onValueListAppend}
+              onValueListSplice={this.props.onValueListSplice}
+              loadDomain={this.props.loadDomain}
+            /> : <this.BooleanField
+              ref={() => {}}
+              formLayout={'horizontal'}
+              record={record}
+              value={typeof value === 'boolean' ? value : false}
+              data={_.cloneDeep(data)}
+              step={step}
+              config={{ type: 'switch', field: '', label: '' }}
+              onChange={async (value) => { await onChange(Boolean(value)) }}
+              onValueSet={this.props.onValueSet}
+              onValueUnset={this.props.onValueUnset}
+              onValueListAppend={this.props.onValueListAppend}
+              onValueListSplice={this.props.onValueListSplice}
+              loadDomain={this.props.loadDomain}
+            />
           )
         })}
       </React.Fragment>

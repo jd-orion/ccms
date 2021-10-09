@@ -155,7 +155,7 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
           placeholder,
           disabled: getBoolean(disabled),
           readonly: getBoolean(readonly),
-          onChange: async (value: string) => await onChange(value)
+          onChange: async (value: string) => await this.props.onValueSet('', value, await this.validate(value))
         })}
       </React.Fragment>
     )

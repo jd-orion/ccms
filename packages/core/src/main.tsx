@@ -45,6 +45,7 @@ export interface CCMSProps {
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  loadDomain: (domain: string) => Promise<string>
   callback: () => void
   onMount?: () => void
 }
@@ -98,7 +99,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
    * 执行界面0的挂载
    */
   componentDidMount () {
-    this.steps[0]?.willMount()
+    this.steps[0]?.stepPush()
   }
 
   /**
@@ -127,13 +128,14 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
 
       await this.setState({
         realStep: step + 1,
-        viewStep: unmountView ? viewStep.filter((_step) => _step !== step || steps[step].type === 'fetch') : viewStep,
+        // TODO: 视图进出策略待调整
+        // viewStep: unmountView ? viewStep.filter((_step) => _step !== step || steps[step].type === 'fetch') : viewStep,
         data
       })
 
       const nextStep = this.steps[step + 1]
       if (nextStep) {
-        nextStep.willMount()
+        nextStep.stepPush()
       }
     } else {
       callback()
@@ -172,7 +174,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
   /**
    * 处理页面步骤的界面后退时间
    */
-  handleUnmount = async (step: number, reload: boolean = false) => {
+  handleUnmount = async (step: number, reload: boolean = false, data?: any) => {
     const {
       config: {
         steps = []
@@ -191,16 +193,9 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
     })
 
     if (step > 0 && step <= steps.length) {
-      if (reload) {
-        const nextStep = this.steps[step - 1]
-        if (nextStep) {
-          nextStep.willMount()
-        }
-      } else {
-        _viewStep.push(step - 1)
-        this.setState({
-          viewStep: _viewStep
-        })
+      const nextStep = this.steps[step - 1]
+      if (nextStep) {
+        nextStep.stepPop(reload, data)
       }
     } else {
       callback()
@@ -234,7 +229,8 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
       checkPageAuth,
       loadPageURL,
       loadPageFrameURL,
-      loadPageConfig
+      loadPageConfig,
+      loadDomain
     } = this.props
 
     const {
@@ -268,12 +264,13 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
                 step: index,
                 onSubmit: (data: any, unmountView: boolean = true) => this.handleSubmit(index, data, unmountView),
                 onMount: () => this.handleMount(index),
-                onUnmount: (reload: boolean = false) => this.handleUnmount(index, reload),
+                onUnmount: (reload: boolean = false, data?: any) => this.handleUnmount(index, reload, data),
                 config: currentStep,
                 checkPageAuth,
                 loadPageURL,
                 loadPageFrameURL,
-                loadPageConfig
+                loadPageConfig,
+                loadDomain
               }
 
               const StepComponent = this.getStepComponent(currentStep.type)

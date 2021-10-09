@@ -1,37 +1,47 @@
 import queryString from 'query-string'
 import { ParamConfig } from '../interface'
+import { set, get, isArray, assignInWith, isObject, isUndefined } from 'lodash'
 
 export const getValue = (obj: any, path: string = '', defaultValue: any = undefined) => {
-  const result = String.prototype.split
-    .call(path, /[[\].]+/)
-    .filter(Boolean)
-    .reduce((res, key) => (res !== null && res !== undefined ? res[key] : res), obj)
-  return result === undefined ? defaultValue : result
+  if (path === undefined) {
+    return defaultValue
+  } else if (path === '') {
+    return obj === undefined ? defaultValue : obj
+  } else {
+    return get(obj, path, defaultValue)
+  }
+}
+
+const merge = (a: any, b: any): any => {
+  return assignInWith(a, b, (a,b) => {
+    if (isUndefined(a) && isArray(b)) {
+      a = []
+    }
+    if (isObject(b)) {
+      if (isArray(a)) {
+        return merge(a,b).filter((i: any) => i !== undefined)
+      } else {
+        return merge(a,b)
+      }
+    }
+  })
 }
 
 export const setValue = (obj: any, path: string = '', value: any) => {
-  const pathList = String.prototype.split
-    .call(path, /[[\].]+/)
-    .filter(Boolean)
-
-  const lastNode = pathList.slice(0, -1)
-    .reduce((res, key, index) => {
-      if (isNaN(Number(path[index + 1]))) {
-        // 后一个节点索引为数字
-        if (Object.prototype.toString.call(res[key]) !== '[object Array]') {
-          res[key] = {}
-        }
-      } else {
-        // 后一个节点索引为文本
-        /* istanbul ignore file */
-        if (Object.prototype.toString.call(res[key]) !== '[object Object]') {
-          res[key] = []
-        }
-      }
-      return res[key]
-    }, obj)
-
-  lastNode[pathList[pathList.length - 1]] = value
+  if (path === '') {
+    if (Object.prototype.toString.call(value) === '[object Object]') {
+      obj = merge(obj, value)
+    } else {
+      obj = value
+    }
+  } else {
+    const source = get(obj, path)
+    if (Object.prototype.toString.call(value) === '[object Object]' && source !== undefined) {
+      set(obj, path, merge(source, value))
+    } else {
+      set(obj, path, value)
+    }
+  }
 
   return obj
 }

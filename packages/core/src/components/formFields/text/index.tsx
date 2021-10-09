@@ -17,7 +17,7 @@ export interface TextFieldConfig extends FieldConfig {
   minLength?: number
   cjkLength?: number
   placeholder?: string
-  regExp?: { expression: string, message?: string }
+  regExp?: { expression?: string, message?: string }
 }
 
 export interface ITextField {
@@ -120,7 +120,7 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
       }
     }
 
-    if (regExp !== undefined) {
+    if (value !== undefined && value !== '' && regExp !== undefined && regExp.expression !== undefined) {
       if (!(new RegExp(regExp.expression)).test(value)) {
         if (regExp.message) {
           errors.push(new FieldError(regExp.message))
@@ -160,7 +160,7 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
           disabled: getBoolean(disabled),
           readonly: getBoolean(readonly),
           placeholder,
-          onChange: async (value: string) => await onChange(value)
+          onChange: async (value: string) => await this.props.onValueSet('', value, true)
         })}
       </React.Fragment>
     )

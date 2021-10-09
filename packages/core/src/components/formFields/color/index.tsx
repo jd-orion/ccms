@@ -44,33 +44,23 @@ export default class ColorField extends Field<ColorFieldConfig, IColorField, str
     return errors.length ? errors : true
   }
 
-  renderComponent = (props: IColorField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现ColorField组件。
-      <div style={{ display: 'none' }}>
-        <button onClick={() => props.onChange('onChange')}>onChange</button>
-      </div>
-    </React.Fragment>
-  }
-
-  render = () => {
-    const {
-      value,
-      config: {
-        readonly,
-        disabled
-      },
-      onChange
-    } = this.props
-    return (
-      <React.Fragment>
-        {this.renderComponent({
-          disabled: getBoolean(disabled),
-          readonly: getBoolean(readonly),
-          value,
-          onChange: async (value: string) => await onChange(value)
-        })}
-      </React.Fragment>
-    )
-  }
+    render = () => {
+      const {
+        value,
+        config: {
+          readonly,
+          disabled
+        }
+      } = this.props
+      return (
+            <React.Fragment>
+                {this.renderComponent({
+                  disabled: getBoolean(disabled),
+                  readonly: getBoolean(readonly),
+                  value,
+                  onChange: async (value: string) => await this.props.onValueSet('', value, true)
+                })}
+            </React.Fragment>
+      )
+    }
 }

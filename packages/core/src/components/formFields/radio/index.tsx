@@ -74,7 +74,7 @@ export default class RadioField extends Field<RadioFieldConfig, IRadioField, str
                 {this.renderComponent({
                   value,
                   options: config.options,
-                  onChange: async (value: string) => await onChange(value)
+                  onChange: async (value: string) => await this.props.onValueSet('', value, true)
                 })}
             </React.Fragment>
       )

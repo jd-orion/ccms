@@ -11,55 +11,6 @@ export interface RichStringConfig {
   content: string
 }
 
-/**
- *
- */
-export interface APIConfig {
-  url: string
-  method: 'GET' | 'POST'
-  contentType?: 'json' | 'form-data'
-  /** 拼接URL 例：jd.com/url/{id} */
-  concatUrl?: Array<string>
-  /** 将参数配置为全局数据 */
-  globalInterface?: string
-  withCredentials?: boolean
-}
-
-/**
- *
- */
-export interface APIResponseConfig {
-  response: string
-  format?: 'array' | 'key'
-  responseArrayKey?: string
-  responseArrayValue?: string
-}
-
-/**
- *
- */
-export interface APIConditionConfig {
-  enable: true,
-  field: string,
-  value: any,
-  success: {
-    type: 'none' | 'modal',
-    content?: {
-      type: 'static' | 'field',
-      content?: string,
-      field?: string
-    }
-  },
-  fail: {
-    type: 'none' | 'modal',
-    content?: {
-      type: 'static' | 'field',
-      content?: string,
-      field?: string
-    }
-  }
-}
-
 export type ParamConfig = RecordParamConfig | DataParamConfig | StepParamConfig | SourceParamConfig | URLParamConfig | StaticParamConfig
 
 interface RecordParamConfig {
@@ -90,6 +41,5 @@ interface URLParamConfig {
 
 interface StaticParamConfig {
   source: 'static'
-  field: string
-  value: string
+  value: any
 }

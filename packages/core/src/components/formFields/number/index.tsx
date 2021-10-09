@@ -81,12 +81,13 @@ export default class NumberField extends Field<NumberFieldConfig, INumberField, 
 
         if (errors.length > 0) return errors
 
-        if (regExp !== undefined) {
-          if (new RegExp(`${regExp.expression}`).test(value.toString())) return true
-          if (regExp.message) {
-            errors.push(new FieldError(regExp.message))
-          } else {
-            errors.push(new FieldError('格式错误'))
+        if (regExp !== undefined && regExp.expression !== undefined) {
+          if (!(new RegExp(regExp.expression)).test(value.toString())) {
+            if (regExp.message) {
+              errors.push(new FieldError(regExp.message))
+            } else {
+              errors.push(new FieldError('格式错误'))
+            }
           }
         }
 
@@ -130,7 +131,7 @@ export default class NumberField extends Field<NumberFieldConfig, INumberField, 
                   readonly: getBoolean(readonly),
                   precision,
                   step,
-                  onChange: async (value: string | number | undefined) => onChange(value)
+                  onChange: async (value: string | number | undefined) => await this.props.onValueSet('', value, await this.validate(value))
                 })}
             </React.Fragment>
       )

@@ -1,11 +1,8 @@
 import React from 'react'
-import QueryString from 'query-string'
-import { getValue } from '../../util/value'
-import { componentType } from '.'
-import { request } from '../../util/request'
-import { APIConfig, ParamConfig } from '../../interface'
+import { ParamConfig } from '../../interface'
 
 import { FieldConfigs as getFieldConfigs } from './'
+import ParamHelper from '../../util/param'
 /**
  * 表单项基类配置文件格式定义
  * - field:    表单项字段名
@@ -26,28 +23,24 @@ import { FieldConfigs as getFieldConfigs } from './'
  * - - value:    默认值（static类型使用）
  * - - field:    字段名（data/query/hash类型使用）（hash类型选填）
  */
-export interface FieldConfig extends componentType {
+export interface FieldConfig {
   field: string
   label: string
   required?: boolean
   readonly?: boolean
   disabled?: boolean
   display?: 'none'
-  default?: {
-    type: 'static' | 'data' | 'query' | 'hash' | 'interface' | 'step' | 'all'
-    value?: any
+  defaultValue?: ParamConfig,
+  condition?: FieldConditionConfig
+}
+
+export interface FieldConditionConfig {
+  statement?: string
+  params?: Array<{
     field?: string
-    api?: APIConfig
-    apiResponse?: string
-    step?: string | number
-  },
-  condition?: {
-    statement?: string
-    params?: Array<{
-      field?: string
-      data?: ParamConfig
-    }>
-  }
+    data?: ParamConfig
+  }>
+  debug?: boolean
 }
 
 /**
@@ -81,6 +74,7 @@ export interface IField<T> {
  * - onChange:
  */
 export interface FieldProps<C extends FieldConfig, T> {
+  // 挂载事件
   ref: (instance: Field<C, {}, any> | null) => void
   formLayout: 'horizontal' | 'vertical' | 'inline'
   value: T,
@@ -88,7 +82,17 @@ export interface FieldProps<C extends FieldConfig, T> {
   data: any[],
   step: number,
   config: C
+  // TODO 待删除
   onChange: (value: T) => Promise<void>
+  // 事件：设置值
+  onValueSet: (path: string, value: T, validation: true | FieldError[]) => Promise<void>
+  // 事件：置空值
+  onValueUnset: (path: string, validation: true | FieldError[]) => Promise<void>
+  // 事件：修改值 - 列表 - 追加
+  onValueListAppend: (path: string, value: any, validation: true | FieldError[]) => Promise<void>
+  // 事件：修改值 - 列表 - 删除
+  onValueListSplice: (path: string, index: number, count: number, validation: true | FieldError[]) => Promise<void>
+  loadDomain: (domain: string) => Promise<string>
 }
 
 /**
@@ -130,63 +134,17 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
    */
   defaultValue = async () => {
     const {
-      config,
-      data,
-      step
+      config
     } = this.props
-    /* istanbul ignore file */
-    if (config.default !== undefined) {
-      switch (config.default.type) {
-        case 'static':
-          if (config.default.value !== '' || config.default.value !== null || config.default.value !== undefined) return config.default.value
-          break
-        case 'data':
-          if (data && data[step] && config.default.field) {
-            return getValue(data[step], config.default.field)
-          }
-          break
-        case 'query':
-          if (window.location.search && config.default.field) {
-            const query = QueryString.parse(window.location.search)
-            return getValue(query, config.default.field)
-          }
-          break
-        case 'hash':
-          if (window.location.hash) {
-            if (config.default.field) {
-              try {
-                const hash = JSON.parse(window.location.hash.substr(1))
-                return getValue(hash, config.default.field)
-              } catch (e) { }
-            } else {
-              return window.location.hash.substr(1)
-            }
-          }
-          break
-        case 'step':
-          if (config.default.step) {
-            if (data && data[config.default.step] && config.default.field) {
-              return getValue(data[config.default.step], config.default.field)
-            }
-          }
-          break
-        case 'all':
-          return data
-        case 'interface':
-          if (config.default.api) {
-            let res = await request(config.default.api)
-            res = getValue(res, config.default.apiResponse)
-            return res
-          }
-          break
-      }
+    if (config.defaultValue !== undefined) {
+      return ParamHelper(config.defaultValue, { record: this.props.record, data: this.props.data, step: this.props.step })
     }
 
     return undefined
   }
 
   reset: () => Promise<T> = async () => {
-    return this.props.value
+    return this.defaultValue()
   };
 
   set: (value: T) => Promise<void> = async (value) => {

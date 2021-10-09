@@ -4,117 +4,102 @@ import moment from 'moment'
 import { getBoolean } from '../../../util/value'
 
 export interface DatetimeFieldConfig extends FieldConfig, FieldInterface {
-    type: 'datetime'
-    regExp?: { expression?: string, message?: string }
-    afterTime?: string
-    beforeTime?: string
-    format?: string
-    submitFormat?: string
-    placeholder?: string
-    mode?: 'time' | 'date' | 'month' | 'year'
+  type: 'datetime'
+  regExp?: { expression?: string, message?: string }
+  afterTime?: string
+  beforeTime?: string
+  format?: string
+  submitFormat?: string
+  placeholder?: string
+  mode?: 'time' | 'date' | 'datetime' | 'week' | 'month' | 'quarter' | 'year'
 }
 
 export interface IDatetimeField {
-    value: string
-    format?: string
-    submitFormat?: string
-    readonly?: boolean
-    disabled?: boolean
-    mode?: 'time' | 'date' | 'month' | 'year'
-    placeholder?: string
-    onChange: (value: string) => Promise<void>
-    showTime: boolean
+  value: moment.Moment | null
+  format: string
+  readonly?: boolean
+  disabled?: boolean
+  mode?: 'time' | 'date' | 'datetime' | 'week' | 'month' | 'quarter' | 'year'
+  placeholder?: string
+  onChange: (value: moment.Moment | null) => Promise<void>
 }
 
 export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeField, string> implements IField<string> {
-    reset: () => Promise<string> = async () => {
-      const defaults = await this.defaultValue()
-      return (defaults === undefined) ? '' : defaults
-    };
+  reset: () => Promise<string> = async () => {
+    const defaults = await this.defaultValue()
+    return (defaults === undefined) ? '' : defaults
+  };
 
-    get = async () => {
-      const {
-        value,
-        config: {
-          submitFormat,
-          format
-        }
-      } = this.props
-
-      const rsFormat = submitFormat || format || 'YYYY-MM-DD HH:mm:ss'
-      const setValue = value ? moment(value).format(rsFormat) : ''
-      return setValue
-    };
-
-    validate = async (value: string): Promise<true | FieldError[]> => {
-      const {
-        config: {
-          label,
-          required,
-          regExp
-        }
-      } = this.props
-
-      const errors: FieldError[] = []
-
-      if (getBoolean(required)) {
-        if (value === null || value === '' || value === undefined) {
-          errors.push(new FieldError(`请选择${label}`))
-        }
+  validate = async (value: string): Promise<true | FieldError[]> => {
+    const {
+      config: {
+        required,
+        regExp
       }
+    } = this.props
 
-      if (value === 'Invalid date') {
-        errors.push(new FieldError('格式错误'))
+    const errors: FieldError[] = []
+
+    if (getBoolean(required)) {
+      if (value === null || value === '' || value === undefined) {
+        errors.push(new FieldError('不能为空'))
       }
-
-      if (regExp !== undefined) {
-        if (value && regExp.expression && !(new RegExp(`${regExp.expression}`)).test(value.toString())) {
-          if (regExp.message) {
-            errors.push(new FieldError(regExp.message))
-          } else {
-            errors.push(new FieldError('格式错误'))
-          }
-        }
-      }
-
-      return errors.length ? errors : true
     }
 
-    renderComponent = (props: IDatetimeField) => {
-      return <React.Fragment>
-            您当前使用的UI版本没有实现DatetimeField组件。
-            <div style={{ display: 'none' }}>
-                <button onClick={() => props.onChange('')}>onChange</button>
-            </div>
-        </React.Fragment>
+    if (value === 'Invalid date') {
+      errors.push(new FieldError('格式错误'))
     }
 
-    render = () => {
-      const {
-        value,
-        config: {
-          format,
+    if (regExp !== undefined) {
+      if (value && regExp.expression && !(new RegExp(`${regExp.expression}`)).test(value.toString())) {
+        if (regExp.message) {
+          errors.push(new FieldError(regExp.message))
+        } else {
+          errors.push(new FieldError('格式错误'))
+        }
+      }
+    }
+
+    return errors.length ? errors : true
+  }
+
+  renderComponent = (props: IDatetimeField) => {
+    return <React.Fragment>
+      您当前使用的UI版本没有实现DatetimeField组件。
+      <div style={{ display: 'none' }}>
+        <button onClick={() => props.onChange(moment())}>onChange</button>
+      </div>
+    </React.Fragment>
+  }
+
+  render = () => {
+    const {
+      value,
+      config: {
+        mode,
+        disabled,
+        readonly,
+        placeholder
+      }
+    } = this.props
+    return (
+      <React.Fragment>
+        {this.renderComponent({
+          value: this.props.value && moment(this.props.value, this.props.config.submitFormat).isValid() ? moment(value, this.props.config.submitFormat) : null,
+          format: this.props.config.format || 'YYYY-MM-DD HH:mm:ss',
           mode,
-          disabled,
-          readonly,
-          placeholder
-        },
-        onChange
-      } = this.props
-      const showTime = !(format === 'YYYY-MM-DD' || format === '')
-      return (
-            <React.Fragment>
-                {this.renderComponent({
-                  value,
-                  format,
-                  mode,
-                  disabled: getBoolean(disabled),
-                  readonly: getBoolean(readonly),
-                  placeholder,
-                  showTime,
-                  onChange: async (value: string) => onChange(value)
-                })}
-            </React.Fragment>
-      )
-    }
+          disabled: getBoolean(disabled),
+          readonly: getBoolean(readonly),
+          placeholder,
+          onChange: async (value) => {
+            if (value === null) {
+              await this.props.onValueSet('', '', await this.validate(''))
+            } else {
+              await this.props.onValueSet('', value.format(this.props.config.submitFormat), await this.validate(value.format(this.props.config.submitFormat)))
+            }
+          }
+        })}
+      </React.Fragment>
+    )
+  }
 }

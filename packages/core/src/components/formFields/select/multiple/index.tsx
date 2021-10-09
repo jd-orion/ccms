@@ -104,17 +104,13 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
         options: optionsConfig,
         disabled,
         placeholder
-      },
-      onChange,
-      record,
-      data,
-      step
+      }
     } = this.props
 
     const props: ISelectMultipleField = {
       value: undefined,
-      options: this.options(optionsConfig, { record, data, step }),
-      onChange: async (value) => { await onChange(value) },
+      options: this.options(optionsConfig),
+      onChange: async (value) => { await this.props.onValueSet('', value, true) },
       disabled: getBoolean(disabled),
       placeholder
     }
