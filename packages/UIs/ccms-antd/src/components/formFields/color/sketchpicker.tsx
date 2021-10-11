@@ -89,9 +89,10 @@ export default class ColorComponent extends PureComponent<Props, {}> {
             this.selectionStart = e.target.selectionStart
             this.selectionEnd = e.target.selectionEnd
             this.handleChange(e)
+            const eTaget = e.target
             setTimeout(() => {
-              e.target.selectionStart = this.selectionStart
-              e.target.selectionEnd = this.selectionEnd
+              eTaget.selectionStart = this.selectionStart
+              eTaget.selectionEnd = this.selectionEnd
             })
           }}
         />
