@@ -50,6 +50,7 @@ export default class FormStepComponent extends FormStep {
   renderItemComponent = (props: IFormItem) => {
     const {
       label,
+      visitable,
       message,
       fieldType,
       children
@@ -68,6 +69,7 @@ export default class FormStepComponent extends FormStep {
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
         className={styles[`ccms-antd-mini-form-${fieldType}`]}
+        style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
       >
         {children}
       </Form.Item>

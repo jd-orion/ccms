@@ -39,6 +39,7 @@ export default class FilterStepComponent extends FilterStep {
   renderItemComponent = (props: IFilterItem) => {
     const {
       label,
+      visitable,
       status,
       message,
       children
@@ -49,6 +50,7 @@ export default class FilterStepComponent extends FilterStep {
         label={label}
         validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
         help={message}
+        style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
       >
         {children}
       </Form.Item>

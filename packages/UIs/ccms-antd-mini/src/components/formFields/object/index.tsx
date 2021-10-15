@@ -137,7 +137,7 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
         >
           {children}
         </Collapse>
-        {children.length > 0 && (
+        {(Array.isArray(children) ? children : []).length > 0 && (
           <div className={styles['ccms-antd-mini-formField-object-after-button']}>
             <Button type="link" icon={<PlusOutlined />} onClick={() => {
               onInsert().then((key) => this.setState({
