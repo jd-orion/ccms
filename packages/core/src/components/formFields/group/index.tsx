@@ -6,14 +6,6 @@ import { IFormItem } from '../../../steps/form'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 
-class DefaultFormField extends React.Component {
-  render () {
-    return (
-      <React.Fragment>当前UI库未实现该表单类型</React.Fragment>
-    )
-  }
-}
-
 export interface GroupFieldConfig extends FieldConfig {
   type: 'group'
   fields: FieldConfigs[]
@@ -248,7 +240,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
               display = false
             }
 
-            const FormField = this.getALLComponents(formFieldConfig.type) || DefaultFormField
+            const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
             const renderData = {
               label: formFieldConfig.label,

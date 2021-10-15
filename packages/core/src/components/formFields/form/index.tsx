@@ -5,14 +5,6 @@ import { getValue } from '../../../util/value'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 
-class DefaultFormField extends React.Component {
-  render () {
-    return (
-      <React.Fragment>当前UI库未实现该表单类型</React.Fragment>
-    )
-  }
-}
-
 export interface FormFieldConfig extends FieldConfig {
   type: 'form'
   fields: FieldConfigs[]
@@ -381,7 +373,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                       if (!ConditionHelper(formFieldConfig.condition, { record: itemValue, data: this.props.data, step: this.props.step })) {
                         return null
                       }
-                      const FormField = this.getALLComponents(formFieldConfig.type) || DefaultFormField
+                      const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
                       // 渲染表单项容器
                       return (

@@ -7,14 +7,6 @@ import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 
-class DefaultFormField extends React.Component {
-  render () {
-    return (
-      <React.Fragment>当前UI库未实现该表单类型</React.Fragment>
-    )
-  }
-}
-
 export interface ImportSubformFieldConfig extends FieldConfig {
   type: 'import_subform',
   interface?: InterfaceConfig
@@ -288,7 +280,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                 display = false
               }
   
-              const FormField = this.getALLComponents(formFieldConfig.type) || DefaultFormField
+              const FormField = this.getALLComponents(formFieldConfig.type) || Field
   
               const renderData = {
                 label: formFieldConfig.label,

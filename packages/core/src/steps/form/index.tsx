@@ -8,14 +8,6 @@ import ParamHelper from '../../util/param'
 import { cloneDeep, get, set, unset } from 'lodash'
 import ConditionHelper from '../../util/condition'
 
-class DefaultFormField extends React.Component {
-  render () {
-    return (
-      <React.Fragment>当前UI库未实现该表单类型</React.Fragment>
-    )
-  }
-}
-
 /**
  * 表单步骤配置文件格式定义
  * - layout: 表单布局类型
@@ -441,7 +433,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label, hidden }
               }
 
-              const FormField = this.getALLComponents(formFieldConfig.type) || DefaultFormField
+              const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
               const renderData = {
                 label: formFieldConfig.label,

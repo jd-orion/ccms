@@ -170,12 +170,14 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
 
   renderComponent = (props: E) => {
     return <React.Fragment>
-      您当前使用的UI版本没有实现Field组件。
+      当前UI库未实现该表单类型
     </React.Fragment>
   }
 
   render = () => {
-    return (<></>)
+    return (<React.Fragment>
+      当前UI库未实现该表单类型
+    </React.Fragment>)
   }
 }
 

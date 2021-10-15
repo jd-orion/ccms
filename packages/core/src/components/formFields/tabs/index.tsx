@@ -5,14 +5,6 @@ import ConditionHelper from "../../../util/condition";
 import { cloneDeep } from "lodash";
 import { getValue, setValue } from "../../../util/value";
 
-class DefaultFormField extends React.Component {
-  render () {
-    return (
-      <React.Fragment>当前UI库未实现该表单类型</React.Fragment>
-    )
-  }
-}
-
 export type TabsFieldConfig = TabsFieldConfig_Same | TabsFieldConfig_Diff
 
 export interface TabsFieldConfig_Basic extends FieldConfig {
@@ -315,7 +307,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                           display = false
                         }
                         
-                        const FormField = this.getALLComponents(formFieldConfig.type) || DefaultFormField
+                        const FormField = this.getALLComponents(formFieldConfig.type) || Field
   
                         // 渲染表单项容器
                         if (hidden) {

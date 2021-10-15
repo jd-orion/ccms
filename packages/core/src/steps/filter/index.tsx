@@ -8,14 +8,6 @@ import { cloneDeep, get, set, unset } from 'lodash'
 import ConditionHelper from '../../util/condition'
 import { getValue, setValue } from '../../util/value'
 
-class DefaultFormField extends React.Component {
-  render () {
-    return (
-      <React.Fragment>当前UI库未实现该表单类型</React.Fragment>
-    )
-  }
-}
-
 /**
  * 表单步骤配置文件格式定义
  * - layout: 表单布局类型
@@ -447,7 +439,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
               display = false
             }
 
-            const FormField = this.getALLComponents(formFieldConfig.type) || DefaultFormField
+            const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
             const renderData = {
               label: formFieldConfig.label,
