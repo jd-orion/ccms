@@ -3,6 +3,7 @@ import { DatetimeRangeField } from 'ccms'
 import { DatePicker, ConfigProvider } from 'antd'
 import { IDatetimeRangeField, DatetimeRangeFieldConfig } from 'ccms/dist/src/components/formFields/datetimeRange'
 import moment from 'moment'
+import 'antd/lib/date-picker/style/index.css'
 import locale from 'antd/lib/locale/zh_CN';
 const { RangePicker } = DatePicker
 

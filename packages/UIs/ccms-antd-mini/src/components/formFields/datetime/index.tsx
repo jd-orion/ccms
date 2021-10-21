@@ -3,7 +3,7 @@ import { DatetimeField } from 'ccms'
 import { DatePicker, TimePicker,ConfigProvider } from 'antd'
 import { IDatetimeField, DatetimeFieldConfig } from 'ccms/dist/src/components/formFields/datetime'
 import locale from 'antd/lib/locale/zh_CN';
-
+import 'antd/lib/date-picker/style/index.css'
 export const PropsType = (props: DatetimeFieldConfig) => { }
 
 export default class DatetimeFieldComponent extends DatetimeField {
