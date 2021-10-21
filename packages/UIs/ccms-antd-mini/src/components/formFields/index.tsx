@@ -13,6 +13,10 @@ import NumberField from './number'
 import SwitchField from './switch'
 import ObjectField from './object'
 import HiddenField from './hidden'
+import DatetimeField from './datetime'
+import DatetimeRangeField from './datetimeRange'
+import TabsField from './tabs'
+import ColorField from './color'
 
 export default {
   text: TextField,
@@ -29,5 +33,9 @@ export default {
   number: NumberField,
   switch: SwitchField,
   object: ObjectField,
-  hidden: HiddenField
+  hidden: HiddenField,
+  datetime: DatetimeField,
+  datetimeRange: DatetimeRangeField,
+  tabs: TabsField,
+  color: ColorField
 }
