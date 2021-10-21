@@ -7,6 +7,8 @@ import { FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/formFields'
 import styles from "./index.less"
 import { formItemLayout } from '../../components/formFields/common'
+import newstyles from "../../main.less"
+
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
 
@@ -31,6 +33,7 @@ export default class FormStepComponent extends FormStep {
       <Form
         {...formItemLayout}
         layout={layout}
+        className={newstyles['content']}
       >
         {children}
         {
