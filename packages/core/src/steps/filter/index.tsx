@@ -20,6 +20,10 @@ export interface FilterConfig extends StepConfig {
   type: 'filter'
   fields?: FieldConfigs[]
   defaultValue?: ParamConfig
+  hiddenSubmit?: boolean // 是否隐藏确认按钮
+  hiddenReset?: boolean // 是否隐藏重置按钮
+  submitText?: string    // 自定义确认按钮文本
+  resetText?: string   //  自定义重置按钮文本
 }
 
 /**
@@ -33,8 +37,10 @@ export interface FilterConfig extends StepConfig {
  * - children: 表单内容
  */
 export interface IFilter {
-  onSubmit: () => Promise<any>
-  onReset: () => Promise<any>
+  onSubmit?: () => Promise<any>
+  onReset?: () => Promise<any>
+  submitText?: string    // 自定义确认按钮文本
+  resetText?: string   //  自定义重置按钮文本
   children: React.ReactNode[]
 }
 
@@ -59,6 +65,7 @@ export interface IFilterItem {
   description?: string
   message?: string
   visitable: boolean
+  fieldType: string
   children: React.ReactNode
 }
 
@@ -419,8 +426,10 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
       <React.Fragment>
         {/* 渲染表单 */}
         {this.renderComponent({
-          onSubmit: async () => this.handleSubmit(),
-          onReset: async () => this.handleReset(),
+          onSubmit: this.props.config?.hiddenSubmit ? undefined : async () => this.handleSubmit(),
+          onReset: this.props.config?.hiddenReset ? undefined : async () => this.handleReset(),
+          submitText: this.props.config?.submitText,
+          resetText: this.props.config?.resetText,
           children: fields.map((formFieldConfig, formFieldIndex) => {
             if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
               this.formFieldsMounted[formFieldIndex] = false

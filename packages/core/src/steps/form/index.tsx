@@ -27,6 +27,8 @@ export interface FormConfig extends StepConfig {
   defaultValue?: ParamConfig,
   hiddenSubmit?: boolean // 是否隐藏提交按钮
   hiddenCancel?: boolean // 是否隐藏取消按钮
+  submitText?: string    // 自定义确认按钮文本
+  cancelText?: string   //  自定义取消按钮文本
 }
 
 /**
@@ -44,6 +46,8 @@ export interface IForm {
   onSubmit?: () => Promise<any>
   onCancel?: () => Promise<any>
   children: React.ReactNode[]
+  submitText?: string    // 自定义确认按钮文本
+  cancelText?: string   //  自定义取消按钮文本
 }
 
 /**
@@ -411,6 +415,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
             layout,
             onSubmit: this.props.config.hiddenSubmit ? undefined : async () => this.handleSubmit(),
             onCancel: this.props.config.hiddenCancel ? undefined : async () => this.handleCancel(),
+            submitText: this.props.config?.submitText, 
+            cancelText: this.props.config?.cancelText,
             children: fields.map((formFieldConfig, formFieldIndex) => {
               if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
                 return null
