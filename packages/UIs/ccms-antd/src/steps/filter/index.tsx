@@ -11,6 +11,8 @@ export default class FilterStepComponent extends FilterStep {
     const {
       onSubmit,
       onReset,
+      submitText,
+      resetText,
       children
     } = props
 
@@ -20,12 +22,13 @@ export default class FilterStepComponent extends FilterStep {
         style={{ marginBottom: 16 }}
       >
           {children}
-          <Form.Item>
+          {(onSubmit || onReset) && <Form.Item>
             <Space>
-              <Button type="primary" onClick={() => onSubmit()}>确定</Button>
-              <Button onClick={() => onReset()}>重置</Button>
+              {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText|| '确定'}</Button>}
+              {onReset && <Button onClick={() => onReset()}>{resetText || '重置'}</Button>}
             </Space>
           </Form.Item>
+          }
       </Form>
     )
   }

@@ -17,6 +17,8 @@ export default class FormStepComponent extends FormStep {
       layout,
       onSubmit,
       onCancel,
+      submitText,
+      cancelText,
       children
     } = props
 
@@ -39,8 +41,8 @@ export default class FormStepComponent extends FormStep {
         {
           (onSubmit || onCancel) && <Form.Item>
             <Space>
-              {onSubmit && <Button type="primary" onClick={() => onSubmit()}>确定</Button>}
-              {onCancel && <Button onClick={() => onCancel()}>取消</Button>}
+              {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText || '确定'}</Button>}
+              {onCancel && <Button onClick={() => onCancel()}>{cancelText || '取消'}</Button>}
             </Space>
           </Form.Item>
         }
