@@ -415,8 +415,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
             layout,
             onSubmit: this.props.config.hiddenSubmit ? undefined : async () => this.handleSubmit(),
             onCancel: this.props.config.hiddenCancel ? undefined : async () => this.handleCancel(),
-            submitText: this.props.config?.submitText, 
-            cancelText: this.props.config?.cancelText,
+            submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ""), 
+            cancelText: this.props.config?.cancelText?.replace(/(^\s*)|(\s*$)/g, ""),
             children: fields.map((formFieldConfig, formFieldIndex) => {
               if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
                 return null

@@ -428,8 +428,8 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
         {this.renderComponent({
           onSubmit: this.props.config?.hiddenSubmit ? undefined : async () => this.handleSubmit(),
           onReset: this.props.config?.hiddenReset ? undefined : async () => this.handleReset(),
-          submitText: this.props.config?.submitText,
-          resetText: this.props.config?.resetText,
+          submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ""),
+          resetText: this.props.config?.resetText?.replace(/(^\s*)|(\s*$)/g, ""),
           children: fields.map((formFieldConfig, formFieldIndex) => {
             if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
               this.formFieldsMounted[formFieldIndex] = false
