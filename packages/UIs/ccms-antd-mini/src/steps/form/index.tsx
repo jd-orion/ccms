@@ -19,6 +19,8 @@ export default class FormStepComponent extends FormStep {
       layout,
       onSubmit,
       onCancel,
+      submitText,
+      cancelText,
       children
     } = props
 
@@ -37,12 +39,14 @@ export default class FormStepComponent extends FormStep {
         {...formItemLayout}
         size="small">
         {children}
-        {(onSubmit || onCancel) && (<Form.Item>
-          <Space>
-            {onSubmit && <Button type="primary" onClick={() => onSubmit()}>Submit</Button>}
-            {onCancel && <Button onClick={() => onCancel()}>Cancel</Button>}
-          </Space>
-        </Form.Item>)}
+        {
+          (onSubmit || onCancel) && <Form.Item>
+            <Space>
+              {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText || '确定'}</Button>}
+              {onCancel && <Button onClick={() => onCancel()}>{cancelText || '取消'}</Button>}
+            </Space>
+          </Form.Item>
+        }
       </Form>
     )
   }
@@ -60,6 +64,8 @@ export default class FormStepComponent extends FormStep {
     if (fieldType === 'form' || fieldType === 'group' || fieldType === 'import_subform') {
       formItemLayout.labelCol = { span: 24 }
       formItemLayout.wrapperCol = { span: 24 }
+    } else if (fieldType === 'switch' || fieldType === 'text') {
+      formItemLayout.labelCol = { span: 10 }
     }
 
     return (
