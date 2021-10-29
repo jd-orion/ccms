@@ -6,17 +6,22 @@ import { FieldError, FieldProps } from '../common'
 import moment from 'moment'
 
 // 默认入参
-const defaultProps: FieldProps<NumberFieldConfig, string> = {
-    ref: async (ref) => { },
-    formLayout: 'horizontal',
-    value: '',
-    data: [{}],
-    step: 0,
-    config: { type: 'number', field: 'test', label: 'test' },
-    onChange: async () => { },
-    record: {}
+const defaultProps: FieldProps<NumberFieldConfig, string | number | undefined> = {
+  ref: async (ref) => { },
+  formLayout: 'horizontal',
+  value: '',
+  data: [{}],
+  step: 0,
+  config: { type: 'number', field: 'test', label: 'test' },
+  onChange: async () => { },
+  record: {},
+  onValueSet: async () => {},
+  onValueUnset: async () => {},
+  onValueListAppend: async () => {},
+  onValueListSplice: async () => {},
+  loadDomain: async () => 'hello'
 }
-
+// config={Object.assign(defaultProps, config)}
 const theTest = (message: string, setvalue: any, config: any, successValue: any, getValue: any) => {
     test(message, () => {
         return new Promise((resolve) => {
@@ -42,16 +47,16 @@ const theTest = (message: string, setvalue: any, config: any, successValue: any,
 
 
 theTest('数值- 未配置', { value: "" }, {}, "", "")
-theTest('数值- 配置默认格式', { value: 2 }, { default: { type: 'static', value: 2 } }, 2, 2)
-theTest('数值- 配置小数位', { value: "2" }, { default: { type: 'static', value: "2" }, precision: 2 }, "2", "2")
+theTest('数值- 配置默认格式', { value: 2 }, { defaultValue: { source: 'static', value: 2 } }, 2, 2)
+theTest('数值- 配置小数位', { value: "2" }, { defaultValue: { source: 'static', value: "2" }, precision: 2 }, "2", "2")
 
 const validateTest = (message: string, config: NumberFieldConfig, successValue: string, failValue: any, errorMessage?: string | true) => {
     test(message, () => {
         return new Promise((resolve) => {
             render(
                 <NumberField
-                    {...defaultProps}
-                    ref={async (ref) => {
+                {...defaultProps}
+                    ref={async (ref: any) => {
                         if (ref) {
                             const success = await ref.validate(successValue)
                             successValue && expect(success).toEqual(true)
@@ -147,7 +152,7 @@ const submitFormatTest = (message: string, config: NumberFieldConfig, resInfo: a
             render(
                 <NumberField
                     {...defaultProps}
-                    ref={async (ref) => {
+                    ref={async (ref: any) => {
                         if (ref) {
 
                             const fieldFormat = await ref.fieldFormat()
@@ -174,9 +179,9 @@ submitFormatTest('数值- 提交数据验证-无precision', {
 
 submitFormatTest('数值- 提交数据验证-有precision', {
     type: 'number', field: 'test', label: 'test',
-    default: {
-        type: 'static',
-        value: 2,
+    defaultValue: {
+        source: 'static',
+        value: 2
     },
     precision: 2
 }, { test: Number(2).toFixed(2).toString() })
@@ -186,9 +191,9 @@ test('数值- onChange', () => {
         const component = renderer.create(
             <NumberField
                 {...defaultProps}
-                ref={async (ref) => { }}
-                onChange={async (value) => {
-                    expect(value).toEqual(undefined)
+                ref={async (ref: any) => { }}
+                onValueSet={async (value) => {
+                    expect(value).toEqual('')
                     cleanup()
                     resolve(true)
                 }}

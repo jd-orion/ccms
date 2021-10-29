@@ -13,7 +13,12 @@ const defaultProps: FieldProps<TextFieldConfig, string> = {
   step: 0,
   config: { field: 'jest', label: 'jest', type: 'text' },
   onChange: async () => { },
-  record: {}
+  record: {},
+  onValueSet: async () => {},
+  onValueUnset: async () => {},
+  onValueListAppend: async () => {},
+  onValueListSplice: async () => {},
+  loadDomain: async () => 'hello'
 }
 
 test('文本框默认值 - 未配置', () => {
@@ -47,7 +52,7 @@ test('文本框默认值 - 静态值', () => {
           cleanup()
           resolve(true)
         }}
-        config={{ field: 'jest', label: 'jest', type: 'text', default: { type: 'static', value: 'default' } }}
+        config={{ field: 'jest', label: 'jest', type: 'text', defaultValue: { source: 'static', value: 'default' } }}
       />
     )
   })
@@ -65,7 +70,7 @@ test('文本框默认值 -数据值', () => {
           cleanup()
           resolve(true)
         }}
-        config={{ field: 'jest', label: 'jest', type: 'text', default: { type: 'data', value: 'default' } }}
+        config={{ field: 'jest', label: 'jest', type: 'text', defaultValue: { source: 'data', field: 'default' } }}
       />
     )
   })
@@ -83,7 +88,7 @@ test('文本框默认值 -数据值 query', () => {
           cleanup()
           resolve(true)
         }}
-        config={{ field: 'jest', label: 'jest', type: 'text', default: { type: 'query', value: 'default' } }}
+        config={{ field: 'jest', label: 'jest', type: 'text', defaultValue: { source: 'query', filed: 'default' } }}
       />
     )
   })
@@ -102,7 +107,7 @@ test('文本框默认值 -数据值 hash', () => {
           cleanup()
           resolve(true)
         }}
-        config={{ field: 'jest', label: 'jest', type: 'text', default: { type: 'hash', value: 'default' } }}
+        config={{ field: 'jest', label: 'jest', type: 'text', defaultValue: { source: 'hash', filed: 'default' } }}
       />
     )
   })
@@ -124,8 +129,8 @@ test('文本框默认值 - 接口值 -GET', () => {
           field: 'jest',
           label: 'jest',
           type: 'text',
-          default: {
-            type: 'interface',
+          defaultValue: {
+            source: 'interface',
             api: {
               url: 'http://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do',
               method: 'GET',
@@ -156,8 +161,8 @@ test('文本框默认值 - 接口值 -POST', () => {
           field: 'jest',
           label: 'jest',
           type: 'text',
-          default: {
-            type: 'interface',
+          defaultValue: {
+            source: 'interface',
             api: {
               url: 'http://j-api.jd.com/mocker/data?p=263&v=POST&u=list.do',
               method: 'POST',
@@ -188,8 +193,8 @@ test('文本框默认值 - 接口值 -fial', () => {
           field: 'jest',
           label: 'jest',
           type: 'text',
-          default: {
-            type: 'interface',
+          defaultValue: {
+            source: 'interface',
             api: {
               url: 'http://j-api.jd.com/mocker/data/',
               method: 'POST',
@@ -248,7 +253,7 @@ const validateTest = (message: string, config: TextFieldConfig, successValue: st
   })
 }
 
-validateTest('文本框必填校验', Object.assign({ required: true }, defaultProps.config), '*', '', '不能为空')
+validateTest('文本框必填校验', Object.assign({ required: true }, defaultProps.config), '*', '', `请输入${defaultProps.config.label}`)
 validateTest('文本框类型校验-数字', Object.assign({ characterType: { enable: true, number: true } }, defaultProps.config), '1', '1aA中_-', '仅能输入数字')
 validateTest('文本框类型校验-大写拉丁字母', Object.assign({ characterType: { enable: true, uppercase: true } }, defaultProps.config), 'A', '1aA中_-', '仅能输入大写拉丁字母')
 validateTest('文本框类型校验-小写拉丁字母', Object.assign({ characterType: { enable: true, lowercase: true } }, defaultProps.config), 'a', '1aA中_-', '仅能输入小写拉丁字母')
@@ -271,23 +276,24 @@ test('文本框渲染', async () => {
   expect(o).toMatchSnapshot()
 })
 
-test('文本框onChange', () => {
-  return new Promise((resolve) => {
-    const component = renderer.create(
-      <TextField
-        {...defaultProps}
-        ref={async (ref: any) => { }}
-        onChange={async (value) => {
-          expect(value).toEqual('onChange')
-          cleanup()
-          resolve(true)
-        }}
-      />
-    )
+// _TODO
+// test('文本框onChange', () => {
+//   return new Promise((resolve) => {
+//     const component = renderer.create(
+//       <TextField
+//         {...defaultProps}
+//         ref={async (ref: any) => { }}
+//         onValueSet={async (value) => {
+//           expect(value).toEqual('onChange')
+//           cleanup()
+//           resolve(true)
+//         }}
+//       />
+//     )
 
-    const o = component.toJSON()
-    if (o) {
-      o[1].children[0].props.onClick()
-    }
-  })
-})
+//     const o = component.toJSON()
+//     if (o) {
+//       o[1].children[0].props.onClick()
+//     }
+//   })
+// })

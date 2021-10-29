@@ -57,5 +57,5 @@ test('setValue- ', () => {
   expect(value1).toEqual({ value: { a: 'appId' } })
 
   const value2 = setValue({}, 'value.0', 'appId')
-  expect(value2).toEqual({ value: { 0: 'appId' } })
+  expect(value2).toEqual({ value: ['appId'] })
 })

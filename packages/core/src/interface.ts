@@ -11,7 +11,7 @@ export interface RichStringConfig {
   content: string
 }
 
-export type ParamConfig = RecordParamConfig | DataParamConfig | StepParamConfig | SourceParamConfig | URLParamConfig | StaticParamConfig
+export type ParamConfig = RecordParamConfig | DataParamConfig | StepParamConfig | SourceParamConfig | URLParamConfig | QueryParamConfig | HashParamConfig | InterfaceParamConfig | StaticParamConfig
 
 interface RecordParamConfig {
   source: 'record'
@@ -38,8 +38,26 @@ interface URLParamConfig {
   source: 'url',
   field: string
 }
-
+interface QueryParamConfig {
+  source: 'query',
+  filed: any
+}
+interface HashParamConfig {
+  source: 'hash',
+  filed: any
+}
+interface InterfaceParamConfig {
+  source: 'interface',
+  // api: {
+  //   url: string,
+  //   method: 'POST',
+  //   contentType: 'json',
+  //   withCredentials: true
+  // },
+  api: object,
+  apiResponse: string
+}
 interface StaticParamConfig {
-  source: 'static'
+  source: 'static',
   value: any
 }

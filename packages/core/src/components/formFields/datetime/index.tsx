@@ -63,6 +63,24 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
     return errors.length ? errors : true
   }
 
+  get = async () => {
+    const {
+      value,
+      config: {
+        submitFormat,
+        format = 'YYYY-MM-DD HH:mm:ss'
+      }
+    } = this.props
+
+    if (!value) return ''
+
+    const rsFormat = submitFormat || format
+
+    const setValue = moment(value).format(rsFormat)
+
+    return setValue
+  };
+
   renderComponent = (props: IDatetimeField) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现DatetimeField组件。
@@ -72,6 +90,20 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
     </React.Fragment>
   }
 
+  setChange = async (value: any) => {
+    const {
+      config: {
+        submitFormat
+      },
+      onValueSet
+    } = this.props
+    if (value === null) {
+      await onValueSet('', '', await this.validate(''))
+    } else {
+      await onValueSet('', value.format(submitFormat), await this.validate(value.format(submitFormat)))
+    }
+  }
+
   render = () => {
     const {
       value,
@@ -79,26 +111,24 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
         mode,
         disabled,
         readonly,
-        placeholder
+        placeholder,
+        submitFormat,
+        format
       }
     } = this.props
     return (
       <React.Fragment>
-        {this.renderComponent({
-          value: this.props.value && moment(this.props.value, this.props.config.submitFormat).isValid() ? moment(value, this.props.config.submitFormat) : null,
-          format: this.props.config.format || 'YYYY-MM-DD HH:mm:ss',
-          mode,
-          disabled: getBoolean(disabled),
-          readonly: getBoolean(readonly),
-          placeholder,
-          onChange: async (value) => {
-            if (value === null) {
-              await this.props.onValueSet('', '', await this.validate(''))
-            } else {
-              await this.props.onValueSet('', value.format(this.props.config.submitFormat), await this.validate(value.format(this.props.config.submitFormat)))
-            }
-          }
-        })}
+        {
+          this.renderComponent({
+            value: value && moment(value, submitFormat).isValid() ? moment(value, submitFormat) : null,
+            format: format || 'YYYY-MM-DD HH:mm:ss',
+            mode,
+            disabled: getBoolean(disabled),
+            readonly: getBoolean(readonly),
+            placeholder,
+            onChange: this.setChange
+          })
+        }
       </React.Fragment>
     )
   }

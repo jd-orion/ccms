@@ -14,7 +14,12 @@ const defaultProps: FieldProps<DatetimeRangeFieldConfig, [moment.Moment, moment.
   step: 0,
   config: { type: 'datetimeRange', field: 'test', label: 'test' },
   onChange: async () => { },
-  record: {}
+  record: {},
+  onValueSet: async () => {},
+  onValueUnset: async () => {},
+  onValueListAppend: async () => {},
+  onValueListSplice: async () => {},
+  loadDomain: async () => 'hello'
 }
 
 const theTest = (message: string, setvalue: any, config: any, successValue: any, getValue: any) => {
@@ -46,7 +51,7 @@ const theRestTest = (message: string, setvalue: any, rsvalue: any) => {
       render(
                 <DatetimeRangeField
                     {...Object.assign(defaultProps, { value: setvalue.value })}
-                    config={{ type: 'datetimeRange', field: 'test', label: 'test', fieldRange: 'test1', default: { value: setvalue.value, type: 'static' } }}
+                    config={{ type: 'datetimeRange', field: 'test', label: 'test', fieldRange: 'test1', defaultValue: { value: setvalue.value, source: 'static' } }}
                     ref={async (ref: any) => {
                       if (ref) {
                         const value = await ref.reset()
@@ -220,16 +225,16 @@ const submitFormatTest = (message: string, config: DatetimeRangeFieldConfig, res
 }
 
 submitFormatTest('时间范围- 提交数据验证', {
-  type: 'datetimeRange', field: 'test', label: 'test', default: { value: '', type: 'static' }
+  type: 'datetimeRange', field: 'test', label: 'test', defaultValue: { value: '', source: 'static' }
 }, {}, { value: '' })
 
-submitFormatTest('时间范围- 配置时间 提交格式', { type: 'datetimeRange', field: 'test', label: 'test', default: { value: '2020,2021', type: 'static' }, submitFormat: 'YYYY' }, { test: '2020' }, { value: '2020,2021' })
+submitFormatTest('时间范围- 配置时间 提交格式', { type: 'datetimeRange', field: 'test', label: 'test', defaultValue: { value: '2020,2021', source: 'static' }, submitFormat: 'YYYY' }, { test: '2020' }, { value: '2020,2021' })
 submitFormatTest('时间范围- 配置时间 原数据是字符串', {
   type: 'datetimeRange',
   field: 'test',
   label: 'test',
-  default: {
-    value: '2020,2021', type: 'static'
+  defaultValue: {
+    value: '2020,2021', source: 'static'
   },
   submitFormat: 'YYYY',
   fieldRange: 'test1'
@@ -241,8 +246,8 @@ submitFormatTest('时间范围- 配置时间 提交格式 原数据是数组', {
   type: 'datetimeRange',
   field: 'test',
   label: 'test',
-  default: {
-    value: '2020,2021', type: 'static'
+  defaultValue: {
+    value: '2020,2021', source: 'static'
   },
   submitFormat: 'YYYY',
   fieldRange: 'test1'
@@ -257,8 +262,8 @@ test('时间范围- onChange', () => {
             <DatetimeRangeField
                 {...Object.assign(defaultProps, undefined)}
                 ref={async (ref: any) => { }}
-                onChange={async (value) => {
-                  expect(value).toEqual(undefined)
+                onValueSet={async (value) => {
+                  expect(value).toEqual('')
                   cleanup()
                   resolve(true)
                 }}

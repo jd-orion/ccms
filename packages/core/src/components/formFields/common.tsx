@@ -13,7 +13,7 @@ import ParamHelper from '../../util/param'
  * - required: 表单项必填
  * - readonly: 表单项只读
  * - disabled: 表单项不可编辑
- * - default:  表单项默认值
+ * - default:  表单项默认值  // 改为defaultValue
  * - - type:     默认值类型
  * - - * static:   固定值
  * - - * data:     上一步骤数据

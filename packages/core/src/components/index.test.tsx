@@ -51,12 +51,17 @@ const FielddefaultProps: FieldProps<FieldConfig, string> = {
     value: '',
     data: [{}],
     step: 0,
-    config: { field: 'jest', label: 'jest', type: 'text' },
+    config: { field: 'jest', label: 'jest' },
     onChange: async () => { },
-    record: {}
+    record: {},
+    onValueSet: async () => {},
+    onValueUnset: async () => {},
+    onValueListAppend: async () => {},
+    onValueListSplice: async () => {},
+    loadDomain: async () => 'hello'
 }
 
-const FieldTest = (message: string, setvalue: any, config: any,) => {
+const FieldTest = (message: string, setvalue: any, config: any) => {
     test(message, () => {
         return new Promise((resolve) => {
             render(
@@ -77,7 +82,7 @@ const FieldTest = (message: string, setvalue: any, config: any,) => {
                             expect(validate).toEqual(true)
 
                             const reset = await ref?.reset()
-                            expect(reset).toEqual('')
+                            expect(reset).toEqual(undefined)
 
                             resolve(true)
                             cleanup()

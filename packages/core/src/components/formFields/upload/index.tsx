@@ -137,6 +137,8 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
             }
             resolve(true)
           }
+          // @ts-ignore
+          if (global) global.URL.createObjectURL = jest && jest.fn(() => 'faker createObjectURL')
           img.src = URL.createObjectURL(file)
         })
       }
@@ -164,6 +166,15 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
     }
 
     throw new Error('Do not upload.')
+  }
+
+  renderComponent = (props: IUploadField) => {
+    return <React.Fragment>
+      您当前使用的UI版本没有实现UploadField组件。
+      <div style={{ display: 'none' }}>
+        <input data-testid="upload-input" type='file' onChange={(file) => props.onChange(file.target.files?.[0])}/>
+      </div>
+    </React.Fragment>
   }
 
   render = () => {

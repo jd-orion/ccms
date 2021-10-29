@@ -18,12 +18,13 @@ const defaultProps: ColumnProps<EnumColumnConfig> = {
     multiple: true,
     options: {
       from: 'manual',
-      data: {
-        extra: ['a'],
+      data: [{
+        extra: 'a', // todo
         label: '1',
         key: 'filed'
-      }
-    }
+      }]
+    },
+    defaultValue: ''
   }
 }
 

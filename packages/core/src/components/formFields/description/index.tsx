@@ -20,8 +20,21 @@ export default class DescField extends Field<DescFieldConfig, IDescField, string
   }
 
   renderComponent = (props: IDescField) => {
+    const {
+      link,
+      style,
+      desc
+    } = props
     return <React.Fragment>
       您当前使用的UI版本没有实现DescField组件。
+      <div style={{ display: 'none', ...style }}>
+        {link
+          ? <a href={link}>
+            {desc}
+          </a>
+          : desc
+        }
+      </div>
     </React.Fragment>
   }
 

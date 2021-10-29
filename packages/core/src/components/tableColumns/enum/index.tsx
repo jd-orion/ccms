@@ -52,8 +52,7 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn> {
 
     if (value === '' || value === undefined) return defaultValue
 
-    let theValue = value;
-    let rsValue = value;
+    let theValue = value
     if (Object.prototype.toString.call(theValue) !== "[object Array]") {
       if (typeof theValue !== 'string') { theValue = theValue?.toString() }
       if (multiple && typeof multiple !== 'boolean' && multiple.type === 'split' && multiple.split) {
@@ -62,18 +61,20 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn> {
         theValue = theValue?.split(',')
       }
     }
-
     if (options && options.from === 'manual') {
+      const getKey = options.getKey || 'value'
       if (options.data) {
         if (multiple === undefined || multiple === false) {
           const option = options.data.find((option) => option.key === value)
           return option ? option.label : value.toString()
-        } else if (multiple === true || multiple.type === 'array') {
-          if (Array.isArray(value)) {
-            return value.map((item) => {
-              const option = options.data.find((option) => option.key === item)
+        } else if (multiple === true || multiple.type) {
+          if (Array.isArray(theValue)) {
+            return theValue.map((item) => {
+              const option = options.data.find((option) => {
+                return option[getKey] === Number(item)
+              })
               return option ? option.label : item.toString()
-            })
+            }).join(',')
           } else {
             return '-'
           }
@@ -82,7 +83,7 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn> {
         return value
       }
     } else {
-      return '-'
+      return value
     }
   }
 
