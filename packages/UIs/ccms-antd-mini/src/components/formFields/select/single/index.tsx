@@ -3,10 +3,10 @@ import { SelectSingleField } from 'ccms'
 import { ISelectSingleField } from 'ccms/dist/src/components/formFields/select/single'
 import { Radio, Select } from 'antd'
 import InterfaceHelper from '../../../../util/interface'
+import 'antd/lib/select/style/index.css'
 
 export default class SelectSingleFieldComponent extends SelectSingleField {
   interfaceHelper = new InterfaceHelper()
-  
   renderDorpdownComponent = (props: ISelectSingleField) => {
     const {
       value,

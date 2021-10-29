@@ -3,7 +3,7 @@ import { SelectMultipleField } from 'ccms'
 import { Checkbox, Select } from 'antd'
 import { ISelectMultipleField } from 'ccms/dist/src/components/formFields/select/multiple'
 import InterfaceHelper from '../../../../util/interface'
-
+import 'antd/lib/select/style/index.css'
 export default class SelectSingleFieldComponent extends SelectMultipleField {
   interfaceHelper = new InterfaceHelper()
   
