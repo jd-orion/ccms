@@ -115,9 +115,11 @@ export default class InterfaceHelper {
         })
       }
       const url = (
-        config.domain ? (
-          option && option.loadDomain ? ( await option.loadDomain(config.domain) ) : ''
-        ) : ''
+        config.domain
+          ? (option && option.loadDomain
+              ? (await option.loadDomain(config.domain))
+              : '')
+          : ''
       ) + urlTemplate(urlParams)
 
       // 数据处理

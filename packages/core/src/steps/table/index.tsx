@@ -483,10 +483,10 @@ export default class TableStep extends Step<TableConfig, TableState> {
       }),
       tableOperations: operations && operations.tableOperations
         ? this.renderTableOperationComponent({
-          children: operations.tableOperations.map(async (operation, index) => {
+          children: operations.tableOperations.map((operation, index) => {
             if (operation.type === 'button') {
               if (this.pageAuth[operation.handle.page] === undefined) {
-                this.pageAuth[operation.handle.page] = await this.props.checkPageAuth(operation.handle.page)
+                this.pageAuth[operation.handle.page] = this.props.checkPageAuth(operation.handle.page)
               }
               console.log(this.pageAuth[operation.handle.page], 'this.pageAuth[operation.handle.page]', operation.handle.page)
               const hidden = this.pageAuth[operation.handle.page]
@@ -506,9 +506,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
               return <React.Fragment key={index}>
                 {this.renderTableOperationGroupComponent({
                   label: operation.label,
-                  children: (operation.operations || []).map(async (operation) => {
+                  children: (operation.operations || []).map((operation) => {
                     if (this.pageAuth[operation.handle.page] === undefined) {
-                      this.pageAuth[operation.handle.page] = await this.props.checkPageAuth(operation.handle.page)
+                      this.pageAuth[operation.handle.page] = this.props.checkPageAuth(operation.handle.page)
                     }
                     const hidden = this.pageAuth[operation.handle.page]
                     return hidden
@@ -549,13 +549,14 @@ export default class TableStep extends Step<TableConfig, TableState> {
     }
 
     if (operations && operations.rowOperations && operations.rowOperations.length > 0) {
+    
       props.columns.push({
         field: 'ccms-table-rowOperation',
         label: '操作',
         render: (_value: any, record: { [field: string]: any }) => {
           if (operations.rowOperations) {
             return this.renderRowOperationComponent({
-              children: (operations.rowOperations || []).map(async (operation, index) => {
+              children: (operations.rowOperations || []).map((operation, index) => {
                 if (operation.type === 'button') {
                   let hidden = false
                   if (operation.condition && operation.condition.statement) {
@@ -576,7 +577,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   }
 
                   if (this.pageAuth[operation.handle.page] === undefined) {
-                    this.pageAuth[operation.handle.page] = await this.props.checkPageAuth(operation.handle.page)
+                    this.pageAuth[operation.handle.page] = this.props.checkPageAuth(operation.handle.page)
                   }
 
                   if (this.pageAuth[operation.handle.page]) {
@@ -600,7 +601,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                     <React.Fragment key={index}>
                       {this.renderRowOperationGroupComponent({
                         label: operation.label,
-                        children: (operation.operations || []).map(async (operation) => {
+                        children: (operation.operations || []).map((operation) => {
                           let hidden = false
                           if (operation.condition && operation.condition.statement) {
                             let statement = operation.condition.statement
@@ -620,7 +621,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                           }
 
                           if (this.pageAuth[operation.handle.page] === undefined) {
-                            this.pageAuth[operation.handle.page] = await this.props.checkPageAuth(operation.handle.page)
+                            this.pageAuth[operation.handle.page] = this.props.checkPageAuth(operation.handle.page)
                           }
 
                           if (this.pageAuth[operation.handle.page]) {
