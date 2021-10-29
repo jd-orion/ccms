@@ -212,7 +212,7 @@ interface TableState {
     data: any
     callback?: boolean
   }
-
+  pageAuth?: any
 }
 
 /**
@@ -222,8 +222,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
   CCMS = CCMS
   getALLComponents = (type: any) => getALLComponents[type]
   interfaceHelper = new InterfaceHelper()
+  pageAuth: any
 
-  constructor (props: StepProps<TableConfig>) {
+  constructor(props: StepProps<TableConfig>) {
     super(props)
 
     this.state = {
@@ -416,7 +417,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     document.body.appendChild(mask)
   }
 
-  render () {
+  render() {
     const {
       config: {
         field,
@@ -443,7 +444,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         callback: operationCallback
       }
     } = this.state
-
+    this.pageAuth = {}
     let getDate = field ? getValue(data[step], field) : data[step]
     if (Object.prototype.toString.call(getDate) !== '[object Array]') {
       getDate = []
@@ -468,48 +469,58 @@ export default class TableStep extends Step<TableConfig, TableState> {
             if (Column) {
               const addfix = ['multirowText'].some((val) => val !== column.field)
               return <ColumnStyleComponent key={index} style={column.style} addfix={addfix} >
-              <Column
-                record={record}
-                value={value}
-                data={data}
-                step={step}
-                config={column}
-              />
-            </ColumnStyleComponent>
+                <Column
+                  record={record}
+                  value={value}
+                  data={data}
+                  step={step}
+                  config={column}
+                />
+              </ColumnStyleComponent>
             }
           }
         }
       }),
       tableOperations: operations && operations.tableOperations
         ? this.renderTableOperationComponent({
-          children: operations.tableOperations.map((operation, index) => {
+          children: operations.tableOperations.map(async (operation, index) => {
             if (operation.type === 'button') {
-              return (
-            <React.Fragment key={index}>
-              {this.renderTableOperationButtonComponent({
-                label: operation.label,
-                level: operation.level || 'normal',
-                onClick: async () => {
-                  await this.handleRowOperation(operation, getDate)
-                }
-              })}
-            </React.Fragment>
-              )
-            } else if (operation.type === 'group') {
-              return (
-            <React.Fragment key={index}>
-              {this.renderTableOperationGroupComponent({
-                label: operation.label,
-                children: (operation.operations || []).map((operation) => {
-                  return this.renderTableOperationGroupItemComponent({
+              if (this.pageAuth[operation.handle.page] === undefined) {
+                this.pageAuth[operation.handle.page] = await this.props.checkPageAuth(operation.handle.page)
+              }
+              console.log(this.pageAuth[operation.handle.page], 'this.pageAuth[operation.handle.page]', operation.handle.page)
+              const hidden = this.pageAuth[operation.handle.page]
+
+              return hidden
+                ? <React.Fragment key={index} />
+                : <React.Fragment key={index}>
+                  {this.renderTableOperationButtonComponent({
                     label: operation.label,
                     level: operation.level || 'normal',
-                    onClick: async () => { await this.handleRowOperation(operation, getDate) }
+                    onClick: async () => {
+                      await this.handleRowOperation(operation, getDate)
+                    }
+                  })}
+                </React.Fragment>
+            } else if (operation.type === 'group') {
+              return <React.Fragment key={index}>
+                {this.renderTableOperationGroupComponent({
+                  label: operation.label,
+                  children: (operation.operations || []).map(async (operation) => {
+                    if (this.pageAuth[operation.handle.page] === undefined) {
+                      this.pageAuth[operation.handle.page] = await this.props.checkPageAuth(operation.handle.page)
+                    }
+                    const hidden = this.pageAuth[operation.handle.page]
+                    return hidden
+                      ? null
+                      : this.renderTableOperationGroupItemComponent({
+                        label: operation.label,
+                        level: operation.level || 'normal',
+                        onClick: async () => { await this.handleRowOperation(operation, getDate) }
+                      })
                   })
-                })
-              })}
-            </React.Fragment>
-              )
+                })}
+              </React.Fragment>
             } else {
               return <React.Fragment key={index} />
             }
@@ -544,7 +555,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         render: (_value: any, record: { [field: string]: any }) => {
           if (operations.rowOperations) {
             return this.renderRowOperationComponent({
-              children: (operations.rowOperations || []).map((operation, index) => {
+              children: (operations.rowOperations || []).map(async (operation, index) => {
                 if (operation.type === 'button') {
                   let hidden = false
                   if (operation.condition && operation.condition.statement) {
@@ -563,6 +574,16 @@ export default class TableStep extends Step<TableConfig, TableState> {
                       hidden = false
                     }
                   }
+
+                  if (this.pageAuth[operation.handle.page] === undefined) {
+                    this.pageAuth[operation.handle.page] = await this.props.checkPageAuth(operation.handle.page)
+                  }
+
+                  if (this.pageAuth[operation.handle.page]) {
+                    // 页面权限
+                    hidden = this.pageAuth[operation.handle.page]
+                  }
+
                   return (
                     <React.Fragment key={index}>
                       {hidden
@@ -574,21 +595,52 @@ export default class TableStep extends Step<TableConfig, TableState> {
                         })}
                     </React.Fragment>
                   )
-                } else {
+                } else if (operation.type === 'group') {
                   return (
                     <React.Fragment key={index}>
                       {this.renderRowOperationGroupComponent({
                         label: operation.label,
-                        children: (operation.operations || []).map((operation) => {
-                          return this.renderRowOperationGroupItemComponent({
-                            label: operation.label,
-                            level: operation.level || 'normal',
-                            onClick: async () => { await this.handleRowOperation(operation, record) }
-                          })
+                        children: (operation.operations || []).map(async (operation) => {
+                          let hidden = false
+                          if (operation.condition && operation.condition.statement) {
+                            let statement = operation.condition.statement
+                            if (operation.condition.params && Array.isArray(operation.condition.params)) {
+                              statement = getParamText(operation.condition.statement, operation.condition.params, { record: record, data, step })
+                            }
+                            try {
+                              // eslint-disable-next-line no-eval
+                              const result = eval(statement)
+                              if (!result) {
+                                hidden = true
+                              }
+                            } catch (e) {
+                              console.error('表格列的参数', statement)
+                              hidden = false
+                            }
+                          }
+
+                          if (this.pageAuth[operation.handle.page] === undefined) {
+                            this.pageAuth[operation.handle.page] = await this.props.checkPageAuth(operation.handle.page)
+                          }
+
+                          if (this.pageAuth[operation.handle.page]) {
+                            // 页面权限
+                            hidden = this.pageAuth[operation.handle.page]
+                          }
+
+                          return hidden
+                            ? null
+                            : this.renderRowOperationGroupItemComponent({
+                              label: operation.label,
+                              level: operation.level || 'normal',
+                              onClick: async () => { await this.handleRowOperation(operation, record) }
+                            })
                         })
                       })}
                     </React.Fragment>
                   )
+                } else {
+                  return <React.Fragment></React.Fragment>
                 }
               })
             })
@@ -607,70 +659,70 @@ export default class TableStep extends Step<TableConfig, TableState> {
         {operationEnable && (
           operationTarget === 'current'
             ? (
-                this.renderOperationModal({
-                  title: operationTitle,
-                  width,
-                  visible: operationVisible,
-                  children: (
-                <CCMS
-                  config={operationConfig}
-                  sourceData={operationData}
-                  checkPageAuth={this.props.checkPageAuth}
-                  loadPageURL={this.props.loadPageURL}
-                  loadPageFrameURL={this.props.loadPageFrameURL}
-                  loadPageConfig={this.props.loadPageConfig}
-                  loadDomain={this.props.loadDomain}
-                  onMount={() => {
-                    const { operation } = this.state
-                    operation.visible = true
-                    this.setState({ operation })
-                  }}
-                  callback={() => {
-                    const { operation } = this.state
-                    operation.enable = false
-                    operation.visible = false
-                    this.setState({ operation })
+              this.renderOperationModal({
+                title: operationTitle,
+                width,
+                visible: operationVisible,
+                children: (
+                  <CCMS
+                    config={operationConfig}
+                    sourceData={operationData}
+                    checkPageAuth={this.props.checkPageAuth}
+                    loadPageURL={this.props.loadPageURL}
+                    loadPageFrameURL={this.props.loadPageFrameURL}
+                    loadPageConfig={this.props.loadPageConfig}
+                    loadDomain={this.props.loadDomain}
+                    onMount={() => {
+                      const { operation } = this.state
+                      operation.visible = true
+                      this.setState({ operation })
+                    }}
+                    callback={() => {
+                      const { operation } = this.state
+                      operation.enable = false
+                      operation.visible = false
+                      this.setState({ operation })
 
-                    if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
-                      onUnmount(true)
-                    }
-                  }}
-                />
-                  ),
-                  onClose: () => {
-                    const { operation } = this.state
-                    operation.enable = false
-                    operation.visible = false
-                    this.setState({ operation })
-                  }
-                })
-              )
-            : (
-            <CCMS
-              config={operationConfig}
-              sourceData={operationData}
-              checkPageAuth={this.props.checkPageAuth}
-              loadPageURL={this.props.loadPageURL}
-              loadPageFrameURL={this.props.loadPageFrameURL}
-              loadPageConfig={this.props.loadPageConfig}
-              loadDomain={this.props.loadDomain}
-              onMount={() => {
-                const { operation } = this.state
-                operation.visible = true
-                this.setState({ operation })
-              }}
-              callback={() => {
-                const { operation } = this.state
-                operation.enable = false
-                operation.visible = false
-                this.setState({ operation })
-
-                if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
-                  onUnmount(true)
+                      if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
+                        onUnmount(true)
+                      }
+                    }}
+                  />
+                ),
+                onClose: () => {
+                  const { operation } = this.state
+                  operation.enable = false
+                  operation.visible = false
+                  this.setState({ operation })
                 }
-              }}
-            />
-              )
+              })
+            )
+            : (
+              <CCMS
+                config={operationConfig}
+                sourceData={operationData}
+                checkPageAuth={this.props.checkPageAuth}
+                loadPageURL={this.props.loadPageURL}
+                loadPageFrameURL={this.props.loadPageFrameURL}
+                loadPageConfig={this.props.loadPageConfig}
+                loadDomain={this.props.loadDomain}
+                onMount={() => {
+                  const { operation } = this.state
+                  operation.visible = true
+                  this.setState({ operation })
+                }}
+                callback={() => {
+                  const { operation } = this.state
+                  operation.enable = false
+                  operation.visible = false
+                  this.setState({ operation })
+
+                  if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
+                    onUnmount(true)
+                  }
+                }}
+              />
+            )
         )}
       </React.Fragment >
     )
