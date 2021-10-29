@@ -72,7 +72,7 @@ const FieldTest = (message: string, setvalue: any, config: any) => {
                         if (ref) {
                             const render = await ref?.renderComponent()
                             expect(render).toEqual(<React.Fragment>
-                                您当前使用的UI版本没有实现Field组件。
+                                当前UI库未实现该表单类型
                               </React.Fragment>)
 
                             const fieldFormat = await ref?.fieldFormat()
