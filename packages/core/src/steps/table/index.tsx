@@ -230,7 +230,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
    */
   authState: string | undefined
 
-  constructor (props: StepProps<TableConfig>) {
+  constructor(props: StepProps<TableConfig>) {
     super(props)
 
     this.state = {
@@ -355,24 +355,24 @@ export default class TableStep extends Step<TableConfig, TableState> {
    */
   savePageAuth = async () => {
     const arr: any[] = []
-
-    const list = this.pageList
+    const _this = this
+    const list = this.pageList || []
     list.forEach((pageid: string | number, index: number) => {
       // eslint-disable-next-line no-async-promise-executor
       arr.push(new Promise(async (resolve, reject) => {
-        const idAuth = await this.props.checkPageAuth(pageid)
-        resolve(idAuth)
+        const idAuth = await _this.props.checkPageAuth(pageid)
+        resolve({ [pageid]: idAuth })
       }))
     })
+    const rsPage = {}
     // 循环全部结束后执行
     Promise.all(arr).then((result) => {
-      list.forEach((pageid: string | number, index: number) => {
-        this.pageAuth[pageid] = result[index]
+      result.forEach((res: any) => {
+        Object.assign(rsPage, res)
       })
-      console.log(this.pageAuth, 'this.pageauth')
+      console.log(rsPage, 'savePageAuth')
       this.authState = 'fulfilled'
-      this.setState({ pageAuthState: this.pageAuth })
-      console.log(arr, result)
+      this.setState({ pageAuthState: rsPage })
     })
   }
 
@@ -452,7 +452,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     document.body.appendChild(mask)
   }
 
-  render () {
+  render() {
     const {
       config: {
         field,
@@ -525,13 +525,14 @@ export default class TableStep extends Step<TableConfig, TableState> {
           children: operations.tableOperations.map((operation, index) => {
             if (operation.type === 'button') {
               let hidden = false
-              if (index === 0) {
+              if (this.authState === 'pending') {
                 this.pageList.push(operation.handle.page)
-              } else if (this.authState === 'pending') {
-                this.savePageAuth()
+                if (operations.tableOperations?.length === index + 1) {
+                  this.savePageAuth()
+                }
               }
               if (this.authState === 'fulfilled') {
-                hidden = this.state.pageAuthState[operation.handle.page]
+                hidden = this.state.pageAuthState[operation.handle.page] === false
               }
 
               return hidden
@@ -551,13 +552,14 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   label: operation.label,
                   children: (operation.operations || []).map((operation) => {
                     let hidden = false
-                    if (index === 0) {
+                    if (this.authState === 'pending') {
                       this.pageList.push(operation.handle.page)
-                    } else if (this.authState === 'pending') {
-                      this.savePageAuth()
+                      if (operations.tableOperations?.length === index + 1) {
+                        this.savePageAuth()
+                      }
                     }
                     if (this.authState === 'fulfilled') {
-                      hidden = this.state.pageAuthState[operation.handle.page]
+                      hidden = this.state.pageAuthState[operation.handle.page] === false
                     }
                     return hidden
                       ? null
@@ -623,13 +625,14 @@ export default class TableStep extends Step<TableConfig, TableState> {
                     }
                   }
 
-                  if (index === 0) {
+                  if (this.authState === 'pending') {
                     this.pageList.push(operation.handle.page)
-                  } else if (this.authState === 'pending') {
-                    this.savePageAuth()
+                    if (operations.rowOperations?.length === index + 1) {
+                      this.savePageAuth()
+                    }
                   }
                   if (this.authState === 'fulfilled') {
-                    hidden = this.state.pageAuthState[operation.handle.page]
+                    hidden = hidden || this.state.pageAuthState[operation.handle.page] === false
                   }
 
                   return (
@@ -667,13 +670,14 @@ export default class TableStep extends Step<TableConfig, TableState> {
                             }
                           }
 
-                          if (index === 0) {
+                          if (this.authState === 'pending') {
                             this.pageList.push(operation.handle.page)
-                          } else if (this.authState === 'pending') {
-                            this.savePageAuth()
+                            if (operations.rowOperations?.length === index + 1) {
+                              this.savePageAuth()
+                            }
                           }
                           if (this.authState === 'fulfilled') {
-                            hidden = this.state.pageAuthState[operation.handle.page]
+                            hidden = this.state.pageAuthState[operation.handle.page] === false
                           }
 
                           return hidden
@@ -707,11 +711,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
         {operationEnable && (
           operationTarget === 'current'
             ? (
-                this.renderOperationModal({
-                  title: operationTitle,
-                  width,
-                  visible: operationVisible,
-                  children: (
+              this.renderOperationModal({
+                title: operationTitle,
+                width,
+                visible: operationVisible,
+                children: (
                   <CCMS
                     config={operationConfig}
                     sourceData={operationData}
@@ -736,15 +740,15 @@ export default class TableStep extends Step<TableConfig, TableState> {
                       }
                     }}
                   />
-                  ),
-                  onClose: () => {
-                    const { operation } = this.state
-                    operation.enable = false
-                    operation.visible = false
-                    this.setState({ operation })
-                  }
-                })
-              )
+                ),
+                onClose: () => {
+                  const { operation } = this.state
+                  operation.enable = false
+                  operation.visible = false
+                  this.setState({ operation })
+                }
+              })
+            )
             : (
               <CCMS
                 config={operationConfig}
@@ -770,7 +774,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   }
                 }}
               />
-              )
+            )
         )}
       </React.Fragment >
     )
