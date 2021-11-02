@@ -212,7 +212,7 @@ interface TableState {
     data: any
     callback?: boolean
   }
-  pageAuth?: any
+  pageAuthState?: any
 }
 
 /**
@@ -223,8 +223,14 @@ export default class TableStep extends Step<TableConfig, TableState> {
   getALLComponents = (type: any) => getALLComponents[type]
   interfaceHelper = new InterfaceHelper()
   pageAuth: any
+  pageList: any
+  /**
+   * 页面权限获取状态
+   * fulfilled ｜pending
+   */
+  authState: string | undefined
 
-  constructor(props: StepProps<TableConfig>) {
+  constructor (props: StepProps<TableConfig>) {
     super(props)
 
     this.state = {
@@ -236,7 +242,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
         config: {},
         data: {},
         callback: false
-      }
+      },
+      pageAuthState: {}
     }
   }
 
@@ -346,6 +353,35 @@ export default class TableStep extends Step<TableConfig, TableState> {
    * @param props
    * @returns
    */
+  savePageAuth = async () => {
+    const arr: any[] = []
+
+    const list = this.pageList
+    list.forEach((pageid: string | number, index: number) => {
+      this.pageAuth[pageid] = undefined
+      // eslint-disable-next-line no-async-promise-executor
+      arr.push(new Promise(async (resolve, reject) => {
+        const idAuth = await this.props.checkPageAuth(pageid)
+        resolve(idAuth)
+      }))
+    })
+    // 循环全部结束后执行
+    Promise.all(arr).then((result) => {
+      list.forEach((pageid: string | number, index: number) => {
+        this.pageAuth[pageid] = result[index]
+      })
+      console.log(this.pageAuth, 'this.pageauth')
+      this.authState = 'fulfilled'
+      this.setState({ pageAuthState: this.pageAuth })
+      console.log(arr, result)
+    })
+  }
+
+  /**
+   * 渲染 表格
+   * @param props
+   * @returns
+   */
   renderComponent = (props: ITable) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现Table组件。
@@ -417,7 +453,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     document.body.appendChild(mask)
   }
 
-  render() {
+  render () {
     const {
       config: {
         field,
@@ -444,7 +480,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
         callback: operationCallback
       }
     } = this.state
-    this.pageAuth = {}
+
+    this.pageAuth = this.pageAuth || {}
+    this.pageList = this.pageList || {}
+    this.authState = this.authState || 'pending'
+
     let getDate = field ? getValue(data[step], field) : data[step]
     if (Object.prototype.toString.call(getDate) !== '[object Array]') {
       getDate = []
@@ -485,11 +525,15 @@ export default class TableStep extends Step<TableConfig, TableState> {
         ? this.renderTableOperationComponent({
           children: operations.tableOperations.map((operation, index) => {
             if (operation.type === 'button') {
-              if (this.pageAuth[operation.handle.page] === undefined) {
-                this.pageAuth[operation.handle.page] = this.props.checkPageAuth(operation.handle.page)
+              let hidden = false
+              if (index === 0) {
+                this.pageList.push(operation.handle.page)
+              } else if (this.authState === 'pending') {
+                this.savePageAuth()
               }
-              console.log(this.pageAuth[operation.handle.page], 'this.pageAuth[operation.handle.page]', operation.handle.page)
-              const hidden = this.pageAuth[operation.handle.page]
+              if (this.authState === 'fulfilled') {
+                hidden = this.state.pageAuthState[operation.handle.page]
+              }
 
               return hidden
                 ? <React.Fragment key={index} />
@@ -507,10 +551,15 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 {this.renderTableOperationGroupComponent({
                   label: operation.label,
                   children: (operation.operations || []).map((operation) => {
-                    if (this.pageAuth[operation.handle.page] === undefined) {
-                      this.pageAuth[operation.handle.page] = this.props.checkPageAuth(operation.handle.page)
+                    let hidden = false
+                    if (index === 0) {
+                      this.pageList.push(operation.handle.page)
+                    } else if (this.authState === 'pending') {
+                      this.savePageAuth()
                     }
-                    const hidden = this.pageAuth[operation.handle.page]
+                    if (this.authState === 'fulfilled') {
+                      hidden = this.state.pageAuthState[operation.handle.page]
+                    }
                     return hidden
                       ? null
                       : this.renderTableOperationGroupItemComponent({
@@ -549,7 +598,6 @@ export default class TableStep extends Step<TableConfig, TableState> {
     }
 
     if (operations && operations.rowOperations && operations.rowOperations.length > 0) {
-    
       props.columns.push({
         field: 'ccms-table-rowOperation',
         label: '操作',
@@ -576,13 +624,13 @@ export default class TableStep extends Step<TableConfig, TableState> {
                     }
                   }
 
-                  if (this.pageAuth[operation.handle.page] === undefined) {
-                    this.pageAuth[operation.handle.page] = this.props.checkPageAuth(operation.handle.page)
+                  if (index === 0) {
+                    this.pageList.push(operation.handle.page)
+                  } else if (this.authState === 'pending') {
+                    this.savePageAuth()
                   }
-
-                  if (this.pageAuth[operation.handle.page]) {
-                    // 页面权限
-                    hidden = this.pageAuth[operation.handle.page]
+                  if (this.authState === 'fulfilled') {
+                    hidden = this.state.pageAuthState[operation.handle.page]
                   }
 
                   return (
@@ -620,13 +668,13 @@ export default class TableStep extends Step<TableConfig, TableState> {
                             }
                           }
 
-                          if (this.pageAuth[operation.handle.page] === undefined) {
-                            this.pageAuth[operation.handle.page] = this.props.checkPageAuth(operation.handle.page)
+                          if (index === 0) {
+                            this.pageList.push(operation.handle.page)
+                          } else if (this.authState === 'pending') {
+                            this.savePageAuth()
                           }
-
-                          if (this.pageAuth[operation.handle.page]) {
-                            // 页面权限
-                            hidden = this.pageAuth[operation.handle.page]
+                          if (this.authState === 'fulfilled') {
+                            hidden = this.state.pageAuthState[operation.handle.page]
                           }
 
                           return hidden
@@ -660,11 +708,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
         {operationEnable && (
           operationTarget === 'current'
             ? (
-              this.renderOperationModal({
-                title: operationTitle,
-                width,
-                visible: operationVisible,
-                children: (
+                this.renderOperationModal({
+                  title: operationTitle,
+                  width,
+                  visible: operationVisible,
+                  children: (
                   <CCMS
                     config={operationConfig}
                     sourceData={operationData}
@@ -689,15 +737,15 @@ export default class TableStep extends Step<TableConfig, TableState> {
                       }
                     }}
                   />
-                ),
-                onClose: () => {
-                  const { operation } = this.state
-                  operation.enable = false
-                  operation.visible = false
-                  this.setState({ operation })
-                }
-              })
-            )
+                  ),
+                  onClose: () => {
+                    const { operation } = this.state
+                    operation.enable = false
+                    operation.visible = false
+                    this.setState({ operation })
+                  }
+                })
+              )
             : (
               <CCMS
                 config={operationConfig}
@@ -723,7 +771,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   }
                 }}
               />
-            )
+              )
         )}
       </React.Fragment >
     )
