@@ -482,7 +482,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     } = this.state
 
     this.pageAuth = this.pageAuth || {}
-    this.pageList = this.pageList || {}
+    this.pageList = this.pageList || []
     this.authState = this.authState || 'pending'
 
     let getDate = field ? getValue(data[step], field) : data[step]
