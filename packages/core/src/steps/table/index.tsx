@@ -358,7 +358,6 @@ export default class TableStep extends Step<TableConfig, TableState> {
 
     const list = this.pageList
     list.forEach((pageid: string | number, index: number) => {
-      this.pageAuth[pageid] = undefined
       // eslint-disable-next-line no-async-promise-executor
       arr.push(new Promise(async (resolve, reject) => {
         const idAuth = await this.props.checkPageAuth(pageid)
