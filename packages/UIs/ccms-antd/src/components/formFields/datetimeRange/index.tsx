@@ -29,6 +29,7 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
           placeholder={[theplaceholder, theplaceholder]}
           value={theValue}
           format={format}
+          showTime={true}
           onChange={async (time) => {
             const changeValue: any = []
             if (time) {
