@@ -3,11 +3,11 @@ import { FormField } from 'ccms'
 import { Form, Button, Divider, Space } from 'antd'
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
-import FormFields from '../'
+import getALLComponents from '../'
 import { formItemLayout } from '../common'
 
 export default class FormFieldComponent extends FormField {
-  getFormFields = (type: string) => FormFields[type]
+  getALLComponents = (type: any) => getALLComponents[type]
 
   remove: () => Promise<void> = async () => { }
 
