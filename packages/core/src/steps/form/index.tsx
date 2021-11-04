@@ -204,7 +204,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
           if (validation !== true) {
             console.warn('表单项中存在问题', value, formFieldConfig)
-            this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label, hidden: this.formData[formFieldIndex]?.hidden }
+            formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label, hidden: this.formData[formFieldIndex]?.hidden }
             canSubmit = false
           }
           data = setValue(data, formFieldConfig.field, value)
@@ -214,7 +214,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
     console.info('表单参数信息', data, this.state.formValue, formData)
 
     await this.setState({
-      formData: cloneDeep(this.formData)
+      formData: cloneDeep(formData)
     })
 
     if (canSubmit && this.props.onSubmit) {
