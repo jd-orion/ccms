@@ -24,6 +24,7 @@ export { default as ObjectField } from './components/formFields/object'
 export { default as HiddenField } from './components/formFields/hidden'
 export { default as TabsField } from './components/formFields/tabs'
 export { default as MultipleTextField } from './components/formFields/multipleText'
+export { default as CustomField } from './components/formFields/custom'
 
 export { default as TableStep } from './steps/table'
 export { default as TextColumn } from './components/tableColumns/text'

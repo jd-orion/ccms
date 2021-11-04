@@ -22,6 +22,7 @@ import ObjectField, { ObjectFieldConfig } from './object'
 import HiddenField from './hidden'
 import TabsField, { TabsFieldConfig } from './tabs'
 import MultipleTextField, { MultipleTextFieldConfig } from './multipleText'
+import CustomField, { CustomFieldConfig } from './custom'
 
 export interface HiddenFieldConfig extends FieldConfig {
     type: 'hidden' | 'none'
@@ -52,7 +53,8 @@ export type FieldConfigs =
     AnyFieldConfig |
     ObjectFieldConfig |
     TabsFieldConfig |
-    MultipleTextFieldConfig
+    MultipleTextFieldConfig |
+    CustomFieldConfig
 
 export type componentType =
     'text' |
@@ -77,7 +79,8 @@ export type componentType =
     'switch' |
     'object' |
     'tabs' |
-    'multiple_text'
+    'multiple_text'| 
+    'custom'
 
 export default {
   text: TextField,
@@ -101,5 +104,6 @@ export default {
   object: ObjectField,
   hidden: HiddenField,
   tabs: TabsField,
-  multiple_text: MultipleTextField
+  multiple_text: MultipleTextField,
+  custom: CustomField
 }
