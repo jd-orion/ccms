@@ -17,6 +17,7 @@ import DatetimeField from './datetime'
 import DatetimeRangeField from './datetimeRange'
 import TabsField from './tabs'
 import ColorField from './color'
+import CustomField from './custom'
 
 export default {
   text: TextField,
@@ -37,5 +38,6 @@ export default {
   datetime: DatetimeField,
   datetimeRange: DatetimeRangeField,
   tabs: TabsField,
-  color: ColorField
+  color: ColorField,
+  custom: CustomField
 }
