@@ -50,7 +50,7 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
     const errors: FieldError[] = []
 
     if (getBoolean(required)) {
-      if (value === '') {
+      if (value === '' || value === undefined) {
         errors.push(new FieldError(`输入${label}`))
       }
     }

@@ -200,7 +200,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
     console.info('表单校验通过', data)
 
     await this.setState({
-      formData: cloneDeep(this.formData)
+      formData: cloneDeep(formData)
     })
 
     if (canSubmit && this.props.onSubmit) {
@@ -452,8 +452,8 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
 
             const renderData = {
               label: formFieldConfig.label,
-              status: formFieldConfig.field !== undefined ? get(formData, formFieldConfig.field, {} as any).status || 'normal' : 'normal',
-              message: formFieldConfig.field !== undefined ? get(formData, formFieldConfig.field, {} as any).message || '' : '',
+              status: formFieldConfig.field !== undefined ? formData[formFieldIndex]?.status || 'normal' : 'normal',
+              message: formFieldConfig.field !== undefined ? formData[formFieldIndex]?.message || '' : '',
               visitable: display,
               fieldType: formFieldConfig.type,
               children: (

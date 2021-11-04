@@ -59,7 +59,6 @@ export default class ImageUrlField extends Field<ImageUrlFieldConfig, IImageUrlF
   }
 
   render = () => {
-
     const {
       value,
       config: {

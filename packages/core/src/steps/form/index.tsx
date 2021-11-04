@@ -204,14 +204,14 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
           if (validation !== true) {
             console.warn('表单项中存在问题', value, formFieldConfig)
-            formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
+            this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label, hidden: this.formData[formFieldIndex]?.hidden }
             canSubmit = false
           }
           data = setValue(data, formFieldConfig.field, value)
         }
       }
     }
-    console.info('表单参数信息', data, this.state.formValue)
+    console.info('表单参数信息', data, this.state.formValue, formData)
 
     await this.setState({
       formData: cloneDeep(this.formData)
@@ -388,7 +388,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
     </React.Fragment>
   }
 
-  render () {
+  render() {
     const {
       data,
       step
@@ -415,7 +415,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
             layout,
             onSubmit: this.props.config.hiddenSubmit ? undefined : async () => this.handleSubmit(),
             onCancel: this.props.config.hiddenCancel ? undefined : async () => this.handleCancel(),
-            submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ""), 
+            submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ""),
             cancelText: this.props.config?.cancelText?.replace(/(^\s*)|(\s*$)/g, ""),
             children: fields.map((formFieldConfig, formFieldIndex) => {
               if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
@@ -443,8 +443,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
               const renderData = {
                 label: formFieldConfig.label,
-                status: formFieldConfig.field !== undefined ? getValue(formData, formFieldConfig.field, {}).status || 'normal' : 'normal',
-                message: formFieldConfig.field !== undefined ? getValue(formData, formFieldConfig.field, {}).message || '' : '',
+                status: formData[formFieldIndex]?.status || 'normal',
+                message: formData[formFieldIndex]?.message || '',
                 layout,
                 visitable: display,
                 fieldType: formFieldConfig.type,
