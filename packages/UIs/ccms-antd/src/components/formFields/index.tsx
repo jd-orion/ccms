@@ -16,6 +16,7 @@ import GroupField from './group'
 import HiddenField from './hidden'
 import TabsField from './tabs'
 import MultipleTextField from './multipleText'
+import CustomField from './custom'
 
 export default {
   text: TextField,
@@ -35,5 +36,6 @@ export default {
   group: GroupField,
   hidden: HiddenField,
   tabs: TabsField,
-  multiple_text: MultipleTextField
+  multiple_text: MultipleTextField,
+  custom: CustomField
 }
