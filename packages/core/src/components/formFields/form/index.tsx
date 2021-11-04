@@ -99,44 +99,45 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
 
   // }
 
-  // validate = async (): Promise<true | FieldError[]> => {
-  //   const {
-  //     config: {
-  //       required,
-  //       fields
-  //     },
-  //     value
-  //   } = this.props
+  validate = async (value: Array<any>): Promise<true | FieldError[]> => {
+    const errors: FieldError[] = []
 
-  //   const errors: FieldError[] = []
+    if (this.props.config.required === true && value.length === 0) {
+      errors.push(new FieldError('不能为空'))
+    }
 
-  //   if (getBoolean(required)) {
-  //     if (value.length === 0) {
-  //       errors.push(new FieldError('不能为空'))
-  //     }
-  //   }
+    let childrenError = 0
 
-  //   let childrenError = 0
+    const formDataList = cloneDeep(this.state.formDataList)
 
-  //   for (const formItemsIndex in this.formItemsList) {
-  //     const formItems = this.formItemsList[formItemsIndex]
-  //     for (const fieldIndex in fields) {
-  //       const formItem = formItems[fieldIndex]
-  //       if (formItem !== null && formItem !== undefined) {
-  //         const validation = await formItem.validate(getValue(value[formItemsIndex], fields[fieldIndex].field))
-  //         if (validation !== true) {
-  //           childrenError++
-  //         }
-  //       }
-  //     }
-  //   }
+    for (const formItemsIndex in this.formFieldsList) {
+      if (!formDataList[formItemsIndex]) formDataList[formItemsIndex] = []
+      const formItems = this.formFieldsList[formItemsIndex]
+      for (const fieldIndex in (this.props.config.fields || [])) {
+        const formItem = formItems[fieldIndex]
+        if (formItem !== null && formItem !== undefined) {
+          const validation = await formItem.validate(getValue(value[formItemsIndex], (this.props.config.fields || [])[fieldIndex].field))
 
-  //   if (childrenError > 0) {
-  //     errors.push(new FieldError(`子项中存在${childrenError}个错误。`))
-  //   }
+          if (validation === true) {
+            formDataList[formItemsIndex][fieldIndex] = { status: 'normal' }
+          } else {
+            childrenError++
+            formDataList[formItemsIndex][fieldIndex] = { status: 'error', message: validation[0].message }
+          }
+        }
+      }
+    }
 
-  //   return errors.length ? errors : true
-  // }
+    await this.setState({
+      formDataList
+    })
+
+    if (childrenError > 0) {
+      errors.push(new FieldError(`子项中存在${childrenError}个错误。`))
+    }
+
+    return errors.length ? errors : true
+  }
 
   handleMount = async (index: number, formFieldIndex: number) => {
     if (!this.formFieldsMountedList[index]) {
@@ -161,12 +162,15 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
           this.props.onValueSet(`[${index}]${formFieldConfig.field}`, value, true)
         }
 
-        const validation = await formField.validate(value)
-        if (validation === true) {
-          formDataList[index][formFieldIndex] = { status: 'normal' }
-        } else {
-          formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
+        if (value !== undefined) {
+          const validation = await formField.validate(value)
+          if (validation === true) {
+            formDataList[index][formFieldIndex] = { status: 'normal' }
+          } else {
+            formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
+          }
         }
+
       }
     }
 

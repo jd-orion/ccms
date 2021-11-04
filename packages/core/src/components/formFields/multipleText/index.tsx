@@ -37,7 +37,7 @@ export default class MultipleTextField<S = {}> extends Field<MultipleTextFieldCo
       <React.Fragment>
         {this.renderComponent({
           value: Array.isArray(value) ? value.map((v) => v.toString()) : [],
-          onChange: async (value: string[]) => this.props.onValueSet('', value, true),
+          onChange: async (value: string[]) => this.props.onValueSet('', value, await this.validate(value)),
           placeholder
         })}
       </React.Fragment>

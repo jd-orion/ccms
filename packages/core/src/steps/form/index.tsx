@@ -98,7 +98,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
   formFieldsMounted: Array<boolean> = []
 
   formValue: { [field: string]: any } = {}
-  formData: { status: 'normal' | 'error' | 'loading', message?: string, name: string, hidden: boolean }[] = []
+  formData: { status: 'normal' | 'error' | 'loading', message?: string, name: string }[] = []
 
   /**
    * 初始化表单的值
@@ -127,7 +127,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
       onMount
     } = this.props
 
-    const formData = cloneDeep(this.state.formData)
+    this.formValue = {}
+    this.formData = []
 
     if (this.props.config.defaultValue) {
       const formDefault = ParamHelper(this.props.config.defaultValue, { data, step })
@@ -135,14 +136,14 @@ export default class FormStep extends Step<FormConfig, FormState> {
         const formFieldConfig = formFieldsConfig[formFieldIndex]
         const value = getValue(formDefault, formFieldConfig.field)
         this.formValue = setValue(this.formValue, formFieldConfig.field, value)
-        formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
+        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
       }
     }
 
     await this.setState({
       ready: true,
       formValue: this.formValue,
-      formData: cloneDeep(formData)
+      formData: cloneDeep(this.formData)
     })
 
     // 表单初始化结束，展示表单界面。
@@ -155,8 +156,6 @@ export default class FormStep extends Step<FormConfig, FormState> {
     }
     this.formFieldsMounted[formFieldIndex] = true
 
-    const formData = cloneDeep(this.state.formData)
-
     if (this.formFields[formFieldIndex]) {
       const formField = this.formFields[formFieldIndex]
       if (formField) {
@@ -168,19 +167,20 @@ export default class FormStep extends Step<FormConfig, FormState> {
         }
         this.formValue = setValue(this.formValue, formFieldConfig.field, value)
 
-        const validation = await formField.validate(value)
-        if (validation === true) {
-          formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
-        } else {
-          // 首次进入错误提示; 
-          formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
+        if (value !== undefined) {
+          const validation = await formField.validate(value)
+          if (validation === true) {
+            this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
+          } else {
+            this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
+          }
         }
       }
     }
 
     await this.setState({
       formValue: this.formValue,
-      formData: cloneDeep(formData)
+      formData: cloneDeep(this.formData)
     })
   }
 
@@ -190,8 +190,6 @@ export default class FormStep extends Step<FormConfig, FormState> {
   handleSubmit = async () => {
     let data: any = {}
     let canSubmit = true
-
-    const formData = cloneDeep(this.state.formData)
 
     for (const formFieldIndex in (this.props.config.fields || [])) {
       if (this.formFields[formFieldIndex]) {
@@ -204,17 +202,17 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
           if (validation !== true) {
             console.warn('表单项中存在问题', value, formFieldConfig)
-            formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label, hidden: this.formData[formFieldIndex]?.hidden }
+            this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
             canSubmit = false
           }
           data = setValue(data, formFieldConfig.field, value)
         }
       }
     }
-    console.info('表单参数信息', data, this.state.formValue, formData)
+    console.info('表单参数信息', data, this.state.formValue, this.formData)
 
     await this.setState({
-      formData: cloneDeep(formData)
+      formData: cloneDeep(this.formData)
     })
 
     if (canSubmit && this.props.onSubmit) {
@@ -239,8 +237,6 @@ export default class FormStep extends Step<FormConfig, FormState> {
    * @param value 目标值
    */
   handleChange = async (formFieldIndex: number, value: any) => {
-    const formData = cloneDeep(this.state.formData)
-
     const formField = this.formFields[formFieldIndex]
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formField && formFieldConfig) {
@@ -248,14 +244,14 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
       const validation = await formField.validate(value)
       if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
+        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
       } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
+        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
       }
 
       await this.setState({
         formValue: this.formValue,
-        formData
+        formData: cloneDeep(this.formData)
       })
       if (this.props.onChange) {
         this.props.onChange(this.formValue)
@@ -277,12 +273,15 @@ export default class FormStep extends Step<FormConfig, FormState> {
       }
 
       if (validation === true) {
-        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label, hidden: false }
+        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
       } else {
-        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label, hidden: false }
+        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
       }
+
+      console.log('form set data', this.formData)
+
       await this.setState({
-        formData: this.formData
+        formData: cloneDeep(this.formData)
       })
     }
   }
@@ -301,13 +300,13 @@ export default class FormStep extends Step<FormConfig, FormState> {
       }
 
       if (validation === true) {
-        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label, hidden: false }
+        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
       } else {
-        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label, hidden: false }
+        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
       }
 
       await this.setState({
-        formData: this.formData
+        formData: cloneDeep(this.formData)
       })
     }
   }
@@ -328,13 +327,13 @@ export default class FormStep extends Step<FormConfig, FormState> {
       }
 
       if (validation === true) {
-        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label, hidden: false }
+        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
       } else {
-        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label, hidden: false }
+        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
       }
 
       await this.setState({
-        formData: this.formData
+        formData: cloneDeep(this.formData)
       })
     }
   }
@@ -355,13 +354,13 @@ export default class FormStep extends Step<FormConfig, FormState> {
       }
 
       if (validation === true) {
-        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label, hidden: false }
+        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
       } else {
-        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label, hidden: false }
+        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
       }
 
       await this.setState({
-        formData: this.formData
+        formData: cloneDeep(this.formData)
       })
     }
   }
@@ -436,7 +435,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
               // 隐藏项同时打标录入数据并清空填写项
               if (!hidden) {
-                this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label, hidden }
+                this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
               }
 
               const FormField = this.getALLComponents(formFieldConfig.type) || Field

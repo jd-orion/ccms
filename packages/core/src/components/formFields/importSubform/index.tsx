@@ -74,6 +74,38 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     }
   }
 
+  validate = async (value: any): Promise<true | FieldError[]> => {
+    const errors: FieldError[] = []
+
+    let childrenError = 0
+
+    const formData = cloneDeep(this.state.formData)
+
+    for (const fieldIndex in (this.state.fields || [])) {
+      const formItem = this.formFields[fieldIndex]
+      if (formItem !== null && formItem !== undefined) {
+        const validation = await formItem.validate(getValue(value, (this.state.fields || [])[fieldIndex].field))
+
+        if (validation === true) {
+          formData[fieldIndex] = { status: 'normal' }
+        } else {
+          childrenError++
+          formData[fieldIndex] = { status: 'error', message: validation[0].message }
+        }
+      }
+    }
+
+    await this.setState({
+      formData
+    })
+
+    if (childrenError > 0) {
+      errors.push(new FieldError(`子项中存在${childrenError}个错误。`))
+    }
+
+    return errors.length ? errors : true
+  }
+
   handleMount = async (formFieldIndex: number) => {
     if (this.formFieldsMounted[formFieldIndex]) {
       return true
@@ -92,17 +124,19 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
           this.props.onValueSet(formFieldConfig.field, value, true)
         }
         
-        const validation = await formField.validate(value)
-        if (validation === true) {
-          await this.setState(({ formData }) => {
-            formData[formFieldIndex] = { status: 'normal' }
-            return { formData: cloneDeep(formData) }
-          })
-        } else {
-          await this.setState(({ formData }) => {
-            formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-            return { formData: cloneDeep(formData) }
-          })
+        if (value !== undefined) {
+          const validation = await formField.validate(value)
+          if (validation === true) {
+            await this.setState(({ formData }) => {
+              formData[formFieldIndex] = { status: 'normal' }
+              return { formData: cloneDeep(formData) }
+            })
+          } else {
+            await this.setState(({ formData }) => {
+              formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+              return { formData: cloneDeep(formData) }
+            })
+          }
         }
       }
     }

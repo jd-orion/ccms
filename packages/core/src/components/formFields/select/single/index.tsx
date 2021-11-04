@@ -120,7 +120,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
     const props: ISelectSingleField = {
       value: undefined,
       options: this.options(optionsConfig),
-      onChange: async (value) => { await this.props.onValueSet('', value, true) },
+      onChange: async (value) => { await this.props.onValueSet('', value, await this.validate(value)) },
       disabled: getBoolean(disabled),
       placeholder
     }
@@ -137,8 +137,10 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       console.warn('单项选择框的值需要是字符串或数值。')
     } else if (value === undefined) {
       if (optionsConfig?.from === 'interface' && optionsConfig.defaultSelect && props.options.length) {
-        props.value = props.options[0].value
-        this.props.onValueSet('', props.options[0].value, true)
+        (async () => {
+          props.value = props.options[0].value
+          this.props.onValueSet('', props.options[0].value, await this.validate(props.options[0].value))
+        })();
       }
     }
 

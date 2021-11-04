@@ -197,7 +197,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
         {this.renderComponent({
           value,
           treeData: this.state.interfaceOptionsData,
-          onChange: async (value: string) => await this.props.onValueSet('', value, true)
+          onChange: async (value: string) => await this.props.onValueSet('', value, await this.validate(value))
         })}
       </React.Fragment>
     )

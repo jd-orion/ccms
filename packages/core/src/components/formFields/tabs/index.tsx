@@ -95,6 +95,50 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     return data
   }
 
+  validate = async (value: { [key: string]: any }): Promise<true | FieldError[]> => {
+    const errors: FieldError[] = []
+
+    if (this.props.config.required === true && Object.entries(value).length === 0) {
+      errors.push(new FieldError('不能为空'))
+    }
+
+    let childrenError = 0
+
+    const formDataList = cloneDeep(this.state.formDataList)
+
+    for (const formItemsIndex in this.formFieldsList) {
+      if (!formDataList[formItemsIndex]) formDataList[formItemsIndex] = []
+      const formItems = this.formFieldsList[formItemsIndex]
+      const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[formItemsIndex] || {}).fields || [])
+      const tab = (this.props.config.tabs || [])[formItemsIndex]
+      for (const fieldIndex in fields) {
+        const formItem = formItems[fieldIndex]
+        const formFieldConfig = fields[fieldIndex]
+        const fullPath = tab.field === '' || formFieldConfig.field === '' ? `${tab.field}${formFieldConfig.field}` : `${tab.field}.${formFieldConfig.field}`
+        if (formItem !== null && formItem !== undefined) {
+          const validation = await formItem.validate(getValue(value, fullPath))
+
+          if (validation === true) {
+            formDataList[formItemsIndex][fieldIndex] = { status: 'normal' }
+          } else {
+            childrenError++
+            formDataList[formItemsIndex][fieldIndex] = { status: 'error', message: validation[0].message }
+          }
+        }
+      }
+    }
+
+    await this.setState({
+      formDataList
+    })
+
+    if (childrenError > 0) {
+      errors.push(new FieldError(`子项中存在${childrenError}个错误。`))
+    }
+
+    return errors.length ? errors : true
+  }
+
   handleMount = async (index: number, formFieldIndex: number) => {
     if (!this.formFieldsMountedList[index]) {
       this.formFieldsMountedList[index] = []
@@ -120,19 +164,21 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
           this.props.onValueSet(fullPath, value, true)
         }
         
-        const validation = await formField.validate(value)
-        if (value === undefined || validation === true) {
-          await this.setState(({ formDataList }) => {
-            if (!formDataList[index]) formDataList[index] = []
-            formDataList[index][formFieldIndex] = { status: 'normal' }
-            return { formDataList: cloneDeep(formDataList) }
-          })
-        } else {
-          await this.setState(({ formDataList }) => {
-            if (!formDataList[index]) formDataList[index] = []
-            formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
-            return { formDataList: cloneDeep(formDataList) }
-          })
+        if (value !== undefined) {
+          const validation = await formField.validate(value)
+          if (validation === true) {
+            await this.setState(({ formDataList }) => {
+              if (!formDataList[index]) formDataList[index] = []
+              formDataList[index][formFieldIndex] = { status: 'normal' }
+              return { formDataList: cloneDeep(formDataList) }
+            })
+          } else {
+            await this.setState(({ formDataList }) => {
+              if (!formDataList[index]) formDataList[index] = []
+              formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
+              return { formDataList: cloneDeep(formDataList) }
+            })
+          }
         }
       }
     }

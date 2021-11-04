@@ -86,6 +86,46 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     return data
   }
 
+  validate = async (value: { [key: string]: any }): Promise<true | FieldError[]> => {
+    const errors: FieldError[] = []
+
+    if (this.props.config.required === true && Object.entries(value).length === 0) {
+      errors.push(new FieldError('不能为空'))
+    }
+
+    let childrenError = 0
+
+    const formDataList = cloneDeep(this.state.formDataList)
+
+    for (const formItemsKey in this.formFieldsList) {
+      if (!formDataList[formItemsKey]) formDataList[formItemsKey] = []
+      const formItems = this.formFieldsList[formItemsKey]
+      for (const fieldIndex in (this.props.config.fields || [])) {
+        const formItem = formItems[fieldIndex]
+        if (formItem !== null && formItem !== undefined) {
+          const validation = await formItem.validate(getValue(value[formItemsKey], (this.props.config.fields || [])[fieldIndex].field))
+
+          if (validation === true) {
+            formDataList[formItemsKey][fieldIndex] = { status: 'normal' }
+          } else {
+            childrenError++
+            formDataList[formItemsKey][fieldIndex] = { status: 'error', message: validation[0].message }
+          }
+        }
+      }
+    }
+
+    await this.setState({
+      formDataList
+    })
+
+    if (childrenError > 0) {
+      errors.push(new FieldError(`子项中存在${childrenError}个错误。`))
+    }
+
+    return errors.length ? errors : true
+  }
+
   handleMount = async (key: string, formFieldIndex: number) => {
     if (!this.formFieldsMountedList[key]) {
       this.formFieldsMountedList[key] = []
@@ -106,19 +146,21 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
           this.props.onValueSet(formFieldConfig.field === '' ? key : `${key}.${formFieldConfig.field}`, value, true)
         }
         
-        const validation = await formField.validate(value)
-        if (value === undefined || validation === true) {
-          await this.setState(({ formDataList }) => {
-            if (!formDataList[key]) formDataList[key] = []
-            formDataList[key][formFieldIndex] = { status: 'normal' }
-            return { formDataList: cloneDeep(formDataList) }
-          })
-        } else {
-          await this.setState(({ formDataList }) => {
-            if (!formDataList[key]) formDataList[key] = []
-            formDataList[key][formFieldIndex] = { status: 'error', message: validation[0].message }
-            return { formDataList: cloneDeep(formDataList) }
-          })
+        if (value !== undefined) {
+          const validation = await formField.validate(value)
+          if (validation === true) {
+            await this.setState(({ formDataList }) => {
+              if (!formDataList[key]) formDataList[key] = []
+              formDataList[key][formFieldIndex] = { status: 'normal' }
+              return { formDataList: cloneDeep(formDataList) }
+            })
+          } else {
+            await this.setState(({ formDataList }) => {
+              if (!formDataList[key]) formDataList[key] = []
+              formDataList[key][formFieldIndex] = { status: 'error', message: validation[0].message }
+              return { formDataList: cloneDeep(formDataList) }
+            })
+          }
         }
       }
     }

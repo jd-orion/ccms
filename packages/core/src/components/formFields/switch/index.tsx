@@ -44,7 +44,7 @@ export default class SwitchField extends Field<SwitchFieldConfig, ISwitchField, 
       <React.Fragment>
         {this.renderComponent({
           value: value === valueTrue,
-          onChange: async (value: boolean) => this.props.onValueSet('', value ? valueTrue : valueFalse, true)
+          onChange: async (value: boolean) => this.props.onValueSet('', value ? valueTrue : valueFalse, await this.validate(value ? valueTrue : valueFalse))
         })}
       </React.Fragment>
     )

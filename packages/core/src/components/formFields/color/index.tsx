@@ -58,7 +58,7 @@ export default class ColorField extends Field<ColorFieldConfig, IColorField, str
                   disabled: getBoolean(disabled),
                   readonly: getBoolean(readonly),
                   value,
-                  onChange: async (value: string) => await this.props.onValueSet('', value, true)
+                  onChange: async (value: string) => await this.props.onValueSet('', value, await this.validate(value))
                 })}
             </React.Fragment>
       )

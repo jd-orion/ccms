@@ -143,8 +143,6 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
 
     this.formFieldsMounted[formFieldIndex] = true
 
-    const formData = cloneDeep(this.state.formData)
-
     if (this.formFields[formFieldIndex]) {
       const formField = this.formFields[formFieldIndex]
       if (formField) {
@@ -156,17 +154,19 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
         }
         this.formValue = setValue(this.formValue, formFieldConfig.field, value)
 
-        const validation = await formField.validate(value)
-        if (validation === true) {
-          formData[formFieldIndex] = { status: 'normal' }
-        } else {
-          formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+        if (value !== undefined) {
+          const validation = await formField.validate(value)
+          if (validation === true) {
+            this.formData[formFieldIndex] = { status: 'normal' }
+          } else {
+            this.formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+          }
         }
       }
     }
     await this.setState({
       formValue: this.formValue,
-      formData: cloneDeep(formData)
+      formData: cloneDeep(this.formData)
     })
   }
 
@@ -176,8 +176,6 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
   handleSubmit = async () => {
     let data: { [key: string]: any } = {}
     let canSubmit = true
-
-    const formData = cloneDeep(this.state.formData)
 
     for (const formFieldIndex in (this.props.config.fields || [])) {
       if (this.formFields[formFieldIndex]) {
@@ -190,7 +188,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
 
           if (validation !== true) {
             console.warn('表单项中存在问题', value, formFieldConfig)
-            formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+            this.formData[formFieldIndex] = { status: 'error', message: validation[0].message }
             canSubmit = false
           }
           data = setValue(data, formFieldConfig.field, value)
@@ -200,7 +198,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
     console.info('表单校验通过', data)
 
     await this.setState({
-      formData: cloneDeep(formData)
+      formData: cloneDeep(this.formData)
     })
 
     if (canSubmit && this.props.onSubmit) {
@@ -258,8 +256,6 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
    * @param value 目标值
    */
   handleChange = async (formFieldIndex: number, value: any) => {
-    const formData = cloneDeep(this.state.formData)
-
     const formField = this.formFields[formFieldIndex]
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formField && formFieldConfig.field) {
@@ -267,9 +263,9 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
 
       const validation = await formField.validate(value)
       if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
+        this.formData[formFieldIndex] = { status: 'normal' }
       } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message }
       }
 
       await this.setState({
@@ -302,7 +298,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
       }
 
       await this.setState({
-        formData: this.formData
+        formData: cloneDeep(this.formData)
       })
     }
   }
@@ -327,7 +323,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
       }
 
       await this.setState({
-        formData: this.formData
+        formData: cloneDeep(this.formData)
       })
     }
   }
@@ -354,7 +350,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
       }
 
       await this.setState({
-        formData: this.formData
+        formData: cloneDeep(this.formData)
       })
     }
   }
@@ -381,7 +377,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
       }
 
       await this.setState({
-        formData: this.formData
+        formData: cloneDeep(this.formData)
       })
     }
   }
@@ -452,8 +448,8 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
 
             const renderData = {
               label: formFieldConfig.label,
-              status: formFieldConfig.field !== undefined ? formData[formFieldIndex]?.status || 'normal' : 'normal',
-              message: formFieldConfig.field !== undefined ? formData[formFieldIndex]?.message || '' : '',
+              status: (formData[formFieldIndex] || {}).status || 'normal',
+              message: (formData[formFieldIndex] || {}).message || '',
               visitable: display,
               fieldType: formFieldConfig.type,
               children: (
