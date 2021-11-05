@@ -8,6 +8,8 @@ import ColumnStyleComponent from './common/columnStyle'
 import CCMS, { CCMSConfig } from '../../main'
 import { get, set } from 'lodash'
 import InterfaceHelper, { InterfaceConfig } from '../../util/interface'
+import { FieldConditionConfig } from '../../components/formFields/common'
+import ConditionHelper from '../../util/condition'
 
 /**
  * 表格步骤配置文件格式定义
@@ -54,13 +56,7 @@ export interface TableOperationConfig {
   check?: { enable: false } | TableOperationCheckConfig
   confirm?: { enable: false } | TableOperationConfirmConfig
   handle: TableCCMSOperationConfig
-  condition?: {
-    statement?: string
-    params?: Array<{
-      field?: string
-      data?: ParamConfig
-    }>
-  }
+  condition?: FieldConditionConfig
 }
 
 export interface TableCCMSOperationConfig {
@@ -607,23 +603,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
             return this.renderRowOperationComponent({
               children: (operations.rowOperations || []).map((operation, index) => {
                 if (operation.type === 'button') {
-                  let hidden = false
-                  if (operation.condition && operation.condition.statement) {
-                    let statement = operation.condition.statement
-                    if (operation.condition.params && Array.isArray(operation.condition.params)) {
-                      statement = getParamText(operation.condition.statement, operation.condition.params, { record: record, data, step })
-                    }
-                    try {
-                      // eslint-disable-next-line no-eval
-                      const result = eval(statement)
-                      if (!result) {
-                        hidden = true
-                      }
-                    } catch (e) {
-                      console.error('表格列的参数', statement)
-                      hidden = false
-                    }
+                  if (!ConditionHelper(operation.condition, { record, data, step })) {
+                    return null
                   }
+                  
+                  let hidden = false
 
                   if (this.authState === 'pending') {
                     this.pageList.push(operation.handle.page)
@@ -652,23 +636,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
                       {this.renderRowOperationGroupComponent({
                         label: operation.label,
                         children: (operation.operations || []).map((operation) => {
-                          let hidden = false
-                          if (operation.condition && operation.condition.statement) {
-                            let statement = operation.condition.statement
-                            if (operation.condition.params && Array.isArray(operation.condition.params)) {
-                              statement = getParamText(operation.condition.statement, operation.condition.params, { record: record, data, step })
-                            }
-                            try {
-                              // eslint-disable-next-line no-eval
-                              const result = eval(statement)
-                              if (!result) {
-                                hidden = true
-                              }
-                            } catch (e) {
-                              console.error('表格列的参数', statement)
-                              hidden = false
-                            }
+                          if (!ConditionHelper(operation.condition, { record, data, step })) {
+                            return null
                           }
+
+                          let hidden = false
 
                           if (this.authState === 'pending') {
                             this.pageList.push(operation.handle.page)
