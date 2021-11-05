@@ -225,6 +225,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
    * fulfilled ｜pending
    */
   authState: string | undefined
+  /* 服务端分页情况下页码溢出标识：页码溢出时退回重新请求，此标识符用于防止死循环判断 */
+  pageOverflow: boolean = false
 
   constructor(props: StepProps<TableConfig>) {
     super(props)
@@ -591,6 +593,14 @@ export default class TableStep extends Step<TableConfig, TableState> {
             [pagination.pageSize || '']: pageSize
           })
         }
+      }
+
+      if (!this.pageOverflow && props.pagination.current > 1 && (props.pagination.current - 1) * props.pagination.pageSize >= props.pagination.total) {
+        this.pageOverflow = true
+        this.props.onUnmount(true, {
+          [pagination.current || '']: props.pagination.current - 1,
+          [pagination.pageSize || '']: props.pagination.pageSize
+        })
       }
     }
 

@@ -13,6 +13,7 @@ interface FetchState {
 }
 
 export default class FetchStep extends Step<FetchConfig, FetchState> {
+  popData: any
   interfaceHelper = new InterfaceHelper()
   stepPush = async () => {
     this.stepMount()
@@ -20,7 +21,8 @@ export default class FetchStep extends Step<FetchConfig, FetchState> {
   
   stepPop = async (reload: boolean = false, data?: any) => {
     if (reload) {
-      this.stepMount(data)
+      this.popData = data
+      this.stepMount()
     } else {
       this.props.onUnmount()
     }
@@ -38,17 +40,17 @@ export default class FetchStep extends Step<FetchConfig, FetchState> {
       try {
         const content = await this.interfaceHelper.request(
           merge(config.interface, { cache: { disabled: true } }),
-          {...(init_data || {}), ...(this.props.data[this.props.step] || {})},
+          {...(this.popData || {}), ...(init_data || {}), ...(this.props.data[this.props.step] || {})},
           {
             data: this.props.data,
             step: this.props.step
           },
           {
             loadDomain: this.props.loadDomain,
-            extra_data: init_data
+            extra_data: {...(this.popData || {}), ...(init_data || {})}
           }
         )
-        onSubmit({ ...(init_data || {}), ...content })
+        onSubmit({ ...(this.popData || {}), ...(init_data || {}), ...content })
       } catch (e) {
         onUnmount(true)
       }
