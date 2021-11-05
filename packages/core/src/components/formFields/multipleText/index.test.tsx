@@ -24,6 +24,7 @@ const defaultProps: FieldProps<MultipleTextFieldConfig, any[]> = {
   onValueUnset: async () => { },
   onValueListAppend: async () => { },
   onValueListSplice: async () => { },
+  baseRoute: '/',
   loadDomain: async () => 'hello'
 }
 

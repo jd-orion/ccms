@@ -30,6 +30,7 @@ export interface StepProps<C extends StepConfig> {
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  baseRoute: string
   loadDomain: (domain: string) => Promise<string>
 }
 

@@ -339,6 +339,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                       onValueUnset={async (path, validation) => this.handleValueUnset(formFieldIndex, path, validation)}
                       onValueListAppend={async (path, value, validation) => this.handleValueListAppend(formFieldIndex, path, value, validation)}
                       onValueListSplice={async (path, index, count, validation) => this.handleValueListSplice(formFieldIndex, path, index, count, validation)}
+                      baseRoute={this.props.baseRoute}
                       loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                     />
                 )

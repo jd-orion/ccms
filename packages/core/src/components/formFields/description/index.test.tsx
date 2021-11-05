@@ -24,6 +24,7 @@ const defaultProps: FieldProps<DescFieldConfig, string> = {
   onValueUnset: async () => { },
   onValueListAppend: async () => { },
   onValueListSplice: async () => { },
+  baseRoute: '/',
   loadDomain: async () => 'hello'
 }
 

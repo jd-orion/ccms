@@ -19,6 +19,7 @@ const defaultProps: FieldProps<DatetimeRangeFieldConfig, [moment.Moment, moment.
   onValueUnset: async () => {},
   onValueListAppend: async () => {},
   onValueListSplice: async () => {},
+  baseRoute: '/',
   loadDomain: async () => 'hello'
 }
 

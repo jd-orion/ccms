@@ -472,6 +472,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
                     onValueUnset={async (path, validation) => await this.handleValueUnset(formFieldIndex, path, validation)}
                     onValueListAppend={async (path, value, validation) => await this.handleValueListAppend(formFieldIndex, path, value, validation)}
                     onValueListSplice={async (path, index, count, validation) => await this.handleValueListSplice(formFieldIndex, path, index, count, validation)}
+                    baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                   />
               )

@@ -58,6 +58,7 @@ const FielddefaultProps: FieldProps<FieldConfig, string> = {
     onValueUnset: async () => {},
     onValueListAppend: async () => {},
     onValueListSplice: async () => {},
+    baseRoute: '/',
     loadDomain: async () => 'hello'
 }
 

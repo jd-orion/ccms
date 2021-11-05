@@ -408,6 +408,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                                   onValueUnset={async (path, validation) => this.handleValueUnset(index, fieldIndex, path, validation)}
                                   onValueListAppend={async (path, value, validation) => this.handleValueListAppend(index, fieldIndex, path, value, validation)}
                                   onValueListSplice={async (path, _index, count, validation) => this.handleValueListSplice(index, fieldIndex, path, _index, count, validation)}
+                                  baseRoute={this.props.baseRoute}
                                   loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                                 />
                               )

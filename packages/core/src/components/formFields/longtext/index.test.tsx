@@ -18,6 +18,7 @@ const defaultProps: FieldProps<LongtextFieldConfig, string> = {
   onValueUnset: async () => {},
   onValueListAppend: async () => {},
   onValueListSplice: async () => {},
+  baseRoute: '/',
   loadDomain: async () => 'hello'
 }
 

@@ -44,6 +44,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
           onValueUnset: this.props.onValueUnset,
           onValueListAppend: this.props.onValueListAppend,
           onValueListSplice: this.props.onValueListSplice,
+          base: this.props.baseRoute,
           loadDomain: this.props.loadDomain
         });
       }
@@ -69,6 +70,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
           onValueUnset: this.props.onValueUnset,
           onValueListAppend: this.props.onValueListAppend,
           onValueListSplice: this.props.onValueListSplice,
+          base: this.props.baseRoute,
           loadDomain: this.props.loadDomain
         }
       })

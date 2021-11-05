@@ -701,6 +701,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   <CCMS
                     config={operationConfig}
                     sourceData={operationData}
+                    baseRoute={this.props.baseRoute}
                     checkPageAuth={this.props.checkPageAuth}
                     loadPageURL={this.props.loadPageURL}
                     loadPageFrameURL={this.props.loadPageFrameURL}
@@ -735,6 +736,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
               <CCMS
                 config={operationConfig}
                 sourceData={operationData}
+                baseRoute={this.props.baseRoute}
                 checkPageAuth={this.props.checkPageAuth}
                 loadPageURL={this.props.loadPageURL}
                 loadPageFrameURL={this.props.loadPageFrameURL}

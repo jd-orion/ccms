@@ -93,6 +93,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
             onValueUnset={this.props.onValueUnset}
             onValueListAppend={this.props.onValueListAppend}
             onValueListSplice={this.props.onValueListSplice}
+            baseRoute={this.props.baseRoute}
             loadDomain={this.props.loadDomain}
           /> : (
             type === 'number' ? <this.NumberField
@@ -108,6 +109,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
               onValueUnset={this.props.onValueUnset}
               onValueListAppend={this.props.onValueListAppend}
               onValueListSplice={this.props.onValueListSplice}
+              baseRoute={this.props.baseRoute}
               loadDomain={this.props.loadDomain}
             /> : <this.BooleanField
               ref={() => {}}
@@ -122,6 +124,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
               onValueUnset={this.props.onValueUnset}
               onValueListAppend={this.props.onValueListAppend}
               onValueListSplice={this.props.onValueListSplice}
+              baseRoute={this.props.baseRoute}
               loadDomain={this.props.loadDomain}
             />
           )

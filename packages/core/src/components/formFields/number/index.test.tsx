@@ -19,6 +19,7 @@ const defaultProps: FieldProps<NumberFieldConfig, string | number | undefined> =
   onValueUnset: async () => {},
   onValueListAppend: async () => {},
   onValueListSplice: async () => {},
+  baseRoute: '/',
   loadDomain: async () => 'hello'
 }
 // config={Object.assign(defaultProps, config)}

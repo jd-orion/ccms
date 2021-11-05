@@ -41,6 +41,7 @@ export interface ICCMS {
 export interface CCMSProps {
   config: CCMSConfig
   sourceData: any
+  baseRoute: string
   checkPageAuth: (pageID: any) => Promise<boolean>
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
@@ -226,6 +227,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
         } = {},
         steps = []
       },
+      baseRoute,
       checkPageAuth,
       loadPageURL,
       loadPageFrameURL,
@@ -266,6 +268,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
                 onMount: () => this.handleMount(index),
                 onUnmount: (reload: boolean = false, data?: any) => this.handleUnmount(index, reload, data),
                 config: currentStep,
+                baseRoute,
                 checkPageAuth,
                 loadPageURL,
                 loadPageFrameURL,

@@ -92,6 +92,7 @@ export interface FieldProps<C extends FieldConfig, T> {
   onValueListAppend: (path: string, value: any, validation: true | FieldError[]) => Promise<void>
   // 事件：修改值 - 列表 - 删除
   onValueListSplice: (path: string, index: number, count: number, validation: true | FieldError[]) => Promise<void>
+  baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
 }
 

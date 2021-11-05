@@ -21,6 +21,7 @@ const defaultProps: FieldProps<DatetimeFieldConfig, string> = {
   onValueUnset: async () => { },
   onValueListAppend: async () => { },
   onValueListSplice: async () => { },
+  baseRoute: '/',
   loadDomain: async () => 'hello'
 }
 

@@ -385,6 +385,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                                     onValueUnset={async (path, validation) => this.handleValueUnset(index, formFieldIndex, path, validation)}
                                     onValueListAppend={async (path, value, validation) => this.handleValueListAppend(index, formFieldIndex, path, value, validation)}
                                     onValueListSplice={async (path, _index, count, validation) => this.handleValueListSplice(index, formFieldIndex, path, _index, count, validation)}
+                                    baseRoute={this.props.baseRoute}
                                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                                   />
                                 )

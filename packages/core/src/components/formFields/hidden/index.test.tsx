@@ -23,6 +23,7 @@ const defaultProps: FieldProps<HiddenFieldConfig, string | number | boolean> = {
   onValueUnset: async () => { },
   onValueListAppend: async () => { },
   onValueListSplice: async () => { },
+  baseRoute: '/',
   loadDomain: async () => 'hello'
 }
 
