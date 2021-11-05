@@ -29,7 +29,7 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
         mode='multiple'
       >
         {options.map((option) => (
-          <Select.Option key={option.value} value={option.value}>{option.label}</Select.Option>
+          <Select.Option key={option.value as any} value={option.value as any}>{option.label}</Select.Option>
         ))}
       </Select>
     )

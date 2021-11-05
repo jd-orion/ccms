@@ -22,13 +22,13 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
       <Select
         disabled={disabled}
         placeholder={placeholder}
-        value={value}
+        value={value as any}
         onChange={(value) => onChange(value)}
         dropdownMatchSelectWidth={false}
         style={{ minWidth: '100px' }}
       >
         {options.map((option) => (
-          <Select.Option key={option.value} value={option.value}>{option.label}</Select.Option>
+          <Select.Option key={option.value as any} value={option.value as any}>{option.label}</Select.Option>
         ))}
       </Select>
     )
