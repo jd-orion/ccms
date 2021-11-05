@@ -9,9 +9,9 @@ export interface SelectFieldConfig extends FieldConfig {
 
 export interface ManualOptionsConfig {
   from: 'manual'
-  defaultIndex?: string | number
+  defaultIndex?: string | number | boolean
   data?: Array<{
-    value: string | number
+    value: string | number | boolean
     label: string
     [extra: string]: any
   }>
@@ -35,14 +35,14 @@ export interface InterfaceOptionsListConfig {
 }
 
 export interface ISelectFieldOption {
-  value: string | number,
+  value: string | number | boolean,
   label: ReactNode,
   children?: Array<ISelectFieldOption>
 }
 
 interface SelectSingleFieldState {
   interfaceOptionsData: Array<{
-    value: string | number
+    value: string | number | boolean
     label: string
     [extra: string]: any
   }>

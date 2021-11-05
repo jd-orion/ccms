@@ -10,14 +10,14 @@ export interface SelectSingleFieldConfig extends SelectFieldConfig {
 }
 
 export interface ISelectSingleField {
-  value: undefined | string | number
+  value: undefined | string | number | boolean
   options: Array<ISelectFieldOption>
-  onChange: (value: string | number) => Promise<void>
+  onChange: (value: string | number | boolean) => Promise<void>
   disabled: boolean
   placeholder?: string
 }
 
-export default class SelectSingleField extends SelectField<SelectSingleFieldConfig, {}, string | number | undefined> {
+export default class SelectSingleField extends SelectField<SelectSingleFieldConfig, {}, string | number | boolean | undefined> {
   // reset = async () => {
   //   const defaults = await this.defaultValue()
 
@@ -60,7 +60,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
   //   }
   // }
 
-  validate = async (_value: string | number | undefined): Promise<true | FieldError[]> => {
+  validate = async (_value: string | number | boolean | undefined): Promise<true | FieldError[]> => {
     const {
       config: {
         label,
@@ -125,7 +125,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       placeholder
     }
 
-    if (typeof value === 'string' || typeof value === 'number') {
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
       if (props.options.map((option) => option.value).includes(value)) {
         props.value = value
       } else {
