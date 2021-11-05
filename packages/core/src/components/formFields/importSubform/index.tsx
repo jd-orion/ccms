@@ -247,10 +247,6 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     }
   }
 
-  validate = async (value: string): Promise<true | FieldError[]> => {
-    return true
-  }
-
   renderComponent = (props: IImportSubformField) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现ImportSubformField组件。
