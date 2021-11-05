@@ -30,7 +30,7 @@ export interface InterfaceConfig {
 
   response?: {
     root?: string
-  } | { field: string, path: string }[]
+  } | { field?: string, path?: string }[]
 
   cache?: {
     disabled?: boolean
@@ -243,8 +243,8 @@ export default class InterfaceHelper {
             if (Array.isArray(config.response)) {
               let content = {}
               for (const { field, path } of config.response) {
-                const value = path === '' ? response : get(response, path)
-                if (field === '') {
+                const value = (path === undefined || path === '') ? response : get(response, path)
+                if (field === undefined || field === '') {
                   content = value
                 } else {
                   set(content, field, value)
