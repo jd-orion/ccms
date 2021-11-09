@@ -16,12 +16,12 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
 
     return (
       <Select
-        value={value}
-        onChange={(value) => onChange(value)}
+        value={value as any}
+        onChange={(value) => onChange(value as any)}
         mode='multiple'
       >
-        {options.map((option) => (
-          <Select.Option key={option.value} value={option.value}>{option.label}</Select.Option>
+        {options.map((option:any) => (
+          <Select.Option key={option.value as any} value={option.value as any}>{option.label}</Select.Option>
         ))}
       </Select>
     )
