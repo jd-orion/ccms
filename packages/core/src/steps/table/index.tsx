@@ -598,7 +598,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
       if (!this.pageOverflow && props.pagination.current > 1 && (props.pagination.current - 1) * props.pagination.pageSize >= props.pagination.total) {
         this.pageOverflow = true
         this.props.onUnmount(true, {
-          [pagination.current || '']: props.pagination.current - 1,
+          [pagination.current || '']: 1,
           [pagination.pageSize || '']: props.pagination.pageSize
         })
       }
