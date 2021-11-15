@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormStep } from 'ccms'
-import { IForm, IFormItem } from 'ccms/dist/src/steps/form'
-import { Button, Form, Space } from 'antd'
+import { IForm, IFormItem, IFormStepModal } from 'ccms/dist/src/steps/form'
+import { Button, Form, Space, Modal } from 'antd'
 import 'antd/lib/style/index.css'
 import 'antd/lib/form/style/index.css'
 import 'antd/lib/grid/style/index.css'
@@ -13,6 +13,20 @@ import { FormItemProps } from 'antd/lib/form'
 import styles from "./index.less"
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
+
+  renderModalComponent= (props: IFormStepModal) => {
+    return new Promise((resolve) => {
+      Modal.error({
+        getContainer: () => {
+          return document.body
+        },
+        title: props.message,
+        onOk: () => {
+          resolve(null)
+        }
+      })
+    })
+  }
 
   renderComponent = (props: IForm) => {
     const {
