@@ -368,7 +368,6 @@ export default class TableStep extends Step<TableConfig, TableState> {
       result.forEach((res: any) => {
         Object.assign(rsPage, res)
       })
-      console.log(rsPage, 'savePageAuth')
       this.authState = 'fulfilled'
       this.setState({ pageAuthState: rsPage })
     })
@@ -580,12 +579,12 @@ export default class TableStep extends Step<TableConfig, TableState> {
 
     if (pagination && pagination.mode === 'server') {
       const paginationCurrent = Number((pagination.current === undefined || pagination.current === '') ? data[step] : get(data[step], pagination.current, 1))
-      const paginationPageSize = Number((pagination.pageSize === undefined || pagination.pageSize === '') ? data[step] : get(data[step], pagination.pageSize, 20))
+      const paginationPageSize = Number((pagination.pageSize === undefined || pagination.pageSize === '') ? data[step] : get(data[step], pagination.pageSize, 10))
       const paginationTotal = Number((pagination.total === undefined || pagination.total === '') ? data[step] : get(data[step], pagination.total, 0))
 
       props.pagination = {
         current: Number.isNaN(paginationCurrent) ? 1 : paginationCurrent,
-        pageSize: Number.isNaN(paginationPageSize) ? 20 : paginationPageSize,
+        pageSize: Number.isNaN(paginationPageSize) ? 10 : paginationPageSize,
         total: Number.isNaN(paginationTotal) ? 0 : paginationTotal,
         onChange: (page, pageSize) => {
           this.props.onUnmount(true, {
