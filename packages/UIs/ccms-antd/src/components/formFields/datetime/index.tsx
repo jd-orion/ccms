@@ -4,8 +4,6 @@ import { DatePicker, TimePicker } from 'antd'
 import { IDatetimeField, DatetimeFieldConfig } from 'ccms/dist/src/components/formFields/datetime'
 import pickerLocale from 'antd/lib/date-picker/locale/zh_CN'
 
-export const PropsType = (props: DatetimeFieldConfig) => { }
-
 export default class DatetimeFieldComponent extends DatetimeField {
   renderComponent = (props: IDatetimeField) => {
     const {
@@ -23,7 +21,7 @@ export default class DatetimeFieldComponent extends DatetimeField {
           locale={pickerLocale}
           placeholder={placeholder}
           onChange={async (time) => await props.onChange(time)}
-          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd') || ele.parentElement || document.body}
         />
       )
     } else if (mode === 'date') {
@@ -32,9 +30,10 @@ export default class DatetimeFieldComponent extends DatetimeField {
           style={{ width: '100%' }}
           value={value}
           format={props.format}
+          locale={pickerLocale}
           placeholder={placeholder}
           onChange={async (time) => await props.onChange(time)}
-          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd') || ele.parentElement || document.body}
         />
       )
     } else if (mode === 'datetime') {
@@ -47,7 +46,7 @@ export default class DatetimeFieldComponent extends DatetimeField {
           placeholder={placeholder}
           showTime={true}
           onChange={async (time) => await props.onChange(time)}
-          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd') || ele.parentElement || document.body}
         />
       )
     } else {
@@ -60,7 +59,7 @@ export default class DatetimeFieldComponent extends DatetimeField {
           locale={pickerLocale}
           placeholder={placeholder}
           onChange={async (time) => await props.onChange(time)}
-          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd') || ele.parentElement || document.body}
         />)
     }
   }

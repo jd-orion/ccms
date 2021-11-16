@@ -3,9 +3,6 @@ import { SelectSingleField } from 'ccms'
 import { ISelectSingleField, SelectSingleFieldConfig } from 'ccms/dist/src/components/formFields/select/single'
 import { Radio, Select } from 'antd'
 import InterfaceHelper from '../../../../util/interface'
-
-export const SinglePropsType = (props: SelectSingleFieldConfig) => { }
-
 export default class SelectSingleFieldComponent extends SelectSingleField {
   interfaceHelper = new InterfaceHelper()
   
@@ -20,6 +17,7 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
 
     return (
       <Select
+        getPopupContainer={(ele) => document.getElementById('ccms-antd') || ele.parentElement || document.body}
         disabled={disabled}
         placeholder={placeholder}
         value={value as any}

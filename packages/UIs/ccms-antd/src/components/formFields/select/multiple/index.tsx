@@ -3,9 +3,6 @@ import { SelectMultipleField } from 'ccms'
 import { Checkbox, Select } from 'antd'
 import { ISelectMultipleField, SelectMultipleFieldConfig } from 'ccms/dist/src/components/formFields/select/multiple'
 import InterfaceHelper from '../../../../util/interface'
-
-export const MultiplePropsType = (props: SelectMultipleFieldConfig) => { }
-
 export default class SelectSingleFieldComponent extends SelectMultipleField {
   interfaceHelper = new InterfaceHelper()
   
@@ -20,6 +17,7 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
     
     return (
       <Select
+        getPopupContainer={(ele) => document.getElementById('ccms-antd') || ele.parentElement || document.body}
         disabled={disabled}
         placeholder={placeholder}
         value={value}

@@ -159,7 +159,7 @@ export default class TableStepComponent extends TableStep {
 
     return (
       <Dropdown
-        getPopupContainer={(node) => document.getElementById('ccms-antd') || node.parentElement || document.body}
+        getPopupContainer={(ele) => document.getElementById('ccms-antd') || ele.parentElement || document.body}
         overlay={(
           <Menu>
             {children}

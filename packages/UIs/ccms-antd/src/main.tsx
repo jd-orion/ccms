@@ -14,7 +14,7 @@ export default class CCMSComponent extends CCMS {
       children
     } = props
     return (
-      <div className={styles['ccms_antd']}>
+      <div id="ccms-antd" className={styles['ccms-antd']}>
         {
           (title || description) &&
           <div className={styles['header']}>
