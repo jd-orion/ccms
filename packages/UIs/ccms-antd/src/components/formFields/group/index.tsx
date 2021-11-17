@@ -27,6 +27,7 @@ export default class GroupFieldComponent extends GroupField {
     const {
       layout,
       label,
+      visitable,
       status,
       message,
       fieldType,
@@ -40,6 +41,7 @@ export default class GroupFieldComponent extends GroupField {
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={fieldType === 'import_subform' || fieldType === 'group' || message === '' ? null : message}
         className={styles[`ccms-antd-mini-form-${fieldType}`]}
+        style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
       >
         {children}
       </Form.Item>
