@@ -9,7 +9,8 @@ export default class InterfaceHelper extends _InterfaceHelper {
         title: props.message,
         onOk: () => {
           resolve(null)
-        }
+        },
+        getContainer: () => document.getElementById('ccms-antd') || document.body
       })
     })
   }
@@ -20,7 +21,8 @@ export default class InterfaceHelper extends _InterfaceHelper {
         title: props.message,
         onOk: () => {
           resolve(null)
-        }
+        },
+        getContainer: () => document.getElementById('ccms-antd') || document.body
       })
     })
   }
