@@ -63,23 +63,23 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
     return errors.length ? errors : true
   }
 
-  get = async () => {
-    const {
-      value,
-      config: {
-        submitFormat,
-        format = 'YYYY-MM-DD HH:mm:ss'
-      }
-    } = this.props
+  // get = async () => {
+  //   const {
+  //     value,
+  //     config: {
+  //       submitFormat,
+  //       format = 'YYYY-MM-DD HH:mm:ss'
+  //     }
+  //   } = this.props
 
-    if (!value) return ''
+  //   if (!value) return ''
 
-    const rsFormat = submitFormat || format
+  //   const rsFormat = submitFormat || format
 
-    const setValue = moment(value).format(rsFormat)
+  //   const setValue = moment(value).format(rsFormat)
 
-    return setValue
-  };
+  //   return setValue
+  // };
 
   renderComponent = (props: IDatetimeField) => {
     return <React.Fragment>
