@@ -52,6 +52,7 @@ export interface IForm {
 
 /**
  * 表单项容器组件 - UI渲染方法 - 入参格式
+ * - key: react需要的unique key
  * - label:       表单项名称
  * - status:      表单项状态
  * - * normal       默认状态
@@ -66,6 +67,7 @@ export interface IForm {
  * - children:    表单项内容
  */
 export interface IFormItem {
+  key: string | number,
   label: string
   status: 'normal' | 'error' | 'loading'
   description?: string
@@ -441,6 +443,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
               const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
               const renderData = {
+                key: formFieldIndex,
                 label: formFieldConfig.label,
                 status: formData[formFieldIndex]?.status || 'normal',
                 message: formData[formFieldIndex]?.message || '',

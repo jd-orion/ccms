@@ -313,6 +313,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
               const FormField = this.getALLComponents(formFieldConfig.type) || Field
   
               const renderData = {
+                key: formFieldIndex,
                 label: formFieldConfig.label,
                 status: (this.state.formData[formFieldIndex] || {}).status || 'normal',
                 message: (this.state.formData[formFieldIndex] || {}).message || '',

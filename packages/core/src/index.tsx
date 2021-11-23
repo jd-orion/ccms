@@ -38,5 +38,8 @@ export { default as DatetimeRangeColumn } from './components/tableColumns/dateti
 export { default as ImageColumn } from './components/tableColumns/image'
 
 export { default as FetchStep } from './steps/fetch'
+export { default as DetailStep } from './steps/detail'
+export { default as DetailGroupField } from './components/detail/group'
+export { default as DetailTextField } from './components/detail/text'
 
 export { default as InterfaceHelper } from "./util/interface"
