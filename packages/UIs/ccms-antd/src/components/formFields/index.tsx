@@ -17,6 +17,7 @@ import HiddenField from './hidden'
 import TabsField from './tabs'
 import MultipleTextField from './multipleText'
 import CustomField from './custom'
+import ImportSubformField from './importSubform'
 
 export default {
   text: TextField,
@@ -37,5 +38,6 @@ export default {
   hidden: HiddenField,
   tabs: TabsField,
   multiple_text: MultipleTextField,
-  custom: CustomField
+  custom: CustomField,
+  import_subform: ImportSubformField
 }
