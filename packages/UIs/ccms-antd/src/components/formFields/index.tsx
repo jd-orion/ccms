@@ -18,6 +18,7 @@ import TabsField from './tabs'
 import MultipleTextField from './multipleText'
 import CustomField from './custom'
 import ImportSubformField from './importSubform'
+import AnyField from './any'
 
 export default {
   text: TextField,
@@ -39,5 +40,6 @@ export default {
   tabs: TabsField,
   multiple_text: MultipleTextField,
   custom: CustomField,
-  import_subform: ImportSubformField
+  import_subform: ImportSubformField,
+  any: AnyField
 }
