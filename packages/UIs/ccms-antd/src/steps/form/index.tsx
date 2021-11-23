@@ -52,6 +52,7 @@ export default class FormStepComponent extends FormStep {
 
   renderItemComponent = (props: IFormItem) => {
     const {
+      key,
       visitable,
       layout,
       label,
@@ -63,6 +64,7 @@ export default class FormStepComponent extends FormStep {
 
     return (
       <Form.Item
+        key={key}
         label={label}
         {...formItemLayout(layout, fieldType, label)}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}

@@ -1,7 +1,7 @@
 import React from "react";
-import { GroupField } from 'ccms';
-import { IGroupField, GroupFieldConfig } from "ccms/dist/src/components/formFields/group";
-import { IFormItem } from "ccms/dist/src/steps/form";
+import { DetailGroupField } from 'ccms';
+import { IGroupField, GroupFieldConfig } from "ccms/dist/src/components/detail/group";
+import { IDetailItem } from "ccms/dist/src/steps/detail";
 import { Form } from "antd"
 import getALLComponents from '../'
 import styles from './index.less'
@@ -9,7 +9,7 @@ import { formItemLayout } from "../common";
 
 export const PropsType = (props: GroupFieldConfig) => { };
 
-export default class GroupFieldComponent extends GroupField {
+export default class GroupFieldComponent extends DetailGroupField {
   getALLComponents = (type: any) => getALLComponents[type]
 
   renderComponent = (props: IGroupField) => {
@@ -23,27 +23,19 @@ export default class GroupFieldComponent extends GroupField {
     )
   }
 
-  renderItemComponent = (props: IFormItem) => {
+  renderItemComponent = (props: IDetailItem) => {
     const {
-      key,
       layout,
       label,
-      visitable,
-      status,
-      message,
       fieldType,
       children
     } = props
 
     return (
       <Form.Item
-        key={key}
         label={label}
         {...formItemLayout(layout, fieldType, label)}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={fieldType === 'import_subform' || fieldType === 'group' || message === '' ? null : message}
         className={styles[`ccms-antd-mini-form-${fieldType}`]}
-        style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
       >
         {children}
       </Form.Item>

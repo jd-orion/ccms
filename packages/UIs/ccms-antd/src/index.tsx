@@ -10,3 +10,6 @@ export { default as SelectMultipleField } from './components/formFields/select/m
 export { default as Table } from './steps/table'
 
 export { default as Fetch } from './steps/fetch'
+export { default as DetailStep } from './steps/detail'
+export { default as DetailGroupField } from './components/detail/group'
+export { default as DetailTextField } from './components/detail/text'
