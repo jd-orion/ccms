@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormField } from 'ccms'
-import { Form, Button, Divider, Space } from 'antd'
-import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons'
+import { Form, Button, Divider, Collapse, Space, Row, Col } from 'antd'
+import { PlusOutlined, MinusCircleOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
 import getALLComponents from '../'
 import { formItemLayout } from '../common'
@@ -35,20 +35,59 @@ export default class FormFieldComponent extends FormField {
 
   renderItemComponent = (props: IFormFieldItem) => {
     const {
+      title,
+      index,
+      isLastIndex, 
       removeText,
       onRemove,
+      onSort,
+      canCollapse,
       children
     } = props
 
     return (
-      <div>
+      <Collapse.Panel
+        header={<div style={{ display: 'inline-block', width: 'calc(100% - 60px)' }}>{title}</div>}
+        key={index}
+        forceRender={false}
+        showArrow={!!canCollapse}
+        collapsible={'header'}
+        extra={(
+          <Space>
+            {onSort
+              ? <React.Fragment>
+                <ArrowUpOutlined
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    index > 0 && onSort('up')
+                  }}
+                  style={{
+                    opacity: index === 0 ? 0.5 : 1,
+                    cursor: index === 0 ? 'not-allowed' : 'pointer'
+                  }}
+                />
+                <ArrowDownOutlined
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    !isLastIndex && onSort('down')
+                  }}
+                  style={{
+                    opacity: isLastIndex ? 0.5 : 1,
+                    cursor: isLastIndex ? 'not-allowed' : 'pointer'
+                  }}
+                />
+              </React.Fragment>
+              : null}
+            {onRemove
+              ? <DeleteOutlined onClick={(e) => {
+                e.stopPropagation()
+                onRemove()
+              }} />
+              : null}
+        </Space>)}
+      >
         {children}
-        {
-          removeText && <Form.Item wrapperCol={{ span: 4, offset: 14 }}>
-            <Button block danger type='dashed' icon={<MinusCircleOutlined />} onClick={() => onRemove()}>{removeText}</Button>
-          </Form.Item>
-        }
-      </div>
+    </Collapse.Panel>
     )
   }
 
@@ -56,8 +95,16 @@ export default class FormFieldComponent extends FormField {
     const {
       insertText,
       onInsert,
+      canCollapse,
       children
     } = props
+
+    const collapsePaneldDefaultActiveKeys = Array.from(Array(children.length), (v,k) =>k)
+    const CollapseProps = canCollapse? {
+      accordion: true
+    }: {
+      activeKey: collapsePaneldDefaultActiveKeys
+    }
 
     return (
       <React.Fragment>
@@ -66,10 +113,10 @@ export default class FormFieldComponent extends FormField {
           direction="vertical"
           split={<Divider style={{ margin: 0 }} />}
         >
-          {children}
-          <Form.Item wrapperCol={{ span: 18 }}>
+          <Collapse bordered={false} style={{marginBottom: '24px'}} {...CollapseProps} >{children}</Collapse>
+          {onInsert? <Form.Item wrapperCol={{ span: 18 }}>
             <Button block type='dashed' icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
-          </Form.Item>
+          </Form.Item>: null}
         </Space>
       </React.Fragment>
     )

@@ -34,7 +34,8 @@ export default class FormStepComponent extends FormStep {
     return (
       <Form
         {...formItemLayout}
-        layout={layout}
+        // layout={layout}
+        layout="vertical" // 和drip同步 改为竖排
         className={newstyles['content']}
       >
         {children}
