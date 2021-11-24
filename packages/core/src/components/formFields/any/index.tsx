@@ -93,6 +93,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
             onValueUnset={this.props.onValueUnset}
             onValueListAppend={this.props.onValueListAppend}
             onValueListSplice={this.props.onValueListSplice}
+            onValueListSort={this.props.onValueListSort}
             baseRoute={this.props.baseRoute}
             loadDomain={this.props.loadDomain}
           /> : (
@@ -109,6 +110,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
               onValueUnset={this.props.onValueUnset}
               onValueListAppend={this.props.onValueListAppend}
               onValueListSplice={this.props.onValueListSplice}
+              onValueListSort={this.props.onValueListSort}
               baseRoute={this.props.baseRoute}
               loadDomain={this.props.loadDomain}
             /> : <this.BooleanField
@@ -124,6 +126,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
               onValueUnset={this.props.onValueUnset}
               onValueListAppend={this.props.onValueListAppend}
               onValueListSplice={this.props.onValueListSplice}
+              onValueListSort={this.props.onValueListSort}
               baseRoute={this.props.baseRoute}
               loadDomain={this.props.loadDomain}
             />

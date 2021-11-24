@@ -2,7 +2,7 @@ import React from 'react'
 import { Field, FieldConfigs, FieldError } from '../../components/formFields/common'
 import Step, { StepConfig, StepProps } from '../common'
 import getALLComponents from '../../components/formFields'
-import { getValue, setValue } from '../../util/value'
+import { getValue, setValue, listItemMove } from '../../util/value'
 import { ParamConfig } from '../../interface'
 import ParamHelper from '../../util/param'
 import { cloneDeep, get, set, unset } from 'lodash'
@@ -318,7 +318,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
     if (formFieldConfig) {
       const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
 
-      const list = get(this.formValue, fullPath, [])
+      let list = get(this.formValue, fullPath, [])
+      if (!Array.isArray(list)) list = []
       list.push(value)
       set(this.formValue, fullPath, list)
       this.setState({
@@ -347,6 +348,31 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
       const list = get(this.formValue, fullPath, [])
       list.splice(index, count)
+      set(this.formValue, fullPath, list)
+      this.setState({
+        formValue: this.formValue
+      })
+      if (this.props.onChange) {
+        this.props.onChange(this.formValue)
+      }
+
+      if (validation === true) {
+        this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
+      } else {
+        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
+      }
+
+      await this.setState({
+        formData: cloneDeep(this.formData)
+      })
+    }
+  }
+  handleValueListSort = async (formFieldIndex: number, path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
+    const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
+    if (formFieldConfig) {
+      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+
+      const list = listItemMove(get(this.formValue, fullPath, []), index, sortType)
       set(this.formValue, fullPath, list)
       this.setState({
         formValue: this.formValue
@@ -470,6 +496,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                     onValueUnset={async (path, validation) => await this.handleValueUnset(formFieldIndex, path, validation)}
                     onValueListAppend={async (path, value, validation) => await this.handleValueListAppend(formFieldIndex, path, value, validation)}
                     onValueListSplice={async (path, index, count, validation) => await this.handleValueListSplice(formFieldIndex, path, index, count, validation)}
+                    onValueListSort={async (path, index, sortType, validation) => await this.handleValueListSort(formFieldIndex, path, index, sortType, validation)}
                     baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                   />

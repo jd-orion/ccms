@@ -6,7 +6,7 @@ import { ParamConfig } from '../../interface'
 import ParamHelper from '../../util/param'
 import { cloneDeep, get, set, unset } from 'lodash'
 import ConditionHelper from '../../util/condition'
-import { getValue, setValue } from '../../util/value'
+import { getValue, setValue, listItemMove } from '../../util/value'
 
 /**
  * 表单步骤配置文件格式定义
@@ -381,6 +381,31 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
       })
     }
   }
+  handleValueListSort = async (formFieldIndex: number, path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
+    const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
+    if (formFieldConfig) {
+      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+
+      const list = listItemMove(get(this.formValue, fullPath, []), index, sortType)
+      set(this.formValue, fullPath, list)
+      this.setState({
+        formValue: this.formValue
+      })
+      if (this.props.onChange) {
+        this.props.onChange(this.formValue)
+      }
+
+      if (validation === true) {
+        this.formData[formFieldIndex] = { status: 'normal' }
+      } else {
+        this.formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+      }
+
+      await this.setState({
+        formData: cloneDeep(this.formData)
+      })
+    }
+  }
 
   /**
    * 表单步骤组件 - UI渲染方法
@@ -472,6 +497,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
                     onValueUnset={async (path, validation) => await this.handleValueUnset(formFieldIndex, path, validation)}
                     onValueListAppend={async (path, value, validation) => await this.handleValueListAppend(formFieldIndex, path, value, validation)}
                     onValueListSplice={async (path, index, count, validation) => await this.handleValueListSplice(formFieldIndex, path, index, count, validation)}
+                    onValueListSort={async (path, index, sortType, validation) => await this.handleValueListSort(formFieldIndex, path, index, sortType, validation)}
                     baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                   />

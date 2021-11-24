@@ -320,6 +320,25 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     }
   }
 
+  handleValueListSort = async (key: string, formFieldIndex: number, path: string, _index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
+    const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
+    if (formFieldConfig) {
+      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      await this.props.onValueListSort(fullPath === '' ? key : `${key}.${fullPath}`, _index, sortType, true)
+      
+      const formDataList = cloneDeep(this.state.formDataList)
+      if (validation === true) {
+        formDataList[key][formFieldIndex] = { status: 'normal' }
+      } else {
+        formDataList[key][formFieldIndex] = { status: 'error', message: validation[0].message }
+      }
+
+      this.setState({
+        formDataList
+      })
+    }
+  }
+
   /**
    * 用于展示子表单组件
    * @param _props 
@@ -428,6 +447,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                     onValueUnset={async (path, validation) => this.handleValueUnset(key, formFieldIndex, path, validation)}
                                     onValueListAppend={async (path, value, validation) => this.handleValueListAppend(key, formFieldIndex, path, value, validation)}
                                     onValueListSplice={async (path, _index, count, validation) => this.handleValueListSplice(key, formFieldIndex, path, _index, count, validation)}
+                                    onValueListSort={async (path, _index, sortType, validation) => this.handleValueListSort(key, formFieldIndex, path, _index, sortType, validation)}
                                     baseRoute={this.props.baseRoute}
                                     loadDomain={async (domain: string) => this.props.loadDomain(domain)}
                                   />

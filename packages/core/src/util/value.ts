@@ -13,15 +13,15 @@ export const getValue = (obj: any, path: string = '', defaultValue: any = undefi
 }
 
 const merge = (a: any, b: any): any => {
-  return assignInWith(a, b, (a,b) => {
+  return assignInWith(a, b, (a, b) => {
     if (isUndefined(a) && isArray(b)) {
       a = []
     }
     if (isObject(b)) {
       if (isArray(a)) {
-        return merge(a,b).filter((i: any) => i !== undefined)
+        return merge(a, b).filter((i: any) => i !== undefined)
       } else {
-        return merge(a,b)
+        return merge(a, b)
       }
     }
   })
@@ -102,4 +102,22 @@ export const getBoolean = (value: any) => {
     return Boolean(value)
   }
   return false
+}
+
+/**
+ * 处理list元素上移、下移
+ * @param list  list
+ * @param currentIndex  当前操作元素在list索引
+ * @param sortType  up或down
+ */
+export const listItemMove = (list: any[], currentIndex: number, sortType: 'up' | 'down') => {
+  switch (sortType) {
+    case 'up':
+      currentIndex !== 0 && (list[currentIndex] = list.splice(currentIndex - 1, 1, list[currentIndex])[0])
+      break;
+    case 'down':
+      currentIndex < list.length - 1 && (list[currentIndex] = list.splice(currentIndex + 1, 1, list[currentIndex])[0])
+      break;
+  }
+  return list
 }

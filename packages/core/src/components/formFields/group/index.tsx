@@ -228,6 +228,25 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     }
   }
 
+  handleValueListSort = async (formFieldIndex: number, path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
+    const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
+    if (formFieldConfig) {
+      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      await this.props.onValueListSort(fullPath, index, sortType, true)
+      
+      const formData = cloneDeep(this.state.formData)
+      if (validation === true) {
+        formData[formFieldIndex] = { status: 'normal' }
+      } else {
+        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+      }
+
+      this.setState({
+        formData
+      })
+    }
+  }
+
   renderComponent = (props: IGroupField) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现GroupField组件。
@@ -305,6 +324,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                     onValueUnset={async (path, validation) => this.handleValueUnset(formFieldIndex, path, validation)}
                     onValueListAppend={async (path, value, validation) => this.handleValueListAppend(formFieldIndex, path, value, validation)}
                     onValueListSplice={async (path, index, count, validation) => this.handleValueListSplice(formFieldIndex, path, index, count, validation)}
+                    onValueListSort={async (path, index, sortType, validation) => this.handleValueListSort(formFieldIndex, path, index, sortType, validation)}
                     baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                   />

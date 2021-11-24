@@ -282,6 +282,29 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       })
     }
   }
+  handleValueListSort = async (index: number, formFieldIndex: number, path: string, _index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
+    const tab = (this.props.config.tabs || [])[index]
+
+    const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[index] || {}).fields || [])
+    const formFieldConfig = fields[formFieldIndex]
+    if (formFieldConfig) {
+      const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
+      await this.props.onValueListSort(fullPath, _index, sortType, true)
+      
+      const formDataList = cloneDeep(this.state.formDataList)
+      if (!formDataList[index]) formDataList[index] = []
+      if (validation === true) {
+        formDataList[index][formFieldIndex] = { status: 'normal' }
+      } else {
+        formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
+      }
+
+      this.setState({
+        formDataList
+      })
+    }
+  }
 
   /**
    * 用于展示子表单组件
@@ -385,6 +408,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                                     onValueUnset={async (path, validation) => this.handleValueUnset(index, formFieldIndex, path, validation)}
                                     onValueListAppend={async (path, value, validation) => this.handleValueListAppend(index, formFieldIndex, path, value, validation)}
                                     onValueListSplice={async (path, _index, count, validation) => this.handleValueListSplice(index, formFieldIndex, path, _index, count, validation)}
+                                    onValueListSort={async (path, _index, sortType, validation) => this.handleValueListSort(index, formFieldIndex, path, _index, sortType, validation)}
                                     baseRoute={this.props.baseRoute}
                                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                                   />

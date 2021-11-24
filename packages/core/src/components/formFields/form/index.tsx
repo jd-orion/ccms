@@ -1,7 +1,7 @@
 import React from 'react'
 import { Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from '../common'
 import getALLComponents from '../'
-import { getValue } from '../../../util/value'
+import { getValue, listItemMove } from '../../../util/value'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 
@@ -14,19 +14,27 @@ export interface FormFieldConfig extends FieldConfig {
   initialValues?: any // 新增子项时的默认值
   mode?: 'show' // 子项仅显示列表
   modeValue?: string
+  canInsert?: boolean
+  canRemove?: boolean
+  canSort?: boolean
+  canCollapse?: boolean // 是否用Collapse折叠展示
 }
 
 export interface IFormField {
   insertText: string
-  onInsert: () => Promise<void>
+  onInsert?: () => Promise<void>
+  canCollapse?: boolean
   children: React.ReactNode[]
 }
 
 export interface IFormFieldItem {
   index: number
+  isLastIndex: boolean
   title: string
   removeText: string
-  onRemove: () => Promise<void>
+  onRemove?: () => Promise<void>
+  onSort?: (sortType: 'up' | 'down') => Promise<void>
+  canCollapse?: boolean
   children: React.ReactNode[]
 }
 
@@ -204,6 +212,15 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
 
     await this.props.onValueListSplice('', index, 1, true)
   }
+  
+  handleSort = async (index: number, sortType: 'up' | 'down') => {
+    const formDataList = listItemMove(cloneDeep(this.state.formDataList), index, sortType)
+    this.setState({
+      formDataList
+    })
+    this.formFieldsMountedList = listItemMove(this.formFieldsMountedList, index, sortType)
+    await this.props.onValueListSort('', index, sortType, true)
+  }
 
   handleChange = async (index: number, formFieldIndex: number, value: any) => {
     // const formField = this.formItemsList[index][formFieldIndex]
@@ -308,6 +325,24 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       })
     }
   }
+  handleValueListSort = async (index: number, formFieldIndex: number, path: string, _index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
+    const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
+    if (formFieldConfig) {
+      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      await this.props.onValueListSort(`[${index}]${fullPath}`, _index, sortType, true)
+
+      const formDataList = cloneDeep(this.state.formDataList)
+      if (validation === true) {
+        formDataList[index][formFieldIndex] = { status: 'normal' }
+      } else {
+        formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
+      }
+
+      this.setState({
+        formDataList
+      })
+    }
+  }
 
   /**
    * 用于展示子表单组件中的每一子项中的每一个子表单项组件
@@ -353,7 +388,11 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
         fields,
         primaryField,
         insertText,
-        removeText
+        removeText,
+        canInsert,
+        canRemove,
+        canSort,
+        canCollapse
       }
     } = this.props
 
@@ -362,17 +401,21 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
         {
           this.renderComponent({
             insertText: insertText === undefined ? `插入 ${label}` : insertText,
-            onInsert: async () => await this.handleInsert(),
+            onInsert: canInsert? async () => await this.handleInsert(): undefined,
+            canCollapse,
             children: (
               (Array.isArray(value) ? value : []).map((itemValue: any, index: number) => {
                 return <React.Fragment key={index} >
                   {this.renderItemComponent({
                     index,
+                    isLastIndex: value.length - 1 === index? true: false,
                     title: primaryField !== undefined ? getValue(itemValue, primaryField) : index.toString(),
                     removeText: removeText === undefined
                       ? `删除 ${label}`
                       : removeText,
-                    onRemove: async () => await this.handleRemove(index),
+                    onRemove: canRemove? async () => await this.handleRemove(index): undefined,
+                    onSort: canSort? async (sortType: 'up' | 'down') => await this.handleSort(index, sortType): undefined,
+                    canCollapse,
                     children: (fields || []).map((formFieldConfig, fieldIndex) => {
                       if (!ConditionHelper(formFieldConfig.condition, { record: itemValue, data: this.props.data, step: this.props.step })) {
                         return null
@@ -408,6 +451,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                                   onValueUnset={async (path, validation) => this.handleValueUnset(index, fieldIndex, path, validation)}
                                   onValueListAppend={async (path, value, validation) => this.handleValueListAppend(index, fieldIndex, path, value, validation)}
                                   onValueListSplice={async (path, _index, count, validation) => this.handleValueListSplice(index, fieldIndex, path, _index, count, validation)}
+                                  onValueListSort={async (path, _index, sortType, validation) => await this.handleValueListSort(index, fieldIndex, path, _index, sortType, validation)}
                                   baseRoute={this.props.baseRoute}
                                   loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                                 />
