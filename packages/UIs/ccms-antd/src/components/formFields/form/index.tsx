@@ -111,10 +111,9 @@ export default class FormFieldComponent extends FormField {
         <Space
           style={{ width: '100%' }}
           direction="vertical"
-          split={<Divider style={{ margin: 0 }} />}
         >
           <Collapse bordered={false} style={{marginBottom: '24px'}} {...CollapseProps} >{children}</Collapse>
-          {onInsert? <Form.Item wrapperCol={{ span: 18 }}>
+          {onInsert? <Form.Item wrapperCol={{ span: 24 }}>
             <Button block type='dashed' icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
           </Form.Item>: null}
         </Space>
