@@ -8,8 +8,7 @@ import ColumnStyleComponent from './common/columnStyle'
 import CCMS, { CCMSConfig } from '../../main'
 import { get, set } from 'lodash'
 import InterfaceHelper, { InterfaceConfig } from '../../util/interface'
-import { FieldConditionConfig } from '../../components/formFields/common'
-import ConditionHelper from '../../util/condition'
+import ConditionHelper, { ConditionConfig } from '../../util/condition'
 
 /**
  * 表格步骤配置文件格式定义
@@ -56,7 +55,7 @@ export interface TableOperationConfig {
   check?: { enable: false } | TableOperationCheckConfig
   confirm?: { enable: false } | TableOperationConfirmConfig
   handle: TableCCMSOperationConfig
-  condition?: FieldConditionConfig
+  condition?: ConditionConfig
 }
 
 export interface TableCCMSOperationConfig {

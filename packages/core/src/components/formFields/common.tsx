@@ -3,6 +3,7 @@ import { ParamConfig } from '../../interface'
 
 import { FieldConfigs as getFieldConfigs } from './'
 import ParamHelper from '../../util/param'
+import { ConditionConfig } from '../../util/condition'
 /**
  * 表单项基类配置文件格式定义
  * - field:    表单项字段名
@@ -31,16 +32,7 @@ export interface FieldConfig {
   disabled?: boolean
   display?: 'none'
   defaultValue?: ParamConfig,
-  condition?: FieldConditionConfig
-}
-
-export interface FieldConditionConfig {
-  statement?: string
-  params?: Array<{
-    field?: string
-    data?: ParamConfig
-  }>
-  debug?: boolean
+  condition?: ConditionConfig
 }
 
 /**

@@ -6,7 +6,8 @@ import { getValue, setValue, listItemMove } from '../../util/value'
 import { ParamConfig } from '../../interface'
 import ParamHelper from '../../util/param'
 import { cloneDeep, get, set, unset } from 'lodash'
-import ConditionHelper from '../../util/condition'
+import ConditionHelper, { ConditionConfig } from '../../util/condition'
+import StatementHelper, { StatementConfig } from '../../util/statement'
 
 /**
  * 表单步骤配置文件格式定义
@@ -15,6 +16,14 @@ import ConditionHelper from '../../util/condition'
  * - * vertical:   顶部文本、底部输入框、纵向排列
  * - * inline:     左侧文本、右侧输入框、横向排列
  * - fields: 表单项配置列表
+ * - defaultValue: 默认值
+ * - hiddenSubmit: 是否隐藏提交按钮
+ * - hiddenCancel: 是否隐藏取消按钮
+ * - submitText: 自定义确认按钮文本
+ * - cancelText: 自定义取消按钮文本
+ * - validations: 全局校验
+ * * - condition: （全局校验子项中）校验条件
+ * * - message: 校验失败提示文本
  */
 export interface FormConfig extends StepConfig {
   type: 'form'
@@ -29,6 +38,18 @@ export interface FormConfig extends StepConfig {
   hiddenCancel?: boolean // 是否隐藏取消按钮
   submitText?: string    // 自定义确认按钮文本
   cancelText?: string   //  自定义取消按钮文本
+  validations?: Array<{
+    condition?: ConditionConfig
+    message?: StatementConfig
+  }>
+}
+
+/**
+ * 全局校验 modal组件 - 入参格式
+ * message: 提示文案
+ */
+export interface IFormStepModal {
+  message: string
 }
 
 /**
@@ -192,7 +213,18 @@ export default class FormStep extends Step<FormConfig, FormState> {
   handleSubmit = async () => {
     let data: any = {}
     let canSubmit = true
-
+    
+    if (this.props.config.validations) {
+      for (const validation of this.props.config.validations) {
+        if (!ConditionHelper(validation.condition, { record: this.state.formValue, data: this.props.data, step: this.props.step })) {
+          canSubmit = false
+          const message = StatementHelper(validation.message, { record: this.state.formValue, data: this.props.data, step: this.props.step }) || '未填写失败文案或失败文案配置异常'
+          this.renderModalComponent({message})
+          return null
+        }
+      }
+      if (!canSubmit) return null
+    }
     for (const formFieldIndex in (this.props.config.fields || [])) {
       if (this.formFields[formFieldIndex]) {
         const formField = this.formFields[formFieldIndex]
@@ -415,6 +447,17 @@ export default class FormStep extends Step<FormConfig, FormState> {
     </React.Fragment>
   }
 
+  /**
+   * modal组件 - UI渲染方法
+   * 各UI库需重写该方法
+   * @param props
+   */
+  renderModalComponent= (props: IFormStepModal) => {
+    return new Promise((resolve) => {
+          resolve(null)
+    })
+  }
+
   render() {
     const {
       data,
@@ -433,7 +476,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
       formValue,
       formData
     } = this.state
-
+    
     if (ready) {
       return (
         <React.Fragment>
