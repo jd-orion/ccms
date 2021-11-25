@@ -42,4 +42,8 @@ export { default as DetailStep } from './steps/detail'
 export { default as DetailGroupField } from './components/detail/group'
 export { default as DetailTextField } from './components/detail/text'
 
+export { default as HeaderStep } from './steps/header'
+
 export { default as InterfaceHelper } from "./util/interface"
+
+export { default as OperationHelper } from "./util/operation"
