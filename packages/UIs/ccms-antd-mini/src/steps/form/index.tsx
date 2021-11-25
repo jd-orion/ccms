@@ -2,14 +2,8 @@ import React from 'react'
 import { FormStep } from 'ccms'
 import { IForm, IFormItem, IFormStepModal } from 'ccms/dist/src/steps/form'
 import { Button, Form, Space, Modal } from 'antd'
-import 'antd/lib/style/index.css'
-import 'antd/lib/form/style/index.css'
-import 'antd/lib/grid/style/index.css'
-import 'antd/lib/tooltip/style/index.css'
-import 'antd/lib/space/style/index.css'
-import 'antd/lib/button/style/index.css'
 import getALLComponents from '../../components/formFields'
-import { FormItemProps } from 'antd/lib/form'
+import { FormProps, FormItemProps } from 'antd/lib/form'
 import styles from "./index.less"
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
@@ -38,20 +32,23 @@ export default class FormStepComponent extends FormStep {
       children
     } = props
 
-    const formItemLayout: any | null =
+    const formItemLayout: FormProps =
       layout === 'horizontal'
         ? {
           labelAlign: 'left',
           labelCol: { span: 6 },
           wrapperCol: { span: 18 }
         }
-        : null
+        : {}
     
     return (
       <Form
+        id="ccms-antd-mini-form"
+        className={styles['ccms-antd-mini-form']}
         layout={layout}
         {...formItemLayout}
-        size="small">
+        size="small"
+      >
         {children}
         {
           (onSubmit || onCancel) && <Form.Item>
@@ -67,6 +64,7 @@ export default class FormStepComponent extends FormStep {
 
   renderItemComponent = (props: IFormItem) => {
     const {
+      key,
       label,
       visitable,
       message,
@@ -84,6 +82,7 @@ export default class FormStepComponent extends FormStep {
 
     return (
       <Form.Item
+        key={key}
         label={label}
         {...formItemLayout}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}

@@ -1,12 +1,8 @@
 import React from 'react'
 import { FormField } from 'ccms'
-import { Form, Button, Collapse } from 'antd'
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Form, Button, Collapse, Space } from 'antd'
+import { PlusOutlined, DeleteOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
 import { FormItemProps } from 'antd/lib/form'
-import 'antd/lib/collapse/style/index.css'
-import 'antd/lib/space/style/index.css'
-import 'antd/lib/divider/style/index.css'
-import 'antd/lib/button/style/index.css'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
 import getALLComponents from '../'
 import styles from './index.less'
@@ -52,8 +48,10 @@ export default class FormFieldComponent extends FormField {
   renderItemComponent = (props: IFormFieldItem) => {
     const {
       index,
+      isLastIndex,
       title,
       onRemove,
+      onSort,
       children
     } = props
 
@@ -62,10 +60,39 @@ export default class FormFieldComponent extends FormField {
         header={title}
         key={index}
         forceRender={false}
-        extra={(<DeleteOutlined onClick={(e) => {
-          e.stopPropagation()
-          onRemove()
-        }} />)}
+        extra={(
+          <Space>
+            {onSort
+              ? <React.Fragment>
+                <ArrowUpOutlined
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    index > 0 && onSort('up')
+                  }}
+                  style={{
+                    opacity: index === 0 ? 0.5 : 1,
+                    cursor: index === 0 ? 'not-allowed' : 'pointer'
+                  }}
+                />
+                <ArrowDownOutlined
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    !isLastIndex && onSort('down')
+                  }}
+                  style={{
+                    opacity: isLastIndex ? 0.5 : 1,
+                    cursor: isLastIndex ? 'not-allowed' : 'pointer'
+                  }}
+                />
+              </React.Fragment>
+              : null}
+            {onRemove
+              ? <DeleteOutlined onClick={(e) => {
+                e.stopPropagation()
+                onRemove()
+              }} />
+              : null}
+        </Space>)}
       >
         {children}
       </Collapse.Panel>
@@ -81,17 +108,19 @@ export default class FormFieldComponent extends FormField {
 
     return (
       <React.Fragment>
-        <div className={styles['ccms-antd-mini-formField-form-before-button']}>
-          <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
-        </div>
+        {onInsert
+          ? <div className={styles['ccms-antd-mini-formField-form-before-button']}>
+            <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
+          </div>
+          : null}
         <Collapse accordion={true} bordered={false} className={styles['ccms-antd-mini-formField-form']}>
           {children}
         </Collapse>
-        {children.length > 0 && (
-          <div className={styles['ccms-antd-mini-formField-form-after-button']}>
-            <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
+        {children.length > 0 && onInsert
+          ? <div className={styles['ccms-antd-mini-formField-form-after-button']}>
+              <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
           </div>
-        )}
+          : null}
       </React.Fragment>
     )
   }

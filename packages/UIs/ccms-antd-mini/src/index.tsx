@@ -15,3 +15,6 @@ export { default as DatetimeColumn } from './components/tableColumns/datetime'
 export { default as EnumColumn } from './components/tableColumns/enum'
 
 export { default as FetchStep } from './steps/fetch'
+export { default as DetailStep } from './steps/detail'
+export { default as DetailGroupField } from './components/detail/group'
+export { default as DetailTextField } from './components/detail/text'

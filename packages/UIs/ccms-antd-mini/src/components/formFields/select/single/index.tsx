@@ -3,7 +3,6 @@ import { SelectSingleField } from 'ccms'
 import { ISelectSingleField } from 'ccms/dist/src/components/formFields/select/single'
 import { Radio, Select } from 'antd'
 import InterfaceHelper from '../../../../util/interface'
-import 'antd/lib/select/style/index.css'
 
 export default class SelectSingleFieldComponent extends SelectSingleField {
   interfaceHelper = new InterfaceHelper()
@@ -11,15 +10,20 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
     const {
       value,
       options,
-      onChange
+      onChange,
+      disabled,
+      placeholder
     } = props
 
     return (
       <Select
+        getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+        disabled={disabled}
+        placeholder={placeholder}
         value={value as any}
-        onChange={(value) => onChange(value as any)}
+        onChange={(value) => onChange(value)}
       >
-        {options.map((option: any) => (
+        {options.map((option) => (
           <Select.Option key={option.value as any} value={option.value as any}>{option.label}</Select.Option>
         ))}
       </Select>
@@ -30,11 +34,13 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
     const {
       value,
       options,
-      onChange
+      onChange,
+      disabled
     } = props
 
     return (
       <Radio.Group
+        disabled={disabled}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         options={options}
@@ -46,11 +52,13 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
     const {
       value,
       options,
-      onChange
+      onChange,
+      disabled
     } = props
 
     return (
       <Radio.Group
+        disabled={disabled}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         options={options}

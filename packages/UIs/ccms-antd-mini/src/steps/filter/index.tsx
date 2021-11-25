@@ -2,12 +2,6 @@ import React from 'react'
 import { FilterStep } from 'ccms'
 import { IFilter, IFilterItem } from 'ccms/dist/src/steps/filter'
 import { Button, Form, Space } from 'antd'
-import 'antd/lib/style/index.css'
-import 'antd/lib/form/style/index.css'
-import 'antd/lib/grid/style/index.css'
-import 'antd/lib/tooltip/style/index.css'
-import 'antd/lib/space/style/index.css'
-import 'antd/lib/button/style/index.css'
 import FieldComponents from '../../components/formFields'
 
 export default class FilterStepComponent extends FilterStep {

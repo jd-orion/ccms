@@ -1,46 +1,69 @@
 import React from 'react'
 import { DatetimeRangeField } from 'ccms'
-import { DatePicker, ConfigProvider } from 'antd'
-import { IDatetimeRangeField, DatetimeRangeFieldConfig } from 'ccms/dist/src/components/formFields/datetimeRange'
+import { DatePicker, TimePicker } from 'antd'
+import { IDatetimeRangeField } from 'ccms/dist/src/components/formFields/datetimeRange'
 import moment from 'moment'
-import 'antd/lib/date-picker/style/index.css'
-import locale from 'antd/lib/locale/zh_CN';
-const { RangePicker } = DatePicker
-
-export const PropsType = (props: DatetimeRangeFieldConfig) => { }
+import { RangePickerProps } from 'antd/lib/date-picker/generatePicker'
+const { RangePicker: DateRangePicker } = DatePicker
+const { RangePicker: TimeRangePicker } = TimePicker
+import pickerLocale from 'antd/lib/date-picker/locale/zh_CN'
 
 export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
   renderComponent = (props: IDatetimeRangeField) => {
     const {
       value,
-      onChange,
-      format,
-      placeholder
+      mode
     } = props
-    const theValue: any = []
-    if (value) {
-      value.forEach((v: any) => {
-        v && theValue.push(moment(v))
-      })
-    }
-    const theplaceholder = placeholder || '请选择'
-    return (
-      <ConfigProvider locale={locale}>
-        <RangePicker
-          placeholder={[theplaceholder, theplaceholder]}
-          value={theValue}
-          format={format}
-          onChange={async (time) => {
-            const changeValue: any = []
-            if (time) {
-              time.forEach((v: any) => {
-                v && changeValue.push(moment(v).format(format))
-              })
-            }
-            const rs = time ? changeValue : undefined
-            await onChange(rs)
-          }}
+
+    let _value: RangePickerProps<moment.Moment>['value'] = undefined
+    if (value && value[0] && value[1]) _value = [value[0], value[1]]
+
+    if (mode === 'time') {
+      return (
+        <TimeRangePicker
+          style={{ width: '100%' }}
+          value={_value}
+          format={props.format}
+          locale={pickerLocale}
+          onChange={async (time) => await props.onChange(time ? [time[0] as moment.Moment, time[1] as moment.Moment] : [undefined, undefined])}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
         />
-      </ConfigProvider>)
+      )
+    } else if (mode === 'date') {
+      return (
+        <DateRangePicker
+          style={{ width: '100%' }}
+          value={_value}
+          format={props.format}
+          locale={pickerLocale}
+          onChange={async (time) => await props.onChange(time ? [time[0] as moment.Moment, time[1] as moment.Moment] : [undefined, undefined])}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+        />
+      )
+    } else if (mode === 'datetime') {
+      return (
+        <DateRangePicker
+          style={{ width: '100%' }}
+          value={_value}
+          format={props.format}
+          locale={pickerLocale}
+          showTime={true}
+          onChange={async (time) => await props.onChange(time ? [time[0] as moment.Moment, time[1] as moment.Moment] : [undefined, undefined])}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+        />
+      )
+    } else {
+      return (
+        <DateRangePicker
+          style={{ width: '100%' }}
+          value={_value}
+          format={props.format}
+          picker={mode}
+          locale={pickerLocale}
+          onChange={async (time) => await props.onChange(time ? [time[0] as moment.Moment, time[1] as moment.Moment] : [undefined, undefined])}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+        />
+      )
+    }
   }
 }

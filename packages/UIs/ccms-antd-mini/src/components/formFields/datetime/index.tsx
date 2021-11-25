@@ -2,9 +2,7 @@ import * as React from 'react'
 import { DatetimeField } from 'ccms'
 import { DatePicker, TimePicker,ConfigProvider } from 'antd'
 import { IDatetimeField, DatetimeFieldConfig } from 'ccms/dist/src/components/formFields/datetime'
-import locale from 'antd/lib/locale/zh_CN';
-import 'antd/lib/date-picker/style/index.css'
-export const PropsType = (props: DatetimeFieldConfig) => { }
+import pickerLocale from 'antd/lib/date-picker/locale/zh_CN'
 
 export default class DatetimeFieldComponent extends DatetimeField {
   renderComponent = (props: IDatetimeField) => {
@@ -16,16 +14,15 @@ export default class DatetimeFieldComponent extends DatetimeField {
 
     if (mode === 'time') {
       return (
-        <ConfigProvider locale={locale}>
           <TimePicker
             style={{ width: '100%' }}
             value={value}
             format={props.format}
+            locale={pickerLocale}
             placeholder={placeholder}
             onChange={async (time) => await props.onChange(time)}
-            getPopupContainer={(trigger) => trigger.parentElement || document.body}
+            getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
           />
-        </ConfigProvider>
       )
     } else if (mode === 'date') {
       return (
@@ -33,9 +30,10 @@ export default class DatetimeFieldComponent extends DatetimeField {
           style={{ width: '100%' }}
           value={value}
           format={props.format}
+          locale={pickerLocale}
           placeholder={placeholder}
           onChange={async (time) => await props.onChange(time)}
-          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
         />
       )
     } else if (mode === 'datetime') {
@@ -44,10 +42,11 @@ export default class DatetimeFieldComponent extends DatetimeField {
           style={{ width: '100%' }}
           value={value}
           format={props.format}
+          locale={pickerLocale}
           placeholder={placeholder}
           showTime={true}
           onChange={async (time) => await props.onChange(time)}
-          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
         />
       )
     } else {
@@ -57,9 +56,10 @@ export default class DatetimeFieldComponent extends DatetimeField {
           value={value}
           format={props.format}
           picker={mode}
+          locale={pickerLocale}
           placeholder={placeholder}
           onChange={async (time) => await props.onChange(time)}
-          getPopupContainer={(trigger) => trigger.parentElement || document.body}
+          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
         />)
     }
   }

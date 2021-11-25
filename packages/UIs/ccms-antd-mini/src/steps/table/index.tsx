@@ -8,18 +8,6 @@ import CCMS from '../../main'
 import InterfaceHelper from '../../util/interface'
 import styles from './index.less'
 import { ButtonProps } from 'antd/lib/button'
-import 'antd/lib/style/index.css'
-import 'antd/lib/alert/style/index.css'
-import 'antd/lib/modal/style/index.css'
-import 'antd/lib/table/style/index.css'
-import 'antd/lib/button/style/index.css'
-import 'antd/lib/empty/style/index.css'
-import 'antd/lib/radio/style/index.css'
-import 'antd/lib/checkbox/style/index.css'
-import 'antd/lib/dropdown/style/index.css'
-import 'antd/lib/spin/style/index.css'
-import 'antd/lib/pagination/style/index.css'
-import 'antd/lib/tooltip/style/index.css'
 
 export default class TableStepComponent extends TableStep {
   CCMS = CCMS
@@ -109,7 +97,7 @@ export default class TableStepComponent extends TableStep {
     } = props
     return (
       <Dropdown
-        getPopupContainer={(node) => document.getElementById('ccms-antd') || node.parentElement || document.body}
+        getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
         overlay={(
           <Menu>
             {children}
@@ -169,7 +157,7 @@ export default class TableStepComponent extends TableStep {
 
     return (
       <Dropdown
-        getPopupContainer={(node) => document.getElementById('ccms-antd') || node.parentElement || document.body}
+        getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
         overlay={(
           <Menu>
             {children}
