@@ -12,7 +12,7 @@ export default class FormStepComponent extends FormStep {
     return new Promise((resolve) => {
       Modal.error({
         getContainer: () => {
-          return document.body
+          return document.getElementById('ccms-antd-mini') || document.body
         },
         title: props.message,
         onOk: () => {
