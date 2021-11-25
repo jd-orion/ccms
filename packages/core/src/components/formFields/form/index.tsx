@@ -1,7 +1,7 @@
 import React from 'react'
 import { Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from '../common'
 import getALLComponents from '../'
-import { getValue, listItemMove } from '../../../util/value'
+import { getValue, listItemMove, setValue } from '../../../util/value'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 
@@ -18,6 +18,7 @@ export interface FormFieldConfig extends FieldConfig {
   canRemove?: boolean
   canSort?: boolean
   canCollapse?: boolean // 是否用Collapse折叠展示
+  stringify?: string[] // 序列号字段
 }
 
 export interface IFormField {
@@ -145,6 +146,41 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     }
 
     return errors.length ? errors : true
+  }
+
+  get = async () => {
+    let data: any[] = [];
+
+    for(let index = 0; index < this.formFieldsList.length; index++) {
+      if (this.formFieldsList[index]) {
+        let item: any = {}
+
+        if (Array.isArray(this.props.config.fields)) {
+          for (const formFieldIndex in this.props.config.fields) {
+            const formFieldConfig = this.props.config.fields[formFieldIndex]
+            if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value[index], data: this.props.data, step: this.props.step })) {
+              continue
+            }
+            const formField = this.formFieldsList[index] && this.formFieldsList[index][formFieldIndex]
+            if (formField) {
+              const value = await formField.get()
+              item = setValue(item, formFieldConfig.field, value)
+            }
+          }
+        }
+
+        if (this.props.config.stringify) {
+          for (const field of this.props.config.stringify) {
+            const info = getValue(item, field)
+            item = setValue(item, field, JSON.stringify(info))
+          }
+        }
+
+        data[index] = item
+      }
+    }
+
+    return data
   }
 
   handleMount = async (index: number, formFieldIndex: number) => {

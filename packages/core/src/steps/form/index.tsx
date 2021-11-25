@@ -42,6 +42,7 @@ export interface FormConfig extends StepConfig {
     condition?: ConditionConfig
     message?: StatementConfig
   }>
+  stringify?: string[] // 序列化字段
 }
 
 /**
@@ -243,6 +244,14 @@ export default class FormStep extends Step<FormConfig, FormState> {
         }
       }
     }
+
+    if (this.props.config.stringify) {
+      for (const field of this.props.config.stringify) {
+        const info = getValue(data, field)
+        data = setValue(data, field, JSON.stringify(info))
+      }
+    }
+
     console.info('表单参数信息', data, this.state.formValue, this.formData)
 
     await this.setState({
