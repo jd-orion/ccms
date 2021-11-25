@@ -112,6 +112,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       config: {
         mode = 'dropdown',
         options: optionsConfig,
+        defaultSelect,
         disabled,
         placeholder
       }
@@ -136,10 +137,11 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       props.value = undefined
       console.warn('单项选择框的值需要是字符串或数值。')
     } else if (value === undefined) {
-      if (optionsConfig?.from === 'interface' && optionsConfig.defaultSelect && props.options.length) {
+      if (defaultSelect !== undefined && defaultSelect !== false && props.options.length) {
         (async () => {
-          props.value = props.options[0].value
-          this.props.onValueSet('', props.options[0].value, await this.validate(props.options[0].value))
+          const value = props.options[defaultSelect === true ? 0 : defaultSelect].value
+          props.value = value
+          this.props.onValueSet('', value, await this.validate(value))
         })();
       }
     }

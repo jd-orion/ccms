@@ -1,38 +1,13 @@
 import { ReactNode } from 'react'
-import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
-import { getValue } from '../../../util/value'
+import EnumerationHelper, { EnumerationOptionsConfig } from '../../../util/enumeration'
+import InterfaceHelper from '../../../util/interface'
 import { Field, FieldConfig, FieldProps, IField } from '../common'
 
 export interface SelectFieldConfig extends FieldConfig {
-  options?: ManualOptionsConfig | InterfaceOptionsConfig
+  options?: EnumerationOptionsConfig
+  defaultSelect?: boolean | number
 }
 
-export interface ManualOptionsConfig {
-  from: 'manual'
-  defaultIndex?: string | number | boolean
-  data?: Array<{
-    value: string | number | boolean
-    label: string
-    [extra: string]: any
-  }>
-}
-
-export interface InterfaceOptionsConfig {
-  from: 'interface'
-  interface?: InterfaceConfig
-  format?: InterfaceOptionsKVConfig | InterfaceOptionsListConfig
-  defaultSelect?: boolean
-}
-
-export interface InterfaceOptionsKVConfig {
-  type: 'kv'
-}
-
-export interface InterfaceOptionsListConfig {
-  type: 'list'
-  keyField: string
-  labelField: string
-}
 
 export interface ISelectFieldOption {
   value: string | number | boolean,
@@ -41,7 +16,7 @@ export interface ISelectFieldOption {
 }
 
 interface SelectSingleFieldState {
-  interfaceOptionsData: Array<{
+  options: Array<{
     value: string | number | boolean
     label: string
     [extra: string]: any
@@ -51,67 +26,27 @@ interface SelectSingleFieldState {
 export default class SelectField<C extends SelectFieldConfig, E, T> extends Field<C, E, T, SelectSingleFieldState> implements IField<T> {
   interfaceHelper = new InterfaceHelper()
   
-  interfaceOptionsConfig: string = ''
-
   constructor (props: FieldProps<C, T>) {
     super(props)
 
     this.state = {
-      interfaceOptionsData: []
+      options: []
     }
   }
 
   options = (
-    config: ManualOptionsConfig | InterfaceOptionsConfig | undefined
+    config: EnumerationOptionsConfig | undefined
   ) => {
     if (config) {
-      if (config.from === 'manual') {
-        if (config.data) {
-          return config.data.map((option) => {
-            return {
-              value: option.value,
-              label: option.label
-            }
+      EnumerationHelper.options(config, (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain })).then((options) => {
+        if (JSON.stringify(this.state.options) !== JSON.stringify(options)) {
+          this.setState({
+            options
           })
         }
-      } else if (config.from === 'interface') {
-        if (config.interface) {
-          this.interfaceHelper.request(
-            config.interface,
-            {},
-            { record: this.props.record, data: this.props.data, step: this.props.step },
-            { loadDomain: this.props.loadDomain }
-          ).then((data: any) => {
-            if (config.format) {
-              if (config.format.type === 'kv') {
-                this.setState({
-                  interfaceOptionsData: Object.keys(data).map((key) => ({
-                    value: key,
-                    label: data[key]
-                  }))
-                })
-              } else if (config.format.type === 'list') {
-                this.setState({
-                  interfaceOptionsData: data.map((item: any) => {
-                    if (config.format && config.format.type === 'list') {
-                      return ({
-                        value: getValue(item, config.format.keyField),
-                        label: getValue(item, config.format.labelField)
-                      })
-                    }
-                  })
-                })
-              }
-            }
-          })
-          return this.state.interfaceOptionsData.map((option) => {
-            return {
-              value: option.value,
-              label: option.label
-            }
-          })
-        }
-      }
+      })
+
+      return this.state.options
     }
     return []
   }
