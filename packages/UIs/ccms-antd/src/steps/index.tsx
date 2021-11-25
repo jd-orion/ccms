@@ -3,6 +3,7 @@ import FormStep from './form'
 import SkipStep from './skip'
 import TableStep from './table'
 import FilterStep from './filter'
+import HeaderStep from './header'
 import DetailStep from './detail'
 
 export default {
@@ -11,5 +12,6 @@ export default {
   skip: SkipStep,
   table: TableStep,
   filter: FilterStep,
+  header: HeaderStep,
   detail: DetailStep
 }
