@@ -74,11 +74,7 @@ export default class FormStepComponent extends FormStep {
       label,
       onClick
     } = props
-    return (
-      mode === 'link'
-        ? <Button type={mode} href={label} >{ label }</Button>
-        : <Button type={mode === 'primary' ? 'primary' : 'default'} onClick={() => onClick()}>{ label }</Button>
-    )
+    return <Button type={ mode === 'normal' ? 'default' : mode } onClick={() => onClick()}>{ label }</Button>
   }
 
   renderItemComponent = (props: IFormItem) => {
