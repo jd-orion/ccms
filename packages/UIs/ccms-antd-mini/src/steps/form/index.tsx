@@ -1,6 +1,6 @@
 import React from 'react'
 import { FormStep } from 'ccms'
-import { IForm, IFormItem, IFormStepModal } from 'ccms/dist/src/steps/form'
+import { IForm, IFormItem, IFormStepModal, IButtonProps } from 'ccms/dist/src/steps/form'
 import { Button, Form, Space, Modal } from 'antd'
 import getALLComponents from '../../components/formFields'
 import { FormProps, FormItemProps } from 'antd/lib/form'
@@ -25,6 +25,7 @@ export default class FormStepComponent extends FormStep {
   renderComponent = (props: IForm) => {
     const {
       layout,
+      actions,
       onSubmit,
       onCancel,
       submitText,
@@ -40,7 +41,7 @@ export default class FormStepComponent extends FormStep {
           wrapperCol: { span: 18 }
         }
         : {}
-    
+        
     return (
       <Form
         id="ccms-antd-mini-form"
@@ -51,14 +52,32 @@ export default class FormStepComponent extends FormStep {
       >
         {children}
         {
-          (onSubmit || onCancel) && <Form.Item>
+          <Form.Item>
             <Space>
-              {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText || '确定'}</Button>}
-              {onCancel && <Button onClick={() => onCancel()}>{cancelText || '取消'}</Button>}
+              { Object.prototype.toString.call(actions) === '[object Array]'
+                ? actions
+                : <React.Fragment>
+                    {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText || '确定'}</Button>}
+                    {onCancel && <Button onClick={() => onCancel()}>{cancelText || '取消'}</Button>}
+                </React.Fragment>
+            }
             </Space>
           </Form.Item>
         }
       </Form>
+    )
+  }
+
+  renderButtonComponent = (props: IButtonProps) => {
+    const {
+      mode,
+      label,
+      onClick
+    } = props
+    return (
+      mode === 'link'
+        ? <Button type={mode} href={label} >{ label }</Button>
+        : <Button type={mode === 'primary' ? 'primary' : 'default'} onClick={() => onClick()}>{ label }</Button>
     )
   }
 
