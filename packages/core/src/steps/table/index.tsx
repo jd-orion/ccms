@@ -64,6 +64,7 @@ export interface TableCCMSOperationConfig {
   target: 'current' | 'page' | 'open' | 'handle'
   targetURL: string
   data: { [key: string]: ParamConfig }
+  params?: { field: string, data: ParamConfig }[]
   callback?: boolean
 }
 
@@ -289,8 +290,16 @@ export default class TableStep extends Step<TableConfig, TableState> {
 
     if (operation.handle.type === 'ccms') {
       const params = {}
-      for (const [field, param] of Object.entries(operation.handle.data || {})) {
-        set(params, field, getParam(param, { record, data, step }))
+      if (operation.handle.params === undefined) {
+        for (const [field, param] of Object.entries(operation.handle.data || {})) {
+          const value = getParam(param, { record, data, step })
+          set(params, field, value)
+        }
+      } else {
+        for (const {field, data: dataConfig} of operation.handle.params) {
+          const value = getParam(dataConfig, { record, data, step })
+          set(params, field, value)
+        }
       }
       if (operation.handle.target === 'current' || operation.handle.target === 'handle') {
         const operationConfig = await this.props.loadPageConfig(operation.handle.page)

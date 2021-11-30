@@ -23,6 +23,7 @@ interface _CCMSOperationConfig {
 
   /** 参数 */
   data: { [key: string]: ParamConfig }
+  params?: { field: string, data: ParamConfig }[]
 }
 
 /** CCMS模态窗口操作 */
@@ -98,8 +99,16 @@ export default class OperationHelper extends React.Component<OperationHelperProp
     return async () => {
       if (config.type === 'ccms') {
         const sourceData = {}
-        for (const [field, param] of Object.entries(config.data || {})) {
-          set(sourceData, field, getParam(param, datas))
+        if (config.params === undefined) {
+          for (const [field, param] of Object.entries(config.data || {})) {
+            const value = getParam(param, datas)
+            set(sourceData, field, value)
+          }
+        } else {
+          for (const {field, data} of config.params) {
+            const value = getParam(data, datas)
+            set(sourceData, field, value)
+          }
         }
         if (config.mode === 'popup' || config.mode === 'invisible') {
           const operationConfig = await loadPageConfig(config.page)
