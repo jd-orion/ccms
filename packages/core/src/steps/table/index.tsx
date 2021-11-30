@@ -6,7 +6,7 @@ import Step, { StepConfig, StepProps } from '../common'
 import { ParamConfig } from '../../interface'
 import ColumnStyleComponent from './common/columnStyle'
 import CCMS, { CCMSConfig } from '../../main'
-import { get, set } from 'lodash'
+import { cloneDeep, get, set } from 'lodash'
 import InterfaceHelper, { InterfaceConfig } from '../../util/interface'
 import ConditionHelper, { ConditionConfig } from '../../util/condition'
 
@@ -207,7 +207,7 @@ interface TableState {
     data: any
     callback?: boolean
   }
-  pageAuthState?: any
+  pageAuth: { [ page: string ]: boolean }
 }
 
 /**
@@ -217,13 +217,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
   CCMS = CCMS
   getALLComponents = (type: any) => getALLComponents[type]
   interfaceHelper = new InterfaceHelper()
-  pageAuth: any
-  pageList: any
   /**
    * 页面权限获取状态
    * fulfilled ｜pending
    */
-  authState: string | undefined
+  pageAuth: { [ page: string ]: boolean } = {}
   /* 服务端分页情况下页码溢出标识：页码溢出时退回重新请求，此标识符用于防止死循环判断 */
   pageOverflow: boolean = false
 
@@ -240,7 +238,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         data: {},
         callback: false
       },
-      pageAuthState: {}
+      pageAuth: {}
     }
   }
 
@@ -345,31 +343,15 @@ export default class TableStep extends Step<TableConfig, TableState> {
     document.body.appendChild(mask)
   }
 
-  /**
-   * 渲染 表格
-   * @param props
-   * @returns
-   */
-  savePageAuth = async () => {
-    const arr: any[] = []
-    const _this = this
-    const list = this.pageList || []
-    list.forEach((pageid: string | number, index: number) => {
-      // eslint-disable-next-line no-async-promise-executor
-      arr.push(new Promise(async (resolve, reject) => {
-        const idAuth = await _this.props.checkPageAuth(pageid)
-        resolve({ [pageid]: idAuth })
-      }))
-    })
-    const rsPage = {}
-    // 循环全部结束后执行
-    Promise.all(arr).then((result) => {
-      result.forEach((res: any) => {
-        Object.assign(rsPage, res)
+  checkPageAuth = (page: string) => {
+    if (!this.pageAuth[page]) {
+      this.pageAuth[page] = true
+      this.props.checkPageAuth(page).then((auth) => {
+        const pageAuth = cloneDeep(this.state.pageAuth)
+        pageAuth[page] = auth
+        this.setState({ pageAuth })
       })
-      this.authState = 'fulfilled'
-      this.setState({ pageAuthState: rsPage })
-    })
+    }
   }
 
   /**
@@ -473,12 +455,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
         config: operationConfig,
         data: operationData,
         callback: operationCallback
-      }
+      },
+      pageAuth
     } = this.state
-
-    this.pageAuth = this.pageAuth || {}
-    this.pageList = this.pageList || []
-    this.authState = this.authState || 'pending'
 
     let getDate = field ? getValue(data[step], field) : data[step]
     if (Object.prototype.toString.call(getDate) !== '[object Array]') {
@@ -521,14 +500,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
           children: operations.tableOperations.map((operation, index) => {
             if (operation.type === 'button') {
               let hidden = false
-              if (this.authState === 'pending') {
-                this.pageList.push(operation.handle.page)
-                if (operations.tableOperations?.length === index + 1) {
-                  this.savePageAuth()
-                }
-              }
-              if (this.authState === 'fulfilled') {
-                hidden = this.state.pageAuthState[operation.handle.page] === false
+              if (operation.handle && operation.handle.type === 'ccms') {
+                hidden = !pageAuth[operation.handle.page.toString()]
+                this.checkPageAuth(operation.handle.page.toString())
               }
 
               return hidden
@@ -548,14 +522,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   label: operation.label,
                   children: (operation.operations || []).map((operation) => {
                     let hidden = false
-                    if (this.authState === 'pending') {
-                      this.pageList.push(operation.handle.page)
-                      if (operations.tableOperations?.length === index + 1) {
-                        this.savePageAuth()
-                      }
-                    }
-                    if (this.authState === 'fulfilled') {
-                      hidden = this.state.pageAuthState[operation.handle.page] === false
+                    if (operation.handle && operation.handle.type === 'ccms') {
+                      hidden = !pageAuth[operation.handle.page.toString()]
+                      this.checkPageAuth(operation.handle.page.toString())
                     }
                     return hidden
                       ? null
@@ -616,15 +585,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   }
                   
                   let hidden = false
-
-                  if (this.authState === 'pending') {
-                    this.pageList.push(operation.handle.page)
-                    if (operations.rowOperations?.length === index + 1) {
-                      this.savePageAuth()
-                    }
-                  }
-                  if (this.authState === 'fulfilled') {
-                    hidden = hidden || this.state.pageAuthState[operation.handle.page] === false
+                  if (operation.handle && operation.handle.type === 'ccms') {
+                    hidden = !pageAuth[operation.handle.page.toString()]
+                    this.checkPageAuth(operation.handle.page.toString())
                   }
 
                   return (
@@ -649,15 +612,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
                           }
 
                           let hidden = false
-
-                          if (this.authState === 'pending') {
-                            this.pageList.push(operation.handle.page)
-                            if (operations.rowOperations?.length === index + 1) {
-                              this.savePageAuth()
-                            }
-                          }
-                          if (this.authState === 'fulfilled') {
-                            hidden = this.state.pageAuthState[operation.handle.page] === false
+                          if (operation.handle && operation.handle.type === 'ccms') {
+                            hidden = !pageAuth[operation.handle.page.toString()]
+                            this.checkPageAuth(operation.handle.page.toString())
                           }
 
                           return hidden
