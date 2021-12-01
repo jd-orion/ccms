@@ -60,7 +60,7 @@ interface OperationHelperProps {
   loadDomain: (domain: string) => Promise<string>
 
   children?: (handleOperation: () => void) => React.ReactNode
-  callback?: () => void
+  callback?: (success: boolean) => void
 }
 
 interface OperationHelperState {
@@ -147,12 +147,12 @@ export default class OperationHelper extends React.Component<OperationHelperProp
                 loadPageFrameURL: this.props.loadPageFrameURL,
                 loadPageConfig: this.props.loadPageConfig,
                 loadDomain: this.props.loadDomain,
-                callback: () => {
+                callback: (success) => {
                   this.setState({
                     operationConfig: null,
                     sourceData: null
                   })
-                  this.props.callback && this.props.callback()
+                  this.props.callback && this.props.callback(success)
                 }
               }),
               onClose: () => {
@@ -160,7 +160,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
                   operationConfig: null,
                   sourceData: null
                 })
-                this.props.callback && this.props.callback()
+                this.props.callback && this.props.callback(false)
               }
             })
           )}
@@ -174,12 +174,12 @@ export default class OperationHelper extends React.Component<OperationHelperProp
               loadPageFrameURL: this.props.loadPageFrameURL,
               loadPageConfig: this.props.loadPageConfig,
               loadDomain: this.props.loadDomain,
-              callback: () => {
+              callback: (success) => {
                 this.setState({
                   operationConfig: null,
                   sourceData: null
                 })
-                this.props.callback && this.props.callback()
+                this.props.callback && this.props.callback(success)
               }
             })
           )}

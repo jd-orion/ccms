@@ -47,7 +47,7 @@ export interface CCMSProps {
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
   loadDomain: (domain: string) => Promise<string>
-  callback: () => void
+  callback: (success: boolean) => void
   onMount?: () => void
 }
 
@@ -139,7 +139,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
         nextStep.stepPush()
       }
     } else {
-      callback()
+      callback(true)
     }
   }
 
@@ -168,7 +168,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
         this.props.onMount && this.props.onMount()
       }
     } else {
-      callback()
+      callback(step >= 0)
     }
   }
 
@@ -199,7 +199,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
         nextStep.stepPop(reload, data)
       }
     } else {
-      callback()
+      callback(step > 0)
     }
   }
 

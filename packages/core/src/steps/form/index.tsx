@@ -485,11 +485,13 @@ export default class FormStep extends Step<FormConfig, FormState> {
    * 处理表单步骤按钮列表按钮项回调
    * @param action 按钮项配置
    */
-  handleCallback = async (action: ActionConfig) => {
-    const callbackType = action.callback?.type
-    if (callbackType) {
-      if (callbackType === 'submit') { this.handleSubmit() }
-      else if (callbackType === 'cancel') { this.handleCancel() }
+  handleCallback = async (action: ActionConfig, success: boolean) => {
+    if (success) {
+      const callbackType = action.callback?.type
+      if (callbackType) {
+        if (callbackType === 'submit') { this.handleSubmit() }
+        else if (callbackType === 'cancel') { this.handleCancel() }
+      }
     }
   }
   /**
@@ -561,27 +563,41 @@ export default class FormStep extends Step<FormConfig, FormState> {
         if (!ConditionHelper(actions[index].condition, { record: formValue, data, step })) {
           continue
         }
-        const OperationHelperWrapper = <this.OperationHelper
-          key={index}
-          config={actions[index].handle}
-          datas={{ record: formValue, data: this.props.data, step: this.props.step }}
-          checkPageAuth={this.props.checkPageAuth}
-          loadPageURL={this.props.loadPageURL}
-          loadPageFrameURL={this.props.loadPageFrameURL}
-          loadPageConfig={this.props.loadPageConfig}
-          baseRoute={this.props.baseRoute}
-          loadDomain={this.props.loadDomain}
-          callback={async () => { await this.handleCallback(actions[index]) }}
-        >
-          {(onClick) => (
-            this.renderButtonComponent({
-              label: actions[index].label || '',
-              mode: actions[index].mode,
-              onClick
-            })
-          )}
-        </this.OperationHelper>
-        actions_.push(OperationHelperWrapper)
+        if (actions[index].type === 'submit') {
+          actions_.push(this.renderButtonComponent({
+            label: actions[index].label || '',
+            mode: actions[index].mode,
+            onClick: () => this.handleSubmit()
+          }))
+        } else if (actions[index].type === 'cancel') {
+          actions_.push(this.renderButtonComponent({
+            label: actions[index].label || '',
+            mode: actions[index].mode,
+            onClick: () => this.handleCancel()
+          }))
+        } else {
+          const OperationHelperWrapper = <this.OperationHelper
+            key={index}
+            config={actions[index].handle}
+            datas={{ record: formValue, data: this.props.data, step: this.props.step }}
+            checkPageAuth={this.props.checkPageAuth}
+            loadPageURL={this.props.loadPageURL}
+            loadPageFrameURL={this.props.loadPageFrameURL}
+            loadPageConfig={this.props.loadPageConfig}
+            baseRoute={this.props.baseRoute}
+            loadDomain={this.props.loadDomain}
+            callback={async (success) => { await this.handleCallback(actions[index], success) }}
+          >
+            {(onClick) => (
+              this.renderButtonComponent({
+                label: actions[index].label || '',
+                mode: actions[index].mode,
+                onClick
+              })
+            )}
+          </this.OperationHelper>
+          actions_.push(OperationHelperWrapper)
+        }
       }
     }
 
