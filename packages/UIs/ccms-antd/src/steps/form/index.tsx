@@ -1,18 +1,20 @@
 import React from 'react'
 import { FormStep } from 'ccms'
-import { IForm, IFormItem, IFormStepModal, FormConfig } from 'ccms/dist/src/steps/form'
+import { IForm, IFormItem, IFormStepModal, FormConfig, IButtonProps } from 'ccms/dist/src/steps/form'
 import { Button, Form, Space, Modal } from 'antd'
 
 import { FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/formFields'
+import OperationHelper from '../../util/operation'
 import styles from "./index.less"
 import { formItemLayout } from '../../components/formFields/common'
 import newstyles from "../../main.less"
 
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
+  OperationHelper = OperationHelper
 
-  renderModalComponent= (props: IFormStepModal) => {
+  renderModalComponent = (props: IFormStepModal) => {
     return new Promise((resolve) => {
       Modal.error({
         getContainer: () => {
@@ -30,6 +32,7 @@ export default class FormStepComponent extends FormStep {
   renderComponent = (props: IForm) => {
     const {
       layout,
+      actions,
       onSubmit,
       onCancel,
       submitText,
@@ -55,15 +58,29 @@ export default class FormStepComponent extends FormStep {
       >
         {children}
         {
-          (onSubmit || onCancel) && <Form.Item>
+          (Object.prototype.toString.call(actions) === '[object Array]' || onSubmit || onCancel) && <Form.Item>
             <Space>
-              {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText || '确定'}</Button>}
-              {onCancel && <Button onClick={() => onCancel()}>{cancelText || '取消'}</Button>}
+              {Object.prototype.toString.call(actions) === '[object Array]'
+                ? actions
+                : <React.Fragment>
+                  {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText || '提交'}</Button>}
+                  {onCancel && <Button onClick={() => onCancel()}>{cancelText || '取消'}</Button>}
+                </React.Fragment>
+              }
             </Space>
           </Form.Item>
         }
       </Form>
     )
+  }
+
+  renderButtonComponent = (props: IButtonProps) => {
+    const {
+      mode,
+      label,
+      onClick
+    } = props
+    return <Button type={mode === 'normal' ? 'default' : mode} onClick={() => onClick()}>{label}</Button>
   }
 
   renderItemComponent = (props: IFormItem) => {
@@ -85,7 +102,7 @@ export default class FormStepComponent extends FormStep {
         {...formItemLayout(layout, fieldType, label)}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
-        style={ visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 } }
+        style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
         className={styles[`ccms-antd-mini-form-${fieldType}`]}
       >
         {children}
@@ -94,7 +111,7 @@ export default class FormStepComponent extends FormStep {
   }
 }
 // <FormConfig, IForm>
-export const PropsType = (props: IForm) => {};
+export const PropsType = (props: IForm) => { };
 
-export const PropsTypeFormConfig = (props: FormConfig) => {};
-export const PropsTypeStep = (props: FormStep) => {};
+export const PropsTypeFormConfig = (props: FormConfig) => { };
+export const PropsTypeStep = (props: FormStep) => { };
