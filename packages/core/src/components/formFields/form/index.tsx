@@ -445,7 +445,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                   {this.renderItemComponent({
                     index,
                     isLastIndex: value.length - 1 === index? true: false,
-                    title: primaryField !== undefined ? getValue(itemValue, primaryField).toString() : index.toString(),
+                    title: primaryField !== undefined ? getValue(itemValue, primaryField, '').toString() : index.toString(),
                     removeText: removeText === undefined
                       ? `删除 ${label}`
                       : removeText,
