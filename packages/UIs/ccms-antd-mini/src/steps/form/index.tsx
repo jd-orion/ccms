@@ -8,7 +8,7 @@ import styles from "./index.less"
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
 
-  renderModalComponent= (props: IFormStepModal) => {
+  renderModalComponent = (props: IFormStepModal) => {
     return new Promise((resolve) => {
       Modal.error({
         getContainer: () => {
@@ -41,7 +41,7 @@ export default class FormStepComponent extends FormStep {
           wrapperCol: { span: 18 }
         }
         : {}
-        
+
     return (
       <Form
         id="ccms-antd-mini-form"
@@ -52,15 +52,15 @@ export default class FormStepComponent extends FormStep {
       >
         {children}
         {
-          <Form.Item>
+          (Object.prototype.toString.call(actions) === '[object Array]' || onSubmit || onCancel) && <Form.Item>
             <Space>
-              { Object.prototype.toString.call(actions) === '[object Array]'
+              {Object.prototype.toString.call(actions) === '[object Array]'
                 ? actions
                 : <React.Fragment>
-                    {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText || '确定'}</Button>}
-                    {onCancel && <Button onClick={() => onCancel()}>{cancelText || '取消'}</Button>}
+                  {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText || '确定'}</Button>}
+                  {onCancel && <Button onClick={() => onCancel()}>{cancelText || '取消'}</Button>}
                 </React.Fragment>
-            }
+              }
             </Space>
           </Form.Item>
         }
@@ -74,7 +74,7 @@ export default class FormStepComponent extends FormStep {
       label,
       onClick
     } = props
-    return <Button type={ mode === 'normal' ? 'default' : mode } onClick={() => onClick()}>{ label }</Button>
+    return <Button type={mode === 'normal' ? 'default' : mode} onClick={() => onClick()}>{label}</Button>
   }
 
   renderItemComponent = (props: IFormItem) => {
