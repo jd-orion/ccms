@@ -8,6 +8,7 @@ import ParamHelper from '../../util/param'
 import { cloneDeep, get, set, unset } from 'lodash'
 import ConditionHelper, { ConditionConfig } from '../../util/condition'
 import StatementHelper, { StatementConfig } from '../../util/statement'
+import OperationHelper, { OperationConfig } from '../../util/operation'
 
 /**
  * 表单步骤配置文件格式定义
@@ -22,8 +23,9 @@ import StatementHelper, { StatementConfig } from '../../util/statement'
  * - submitText: 自定义确认按钮文本
  * - cancelText: 自定义取消按钮文本
  * - validations: 全局校验
- * * - condition: （全局校验子项中）校验条件
- * * - message: 校验失败提示文本
+ * - * - condition: （全局校验子项中）校验条件
+ * - * - message: 校验失败提示文本
+ * - actions: 表单步骤按钮列表
  */
 export interface FormConfig extends StepConfig {
   type: 'form'
@@ -34,15 +36,46 @@ export interface FormConfig extends StepConfig {
    */
   fields?: FieldConfigs[],
   defaultValue?: ParamConfig,
-  hiddenSubmit?: boolean // 是否隐藏提交按钮
-  hiddenCancel?: boolean // 是否隐藏取消按钮
-  submitText?: string    // 自定义确认按钮文本
-  cancelText?: string   //  自定义取消按钮文本
   validations?: Array<{
     condition?: ConditionConfig
     message?: StatementConfig
   }>
+  actions: Array<ActionConfig> | []
   stringify?: string[] // 序列化字段
+  hiddenSubmit?: boolean // 是否隐藏提交按钮 TODO 待删除
+  hiddenCancel?: boolean // 是否隐藏取消按钮   TODO 待删除
+  submitText?: string    // 自定义确认按钮文本 TODO 待删除
+  cancelText?: string   //  自定义取消按钮文本 TODO 待删除
+}
+
+
+/**
+ * 表单步骤按钮列表按钮项配置
+ * - type: 按钮操作类型
+ * - * - submit: 提交
+ * - * - cancel: 取消
+ * - * - ccms: 自定义（搭建页面）
+ * - label: 按钮文案
+ * - mode: 按钮形式
+ * - * -  normal: 普通按钮
+ * - * -  primary: 主按钮
+ * - * -  link: 链接
+ * - condition: 展示条件
+ * - callback: 自定义操作 - 回调
+ * - * - type: 回调操作类型
+ * - * - * - none: 无操作
+ * - * - * - submit: 提交表单
+ * - * - * - cancel: 取消表单
+ */
+export interface ActionConfig {
+  type: 'submit' | 'cancel' | 'ccms',
+  label: string,
+  mode: 'normal' | 'primary' | 'link',
+  condition?: ConditionConfig
+  handle?: OperationConfig
+  callback?: {
+    type: 'none' | 'submit' | 'cancel'
+  }
 }
 
 /**
@@ -65,11 +98,25 @@ export interface IFormStepModal {
  */
 export interface IForm {
   layout: 'horizontal' | 'vertical' | 'inline'
+  actions?: React.ReactNode[]
+  children: React.ReactNode[]
   onSubmit?: () => Promise<any>
   onCancel?: () => Promise<any>
-  children: React.ReactNode[]
   submitText?: string    // 自定义确认按钮文本
   cancelText?: string   //  自定义取消按钮文本
+}
+
+
+/**
+ * 表单步骤按钮config
+ * - label: 按钮文案
+ * - type: 按钮形式
+ * - onClick: 按钮操作
+ */
+export interface IButtonProps {
+  label: string
+  mode: 'normal' | 'primary' | 'link'
+  onClick: () => void
 }
 
 /**
@@ -116,6 +163,7 @@ interface FormState {
 export default class FormStep extends Step<FormConfig, FormState> {
   // 各表单项对应的类型所使用的UI组件的类
   getALLComponents = (type: any): typeof Field => getALLComponents[type]
+  OperationHelper = OperationHelper
 
   // 各表单项所使用的UI组件的实例
   formFields: Array<Field<FieldConfigs, {}, any> | null> = []
@@ -214,13 +262,13 @@ export default class FormStep extends Step<FormConfig, FormState> {
   handleSubmit = async () => {
     let data: any = {}
     let canSubmit = true
-    
+
     if (this.props.config.validations) {
       for (const validation of this.props.config.validations) {
         if (!ConditionHelper(validation.condition, { record: this.state.formValue, data: this.props.data, step: this.props.step })) {
           canSubmit = false
           const message = StatementHelper(validation.message, { record: this.state.formValue, data: this.props.data, step: this.props.step }) || '未填写失败文案或失败文案配置异常'
-          this.renderModalComponent({message})
+          this.renderModalComponent({ message })
           return null
         }
       }
@@ -433,7 +481,17 @@ export default class FormStep extends Step<FormConfig, FormState> {
       })
     }
   }
-
+  /**
+   * 处理表单步骤按钮列表按钮项回调
+   * @param action 按钮项配置
+   */
+  handleCallback = async (action: ActionConfig) => {
+    const callbackType = action.callback?.type
+    if (callbackType) {
+      if (callbackType === 'submit') { this.handleSubmit() }
+      else if (callbackType === 'cancel') { this.handleCancel() }
+    }
+  }
   /**
    * 表单步骤组件 - UI渲染方法
    * 各UI库需重写该方法
@@ -442,6 +500,15 @@ export default class FormStep extends Step<FormConfig, FormState> {
   renderComponent = (props: IForm) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现Form组件。
+    </React.Fragment>
+  }
+  /**
+   * 表单步骤按钮项button组件
+   * @param props 
+   */
+  renderButtonComponent = (props: IButtonProps) => {
+    return <React.Fragment>
+      您当前使用的UI版本没有实现FormButton组件。
     </React.Fragment>
   }
 
@@ -461,20 +528,21 @@ export default class FormStep extends Step<FormConfig, FormState> {
    * 各UI库需重写该方法
    * @param props
    */
-  renderModalComponent= (props: IFormStepModal) => {
+  renderModalComponent = (props: IFormStepModal) => {
     return new Promise((resolve) => {
-          resolve(null)
+      resolve(null)
     })
   }
 
   render() {
     const {
       data,
-      step
-      // config: {
-      //   layout = 'horizontal',
-      //   fields = []
-      // }
+      step,
+      config: {
+        // layout = 'horizontal',
+        // fields = []
+        actions
+      }
     } = this.props
 
     const layout = this.props.config?.layout || 'horizontal'
@@ -485,17 +553,49 @@ export default class FormStep extends Step<FormConfig, FormState> {
       formValue,
       formData
     } = this.state
-    
+
+    let actions_
+    if (Object.prototype.toString.call(actions) === '[object Array]') {
+      actions_ = []
+      for (let index = 0, len = actions.length; index < len; index++) {
+        if (!ConditionHelper(actions[index].condition, { record: formValue, data, step })) {
+          continue
+        }
+        const OperationHelperWrapper = <this.OperationHelper
+          key={index}
+          config={actions[index].handle}
+          datas={{ record: formValue, data: this.props.data, step: this.props.step }}
+          checkPageAuth={this.props.checkPageAuth}
+          loadPageURL={this.props.loadPageURL}
+          loadPageFrameURL={this.props.loadPageFrameURL}
+          loadPageConfig={this.props.loadPageConfig}
+          baseRoute={this.props.baseRoute}
+          loadDomain={this.props.loadDomain}
+          callback={async () => { await this.handleCallback(actions[index]) }}
+        >
+          {(onClick) => (
+            this.renderButtonComponent({
+              label: actions[index].label || '',
+              mode: actions[index].mode,
+              onClick
+            })
+          )}
+        </this.OperationHelper>
+        actions_.push(OperationHelperWrapper)
+      }
+    }
+
     if (ready) {
       return (
         <React.Fragment>
           {/* 渲染表单 */}
           {this.renderComponent({
             layout,
-            onSubmit: this.props.config.hiddenSubmit ? undefined : async () => this.handleSubmit(),
-            onCancel: this.props.config.hiddenCancel ? undefined : async () => this.handleCancel(),
-            submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ""),
-            cancelText: this.props.config?.cancelText?.replace(/(^\s*)|(\s*$)/g, ""),
+            actions: actions_,
+            onSubmit: this.props.config.hiddenSubmit ? undefined : async () => this.handleSubmit(), // TODO 待删除
+            onCancel: this.props.config.hiddenCancel ? undefined : async () => this.handleCancel(), // TODO 待删除
+            submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ""), // TODO 待删除
+            cancelText: this.props.config?.cancelText?.replace(/(^\s*)|(\s*$)/g, ""), // TODO 待删除
             children: fields.map((formFieldConfig, formFieldIndex) => {
               if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
                 return null
