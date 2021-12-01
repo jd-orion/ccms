@@ -66,6 +66,7 @@ export interface TableCCMSOperationConfig {
   data: { [key: string]: ParamConfig }
   params?: { field: string, data: ParamConfig }[]
   callback?: boolean
+  debug?: boolean
 }
 
 interface TableOperationCheckConfig {
@@ -300,6 +301,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
           const value = getParam(dataConfig, { record, data, step })
           set(params, field, value)
         }
+      }
+      if (operation.handle.debug) {
+        console.log('CCMS debug: operation - params', params)
       }
       if (operation.handle.target === 'current' || operation.handle.target === 'handle') {
         const operationConfig = await this.props.loadPageConfig(operation.handle.page)
