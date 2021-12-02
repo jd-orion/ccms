@@ -58,9 +58,9 @@ export default class FormStepComponent extends FormStep {
       >
         {children}
         {
-          (Object.prototype.toString.call(actions) === '[object Array]' || onSubmit || onCancel) && <Form.Item>
+          (Array.isArray(actions) ? actions.length > 0 : (onSubmit || onCancel)) && <Form.Item>
             <Space>
-              {Object.prototype.toString.call(actions) === '[object Array]'
+              {Array.isArray(actions)
                 ? actions
                 : <React.Fragment>
                   {onSubmit && <Button type="primary" onClick={() => onSubmit()}>{submitText || '提交'}</Button>}
