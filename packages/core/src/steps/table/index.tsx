@@ -209,7 +209,7 @@ interface TableState {
     data: any
     callback?: boolean
   }
-  pageAuth: { [ page: string ]: boolean }
+  pageAuth: { [page: string]: boolean }
 }
 
 /**
@@ -223,7 +223,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
    * 页面权限获取状态
    * fulfilled ｜pending
    */
-  pageAuth: { [ page: string ]: boolean } = {}
+  pageAuth: { [page: string]: boolean } = {}
   /* 服务端分页情况下页码溢出标识：页码溢出时退回重新请求，此标识符用于防止死循环判断 */
   pageOverflow: boolean = false
 
@@ -297,7 +297,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
           set(params, field, value)
         }
       } else {
-        for (const {field, data: dataConfig} of operation.handle.params) {
+        for (const { field, data: dataConfig } of operation.handle.params) {
           const value = getParam(dataConfig, { record, data, step })
           set(params, field, value)
         }
@@ -514,8 +514,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
             if (operation.type === 'button') {
               let hidden = false
               if (operation.handle && operation.handle.type === 'ccms') {
-                hidden = !pageAuth[operation.handle.page.toString()]
-                this.checkPageAuth(operation.handle.page.toString())
+                hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
+                operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
               }
 
               return hidden
@@ -536,8 +536,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   children: (operation.operations || []).map((operation) => {
                     let hidden = false
                     if (operation.handle && operation.handle.type === 'ccms') {
-                      hidden = !pageAuth[operation.handle.page.toString()]
-                      this.checkPageAuth(operation.handle.page.toString())
+                      hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
+                      operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
                     }
                     return hidden
                       ? null
@@ -596,11 +596,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   if (!ConditionHelper(operation.condition, { record, data, step })) {
                     return null
                   }
-                  
+
                   let hidden = false
                   if (operation.handle && operation.handle.type === 'ccms') {
-                    hidden = !pageAuth[operation.handle.page.toString()]
-                    this.checkPageAuth(operation.handle.page.toString())
+                    hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
+                    operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
                   }
 
                   return (
@@ -626,8 +626,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
 
                           let hidden = false
                           if (operation.handle && operation.handle.type === 'ccms') {
-                            hidden = !pageAuth[operation.handle.page.toString()]
-                            this.checkPageAuth(operation.handle.page.toString())
+                            hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
+                            operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
                           }
 
                           return hidden
