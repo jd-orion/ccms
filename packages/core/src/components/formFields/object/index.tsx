@@ -61,8 +61,8 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     }
   }
 
-  didMount = () => {
-    this.setState({
+  didMount = async () => {
+    await this.setState({
       didMount: true
     })
   }
@@ -171,6 +171,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
             })
           }
         }
+        await formField.didMount()
       }
     }
   }
@@ -440,12 +441,11 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                 children: (
                                   <FormField
                                     key={formFieldIndex}
-                                    ref={async (formField: Field<FieldConfigs, any, any> | null) => {
+                                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
                                       if (formField) {
                                         if (!this.formFieldsList[key]) this.formFieldsList[key] = []
                                         this.formFieldsList[key][formFieldIndex] = formField
-                                        await this.handleMount(key, formFieldIndex)
-                                        formField.didMount()
+                                        this.handleMount(key, formFieldIndex)
                                       }
                                     }}
                                     formLayout={this.props.formLayout}

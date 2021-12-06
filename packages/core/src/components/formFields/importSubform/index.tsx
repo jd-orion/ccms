@@ -46,8 +46,8 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     }
   }
 
-  didMount = () => {
-    this.setState({
+  didMount = async () => {
+    await this.setState({
       didMount: true
     })
   }
@@ -147,6 +147,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
             })
           }
         }
+        await formField.didMount()
       }
     }
   }
@@ -349,11 +350,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                 children: (
                     <FormField
                       key={formFieldIndex}
-                      ref={async (formField: Field<FieldConfigs, any, any> | null) => {
+                      ref={(formField: Field<FieldConfigs, any, any> | null) => {
                         if (formField) {
                           this.formFields[formFieldIndex] = formField
-                          await this.handleMount(formFieldIndex)
-                          formField.didMount()
+                          this.handleMount(formFieldIndex)
                         }
                       }}
                       formLayout={formLayout}

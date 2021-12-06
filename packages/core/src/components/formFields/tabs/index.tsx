@@ -52,6 +52,7 @@ export interface ITabsFieldItemField {
 }
 
 export interface TabsFieldState<S> {
+  didMount: boolean
   formDataList: { status: 'normal' | 'error' | 'loading', message?: string }[][]
   extra?: S
 }
@@ -67,8 +68,15 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     super(props)
 
     this.state = {
+      didMount: false,
       formDataList: []
     }
+  }
+
+  didMount = async () => {
+    await this.setState({
+      didMount: true
+    })
   }
 
   get = async () => {
@@ -180,6 +188,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
             })
           }
         }
+        await formField.didMount()
       }
     }
   }
@@ -352,7 +361,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
         {
           this.renderComponent({
             children: (
-              (this.props.config.tabs || []).map((tab: any, index: number) => {
+              this.state.didMount ? (this.props.config.tabs || []).map((tab: any, index: number) => {
                 const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[index] || {}).fields || [])
                 return (
                   <React.Fragment key={index}>
@@ -423,7 +432,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                     })}
                   </React.Fragment>
                 )
-              })
+              }) : []
             )
           })
         }

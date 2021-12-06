@@ -158,7 +158,7 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
     return {}
   }
 
-  didMount: () => void = () => {}
+  didMount: () => Promise<void> = async () => {}
 
   renderComponent = (props: E) => {
     return <React.Fragment>

@@ -36,8 +36,8 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     }
   }
 
-  didMount = () => {
-    this.setState({
+  didMount = async () => {
+    await this.setState({
       didMount: true
     })
   }
@@ -127,7 +127,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
             })
           }
         }
-        
+        await formField.didMount()
       }
     }
   }
@@ -316,11 +316,10 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
               children: (
                   <FormField
                     key={formFieldIndex}
-                    ref={async (formField: Field<FieldConfigs, any, any> | null) => {
+                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
                       if (formField) {
                         this.formFields[formFieldIndex] = formField
-                        await this.handleMount(formFieldIndex)
-                        formField?.didMount()
+                        this.handleMount(formFieldIndex)
                       }
                     }}
                     formLayout={formLayout}

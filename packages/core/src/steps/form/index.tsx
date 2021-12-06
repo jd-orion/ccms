@@ -248,13 +248,10 @@ export default class FormStep extends Step<FormConfig, FormState> {
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
 
         let value = getValue(this.formValue, formFieldConfig.field)
-        console.log('step mount 1', value)
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
         }
-        console.log('step mount 2', value)
         value = await formField.set(value)
-        console.log('step mount 3', value)
         this.formValue = setValue(this.formValue, formFieldConfig.field, value)
 
         if (value !== undefined) {
@@ -265,6 +262,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
             this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
           }
         }
+        await formField.didMount()
       }
     }
 
@@ -665,11 +663,10 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 children: (
                   <FormField
                     key={formFieldIndex}
-                    ref={async (formField: Field<FieldConfigs, any, any> | null) => {
+                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
                       if (formField !== null) {
                         this.formFields[formFieldIndex] = formField
-                        await this.handleFormFieldMount(formFieldIndex)
-                        formField.didMount()
+                        this.handleFormFieldMount(formFieldIndex)
                       }
                     }}
                     formLayout={layout}

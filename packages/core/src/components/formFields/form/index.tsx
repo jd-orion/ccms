@@ -75,8 +75,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     }
   }
 
-  didMount = () => {
-    this.setState({
+  didMount = async () => {
+    await this.setState({
       didMount: true
     })
   }
@@ -226,7 +226,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       if (formField) {
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
 
-        let value = getValue(this.props.value[index] || {}, formFieldConfig.field)
+        let value = getValue(this.props.value[index] === undefined ? {} : this.props.value[index], formFieldConfig.field)
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
         }
@@ -242,8 +242,10 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
           }
         }
 
+        await formField.didMount()
       }
     }
+
 
     await this.setState({
       formDataList
@@ -498,12 +500,11 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                               fieldType: formFieldConfig.type,
                               children: (
                                 <FormField
-                                  ref={async (fieldRef: Field<FieldConfigs, any, any> | null) => {
+                                  ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
                                     if (fieldRef) {
                                       if (!this.formFieldsList[index]) this.formFieldsList[index] = []
                                       this.formFieldsList[index][fieldIndex] = fieldRef
-                                      await this.handleMount(index, fieldIndex)
-                                      fieldRef.didMount()
+                                      this.handleMount(index, fieldIndex)
                                     }
                                   }}
                                   formLayout={formLayout}
