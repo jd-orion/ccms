@@ -17,6 +17,7 @@ export interface IImportSubformField {
 }
 
 interface IImportSubformFieldState {
+  didMount: boolean
   fields: FieldConfigs[]
   formData: { status: 'normal' | 'error' | 'loading', message?: string }[]
 }
@@ -39,9 +40,16 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     super(props)
 
     this.state = {
+      didMount: false,
       fields: [],
       formData: []
     }
+  }
+
+  didMount = () => {
+    this.setState({
+      didMount: true
+    })
   }
 
   get = async () => {
@@ -121,8 +129,9 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
         let value = getValue(this.props.value, formFieldConfig.field)
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
-          this.props.onValueSet(formFieldConfig.field, value, true)
         }
+        value = await formField.set(value)
+        this.props.onValueSet(formFieldConfig.field, value, true)
         
         if (value !== undefined) {
           const validation = await formField.validate(value)
@@ -310,7 +319,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       return (
         <React.Fragment>
           {this.renderComponent({
-            children: (Array.isArray(this.state.fields) ? this.state.fields : []).map((formFieldConfig, formFieldIndex) => {
+            children: this.state.didMount ? (Array.isArray(this.state.fields) ? this.state.fields : []).map((formFieldConfig, formFieldIndex) => {
               if (!ConditionHelper(formFieldConfig.condition, { record: value, data, step })) {
                 return null
               }
@@ -340,10 +349,11 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                 children: (
                     <FormField
                       key={formFieldIndex}
-                      ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                        if (formFieldIndex !== null) {
+                      ref={async (formField: Field<FieldConfigs, any, any> | null) => {
+                        if (formField) {
                           this.formFields[formFieldIndex] = formField
-                          this.handleMount(formFieldIndex)
+                          await this.handleMount(formFieldIndex)
+                          formField.didMount()
                         }
                       }}
                       formLayout={formLayout}
@@ -369,7 +379,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                   ? this.renderItemComponent(renderData)
                   : <React.Fragment key={formFieldIndex} />
               )
-            })
+            }) : []
           })}
         </React.Fragment>
       )

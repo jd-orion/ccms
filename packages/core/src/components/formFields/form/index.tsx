@@ -19,6 +19,7 @@ export interface FormFieldConfig extends FieldConfig {
   canSort?: boolean
   canCollapse?: boolean // 是否用Collapse折叠展示
   stringify?: string[] // 序列号字段
+  unstringify?: string[] // 反序列化字段 
 }
 
 export interface IFormField {
@@ -51,6 +52,7 @@ export interface IFormFieldItemField {
 }
 
 interface FormState {
+  didMount: boolean
   formDataList: { status: 'normal' | 'error' | 'loading', message?: string }[][]
   showItem: boolean
   showIndex: number
@@ -66,10 +68,17 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     super(props)
 
     this.state = {
+      didMount: false,
       formDataList: [],
       showItem: false,
       showIndex: 0
     }
+  }
+
+  didMount = () => {
+    this.setState({
+      didMount: true
+    })
   }
   
 
@@ -148,6 +157,23 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     return errors.length ? errors : true
   }
 
+  set = async (value: any) => {
+    if (this.props.config.unstringify && this.props.config.unstringify.length > 0 && Array.isArray(value)) {
+      for (let index = 0; index < value.length; index++) {
+        if (value[index]) {
+          for (const field of this.props.config.unstringify) {
+            const info = getValue(value[index], field)
+            try {
+              value[index] = setValue(value[index], field, JSON.parse(info))
+            } catch (e) {}
+          }
+        }
+      }
+    }
+
+    return value
+  }
+
   get = async () => {
     let data: any[] = [];
 
@@ -203,8 +229,9 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
         let value = getValue(this.props.value[index] || {}, formFieldConfig.field)
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
-          this.props.onValueSet(`[${index}]${formFieldConfig.field}`, value, true)
         }
+        value = await formField.set(value)
+        this.props.onValueSet(`[${index}]${formFieldConfig.field}`, value, true)
 
         if (value !== undefined) {
           const validation = await formField.validate(value)
@@ -440,7 +467,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
             onInsert: canInsert? async () => await this.handleInsert(): undefined,
             canCollapse,
             children: (
-              (Array.isArray(value) ? value : []).map((itemValue: any, index: number) => {
+              this.state.didMount ? (Array.isArray(value) ? value : []).map((itemValue: any, index: number) => {
                 return <React.Fragment key={index} >
                   {this.renderItemComponent({
                     index,
@@ -471,10 +498,13 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                               fieldType: formFieldConfig.type,
                               children: (
                                 <FormField
-                                  ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
-                                    if (!this.formFieldsList[index]) this.formFieldsList[index] = []
-                                    this.formFieldsList[index][fieldIndex] = fieldRef
-                                    this.handleMount(index, fieldIndex)
+                                  ref={async (fieldRef: Field<FieldConfigs, any, any> | null) => {
+                                    if (fieldRef) {
+                                      if (!this.formFieldsList[index]) this.formFieldsList[index] = []
+                                      this.formFieldsList[index][fieldIndex] = fieldRef
+                                      await this.handleMount(index, fieldIndex)
+                                      fieldRef.didMount()
+                                    }
                                   }}
                                   formLayout={formLayout}
                                   value={getValue(value[index], formFieldConfig.field)}
@@ -501,7 +531,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                   }
                 </React.Fragment >
               }
-              )
+              ) : []
             )
           })
         }

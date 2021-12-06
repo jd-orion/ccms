@@ -42,6 +42,7 @@ export interface FormConfig extends StepConfig {
   }>
   actions: Array<ActionConfig> | []
   stringify?: string[] // 序列化字段
+  unstringify?: string[] // 反序列化字段
   hiddenSubmit?: boolean // 是否隐藏提交按钮 TODO 待删除
   hiddenCancel?: boolean // 是否隐藏取消按钮   TODO 待删除
   submitText?: string    // 自定义确认按钮文本 TODO 待删除
@@ -203,7 +204,19 @@ export default class FormStep extends Step<FormConfig, FormState> {
     this.formData = []
 
     if (this.props.config.defaultValue) {
-      const formDefault = ParamHelper(this.props.config.defaultValue, { data, step })
+      let formDefault = ParamHelper(this.props.config.defaultValue, { data, step })
+
+      if (this.props.config.unstringify) {
+        for (const field of this.props.config.unstringify) {
+          const info = getValue(formDefault, field)
+          try {
+            formDefault = setValue(formDefault, field, JSON.parse(info))
+          } catch (e) {
+            console.warn(`CCMS warning: 字段反序列化失败 - ${field}`)
+          }
+        }
+      }
+
       for (const formFieldIndex in formFieldsConfig) {
         const formFieldConfig = formFieldsConfig[formFieldIndex]
         const value = getValue(formDefault, formFieldConfig.field)
@@ -211,6 +224,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
         this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
       }
     }
+
 
     await this.setState({
       ready: true,
@@ -234,9 +248,13 @@ export default class FormStep extends Step<FormConfig, FormState> {
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
 
         let value = getValue(this.formValue, formFieldConfig.field)
+        console.log('step mount 1', value)
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
         }
+        console.log('step mount 2', value)
+        value = await formField.set(value)
+        console.log('step mount 3', value)
         this.formValue = setValue(this.formValue, formFieldConfig.field, value)
 
         if (value !== undefined) {
@@ -647,10 +665,11 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 children: (
                   <FormField
                     key={formFieldIndex}
-                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                      if (formFieldIndex !== null) {
+                    ref={async (formField: Field<FieldConfigs, any, any> | null) => {
+                      if (formField !== null) {
                         this.formFields[formFieldIndex] = formField
-                        this.handleFormFieldMount(formFieldIndex)
+                        await this.handleFormFieldMount(formFieldIndex)
+                        formField.didMount()
                       }
                     }}
                     formLayout={layout}

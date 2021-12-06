@@ -36,7 +36,7 @@ export const setValue = (obj: any, path: string = '', value: any) => {
     }
   } else {
     const source = get(obj, path)
-    if (Object.prototype.toString.call(value) === '[object Object]' && source !== undefined) {
+    if (Object.prototype.toString.call(value) === '[object Object]' && Object.prototype.toString.call(source) === '[object Object]') {
       set(obj, path, merge(source, value))
     } else {
       set(obj, path, value)

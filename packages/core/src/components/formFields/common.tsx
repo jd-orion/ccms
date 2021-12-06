@@ -142,13 +142,8 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
     return this.defaultValue()
   };
 
-  set: (value: T) => Promise<void> = async (value) => {
-    const {
-      onChange
-    } = this.props
-    if (onChange) {
-      onChange(value)
-    }
+  set: (value: any) => Promise<any> = async (value) => {
+    return value
   };
 
   get: () => Promise<T> = async () => {
@@ -162,6 +157,8 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
   fieldFormat: () => Promise<{}> = async () => {
     return {}
   }
+
+  didMount: () => void = () => {}
 
   renderComponent = (props: E) => {
     return <React.Fragment>

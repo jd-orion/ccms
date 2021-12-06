@@ -16,6 +16,7 @@ export interface IGroupField {
 }
 
 interface IGroupFieldState {
+  didMount: boolean
   formData: { status: 'normal' | 'error' | 'loading', message?: string }[]
 }
 
@@ -30,8 +31,15 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     super(props)
 
     this.state = {
+      didMount: false,
       formData: []
     }
+  }
+
+  didMount = () => {
+    this.setState({
+      didMount: true
+    })
   }
 
   validate = async (value: any): Promise<true | FieldError[]> => {
@@ -101,8 +109,9 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
         let value = getValue(this.props.value, formFieldConfig.field)
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
-          this.props.onValueSet(formFieldConfig.field, value, true)
         }
+        value = await formField.set(value)
+        this.props.onValueSet(formFieldConfig.field, value, true)
 
         if (value !== undefined) {
           const validation = await formField.validate(value)
@@ -277,7 +286,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     return (
       <React.Fragment>
         {this.renderComponent({
-          children: (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
+          children: this.state.didMount ? (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
             if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
               return null
             }
@@ -307,10 +316,11 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
               children: (
                   <FormField
                     key={formFieldIndex}
-                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                      if (formFieldIndex !== null) {
+                    ref={async (formField: Field<FieldConfigs, any, any> | null) => {
+                      if (formField) {
                         this.formFields[formFieldIndex] = formField
-                        this.handleMount(formFieldIndex)
+                        await this.handleMount(formFieldIndex)
+                        formField?.didMount()
                       }
                     }}
                     formLayout={formLayout}
@@ -336,7 +346,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                 ? this.renderItemComponent(renderData)
                 : <React.Fragment key={formFieldIndex} />
             )
-          })
+          }) : []
         })}
       </React.Fragment>
     )

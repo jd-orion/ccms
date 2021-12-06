@@ -40,6 +40,7 @@ export interface IObjectFieldItemField {
 }
 
 export interface ObjectFieldState<S> {
+  didMount: boolean
   formDataList: { [key: string]: { status: 'normal' | 'error' | 'loading', message?: string }[] }
   extra?: S
 }
@@ -55,8 +56,15 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     super(props)
 
     this.state = {
+      didMount: false,
       formDataList: {}
     }
+  }
+
+  didMount = () => {
+    this.setState({
+      didMount: true
+    })
   }
 
   get = async () => {
@@ -143,8 +151,9 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
         let value = getValue(this.props.value[key], formFieldConfig.field)
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
-          this.props.onValueSet(formFieldConfig.field === '' ? key : `${key}.${formFieldConfig.field}`, value, true)
         }
+        value = await formField.set(value)
+        this.props.onValueSet(formFieldConfig.field === '' ? key : `${key}.${formFieldConfig.field}`, value, true)
         
         if (value !== undefined) {
           const validation = await formField.validate(value)
@@ -390,7 +399,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
             insertText: insertText === undefined ? `插入 ${label}` : insertText,
             onInsert: async () => await this.handleInsert(),
             children: (
-              this.props.value && Object.keys(this.props.value).map((key: string) => {
+              this.state.didMount ? this.props.value && Object.keys(this.props.value).map((key: string) => {
                 return (
                   <React.Fragment key={key}>
                     {this.renderItemComponent({
@@ -431,10 +440,13 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                 children: (
                                   <FormField
                                     key={formFieldIndex}
-                                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                                      if (!this.formFieldsList[key]) this.formFieldsList[key] = []
-                                      this.formFieldsList[key][formFieldIndex] = formField
-                                      this.handleMount(key, formFieldIndex)
+                                    ref={async (formField: Field<FieldConfigs, any, any> | null) => {
+                                      if (formField) {
+                                        if (!this.formFieldsList[key]) this.formFieldsList[key] = []
+                                        this.formFieldsList[key][formFieldIndex] = formField
+                                        await this.handleMount(key, formFieldIndex)
+                                        formField.didMount()
+                                      }
                                     }}
                                     formLayout={this.props.formLayout}
                                     value={getValue(value[key], formFieldConfig.field)}
@@ -461,7 +473,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                     })}
                   </React.Fragment>
                 )
-              })
+              }) : []
             )
           })
         }
