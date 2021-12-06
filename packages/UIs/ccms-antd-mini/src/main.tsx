@@ -15,16 +15,18 @@ export default class CCMSComponent extends CCMS {
       children
     } = props
     return (
-      <Space id="ccms-antd-mini" className={styles['ccms-antd-mini']} style={{ width: '100%' }} direction="vertical">
-        <PageHeader
-          title={title}
-        >
-          {description}
-        </PageHeader>
-        <div style={{ padding: '16px 0', margin: '0 24px', borderTop: '1px solid rgba(0,0,0,.06)' }}>
-        {children}
-        </div>
-      </Space>
+      <div id="ccms-antd-mini">
+        <Space className={styles['ccms-antd-mini']} style={{ width: '100%' }} direction="vertical">
+          <PageHeader
+            title={title}
+          >
+            {description}
+          </PageHeader>
+          <div style={{ padding: '16px 0', margin: '0 24px', borderTop: '1px solid rgba(0,0,0,.06)' }}>
+            {children}
+          </div>
+        </Space>
+      </div>
     )
   }
 }
