@@ -33,6 +33,7 @@ export interface InterfaceConfig {
   } | { field?: string, path?: string }[]
 
   cache?: {
+    global?: string
     disabled?: boolean
   }
 }
@@ -46,6 +47,8 @@ export interface IRenderFailModal {
 }
 
 export default class InterfaceHelper {
+  public static cache: { [key: string]: any } = {}
+
   private _config: InterfaceConfig = {}
   private _url: string = ''
   private _params: any = {}
@@ -181,7 +184,9 @@ export default class InterfaceHelper {
       }
       
       // 缓存判断
-      if (
+      if (config.cache && config.cache.global && Object.keys(InterfaceHelper.cache).includes(config.cache.global)) {
+        return InterfaceHelper.cache[config.cache.global]
+      } else if (
         (!config.cache || !config.cache.disabled) && 
         isEqual(this._config, config) &&
         isEqual(this._url, url) &&
@@ -251,14 +256,23 @@ export default class InterfaceHelper {
                 }
               }
               this._response = cloneDeep(content)
+              if (config.cache && config.cache.global) {
+                InterfaceHelper.cache[config.cache.global] = this._response
+              }
               resolve(content)
             } else {
               const content = getValue(response, config.response.root || '')
               this._response = cloneDeep(content)
+              if (config.cache && config.cache.global) {
+                InterfaceHelper.cache[config.cache.global] = this._response
+              }
               resolve(content)
             }
           } else {
             this._response = cloneDeep(response)
+            if (config.cache && config.cache.global) {
+              InterfaceHelper.cache[config.cache.global] = this._response
+            }
             resolve(response)
           }
         } catch (e: any) {
