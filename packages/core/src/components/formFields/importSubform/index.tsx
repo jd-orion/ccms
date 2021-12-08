@@ -311,9 +311,11 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
         { record: this.props.record, data: this.props.data, step: this.props.step },
         { loadDomain: this.props.loadDomain }
       ).then((data: any) => {
-        this.setState({
-          fields: data
-        })
+        if (JSON.stringify(data) !== JSON.stringify(this.state.fields)) {
+          this.setState({
+            fields: data
+          })
+        }
       })
     }
 

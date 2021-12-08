@@ -185,7 +185,7 @@ export default class InterfaceHelper {
       
       // 缓存判断
       if (config.cache && config.cache.global && Object.keys(InterfaceHelper.cache).includes(config.cache.global)) {
-        return InterfaceHelper.cache[config.cache.global]
+        resolve(InterfaceHelper.cache[config.cache.global])
       } else if (
         (!config.cache || !config.cache.disabled) && 
         isEqual(this._config, config) &&
@@ -255,23 +255,23 @@ export default class InterfaceHelper {
                   set(content, field, value)
                 }
               }
-              this._response = cloneDeep(content)
+              this._response = content
               if (config.cache && config.cache.global) {
-                InterfaceHelper.cache[config.cache.global] = this._response
+                InterfaceHelper.cache[config.cache.global] = content
               }
               resolve(content)
             } else {
               const content = getValue(response, config.response.root || '')
-              this._response = cloneDeep(content)
+              this._response = content
               if (config.cache && config.cache.global) {
-                InterfaceHelper.cache[config.cache.global] = this._response
+                InterfaceHelper.cache[config.cache.global] = content
               }
               resolve(content)
             }
           } else {
-            this._response = cloneDeep(response)
+            this._response = response
             if (config.cache && config.cache.global) {
-              InterfaceHelper.cache[config.cache.global] = this._response
+              InterfaceHelper.cache[config.cache.global] = response
             }
             resolve(response)
           }
