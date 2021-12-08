@@ -127,11 +127,14 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
         const formFieldConfig = this.state.fields[formFieldIndex]
 
         let value = getValue(this.props.value, formFieldConfig.field)
+        const source = value
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
         }
         value = await formField.set(value)
-        this.props.onValueSet(formFieldConfig.field, value, true)
+        if (source !== value) {
+          this.props.onValueSet(formFieldConfig.field, value, true)
+        }
         
         if (value !== undefined) {
           const validation = await formField.validate(value)

@@ -227,11 +227,14 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
 
         let value = getValue(this.props.value[index] === undefined ? {} : this.props.value[index], formFieldConfig.field)
+        const source = value
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
         }
         value = await formField.set(value)
-        this.props.onValueSet(`[${index}]${formFieldConfig.field}`, value, true)
+        if (source !== value) {
+          this.props.onValueSet(`[${index}]${formFieldConfig.field}`, value, true)
+        }
 
         if (value !== undefined) {
           const validation = await formField.validate(value)

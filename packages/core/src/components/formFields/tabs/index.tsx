@@ -167,8 +167,12 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
         const fullPath = tab.field === '' || formFieldConfig.field === '' ? `${tab.field}${formFieldConfig.field}` : `${tab.field}.${formFieldConfig.field}`
 
         let value = getValue(this.props.value, fullPath)
+        const source = value
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
+        }
+        value = await formField.set(value)
+        if (source !== value) {
           this.props.onValueSet(fullPath, value, true)
         }
         
