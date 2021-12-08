@@ -32,10 +32,11 @@ export default function ConditionHelper(condition: ConditionConfig | undefined, 
       if (condition.params) {
         condition.params.forEach((param) => {
           if (param.field !== undefined && param.data !== undefined) {
+            const value = ParamHelper(param.data, cloneDeep(datas))
             if (param.field === '') {
-              statementParams = JSON.stringify(ParamHelper(param.data, cloneDeep(datas)))
+              statementParams = value === undefined ? 'undefined' : JSON.stringify(value)
             } else {
-              set(statementParams, param.field, JSON.stringify(ParamHelper(param.data, cloneDeep(datas))))
+              set(statementParams, param.field, value === undefined ? 'undefined' : JSON.stringify(value))
             }
           }
         })
