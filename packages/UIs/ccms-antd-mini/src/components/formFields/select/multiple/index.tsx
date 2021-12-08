@@ -11,6 +11,7 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
       value,
       options,
       onChange,
+      onClear,
       disabled,
       placeholder
     } = props
@@ -23,6 +24,8 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
         value={value}
         onChange={(value) => onChange(value)}
         mode='multiple'
+        allowClear={onClear !== undefined}
+        onClear={() => onClear !== undefined && onClear()}
       >
         {options.map((option) => (
           <Select.Option key={option.value as any} value={option.value as any}>{option.label}</Select.Option>

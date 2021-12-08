@@ -11,6 +11,7 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
       value,
       options,
       onChange,
+      onClear,
       disabled,
       placeholder
     } = props
@@ -22,6 +23,8 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
         placeholder={placeholder}
         value={value as any}
         onChange={(value) => onChange(value)}
+        allowClear={onClear !== undefined}
+        onClear={() => onClear !== undefined && onClear()}
       >
         {options.map((option) => (
           <Select.Option key={option.value as any} value={option.value as any}>{option.label}</Select.Option>
