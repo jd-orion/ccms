@@ -8,6 +8,7 @@ export interface SelectMultipleFieldConfig extends SelectFieldConfig {
   mode?: 'dropdown' | 'checkbox'
   multiple?: true | SelectMultipleArrayConfig | SelectMultipleSplitConfig
   placeholder?: string
+  canClear?: boolean
 }
 
 interface SelectMultipleArrayConfig {
@@ -23,6 +24,7 @@ export interface ISelectMultipleField {
   value: undefined | Array<string | number>,
   options: Array<ISelectFieldOption>
   onChange: (value: Array<string | number>) => Promise<void>
+  onClear?: () => Promise<void>
   disabled: boolean
   placeholder?: string
 }
@@ -111,6 +113,7 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
       value: undefined,
       options: this.options(optionsConfig),
       onChange: async (value) => { await this.props.onValueSet('', value, await this.validate(value)) },
+      onClear: this.props.config.canClear ? async () => { await this.props.onValueSet('', undefined, await this.validate(undefined)) } : undefined,
       disabled: getBoolean(disabled),
       placeholder
     }

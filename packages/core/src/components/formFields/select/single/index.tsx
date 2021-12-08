@@ -7,12 +7,14 @@ export interface SelectSingleFieldConfig extends SelectFieldConfig {
   type: 'select_single'
   mode?: 'dropdown' | 'radio' | 'button'
   placeholder?: string
+  canClear?: boolean
 }
 
 export interface ISelectSingleField {
   value: undefined | string | number | boolean
   options: Array<ISelectFieldOption>
   onChange: (value: string | number | boolean) => Promise<void>
+  onClear?: () => Promise<void>
   disabled: boolean
   placeholder?: string
 }
@@ -122,6 +124,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       value: undefined,
       options: this.options(optionsConfig),
       onChange: async (value) => { await this.props.onValueSet('', value, await this.validate(value)) },
+      onClear: this.props.config.canClear ? async () => { await this.props.onValueSet('', undefined, await this.validate(undefined)) } : undefined,
       disabled: getBoolean(disabled),
       placeholder
     }
