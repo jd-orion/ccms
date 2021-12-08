@@ -49,9 +49,8 @@ export default class FormFieldComponent extends FormField {
       <Collapse.Panel
         header={<div style={{ display: 'inline-block', width: 'calc(100% - 60px)' }}>{title}</div>}
         key={index}
-        forceRender={false}
+        forceRender={true}
         showArrow={!!canCollapse}
-        collapsible={'header'}
         extra={(
           <Space>
             {onSort
