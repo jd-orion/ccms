@@ -11,6 +11,7 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
       value,
       options,
       onChange,
+      onClear,
       disabled,
       placeholder
     } = props
@@ -23,6 +24,8 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
         value={value as any}
         onChange={(value) => onChange(value)}
         dropdownMatchSelectWidth={false}
+        allowClear={onClear !== undefined}
+        onClear={() => onClear !== undefined && onClear()}
         style={{ minWidth: '100px' }}
       >
         {options.map((option) => (
