@@ -29,7 +29,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
   }
 
   validate = async (value: any): Promise<true | FieldError[]> => {
-    return this._validate(value)
+    return await this._validate(value)
   }
 
   bindValidate = (validate: (value: string) => Promise<true | FieldError[]>) => {
