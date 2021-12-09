@@ -264,6 +264,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       formDataList
     })
 
+    this.formFieldsList[index] = []
     this.formFieldsMountedList[index] = []
 
     await this.props.onValueListAppend('', this.props.config.initialValues === undefined ? {} : cloneDeep(this.props.config.initialValues), true)
@@ -276,6 +277,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       formDataList
     })
 
+    this.formFieldsList.splice(index, 1)
     this.formFieldsMountedList.splice(index, 1)
 
     await this.props.onValueListSplice('', index, 1, true)
@@ -286,6 +288,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     this.setState({
       formDataList
     })
+    this.formFieldsList = listItemMove(this.formFieldsList, index, sortType)
     this.formFieldsMountedList = listItemMove(this.formFieldsMountedList, index, sortType)
     await this.props.onValueListSort('', index, sortType, true)
   }
