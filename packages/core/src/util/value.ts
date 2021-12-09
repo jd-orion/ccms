@@ -31,7 +31,7 @@ export const setValue = (obj: any, path: string = '', value: any) => {
   if (path === '') {
     if (Object.prototype.toString.call(value) === '[object Object]') {
       obj = merge(obj, value)
-    } else {
+    } else if (value !== undefined) {
       obj = value
     }
   } else {
