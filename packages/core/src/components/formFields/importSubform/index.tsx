@@ -88,6 +88,13 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       }
     }
 
+    if (this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField && this.props.config.withConfig?.configField) {
+      const { dataField, configField} = this.props.config.withConfig
+      return {
+        [dataField]: data,
+        [configField]: this.state.fields
+      }
+    }
     return data
   }
 
@@ -111,7 +118,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     for (const fieldIndex in (this.state.fields || [])) {
       const formItem = this.formFields[fieldIndex]
       if (formItem !== null && formItem !== undefined) {
-        const validation = await formItem.validate(getValue(value, (this.state.fields || [])[fieldIndex].field))
+        const validation = await formItem.validate(getValue(value, this.getFullpath((this.state.fields || [])[fieldIndex].field)))
 
         if (validation === true) {
           formData[fieldIndex] = { status: 'normal' }
