@@ -47,6 +47,7 @@ export interface CCMSProps {
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
   loadDomain: (domain: string) => Promise<string>
+  handlePageRedirect?: (path: string) => void
   callback: (success: boolean) => void
   onMount?: () => void
 }
@@ -232,7 +233,8 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
       loadPageURL,
       loadPageFrameURL,
       loadPageConfig,
-      loadDomain
+      loadDomain,
+      handlePageRedirect
     } = this.props
 
     const {
@@ -273,7 +275,8 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
                 loadPageURL,
                 loadPageFrameURL,
                 loadPageConfig,
-                loadDomain
+                loadDomain,
+                handlePageRedirect
               }
 
               const StepComponent = this.getStepComponent(currentStep.type)

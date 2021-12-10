@@ -324,7 +324,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
         const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
         const targetURL = operation.handle.targetURL || ''
         const targetKey = queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
-        window.location.href = `${targetURL}${targetKey}`
+        if (this.props.handlePageRedirect) {
+          this.props.handlePageRedirect(`${targetURL}${targetKey}`)
+        } else {
+          window.location.href = `${targetURL}${targetKey}`
+        }
       } else if (operation.handle.target === 'open') {
         const sourceURL = await this.props.loadPageFrameURL(operation.handle.page)
         const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
@@ -675,6 +679,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                     loadPageFrameURL={this.props.loadPageFrameURL}
                     loadPageConfig={this.props.loadPageConfig}
                     loadDomain={this.props.loadDomain}
+                    handlePageRedirect={this.props.handlePageRedirect}
                     onMount={() => {
                       const { operation } = this.state
                       operation.visible = true
@@ -710,6 +715,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 loadPageFrameURL={this.props.loadPageFrameURL}
                 loadPageConfig={this.props.loadPageConfig}
                 loadDomain={this.props.loadDomain}
+                handlePageRedirect={this.props.handlePageRedirect}
                 onMount={() => {
                   const { operation } = this.state
                   operation.visible = true

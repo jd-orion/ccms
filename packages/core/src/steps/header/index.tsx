@@ -236,6 +236,7 @@ export default class HeaderStep extends Step<HeaderConfig> {
         loadPageFrameURL={this.props.loadPageFrameURL}
         loadPageConfig={this.props.loadPageConfig}
         loadDomain={this.props.loadDomain}
+        handlePageRedirect={this.props.handlePageRedirect}
       />
     )
   }
@@ -304,6 +305,7 @@ export default class HeaderStep extends Step<HeaderConfig> {
             loadPageConfig={this.props.loadPageConfig}
             baseRoute={this.props.baseRoute}
             loadDomain={this.props.loadDomain}
+            handlePageRedirect={this.props.handlePageRedirect}
           >
             {(onClick) => (
               this.renderBreadcurmbItemComponent({

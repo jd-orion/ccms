@@ -58,6 +58,7 @@ interface OperationHelperProps {
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>,
   baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
+  handlePageRedirect?: (path: string) => void
 
   children?: (handleOperation: () => void) => React.ReactNode
   callback?: (success: boolean) => void
@@ -95,6 +96,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
       loadPageURL,
       loadPageFrameURL,
       loadPageConfig,
+      handlePageRedirect
     } = this.props
     return async () => {
       if (config.type === 'ccms') {
@@ -119,7 +121,11 @@ export default class OperationHelper extends React.Component<OperationHelperProp
         } else if (config.mode === 'redirect') {
           const sourceURL = await loadPageURL(config.page)
           const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
-          window.location.href = queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || ''
+          if (handlePageRedirect) {
+            handlePageRedirect(queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || '')
+          } else {
+            window.location.href = queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || ''
+          }
         } else if (config.mode === 'window') {
           const sourceURL = await loadPageFrameURL(config.page)
           const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
@@ -147,6 +153,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
                 loadPageFrameURL: this.props.loadPageFrameURL,
                 loadPageConfig: this.props.loadPageConfig,
                 loadDomain: this.props.loadDomain,
+                handlePageRedirect: this.props.handlePageRedirect,
                 callback: (success) => {
                   this.setState({
                     operationConfig: null,
@@ -174,6 +181,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
               loadPageFrameURL: this.props.loadPageFrameURL,
               loadPageConfig: this.props.loadPageConfig,
               loadDomain: this.props.loadDomain,
+              handlePageRedirect: this.props.handlePageRedirect,
               callback: (success) => {
                 this.setState({
                   operationConfig: null,

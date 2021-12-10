@@ -602,6 +602,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
             loadPageConfig={this.props.loadPageConfig}
             baseRoute={this.props.baseRoute}
             loadDomain={this.props.loadDomain}
+            handlePageRedirect={this.props.handlePageRedirect}
             callback={async (success) => { await this.handleCallback(actions[index], success) }}
           >
             {(onClick) => (
