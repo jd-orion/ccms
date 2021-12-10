@@ -7,9 +7,21 @@ import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 
+/**
+ * 子表单配置项
+ * - withConfig: 拓展配置
+ * - * - enable: 是否开启
+ * - * - dataField: （序列化）数据
+ * - * - configField: （序列化）配置
+ */
 export interface ImportSubformFieldConfig extends FieldConfig {
   type: 'import_subform',
   interface?: InterfaceConfig
+  withConfig?: {
+    enable: boolean
+    dataField: string
+    configField: string
+  }
 }
 
 export interface IImportSubformField {
@@ -44,6 +56,13 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       fields: [],
       formData: []
     }
+  }
+
+  getFullpath (field: string, path: string = '') {
+    const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
+    const _fullPath = `${withConfigPath}.${field}.${path}.`
+    const fullPath = _fullPath.replace(/(^\.*)|(\.*$)|(\.){2,}/g, '$3')
+    return fullPath
   }
 
   didMount = async () => {
@@ -187,7 +206,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
   handleValueSet = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath = this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueSet(fullPath, value, true)
       
       const formData = cloneDeep(this.state.formData)
@@ -206,7 +225,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
   handleValueUnset = async (formFieldIndex: number, path: string, validation: true | FieldError[]) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath =  this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueUnset(fullPath, true)
       
       const formData = cloneDeep(this.state.formData)
@@ -225,7 +244,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
   handleValueListAppend = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath =  this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueListAppend(fullPath, value, true)
       
       const formData = cloneDeep(this.state.formData)
@@ -244,7 +263,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
   handleValueListSplice = async (formFieldIndex: number, path: string, index: number, count: number, validation: true | FieldError[]) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath =  this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueListSplice(fullPath, index, count, true)
       
       const formData = cloneDeep(this.state.formData)
@@ -262,7 +281,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
   handleValueListSort = async (formFieldIndex: number, path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath =  this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueListSort(fullPath, index, sortType, true)
       
       const formData = cloneDeep(this.state.formData)
@@ -311,9 +330,22 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
         { record: this.props.record, data: this.props.data, step: this.props.step },
         { loadDomain: this.props.loadDomain }
       ).then((data: any) => {
-        if (JSON.stringify(data) !== JSON.stringify(this.state.fields)) {
+        let dataToUnstringfy = data
+        let dataToStringfy = JSON.stringify(data)
+        if (Object.prototype.toString.call(data) === "[object String]") {
+          try {
+            dataToStringfy = data
+            dataToUnstringfy = JSON.parse(data)
+          } catch (e) {
+            console.error('当前动态子表单接口响应数据格式不是合格的json字符串')
+            dataToUnstringfy = []
+            dataToStringfy = '[]'
+          }
+        }
+        (this.props.config.withConfig?.enable && this.props.config.withConfig?.configField) &&  this.props.onValueSet(this.props.config.withConfig.configField, data, true)
+        if (dataToStringfy !== JSON.stringify(this.state.fields)) {
           this.setState({
-            fields: data
+            fields: dataToUnstringfy
           })
         }
       })
@@ -362,7 +394,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                         }
                       }}
                       formLayout={formLayout}
-                      value={getValue(value, formFieldConfig.field)}
+                      value={getValue(value, this.getFullpath(formFieldConfig.field))}
                       record={record}
                       data={cloneDeep(data)}
                       step={step}
