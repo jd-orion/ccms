@@ -27,7 +27,8 @@ export default class DatetimeColumn extends Column<DatetimeColumnConfig, IDateti
       value
     } = this.props
 
-    const rsValue= value ? moment(value).format(format) : defaultValue
+    let _val = /^\d+$/.test(value) ? parseInt(value) : value
+    const rsValue= value ? moment(_val).format(format) : defaultValue
 
     return rsValue
   }

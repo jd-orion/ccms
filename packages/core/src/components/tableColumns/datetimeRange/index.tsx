@@ -44,7 +44,8 @@ export default class DatetimeRangeColumn extends Column<DatetimeRangeColumnConfi
     }
 
     list && list.length > 0 && list.forEach((val: string, index: number) => {
-      rsValue += index < list.length - 1 ? `${moment(val).format(format)}${split}` : moment(val).format(format)
+      let _val = /^\d+$/.test(val) ? parseInt(val) : val
+      rsValue += index < list.length - 1 ? `${moment(_val).format(format)}${split}` : moment(_val).format(format)
     })
     
     return rsValue
