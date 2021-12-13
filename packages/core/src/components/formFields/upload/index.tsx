@@ -19,13 +19,15 @@ export interface UploadFieldConfigImage extends UploadFieldConfigBasic {
   sizeCheck?: {
     height?: number
     width?: number
-    maxSize?: number
+    maxSize?: number,
+    sizeUnit?: 'B' | 'K' | 'M' | 'G' | 'T'
   },
 }
 export interface UploadFieldConfigFile extends UploadFieldConfigBasic {
   mode: 'file'
   sizeCheck?: {
-    maxSize?: number
+    maxSize?: number,
+    sizeUnit?: 'B' | 'K' | 'M' | 'G' | 'T'
   },
 }
 
@@ -76,33 +78,38 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
       this.errors.push(new FieldError('只能上传图片。'))
     }
 
-    if (config.sizeCheck && config.sizeCheck.maxSize && file.size > config.sizeCheck.maxSize) {
-      let sizeNumber = config.sizeCheck.maxSize
+    if (config.sizeCheck && config.sizeCheck.maxSize) {
+      const maxSize = config.sizeCheck.maxSize
       let sizeString = ''
-      if (sizeNumber > 1024 * 1024 * 1024 * 1024) {
-        const t = Math.floor(sizeNumber / (1024 * 1024 * 1024 * 1024))
-        sizeString += `${t}T`
-        sizeNumber -= t * 1024 * 1024 * 1024 * 1024
+      const sizeUnit = config.sizeCheck.sizeUnit
+      switch (sizeUnit) {
+        case 'B':
+          if (file.size > maxSize) {
+            sizeString = `${maxSize}B`
+          }
+          break
+        case 'K':
+          if (file.size > maxSize * 1024) {
+            sizeString = `${maxSize}K`
+          }
+          break
+        case 'M':
+          if (file.size > maxSize * 1024 * 1024) {
+            sizeString = `${maxSize}M`
+          }
+          break
+        case 'G':
+          if (file.size > maxSize * 1024 * 1024 * 1024) {
+            sizeString = `${maxSize}G`
+          }
+          break
+        case 'T':
+          if (file.size > maxSize * 1024 * 1024 * 1024 * 1024) {
+            sizeString = `${maxSize}T`
+          }
+          break
       }
-      if (sizeNumber > 1024 * 1024 * 1024) {
-        const t = Math.floor(sizeNumber / (1024 * 1024 * 1024))
-        sizeString += `${t}G`
-        sizeNumber -= t * 1024 * 1024 * 1024
-      }
-      if (sizeNumber > 1024 * 1024) {
-        const t = Math.floor(sizeNumber / (1024 * 1024))
-        sizeString += `${t}M`
-        sizeNumber -= t * 1024 * 1024
-      }
-      if (sizeNumber > 1024) {
-        const t = Math.floor(sizeNumber / 1024)
-        sizeString += `${t}K`
-        sizeNumber -= t * 1024
-      }
-      if (sizeNumber > 0) {
-        sizeString += `${sizeNumber}B`
-      }
-      this.errors.push(new FieldError(`文件大小超过${sizeString}。`))
+      sizeString && this.errors.push(new FieldError(`文件大小超过${sizeString}。`))
     }
 
     if (config.mode === 'image' && config.sizeCheck && (config.sizeCheck.width || config.sizeCheck.height)) {
