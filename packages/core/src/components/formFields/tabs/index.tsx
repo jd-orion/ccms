@@ -374,6 +374,8 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                       label: tab.label,
                       children: fields.map((formFieldConfig, formFieldIndex) => {
                         if (!ConditionHelper(formFieldConfig.condition, { record: this.props.record, data: this.props.data, step: this.props.step })) {
+                          if (!this.formFieldsMountedList[index]) this.formFieldsMountedList[index] = []
+                          this.formFieldsMountedList[index][formFieldIndex] = false
                           return null
                         }
                         let hidden: boolean = true

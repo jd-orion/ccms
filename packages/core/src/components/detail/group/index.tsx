@@ -225,6 +225,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
         {this.renderComponent({
           children: (this.props.config.fields || []).map((detailFieldConfig, detailFieldIndex) => {
             if (!ConditionHelper(detailFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
+              this.detailFieldsMounted[detailFieldIndex] = false
               return null
             }
             let hidden: boolean = true

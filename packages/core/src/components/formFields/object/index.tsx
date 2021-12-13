@@ -413,6 +413,8 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                       onRemove: async () => await this.handleRemove(key),
                       children: (Array.isArray(this.props.config.fields) ? this.props.config.fields : []).map((formFieldConfig, formFieldIndex) => {
                         if (!ConditionHelper(formFieldConfig.condition, { record: this.props.record, data: this.props.data, step: this.props.step })) {
+                          if (!this.formFieldsMountedList[key]) this.formFieldsMountedList[key] = []
+                          this.formFieldsMountedList[key][formFieldIndex] = false
                           return null
                         }
                         let hidden: boolean = true

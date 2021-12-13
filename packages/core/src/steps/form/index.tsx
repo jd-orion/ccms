@@ -631,6 +631,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
             cancelText: this.props.config?.cancelText?.replace(/(^\s*)|(\s*$)/g, ""), // TODO 待删除
             children: fields.map((formFieldConfig, formFieldIndex) => {
               if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
+                this.formFieldsMounted[formFieldIndex] = false
                 return null
               }
               let hidden: boolean = true

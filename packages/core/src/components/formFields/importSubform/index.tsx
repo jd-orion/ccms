@@ -366,6 +366,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
           {this.renderComponent({
             children: this.state.didMount ? (Array.isArray(this.state.fields) ? this.state.fields : []).map((formFieldConfig, formFieldIndex) => {
               if (!ConditionHelper(formFieldConfig.condition, { record: value, data, step })) {
+                this.formFieldsMounted[formFieldIndex] = false
                 return null
               }
               let hidden: boolean = true

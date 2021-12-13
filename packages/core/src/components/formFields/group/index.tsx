@@ -291,6 +291,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
         {this.renderComponent({
           children: this.state.didMount ? (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
             if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
+              this.formFieldsMounted[formFieldIndex] = false
               return null
             }
             let hidden: boolean = true

@@ -368,6 +368,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
             backText: this.props.config?.backText?.replace(/(^\s*)|(\s*$)/g, ""),
             children: fields.map((detailFieldConfig, detailFieldIndex) => {
               if (!ConditionHelper(detailFieldConfig.condition, { record: detailValue, data, step })) {
+                this.detailFieldsMounted[detailFieldIndex] = false
                 return null
               }
               let hidden: boolean = true

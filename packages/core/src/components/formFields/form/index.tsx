@@ -489,6 +489,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                     canCollapse,
                     children: (fields || []).map((formFieldConfig, fieldIndex) => {
                       if (!ConditionHelper(formFieldConfig.condition, { record: itemValue, data: this.props.data, step: this.props.step })) {
+                        if (!this.formFieldsMountedList[index]) this.formFieldsMountedList[index] = []
+                        this.formFieldsMountedList[index][fieldIndex] = false
                         return null
                       }
                       const FormField = this.getALLComponents(formFieldConfig.type) || Field
