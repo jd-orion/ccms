@@ -83,15 +83,15 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
         const formField = this.formFields[formFieldIndex]
         if (formField) {
           const value = await formField.get()
-          data = setValue(data, formFieldConfig.field, value)
+          data = setValue(data, this.getFullpath(formFieldConfig.field), value)
         }
       }
     }
 
     if (this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField && this.props.config.withConfig?.configField) {
-      const { dataField, configField} = this.props.config.withConfig
+      const { configField } = this.props.config.withConfig
       return {
-        [dataField]: data,
+        ...data,
         [configField]: this.state.fields
       }
     }
@@ -152,14 +152,14 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       if (formField) {
         const formFieldConfig = this.state.fields[formFieldIndex]
 
-        let value = getValue(this.props.value, formFieldConfig.field)
+        let value = getValue(this.props.value, this.getFullpath(formFieldConfig.field))
         const source = value
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
         }
         value = await formField.set(value)
         if (source !== value) {
-          this.props.onValueSet(formFieldConfig.field, value, true)
+          this.props.onValueSet(this.getFullpath(formFieldConfig.field), value, true)
         }
         
         if (value !== undefined) {
