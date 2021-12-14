@@ -26,6 +26,7 @@ export interface ISelectMultipleField {
   onChange: (value: Array<string | number>) => Promise<void>
   onClear?: () => Promise<void>
   disabled: boolean
+  readonly: boolean
   placeholder?: string
 }
 
@@ -105,6 +106,7 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
         multiple,
         options: optionsConfig,
         disabled,
+        readonly,
         placeholder
       }
     } = this.props
@@ -115,6 +117,7 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
       onChange: async (value) => { await this.props.onValueSet('', value, await this.validate(value)) },
       onClear: this.props.config.canClear ? async () => { await this.props.onValueSet('', undefined, await this.validate(undefined)) } : undefined,
       disabled: getBoolean(disabled),
+      readonly: getBoolean(readonly),
       placeholder
     }
 
