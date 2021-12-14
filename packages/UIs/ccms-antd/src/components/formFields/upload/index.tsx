@@ -22,7 +22,7 @@ export default class UploadFieldComponent extends UploadField {
     return (
       <React.Fragment>
         <AntdUpload
-          className={styles['ccms-antd-upload']}
+          className={`${styles['ccms-antd-upload']} ${mode === 'image' ? styles['ccms-antd-upload-image-box'] : ''}`}
           beforeUpload={async (file) => {
             await onChange(file)
           }}
