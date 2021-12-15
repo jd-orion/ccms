@@ -72,35 +72,25 @@ export default class DatetimeRangeField extends Field<DatetimeRangeFieldConfig, 
   //   return setValue
   // };
 
-  // validate = async (value: IDatetimeRangeField['value']): Promise<true | FieldError[]> => {
-  //   const {
-  //     config: {
-  //       required,
-  //       regExp
-  //     }
-  //   } = this.props
+  validate = async (value: string | string[] | number[] | undefined[] | undefined): Promise<true | FieldError[]> => {
+    const {
+      config: {
+        required
+      }
+    } = this.props
 
-  //   const errors: FieldError[] = []
-  //   if (getBoolean(required)) {
-  //     if (value === null || value === undefined) {
-  //       errors.push(new FieldError('不能为空'))
-  //     }
-  //     if (value?.toString() === '') {
-  //       errors.push(new FieldError('不能为空'))
-  //     }
-  //   }
+    const errors: FieldError[] = []
+    if (getBoolean(required)) {
+      if (value === null || value === '' || value === undefined) {
+        errors.push(new FieldError('不能为空'))
+      }
+    }
 
-  //   if (regExp !== undefined && value) {
-  //     if (regExp.expression && new RegExp(`${regExp.expression}`).test(String(value))) return true
-  //     if (regExp.message) {
-  //       errors.push(new FieldError(regExp.message))
-  //     } else {
-  //       errors.push(new FieldError('格式错误'))
-  //     }
-  //   }
-
-  //   return errors.length ? errors : true
-  // }
+    if (value === 'Invalid date') {
+      errors.push(new FieldError('格式错误'))
+    }
+    return errors.length ? errors : true
+  }
 
   // getTime = (time: string) => {
   //   const {
