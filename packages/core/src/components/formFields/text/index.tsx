@@ -58,6 +58,7 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
       if (value === '' || value === undefined) {
         errors.push(new FieldError(`请输入${label}`))
       }
+      return errors.length ? errors : true
     }
 
     if (characterType && characterType.enable) {

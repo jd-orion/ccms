@@ -656,7 +656,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
               let status = formData[formFieldIndex]?.status || 'normal'
 
-              if (['group', 'import_submit'].some((type) => type === formFieldConfig.type)) {
+              if (['group', 'import_subform'].some((type) => type === formFieldConfig.type)) {
                 status = 'normal'
               }
 

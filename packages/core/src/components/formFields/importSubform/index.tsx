@@ -3,7 +3,7 @@ import { setValue, getValue } from '../../../util/value'
 import { Field, FieldConfig, FieldError, FieldProps, IField } from '../common'
 import getALLComponents, { FieldConfigs } from '../'
 import { IFormItem } from '../../../steps/form'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, omit } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 
@@ -79,7 +79,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
         const formFieldConfig = this.state.fields[formFieldIndex]
         if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step })) {
           if (data[formFieldConfig.field]) {
-            delete data[formFieldConfig.field]
+            data = omit(data, formFieldConfig.field)
           }
           continue
         }
