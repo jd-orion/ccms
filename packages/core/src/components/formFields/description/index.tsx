@@ -14,8 +14,12 @@ export interface IDescField {
   style?: any
 }
 
-export default class DescField extends Field<DescFieldConfig, IDescField, string> implements IField<string> {
-  validate = async (value: string): Promise<true | FieldError[]> => {
+export default class DescField extends Field<DescFieldConfig, IDescField, undefined> implements IField<undefined> {
+  get = async () => {
+    return undefined
+  }
+
+  validate = async (): Promise<true | FieldError[]> => {
     return true
   }
 
