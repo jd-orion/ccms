@@ -90,10 +90,6 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
 
     if (this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField && this.props.config.withConfig?.configField) {
       const { configField } = this.props.config.withConfig
-      console.log(data,'dataaaaaa', this.state.fields,{
-        ...data,
-        [configField]: this.state.fields
-      })
       return {
         ...data,
         [configField]: this.state.fields
