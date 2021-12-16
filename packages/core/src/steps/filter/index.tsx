@@ -471,9 +471,15 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
 
             const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
+            let status = (formData[formFieldIndex] || {}).status || 'normal'
+
+            if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
+              status = 'normal'
+            }
+
             const renderData = {
               label: formFieldConfig.label,
-              status: (formData[formFieldIndex] || {}).status || 'normal',
+              status,
               message: (formData[formFieldIndex] || {}).message || '',
               visitable: display,
               fieldType: formFieldConfig.type,

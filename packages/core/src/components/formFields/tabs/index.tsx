@@ -393,6 +393,12 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                         
                         const FormField = this.getALLComponents(formFieldConfig.type) || Field
   
+                        let status = ((this.state.formDataList[index] || [])[formFieldIndex] || {}).status || 'normal'
+
+                        if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
+                          status = 'normal'
+                        }
+
                         // 渲染表单项容器
                         if (hidden) {
                           return (
@@ -400,7 +406,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                               {this.renderItemFieldComponent({
                                 index: formFieldIndex,
                                 label: formFieldConfig.label,
-                                status: ((this.state.formDataList[index] || [])[formFieldIndex] || {}).status || 'normal',
+                                status,
                                 message: ((this.state.formDataList[index] || [])[formFieldIndex] || {}).message || '',
                                 layout: this.props.formLayout,
                                 fieldType: formFieldConfig.type,

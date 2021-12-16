@@ -432,13 +432,19 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                         
                         const FormField = this.getALLComponents(formFieldConfig.type) || Field
   
+                        let status = ((this.state.formDataList[key] || [])[formFieldIndex] || {}).status || 'normal'
+
+                        if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
+                          status = 'normal'
+                        }
+
                         // 渲染表单项容器
                         if (hidden) {
                           return (
                               this.renderItemFieldComponent({
                                 index: formFieldIndex,
                                 label: formFieldConfig.label,
-                                status: ((this.state.formDataList[key] || [])[formFieldIndex] || {}).status || 'normal',
+                                status,
                                 message: ((this.state.formDataList[key] || [])[formFieldIndex] || {}).message || '',
                                 layout: this.props.formLayout,
                                 visitable: display,

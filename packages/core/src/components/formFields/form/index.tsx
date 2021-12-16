@@ -495,6 +495,11 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                       }
                       const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
+                      let status = ((this.state.formDataList[index] || [])[fieldIndex] || {}).status || 'normal'
+
+                      if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
+                        status = 'normal'
+                      }
                       // 渲染表单项容器
                       return (
                         <div key={fieldIndex}>
@@ -502,7 +507,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                             this.renderItemFieldComponent({
                               index: fieldIndex,
                               label: formFieldConfig.label,
-                              status: ((this.state.formDataList[index] || [])[fieldIndex] || {}).status || 'normal',
+                              status,
                               message: ((this.state.formDataList[index] || [])[fieldIndex] || {}).message || '',
                               layout: formLayout,
                               fieldType: formFieldConfig.type,

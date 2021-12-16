@@ -81,9 +81,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
       for (const formFieldIndex in this.props.config.fields) {
         const formFieldConfig = this.props.config.fields[formFieldIndex]
         if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step })) {
-          if (data[formFieldConfig.field]) {
-            delete data[formFieldConfig.field]
-          }
           continue
         }
         const formField = this.formFields[formFieldIndex]
@@ -305,10 +302,16 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
 
             const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
+            let status = (this.state.formData[formFieldIndex] || {}).status || 'normal'
+
+            if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
+              status = 'normal'
+            }
+
             const renderData = {
               key: formFieldIndex,
               label: formFieldConfig.label,
-              status: (this.state.formData[formFieldIndex] || {}).status || 'normal',
+              status,
               message: (this.state.formData[formFieldIndex] || {}).message || '',
               layout: formLayout,
               visitable: display,

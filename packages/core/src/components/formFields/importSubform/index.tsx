@@ -3,7 +3,7 @@ import { setValue, getValue } from '../../../util/value'
 import { Field, FieldConfig, FieldError, FieldProps, IField } from '../common'
 import getALLComponents, { FieldConfigs } from '../'
 import { IFormItem } from '../../../steps/form'
-import { cloneDeep, omit } from 'lodash'
+import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 
@@ -78,9 +78,6 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       for (const formFieldIndex in this.state.fields) {
         const formFieldConfig = this.state.fields[formFieldIndex]
         if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step })) {
-          if (data[formFieldConfig.field]) {
-            data = omit(data, formFieldConfig.field)
-          }
           continue
         }
         const formField = this.formFields[formFieldIndex]
@@ -93,6 +90,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
 
     if (this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField && this.props.config.withConfig?.configField) {
       const { configField } = this.props.config.withConfig
+      console.log(data,'dataaaaaa', this.state.fields,{
+        ...data,
+        [configField]: this.state.fields
+      })
       return {
         ...data,
         [configField]: this.state.fields
@@ -387,10 +388,16 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
   
               const FormField = this.getALLComponents(formFieldConfig.type) || Field
   
+              let status = (this.state.formData[formFieldIndex] || {}).status || 'normal'
+
+              if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
+                status = 'normal'
+              }
+
               const renderData = {
                 key: formFieldIndex,
                 label: formFieldConfig.label,
-                status: (this.state.formData[formFieldIndex] || {}).status || 'normal',
+                status,
                 message: (this.state.formData[formFieldIndex] || {}).message || '',
                 layout: formLayout,
                 visitable: display,
