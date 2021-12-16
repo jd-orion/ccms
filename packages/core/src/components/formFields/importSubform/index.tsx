@@ -78,6 +78,9 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       for (const formFieldIndex in this.state.fields) {
         const formFieldConfig = this.state.fields[formFieldIndex]
         if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step })) {
+          if (data[formFieldConfig.field]) {
+            delete data[formFieldConfig.field]
+          }
           continue
         }
         const formField = this.formFields[formFieldIndex]
@@ -120,7 +123,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       if (formItem !== null && formItem !== undefined) {
         const validation = await formItem.validate(getValue(value, this.getFullpath((this.state.fields || [])[fieldIndex].field)))
 
-        if (validation === true) {
+        if (validation === true || this.formFieldsMounted[fieldIndex] === false) {
           formData[fieldIndex] = { status: 'normal' }
         } else {
           childrenError++

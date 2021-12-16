@@ -654,10 +654,16 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
               const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
+              let status = formData[formFieldIndex]?.status || 'normal'
+
+              if (['group', 'import_submit'].some((type) => type === formFieldConfig.type)) {
+                status = 'normal'
+              }
+
               const renderData = {
                 key: formFieldIndex,
                 label: formFieldConfig.label,
-                status: formData[formFieldIndex]?.status || 'normal',
+                status,
                 message: formData[formFieldIndex]?.message || '',
                 layout,
                 visitable: display,

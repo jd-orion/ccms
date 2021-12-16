@@ -17,7 +17,7 @@ export interface IGroupField {
 
 interface IGroupFieldState {
   didMount: boolean
-  formData: { status: 'normal' | 'error' | 'loading', message?: string }[]
+  formData: { status: 'normal' | 'error' | 'loading', message?: string, name?: string }[]
 }
 
 export default class GroupField extends Field<GroupFieldConfig, IGroupField, any, IGroupFieldState> implements IField<string> {
@@ -54,7 +54,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
       if (formItem !== null && formItem !== undefined) {
         const validation = await formItem.validate(getValue(value, (this.props.config.fields || [])[fieldIndex].field))
 
-        if (validation === true) {
+        if (validation === true || this.formFieldsMounted[fieldIndex] === false) {
           formData[fieldIndex] = { status: 'normal' }
         } else {
           childrenError++
@@ -81,6 +81,9 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
       for (const formFieldIndex in this.props.config.fields) {
         const formFieldConfig = this.props.config.fields[formFieldIndex]
         if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step })) {
+          if (data[formFieldConfig.field]) {
+            delete data[formFieldConfig.field]
+          }
           continue
         }
         const formField = this.formFields[formFieldIndex]
@@ -90,7 +93,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
         }
       }
     }
-    
     return data
   }
 
@@ -98,7 +100,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (this.formFieldsMounted[formFieldIndex]) {
       return true
     }
-    
     this.formFieldsMounted[formFieldIndex] = true
 
     if (this.formFields[formFieldIndex]) {
@@ -120,12 +121,12 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
           const validation = await formField.validate(value)
           if (validation === true) {
             await this.setState(({ formData }) => {
-              formData[formFieldIndex] = { status: 'normal' }
+              formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
               return { formData: cloneDeep(formData) }
             })
           } else {
             await this.setState(({ formData }) => {
-              formData[formFieldIndex] = { status: 'error', message: validation[0].message }
+              formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
               return { formData: cloneDeep(formData) }
             })
           }
@@ -169,7 +170,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (formFieldConfig) {
       const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       await this.props.onValueSet(fullPath, value, true)
-      
       const formData = cloneDeep(this.state.formData)
       if (validation === true) {
         formData[formFieldIndex] = { status: 'normal' }
@@ -188,7 +188,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (formFieldConfig) {
       const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       await this.props.onValueUnset(fullPath, true)
-      
       const formData = cloneDeep(this.state.formData)
       if (validation === true) {
         formData[formFieldIndex] = { status: 'normal' }
@@ -207,7 +206,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (formFieldConfig) {
       const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       await this.props.onValueListAppend(fullPath, value, true)
-      
       const formData = cloneDeep(this.state.formData)
       if (validation === true) {
         formData[formFieldIndex] = { status: 'normal' }
@@ -226,7 +224,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (formFieldConfig) {
       const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       await this.props.onValueListSplice(fullPath, index, count, true)
-      
       const formData = cloneDeep(this.state.formData)
       if (validation === true) {
         formData[formFieldIndex] = { status: 'normal' }
@@ -245,7 +242,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (formFieldConfig) {
       const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       await this.props.onValueListSort(fullPath, index, sortType, true)
-      
       const formData = cloneDeep(this.state.formData)
       if (validation === true) {
         formData[formFieldIndex] = { status: 'normal' }
