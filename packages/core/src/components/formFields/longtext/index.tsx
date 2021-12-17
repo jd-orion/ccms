@@ -53,6 +53,7 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
       if (value === '' || value === undefined) {
         errors.push(new FieldError(`输入${label}`))
       }
+      return errors.length ? errors : true
     }
 
     if (characterType && characterType.enable) {

@@ -82,7 +82,7 @@ export default class DatetimeRangeField extends Field<DatetimeRangeFieldConfig, 
     const errors: FieldError[] = []
     if (getBoolean(required)) {
       if (value === null || value === '' || value === undefined) {
-        errors.push(new FieldError('不能为空'))
+        errors.push(new FieldError(this.props.config?.placeholder ? this.props.config?.placeholder: '不能为空'))
       }
     }
 
