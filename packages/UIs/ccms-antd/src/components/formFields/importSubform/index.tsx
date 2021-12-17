@@ -28,10 +28,12 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
 
   renderItemComponent = (props: IFormItem) => {
     const {
+      key,
       label,
       visitable,
       status,
       message,
+      required,
       fieldType,
       children
     } = props
@@ -47,6 +49,8 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
 
     return (
       <Form.Item
+        key={key}
+        required={required}
         label={label}
         {...formItemLayout}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}

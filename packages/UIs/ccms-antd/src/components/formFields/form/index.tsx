@@ -16,13 +16,14 @@ export default class FormFieldComponent extends FormField {
       label,
       status,
       message,
+      required,
       fieldType,
       layout,
       children
     } = props
-
     return (
       <Form.Item
+        required={required}
         label={label}
         validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
         help={ message === '' ? null : message}

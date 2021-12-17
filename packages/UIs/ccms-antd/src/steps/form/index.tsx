@@ -91,12 +91,14 @@ export default class FormStepComponent extends FormStep {
       label,
       status,
       message,
+      required,
       fieldType,
       children
     } = props
 
     return (
       <Form.Item
+        required={required}
         key={key}
         label={label}
         {...formItemLayout(layout, fieldType, label)}

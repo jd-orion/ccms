@@ -31,12 +31,14 @@ export default class GroupFieldComponent extends GroupField {
       visitable,
       status,
       message,
+      required,
       fieldType,
       children
     } = props
 
     return (
       <Form.Item
+        required={required}
         key={key}
         label={label}
         {...formItemLayout(layout, fieldType, label)}
