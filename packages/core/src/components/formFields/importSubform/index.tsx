@@ -410,6 +410,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                           this.handleMount(formFieldIndex)
                         }
                       }}
+                      form={this.props.form}
                       formLayout={formLayout}
                       value={getValue(value, this.getFullpath(formFieldConfig.field))}
                       record={record}

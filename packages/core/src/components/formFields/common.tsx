@@ -68,6 +68,8 @@ export interface IField<T> {
 export interface FieldProps<C extends FieldConfig, T> {
   // 挂载事件
   ref: (instance: Field<C, {}, any> | null) => void
+  // 挂载引用
+  form: React.ReactNode
   formLayout: 'horizontal' | 'vertical' | 'inline'
   value: T,
   record: { [field: string]: any },
@@ -158,7 +160,7 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
     return {}
   }
 
-  didMount: () => Promise<void> = async () => {}
+  didMount: () => Promise<void> = async () => { }
 
   renderComponent = (props: E) => {
     return <React.Fragment>

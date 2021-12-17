@@ -520,6 +520,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                                       this.handleMount(index, fieldIndex)
                                     }
                                   }}
+                                  form={this.props.form}
                                   formLayout={formLayout}
                                   value={getValue(value[index], formFieldConfig.field)}
                                   record={value[index]}

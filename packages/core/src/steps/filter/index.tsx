@@ -492,6 +492,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
                         this.handleFormFieldMount(formFieldIndex)
                       }
                     }}
+                    form={this}
                     formLayout={'inline'}
                     value={formFieldConfig.field !== undefined ? get(formValue, formFieldConfig.field) : undefined}
                     record={formValue}

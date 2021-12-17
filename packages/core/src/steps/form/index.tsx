@@ -171,6 +171,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
 
   formValue: { [field: string]: any } = {}
   formData: { status: 'normal' | 'error' | 'loading', message?: string, name: string }[] = []
+  canSubmit: boolean = false
+  submitData: object = {}
 
   /**
    * 初始化表单的值
@@ -271,23 +273,23 @@ export default class FormStep extends Step<FormConfig, FormState> {
   }
 
   /**
-   * 处理表单提交事件
+   * 触发表单校验
    */
-  handleSubmit = async () => {
-    let data: any = {}
-    let canSubmit = true
-
+  handleValidations = async () => {
+    this.canSubmit = true
+    this.submitData = {}
     if (this.props.config.validations) {
       for (const validation of this.props.config.validations) {
         if (!ConditionHelper(validation.condition, { record: this.state.formValue, data: this.props.data, step: this.props.step })) {
-          canSubmit = false
+          this.canSubmit = false
           const message = StatementHelper(validation.message, { record: this.state.formValue, data: this.props.data, step: this.props.step }) || '未填写失败文案或失败文案配置异常'
           this.renderModalComponent({ message })
-          return null
+          return
         }
       }
-      if (!canSubmit) return null
+      if (!this.canSubmit) return
     }
+
     for (const formFieldIndex in (this.props.config.fields || [])) {
       if (this.formFields[formFieldIndex]) {
         const formField = this.formFields[formFieldIndex]
@@ -295,33 +297,39 @@ export default class FormStep extends Step<FormConfig, FormState> {
         if (formField && formFieldConfig) {
           const value = await formField.get()
           const validation = await formField.validate(value)
-          // const submitFieldFormat = await formField.fieldFormat()
 
           if (validation !== true) {
             console.warn('表单项中存在问题', value, formFieldConfig)
             this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
-            canSubmit = false
+            this.canSubmit = false
           }
-          data = setValue(data, formFieldConfig.field, value)
+          this.submitData = setValue(this.submitData, formFieldConfig.field, value)
         }
       }
     }
 
     if (this.props.config.stringify) {
       for (const field of this.props.config.stringify) {
-        const info = getValue(data, field)
-        data = setValue(data, field, JSON.stringify(info))
+        const info = getValue(this.submitData, field)
+        this.submitData = setValue(this.submitData, field, JSON.stringify(info))
       }
     }
-
-    console.info('表单参数信息', data, this.state.formValue, this.formData)
 
     await this.setState({
       formData: cloneDeep(this.formData)
     })
+  }
 
-    if (canSubmit && this.props.onSubmit) {
-      this.props.onSubmit(data)
+  /**
+   * 处理表单提交事件
+   */
+  handleSubmit = async () => {
+    await this.handleValidations()
+
+    console.info('表单参数信息', this.submitData, this.state.formValue, this.formData)
+
+    if (this.canSubmit && this.props.onSubmit) {
+      this.props.onSubmit(this.submitData)
     }
   }
 
@@ -682,6 +690,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                     formLayout={layout}
                     value={formFieldConfig.field !== undefined ? getValue(formValue, formFieldConfig.field) : undefined}
                     record={formValue}
+                    form={this}
                     data={cloneDeep(data)}
                     step={step}
                     config={formFieldConfig}

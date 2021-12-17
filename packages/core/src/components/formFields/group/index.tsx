@@ -326,6 +326,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                         this.handleMount(formFieldIndex)
                       }
                     }}
+                    form={this.props.form}
                     formLayout={formLayout}
                     value={getValue(value, formFieldConfig.field)}
                     record={record}

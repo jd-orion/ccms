@@ -418,6 +418,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                                       this.formFieldsList[index][formFieldIndex] = formField
                                       this.handleMount(index, formFieldIndex)
                                     }}
+                                    form={this.props.form}
                                     formLayout={this.props.formLayout}
                                     value={getValue(getValue(value, tab.field), formFieldConfig.field)}
                                     record={getValue(value, tab.field)}

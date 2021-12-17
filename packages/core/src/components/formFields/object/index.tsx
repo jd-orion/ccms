@@ -460,6 +460,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                       }
                                     }}
                                     formLayout={this.props.formLayout}
+                                    form={this.props.form}
                                     value={getValue(value[key], formFieldConfig.field)}
                                     record={value[key]}
                                     data={cloneDeep(this.props.data)}

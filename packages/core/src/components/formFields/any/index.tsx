@@ -82,6 +82,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
           }),
           valueContent: type === 'string' ? <this.TextField
             ref={() => {}}
+            form={this.props.form}
             formLayout={'horizontal'}
             value={typeof value === 'string' ? value : ''}
             record={record}
@@ -99,6 +100,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
           /> : (
             type === 'number' ? <this.NumberField
               ref={() => {}}
+              form={this.props.form}
               formLayout={'horizontal'}
               record={record}
               value={typeof value === 'number' ? value : ''}
@@ -115,6 +117,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
               loadDomain={this.props.loadDomain}
             /> : <this.BooleanField
               ref={() => {}}
+              form={this.props.form}
               formLayout={'horizontal'}
               record={record}
               value={typeof value === 'boolean' ? value : false}
