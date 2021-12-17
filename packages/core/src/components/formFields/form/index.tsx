@@ -1,7 +1,7 @@
 import React from 'react'
 import { Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from '../common'
 import getALLComponents from '../'
-import { getValue, listItemMove, setValue } from '../../../util/value'
+import { getValue, listItemMove, setValue, getBoolean } from '../../../util/value'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 
@@ -19,7 +19,7 @@ export interface FormFieldConfig extends FieldConfig {
   canSort?: boolean
   canCollapse?: boolean // 是否用Collapse折叠展示
   stringify?: string[] // 序列号字段
-  unstringify?: string[] // 反序列化字段 
+  unstringify?: string[] // 反序列化字段
 }
 
 export interface IFormField {
@@ -43,6 +43,7 @@ export interface IFormFieldItem {
 export interface IFormFieldItemField {
   index: number
   label: string
+  required: boolean
   status: 'normal' | 'error' | 'loading'
   description?: string
   message?: string
@@ -80,7 +81,6 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       didMount: true
     })
   }
-  
 
   // reset: () => Promise<any[]> = async () => {
   //   const defaults = await this.defaultValue()
@@ -175,9 +175,9 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
   }
 
   get = async () => {
-    let data: any[] = [];
+    const data: any[] = []
 
-    for(let index = 0; index < this.formFieldsList.length; index++) {
+    for (let index = 0; index < this.formFieldsList.length; index++) {
       if (this.formFieldsList[index]) {
         let item: any = {}
 
@@ -249,7 +249,6 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       }
     }
 
-
     await this.setState({
       formDataList
     })
@@ -282,7 +281,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
 
     await this.props.onValueListSplice('', index, 1, true)
   }
-  
+
   handleSort = async (index: number, sortType: 'up' | 'down') => {
     const formDataList = listItemMove(cloneDeep(this.state.formDataList), index, sortType)
     this.setState({
@@ -396,6 +395,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       })
     }
   }
+
   handleValueListSort = async (index: number, formFieldIndex: number, path: string, _index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
@@ -472,20 +472,20 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
         {
           this.renderComponent({
             insertText: insertText === undefined ? `插入 ${label}` : insertText,
-            onInsert: canInsert? async () => await this.handleInsert(): undefined,
+            onInsert: canInsert ? async () => await this.handleInsert() : undefined,
             canCollapse,
             children: (
               this.state.didMount ? (Array.isArray(value) ? value : []).map((itemValue: any, index: number) => {
                 return <React.Fragment key={index} >
                   {this.renderItemComponent({
                     index,
-                    isLastIndex: value.length - 1 === index? true: false,
+                    isLastIndex: value.length - 1 === index,
                     title: primaryField !== undefined ? getValue(itemValue, primaryField, '').toString() : index.toString(),
                     removeText: removeText === undefined
                       ? `删除 ${label}`
                       : removeText,
-                    onRemove: canRemove? async () => await this.handleRemove(index): undefined,
-                    onSort: canSort? async (sortType: 'up' | 'down') => await this.handleSort(index, sortType): undefined,
+                    onRemove: canRemove ? async () => await this.handleRemove(index) : undefined,
+                    onSort: canSort ? async (sortType: 'up' | 'down') => await this.handleSort(index, sortType) : undefined,
                     canCollapse,
                     children: (fields || []).map((formFieldConfig, fieldIndex) => {
                       if (!ConditionHelper(formFieldConfig.condition, { record: itemValue, data: this.props.data, step: this.props.step })) {
@@ -509,6 +509,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                               label: formFieldConfig.label,
                               status,
                               message: ((this.state.formDataList[index] || [])[fieldIndex] || {}).message || '',
+                              required: getBoolean(formFieldConfig.required),
                               layout: formLayout,
                               fieldType: formFieldConfig.type,
                               children: (

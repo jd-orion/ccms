@@ -138,9 +138,9 @@ export interface IFormItem {
   key: string | number,
   label: string,
   status: 'normal' | 'error' | 'loading'
-  required: boolean,
+  required: boolean
   description?: string
-  message?: string,
+  message?: string
   layout: 'horizontal' | 'vertical' | 'inline'
   visitable: boolean
   fieldType: string
