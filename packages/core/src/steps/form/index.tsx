@@ -2,7 +2,7 @@ import React from 'react'
 import { Field, FieldConfigs, FieldError } from '../../components/formFields/common'
 import Step, { StepConfig, StepProps } from '../common'
 import getALLComponents from '../../components/formFields'
-import { getValue, setValue, listItemMove } from '../../util/value'
+import { getValue, setValue, listItemMove, getBoolean } from '../../util/value'
 import { ParamConfig } from '../../interface'
 import ParamHelper from '../../util/param'
 import { cloneDeep, get, set, unset } from 'lodash'
@@ -45,10 +45,9 @@ export interface FormConfig extends StepConfig {
   unstringify?: string[] // 反序列化字段
   hiddenSubmit?: boolean // 是否隐藏提交按钮 TODO 待删除
   hiddenCancel?: boolean // 是否隐藏取消按钮   TODO 待删除
-  submitText?: string    // 自定义确认按钮文本 TODO 待删除
-  cancelText?: string   //  自定义取消按钮文本 TODO 待删除
+  submitText?: string // 自定义确认按钮文本 TODO 待删除
+  cancelText?: string //  自定义取消按钮文本 TODO 待删除
 }
-
 
 /**
  * 表单步骤按钮列表按钮项配置
@@ -103,10 +102,9 @@ export interface IForm {
   children: React.ReactNode[]
   onSubmit?: () => Promise<any>
   onCancel?: () => Promise<any>
-  submitText?: string    // 自定义确认按钮文本
-  cancelText?: string   //  自定义取消按钮文本
+  submitText?: string // 自定义确认按钮文本
+  cancelText?: string //  自定义取消按钮文本
 }
-
 
 /**
  * 表单步骤按钮config
@@ -138,10 +136,11 @@ export interface IButtonProps {
  */
 export interface IFormItem {
   key: string | number,
-  label: string
+  label: string,
   status: 'normal' | 'error' | 'loading'
+  required: boolean,
   description?: string
-  message?: string
+  message?: string,
   layout: 'horizontal' | 'vertical' | 'inline'
   visitable: boolean
   fieldType: string
@@ -177,7 +176,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
    * 初始化表单的值
    * @param props
    */
-  constructor(props: StepProps<FormConfig>) {
+  constructor (props: StepProps<FormConfig>) {
     super(props)
     this.state = {
       ready: false,
@@ -224,7 +223,6 @@ export default class FormStep extends Step<FormConfig, FormState> {
         this.formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
       }
     }
-
 
     await this.setState({
       ready: true,
@@ -472,6 +470,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
       })
     }
   }
+
   handleValueListSort = async (formFieldIndex: number, path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
@@ -497,6 +496,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
       })
     }
   }
+
   /**
    * 处理表单步骤按钮列表按钮项回调
    * @param action 按钮项配置
@@ -505,11 +505,11 @@ export default class FormStep extends Step<FormConfig, FormState> {
     if (success) {
       const callbackType = action.callback?.type
       if (callbackType) {
-        if (callbackType === 'submit') { this.handleSubmit() }
-        else if (callbackType === 'cancel') { this.handleCancel() }
+        if (callbackType === 'submit') { this.handleSubmit() } else if (callbackType === 'cancel') { this.handleCancel() }
       }
     }
   }
+
   /**
    * 表单步骤组件 - UI渲染方法
    * 各UI库需重写该方法
@@ -520,9 +520,10 @@ export default class FormStep extends Step<FormConfig, FormState> {
       您当前使用的UI版本没有实现Form组件。
     </React.Fragment>
   }
+
   /**
    * 表单步骤按钮项button组件
-   * @param props 
+   * @param props
    */
   renderButtonComponent = (props: IButtonProps) => {
     return <React.Fragment>
@@ -552,7 +553,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
     })
   }
 
-  render() {
+  render () {
     const {
       data,
       step,
@@ -627,8 +628,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
             actions: actions_,
             onSubmit: this.props.config.hiddenSubmit ? undefined : async () => this.handleSubmit(), // TODO 待删除
             onCancel: this.props.config.hiddenCancel ? undefined : async () => this.handleCancel(), // TODO 待删除
-            submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ""), // TODO 待删除
-            cancelText: this.props.config?.cancelText?.replace(/(^\s*)|(\s*$)/g, ""), // TODO 待删除
+            submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ''), // TODO 待删除
+            cancelText: this.props.config?.cancelText?.replace(/(^\s*)|(\s*$)/g, ''), // TODO 待删除
             children: fields.map((formFieldConfig, formFieldIndex) => {
               if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
                 this.formFieldsMounted[formFieldIndex] = false
@@ -665,6 +666,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 label: formFieldConfig.label,
                 status,
                 message: formData[formFieldIndex]?.message || '',
+                required: getBoolean(formFieldConfig.required),
                 layout,
                 visitable: display,
                 fieldType: formFieldConfig.type,

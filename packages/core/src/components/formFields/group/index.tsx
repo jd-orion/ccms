@@ -1,5 +1,5 @@
 import React from 'react'
-import { setValue, getValue } from '../../../util/value'
+import { setValue, getValue, getBoolean } from '../../../util/value'
 import { Field, FieldConfig, FieldError, FieldProps, IField } from '../common'
 import getALLComponents, { FieldConfigs } from '../'
 import { IFormItem } from '../../../steps/form'
@@ -75,7 +75,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
   }
 
   get = async () => {
-    let data: any = {};
+    let data: any = {}
 
     if (Array.isArray(this.props.config.fields)) {
       for (const formFieldIndex in this.props.config.fields) {
@@ -313,6 +313,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
               label: formFieldConfig.label,
               status,
               message: (this.state.formData[formFieldIndex] || {}).message || '',
+              required: getBoolean(formFieldConfig.required),
               layout: formLayout,
               visitable: display,
               fieldType: formFieldConfig.type,
