@@ -97,7 +97,7 @@ export default class TableStepComponent extends TableStep {
     } = props
     return (
       <Dropdown
-        getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+        getPopupContainer={(ele) => ele.parentElement || document.body}
         overlay={(
           <Menu>
             {children}
@@ -157,7 +157,7 @@ export default class TableStepComponent extends TableStep {
 
     return (
       <Dropdown
-        getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+        getPopupContainer={(ele) => ele.parentElement || document.body}
         overlay={(
           <Menu>
             {children}

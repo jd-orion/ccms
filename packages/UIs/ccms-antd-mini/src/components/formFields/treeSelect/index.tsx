@@ -23,7 +23,7 @@ export default class TreeSelectComponent extends TreeSelectField {
           treeData={treeData}
           treeDefaultExpandAll
           onChange={onChange}
-          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+          getPopupContainer={(ele) => ele.parentElement || document.body}
         />
       </div>
     )

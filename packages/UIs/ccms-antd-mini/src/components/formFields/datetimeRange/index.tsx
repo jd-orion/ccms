@@ -26,7 +26,7 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
           format={props.format}
           locale={pickerLocale}
           onChange={async (time) => await props.onChange(time ? [time[0] as moment.Moment, time[1] as moment.Moment] : [undefined, undefined])}
-          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+          getPopupContainer={(ele) => ele.parentElement || document.body}
         />
       )
     } else if (mode === 'date') {
@@ -37,7 +37,7 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
           format={props.format}
           locale={pickerLocale}
           onChange={async (time) => await props.onChange(time ? [time[0] as moment.Moment, time[1] as moment.Moment] : [undefined, undefined])}
-          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+          getPopupContainer={(ele) => ele.parentElement || document.body}
         />
       )
     } else if (mode === 'datetime') {
@@ -49,7 +49,7 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
           locale={pickerLocale}
           showTime={true}
           onChange={async (time) => await props.onChange(time ? [time[0] as moment.Moment, time[1] as moment.Moment] : [undefined, undefined])}
-          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+          getPopupContainer={(ele) => ele.parentElement || document.body}
         />
       )
     } else {
@@ -61,7 +61,7 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
           picker={mode}
           locale={pickerLocale}
           onChange={async (time) => await props.onChange(time ? [time[0] as moment.Moment, time[1] as moment.Moment] : [undefined, undefined])}
-          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+          getPopupContainer={(ele) => ele.parentElement || document.body}
         />
       )
     }

@@ -18,7 +18,7 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
 
     return (
       <Select
-        getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+        getPopupContainer={(ele) => ele.parentElement || document.body}
         disabled={disabled}
         placeholder={placeholder}
         value={value as any}

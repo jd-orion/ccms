@@ -21,7 +21,7 @@ export default class DatetimeFieldComponent extends DatetimeField {
             locale={pickerLocale}
             placeholder={placeholder}
             onChange={async (time) => await props.onChange(time)}
-            getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+            getPopupContainer={(ele) => ele.parentElement || document.body}
           />
       )
     } else if (mode === 'date') {
@@ -33,7 +33,7 @@ export default class DatetimeFieldComponent extends DatetimeField {
           locale={pickerLocale}
           placeholder={placeholder}
           onChange={async (time) => await props.onChange(time)}
-          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+          getPopupContainer={(ele) => ele.parentElement || document.body}
         />
       )
     } else if (mode === 'datetime') {
@@ -46,7 +46,7 @@ export default class DatetimeFieldComponent extends DatetimeField {
           placeholder={placeholder}
           showTime={true}
           onChange={async (time) => await props.onChange(time)}
-          getPopupContainer={(ele) => document.getElementById('ccms-antd-mini') || document.getElementById('ccms-antd-mini-form') || ele.parentElement || document.body}
+          getPopupContainer={(ele) => ele.parentElement || document.body}
         />
       )
     } else {
