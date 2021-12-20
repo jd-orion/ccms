@@ -144,8 +144,6 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
             }
             resolve(true)
           }
-          // @ts-ignore
-          if (global) global.URL.createObjectURL = jest && jest.fn(() => 'faker createObjectURL')
           img.src = URL.createObjectURL(file)
         })
       }
