@@ -54,7 +54,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
         label={label}
         {...formItemLayout}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
+        help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
         className={styles[`ccms-antd-mini-form-${fieldType}`]}
         style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
       >
