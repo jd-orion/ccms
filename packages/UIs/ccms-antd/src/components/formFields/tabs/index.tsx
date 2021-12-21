@@ -15,6 +15,7 @@ export default class TabsFieldComponent extends TabsField<{}> {
       label,
       status,
       message,
+      required,
       fieldType,
       layout,
       children
@@ -22,6 +23,7 @@ export default class TabsFieldComponent extends TabsField<{}> {
 
     return (
       <Form.Item
+        required={required}
         label={label}
         validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
         help={ message === '' ? null : message}
