@@ -1,9 +1,9 @@
-import { Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from "../common";
+import { Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from '../common'
 import getALLComponents from '../'
-import React from "react";
-import ConditionHelper from "../../../util/condition";
-import { cloneDeep } from "lodash";
-import { getValue, setValue } from "../../../util/value";
+import React from 'react'
+import ConditionHelper from '../../../util/condition'
+import { cloneDeep } from 'lodash'
+import { getValue, setValue, getBoolean } from '../../../util/value'
 
 export type TabsFieldConfig = TabsFieldConfig_Same | TabsFieldConfig_Diff
 
@@ -33,7 +33,6 @@ export interface ITabsField {
   children: React.ReactNode[]
 }
 
-
 export interface ITabsFieldItem {
   key: string
   label: string
@@ -43,6 +42,7 @@ export interface ITabsFieldItem {
 export interface ITabsFieldItemField {
   index: number
   label: string
+  required: boolean
   status: 'normal' | 'error' | 'loading'
   description?: string
   message?: string
@@ -80,7 +80,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
   }
 
   get = async () => {
-    let data: any = {};
+    let data: any = {}
 
     for (const index in (this.props.config.tabs || [])) {
       const tab = (this.props.config.tabs || [])[index]
@@ -153,7 +153,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     }
     if (this.formFieldsMountedList[index][formFieldIndex]) {
       return true
-    }    
+    }
     this.formFieldsMountedList[index][formFieldIndex] = true
 
     const tab = (this.props.config.tabs || [])[index]
@@ -175,7 +175,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
         if (source !== value) {
           this.props.onValueSet(fullPath, value, true)
         }
-        
+
         if (value !== undefined) {
           const validation = await formField.validate(value)
           if (validation === true) {
@@ -209,7 +209,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueSet(fullPath, value, true)
-      
+
       const formDataList = cloneDeep(this.state.formDataList)
       if (!formDataList[index]) formDataList[index] = []
       if (validation === true) {
@@ -233,7 +233,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueUnset(fullPath, true)
-      
+
       const formDataList = cloneDeep(this.state.formDataList)
       if (!formDataList[index]) formDataList[index] = []
       if (validation === true) {
@@ -257,7 +257,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueListAppend(fullPath, value, true)
-      
+
       const formDataList = cloneDeep(this.state.formDataList)
       if (!formDataList[index]) formDataList[index] = []
       if (validation === true) {
@@ -281,7 +281,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueListSplice(fullPath, _index, count, true)
-      
+
       const formDataList = cloneDeep(this.state.formDataList)
       if (!formDataList[index]) formDataList[index] = []
       if (validation === true) {
@@ -295,6 +295,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       })
     }
   }
+
   handleValueListSort = async (index: number, formFieldIndex: number, path: string, _index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
     const tab = (this.props.config.tabs || [])[index]
 
@@ -304,7 +305,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueListSort(fullPath, _index, sortType, true)
-      
+
       const formDataList = cloneDeep(this.state.formDataList)
       if (!formDataList[index]) formDataList[index] = []
       if (validation === true) {
@@ -321,8 +322,8 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
 
   /**
    * 用于展示子表单组件
-   * @param _props 
-   * @returns 
+   * @param _props
+   * @returns
    */
   renderComponent = (_props: ITabsField) => {
     return <React.Fragment>
@@ -332,25 +333,25 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
 
   /**
    * 用于展示子表单组件中的每一个子项
-   * @param props 
-   * @returns 
+   * @param props
+   * @returns
    */
    renderItemComponent = (props: ITabsFieldItem) => {
-    return <React.Fragment>
+     return <React.Fragment>
       您当前使用的UI版本没有实现FormField组件的renderItemComponent方法。
     </React.Fragment>
-  }
+   }
 
-  /**
+   /**
    * 用于展示子表单组件中的每一子项中的每一个子表单项组件
-   * @param props 
-   * @returns 
+   * @param props
+   * @returns
    */
    renderItemFieldComponent = (props: ITabsFieldItemField) => {
-    return <React.Fragment>
+     return <React.Fragment>
       您当前使用的UI版本没有实现FormField组件的renderItemFieldComponent方法。
     </React.Fragment>
-  }
+   }
 
   render = () => {
     const {
@@ -390,9 +391,9 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                           hidden = true
                           display = false
                         }
-                        
+
                         const FormField = this.getALLComponents(formFieldConfig.type) || Field
-  
+
                         let status = ((this.state.formDataList[index] || [])[formFieldIndex] || {}).status || 'normal'
 
                         if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
@@ -408,6 +409,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                                 label: formFieldConfig.label,
                                 status,
                                 message: ((this.state.formDataList[index] || [])[formFieldIndex] || {}).message || '',
+                                required: getBoolean(formFieldConfig.required),
                                 layout: this.props.formLayout,
                                 fieldType: formFieldConfig.type,
                                 children: (
