@@ -1,9 +1,5 @@
 .ccms-antd-mini-form-import_subform, .ccms-antd-mini-form-group {
   margin-bottom: 0 !important;
-
-  &> .ant-col:first-child{
-    font-weight: bold;
-  }
   &>:global(.ant-form-item-label) {
     width: calc(100% + 16px) !important;
     max-width: calc(100% + 16px) !important;
@@ -24,7 +20,9 @@
     background-color: #00000000 !important;
   }
 }
-
+.ccms-antd-mini-form-import_subform> .ant-col:first-child, .ccms-antd-mini-form-group > .ant-col:first-child{
+  font-weight: bold;
+}
 .ccms-antd-mini-form-form, .ccms-antd-mini-form-object {
   &>:global(.ant-form-item-control) {
     &>:global(.ant-form-item-control-input) {
