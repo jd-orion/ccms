@@ -43,7 +43,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
       formItemLayout.labelCol = { span: 24 }
       formItemLayout.wrapperCol = { span: 24 }
     } else {
-      formItemLayout.labelCol = { span: 6 }
+      formItemLayout.labelCol = { span: 24 }
       formItemLayout.wrapperCol = { span: 18 }
     }
 

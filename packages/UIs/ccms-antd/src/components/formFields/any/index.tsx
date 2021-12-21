@@ -18,7 +18,7 @@ export default class AnyFieldComponent extends AnyField {
       <Select
         value={props.type}
         onChange={(type) => props.onChange(type)}
-        getPopupContainer={() => document.getElementById('ccms-antd') || document.body}
+        getPopupContainer={(ele) =>  ele.parentElement || document.body}
       >
         <Select.Option value="null">空</Select.Option>
         <Select.Option value="string">字符串</Select.Option>
