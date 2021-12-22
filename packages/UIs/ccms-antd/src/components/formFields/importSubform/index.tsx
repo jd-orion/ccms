@@ -39,13 +39,13 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
     } = props
 
     const formItemLayout: FormItemProps = { labelAlign: 'left' }
-    if (fieldType === 'form' || fieldType === 'group' || fieldType === 'object' || fieldType === 'import_subform') {
-      formItemLayout.labelCol = { span: 24 }
-      formItemLayout.wrapperCol = { span: 24 }
-    } else {
-      formItemLayout.labelCol = { span: 24 }
-      formItemLayout.wrapperCol = { span: 18 }
-    }
+    // if (fieldType === 'form' || fieldType === 'group' || fieldType === 'object' || fieldType === 'import_subform') {
+    //   formItemLayout.labelCol = { span: 24 }
+    //   formItemLayout.wrapperCol = { span: 24 }
+    // } else {
+    //   formItemLayout.labelCol = { span: 24 }
+    //   formItemLayout.wrapperCol = { span: 18 }
+    // }
 
     return (
       <Form.Item
