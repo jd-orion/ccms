@@ -49,6 +49,7 @@ export default class TableStepComponent extends TableStep {
             key: index,
             dataIndex: column.field,
             title: column.label,
+            align: column.align,
             render: (value: any, record: { [field: string]: any }, index: number) => column.render(value, record, index)
           }))}
           dataSource={data}
