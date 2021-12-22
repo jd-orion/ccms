@@ -64,10 +64,10 @@ export default class TextComponent extends PureComponent<Props, {}> {
     })
   }
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { onChange } = this.props
+    // const { onChange } = this.props
     this.setInput(e.target.value)
     if (this.isOnComposition) return
-    onChange && onChange(e.target.value)
+    // onChange && onChange(e.target.value)
   }
 
   render() {
@@ -93,6 +93,10 @@ export default class TextComponent extends PureComponent<Props, {}> {
           eTaget.selectionStart = this.selectionStart
           eTaget.selectionEnd = this.selectionEnd
         })
+      }}
+      onBlur={(e) => {
+        const { onChange } = this.props
+        onChange && onChange(e.target.value)
       }}
     />
   }
