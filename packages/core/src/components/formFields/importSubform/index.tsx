@@ -134,7 +134,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     })
 
     if (childrenError > 0) {
-      errors.push(new FieldError(`子项中存在${childrenError}个错误。`))
+      errors.push(new FieldError('子项中存在错误'))
     }
 
     return errors.length ? errors : true
