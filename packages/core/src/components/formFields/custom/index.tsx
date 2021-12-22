@@ -15,7 +15,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
   container: RefObject<HTMLDivElement> = React.createRef()
   customField: MicroApp | null = null
   _validate: (value: string) => Promise<true | FieldError[]> = async () => true
-  _get: () => Promise<any> = async () => {}
+  _get: () => Promise<any> = async () => this.props.value
 
   componentDidMount () {
     this.loadCustomField(this.props.config.entry)
