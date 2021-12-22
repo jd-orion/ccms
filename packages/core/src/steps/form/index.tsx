@@ -141,6 +141,7 @@ export interface IFormItem {
   required: boolean
   description?: string
   message?: string
+  extra?: string
   layout: 'horizontal' | 'vertical' | 'inline'
   visitable: boolean
   fieldType: string
