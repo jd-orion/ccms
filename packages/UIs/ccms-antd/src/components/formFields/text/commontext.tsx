@@ -47,14 +47,11 @@ export default class TextComponent extends PureComponent<Props, {}> {
     } else {
       this.isOnComposition = true
     }
-    if (flag !== this.isOnComposition) {
-      this.setFlag(this.isOnComposition)
-    }
   }
 
   setFlag = (flag: boolean) => {
     this.setState({
-      flag: this.isOnComposition
+      flag: flag
     })
   }
 
@@ -64,10 +61,8 @@ export default class TextComponent extends PureComponent<Props, {}> {
     })
   }
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const { onChange } = this.props
+    this.setFlag(true)
     this.setInput(e.target.value)
-    if (this.isOnComposition) return
-    // onChange && onChange(e.target.value)
   }
 
   render() {
@@ -97,6 +92,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
       onBlur={(e) => {
         const { onChange } = this.props
         onChange && onChange(e.target.value)
+        this.setFlag(false)
       }}
     />
   }
