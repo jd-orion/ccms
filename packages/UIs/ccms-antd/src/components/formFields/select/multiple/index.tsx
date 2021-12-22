@@ -13,13 +13,14 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
       onChange,
       onClear,
       disabled,
+      readonly,
       placeholder
     } = props
     
     return (
       <Select
         getPopupContainer={(ele) => ele.parentElement || document.body}
-        disabled={disabled}
+        disabled={disabled || readonly}
         placeholder={placeholder}
         value={value}
         onChange={(value) => onChange(value)}
@@ -41,12 +42,13 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
       value,
       options,
       onChange,
-      disabled
+      disabled,
+      readonly
     } = props
 
     return (
       <Checkbox.Group
-        disabled={disabled}
+        disabled={disabled || readonly}
         value={value}
         onChange={(value) => onChange((value as Array<string | number>))}
         options={options}

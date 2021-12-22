@@ -13,13 +13,14 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
       onChange,
       onClear,
       disabled,
+      readonly,
       placeholder
     } = props
 
     return (
       <Select
         getPopupContainer={(ele) => ele.parentElement || document.body}
-        disabled={disabled}
+        disabled={disabled || readonly}
         placeholder={placeholder}
         value={value as any}
         onChange={(value) => onChange(value)}
@@ -40,12 +41,13 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
       value,
       options,
       onChange,
-      disabled
+      disabled,
+      readonly
     } = props
 
     return (
       <Radio.Group
-        disabled={disabled}
+        disabled={disabled || readonly}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         options={options}
@@ -58,12 +60,13 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
       value,
       options,
       onChange,
-      disabled
+      disabled,
+      readonly
     } = props
 
     return (
       <Radio.Group
-        disabled={disabled}
+        disabled={disabled || readonly}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         options={options}
