@@ -4,6 +4,7 @@ import { componentType } from '.'
 export interface ColumnConfig extends componentType {
   field: string
   label: string,
+  align: 'left' | 'center' | 'right',
   defaultValue?: string,
   style?: {
     color?: string

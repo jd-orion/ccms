@@ -107,6 +107,7 @@ export interface ITable {
 export interface ITableColumn {
   field: string
   label: string
+  align: 'left' | 'center' | 'right'
   render: (value: any, record: { [type: string]: any }, index: number) => React.ReactNode
 }
 
@@ -491,6 +492,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         return {
           field,
           label: column.label,
+          align: column.align,
           render: (value: any, record: { [field: string]: any }) => {
             if (value && Object.prototype.toString.call(value) === '[object Object]') {
               value = getValue(value, column.field.replace(field, '').slice(1))
@@ -592,6 +594,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
       props.columns.push({
         field: 'ccms-table-rowOperation',
         label: '操作',
+        align: 'left',
         render: (_value: any, record: { [field: string]: any }) => {
           if (operations.rowOperations) {
             return this.renderRowOperationComponent({
