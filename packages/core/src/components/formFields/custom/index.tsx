@@ -15,6 +15,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
   container: RefObject<HTMLDivElement> = React.createRef()
   customField: MicroApp | null = null
   _validate: (value: string) => Promise<true | FieldError[]> = async () => true
+  _get: () => Promise<any> = async () => {}
 
   componentDidMount () {
     this.loadCustomField(this.props.config.entry)
@@ -32,8 +33,16 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
     return await this._validate(value)
   }
 
+  get = async (): Promise<any> => {
+    return await this._get()
+  }
+
   bindValidate = (validate: (value: string) => Promise<true | FieldError[]>) => {
     this._validate = validate
+  }
+
+  bindGet = async (get:() => Promise<any>): Promise<any> => {
+    this._get = get
   }
 
   componentDidUpdate (_: FieldProps<CustomFieldConfig, any>, __: {}, snapshot: string[]) {
