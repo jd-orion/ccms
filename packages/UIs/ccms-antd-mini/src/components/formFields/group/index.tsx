@@ -1,13 +1,13 @@
-import React from "react";
-import { GroupField } from 'ccms';
-import { IGroupField, GroupFieldConfig } from "ccms/dist/src/components/formFields/group";
-import { IFormItem } from "ccms/dist/src/steps/form";
-import { Form } from "antd"
-import { FormItemProps } from "antd/lib/form";
+import React from 'react'
+import { GroupField } from 'ccms'
+import { IGroupField, GroupFieldConfig } from 'ccms/dist/src/components/formFields/group'
+import { IFormItem } from 'ccms/dist/src/steps/form'
+import { Form } from 'antd'
+import { FormItemProps } from 'antd/lib/form'
 import getALLComponents from '../'
 import styles from './index.less'
 
-export const PropsType = (props: GroupFieldConfig) => { };
+export const PropsType = (props: GroupFieldConfig) => { }
 
 export default class GroupFieldComponent extends GroupField {
   getALLComponents = (type: any) => getALLComponents[type]
@@ -29,6 +29,8 @@ export default class GroupFieldComponent extends GroupField {
       label,
       visitable,
       message,
+      extra,
+      required,
       fieldType,
       children
     } = props
@@ -45,6 +47,8 @@ export default class GroupFieldComponent extends GroupField {
     return (
       <Form.Item
         key={key}
+        extra={extra ? extra.trim() : ''}
+        required={required}
         label={label}
         {...formItemLayout}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}

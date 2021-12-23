@@ -4,7 +4,7 @@ import { IForm, IFormItem, IFormStepModal, IButtonProps } from 'ccms/dist/src/st
 import { Button, Form, Space, Modal } from 'antd'
 import getALLComponents from '../../components/formFields'
 import { FormProps, FormItemProps } from 'antd/lib/form'
-import styles from "./index.less"
+import styles from './index.less'
 export default class FormStepComponent extends FormStep {
   getALLComponents = (type: any) => getALLComponents[type]
 
@@ -36,10 +36,10 @@ export default class FormStepComponent extends FormStep {
     const formItemLayout: FormProps =
       layout === 'horizontal'
         ? {
-          labelAlign: 'left',
-          labelCol: { span: 6 },
-          wrapperCol: { span: 18 }
-        }
+            labelAlign: 'left',
+            labelCol: { span: 6 },
+            wrapperCol: { span: 18 }
+          }
         : {}
 
     return (
@@ -83,6 +83,8 @@ export default class FormStepComponent extends FormStep {
       label,
       visitable,
       message,
+      extra,
+      required,
       fieldType,
       children
     } = props
@@ -97,6 +99,8 @@ export default class FormStepComponent extends FormStep {
 
     return (
       <Form.Item
+        extra={extra ? extra.trim() : ''}
+        required={required}
         key={key}
         label={label}
         {...formItemLayout}

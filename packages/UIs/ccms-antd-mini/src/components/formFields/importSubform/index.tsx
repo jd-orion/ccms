@@ -1,14 +1,14 @@
-import React from "react";
-import { ImportSubformField } from 'ccms';
-import { IImportSubformField, ImportSubformFieldConfig } from "ccms/dist/src/components/formFields/importSubform";
-import { IFormItem } from "ccms/dist/src/steps/form";
-import { Form } from "antd"
-import { FormItemProps } from "antd/lib/form";
+import React from 'react'
+import { ImportSubformField } from 'ccms'
+import { IImportSubformField, ImportSubformFieldConfig } from 'ccms/dist/src/components/formFields/importSubform'
+import { IFormItem } from 'ccms/dist/src/steps/form'
+import { Form } from 'antd'
+import { FormItemProps } from 'antd/lib/form'
 import getALLComponents from '../'
 import styles from './index.less'
-import InterfaceHelper from "../../../util/interface";
+import InterfaceHelper from '../../../util/interface'
 
-export const PropsType = (props: ImportSubformFieldConfig) => { };
+export const PropsType = (props: ImportSubformFieldConfig) => { }
 
 export default class ImportSubformFieldComponent extends ImportSubformField {
   getALLComponents = (type: any) => getALLComponents[type]
@@ -32,6 +32,8 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
       label,
       visitable,
       status,
+      extra,
+      required,
       message,
       fieldType,
       children
@@ -49,6 +51,8 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
     return (
       <Form.Item
         key={key}
+        extra={extra ? extra.trim() : ''}
+        required={required}
         label={label}
         {...formItemLayout}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}

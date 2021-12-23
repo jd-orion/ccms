@@ -33,9 +33,10 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
       label,
       status,
       message,
+      extra,
       fieldType,
       children,
-      layout = "horizontal"
+      layout = 'horizontal'
     } = props
 
     const formItemLayout: FormItemProps = {}
@@ -50,6 +51,7 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
     }
     return (
       <Form.Item
+        extra={extra ? extra.trim() : ''}
         label={label}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
@@ -125,9 +127,9 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
           activeKey={this.state.extra?.activeKey}
           onChange={(key) => {
             if (Array.isArray(key)) {
-              this.setState({ extra: {activeKey: key[0]} })
+              this.setState({ extra: { activeKey: key[0] } })
             } else {
-              this.setState({ extra: {activeKey: key} })
+              this.setState({ extra: { activeKey: key } })
             }
           }}
         >

@@ -17,9 +17,11 @@ export default class FormFieldComponent extends FormField {
       label,
       status,
       message,
+      extra,
+      required,
       fieldType,
       children,
-      layout = "horizontal"
+      layout = 'horizontal'
     } = props
 
     const formItemLayout: FormItemProps = {}
@@ -34,6 +36,8 @@ export default class FormFieldComponent extends FormField {
     }
     return (
       <Form.Item
+        extra={extra ? extra.trim() : ''}
+        required={required}
         label={label}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
