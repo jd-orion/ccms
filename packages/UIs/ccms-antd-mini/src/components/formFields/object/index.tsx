@@ -34,6 +34,7 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
       status,
       message,
       extra,
+      required,
       fieldType,
       children,
       layout = 'horizontal'
@@ -52,6 +53,7 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
     return (
       <Form.Item
         extra={extra ? extra.trim() : ''}
+        required={required}
         label={label}
         validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
         help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
