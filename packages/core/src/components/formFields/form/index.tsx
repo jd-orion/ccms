@@ -4,6 +4,7 @@ import getALLComponents from '../'
 import { getValue, listItemMove, setValue, getBoolean } from '../../../util/value'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
+import StatementHelper from '../../../util/statement'
 
 export interface FormFieldConfig extends FieldConfig {
   type: 'form'
@@ -47,6 +48,7 @@ export interface IFormFieldItemField {
   status: 'normal' | 'error' | 'loading'
   description?: string
   message?: string
+  extra?: string
   layout: 'horizontal' | 'vertical' | 'inline'
   fieldType: string
   children: React.ReactNode
@@ -475,79 +477,82 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
             onInsert: canInsert ? async () => await this.handleInsert() : undefined,
             canCollapse,
             children: (
-              this.state.didMount ? (Array.isArray(value) ? value : []).map((itemValue: any, index: number) => {
-                return <React.Fragment key={index} >
-                  {this.renderItemComponent({
-                    index,
-                    isLastIndex: value.length - 1 === index,
-                    title: primaryField !== undefined ? getValue(itemValue, primaryField, '').toString() : index.toString(),
-                    removeText: removeText === undefined
-                      ? `删除 ${label}`
-                      : removeText,
-                    onRemove: canRemove ? async () => await this.handleRemove(index) : undefined,
-                    onSort: canSort ? async (sortType: 'up' | 'down') => await this.handleSort(index, sortType) : undefined,
-                    canCollapse,
-                    children: (fields || []).map((formFieldConfig, fieldIndex) => {
-                      if (!ConditionHelper(formFieldConfig.condition, { record: itemValue, data: this.props.data, step: this.props.step })) {
-                        if (!this.formFieldsMountedList[index]) this.formFieldsMountedList[index] = []
-                        this.formFieldsMountedList[index][fieldIndex] = false
-                        return null
-                      }
-                      const FormField = this.getALLComponents(formFieldConfig.type) || Field
-
-                      let status = ((this.state.formDataList[index] || [])[fieldIndex] || {}).status || 'normal'
-
-                      if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
-                        status = 'normal'
-                      }
-                      // 渲染表单项容器
-                      return (
-                        <div key={fieldIndex}>
-                          {
-                            this.renderItemFieldComponent({
-                              index: fieldIndex,
-                              label: formFieldConfig.label,
-                              status,
-                              message: ((this.state.formDataList[index] || [])[fieldIndex] || {}).message || '',
-                              required: getBoolean(formFieldConfig.required),
-                              layout: formLayout,
-                              fieldType: formFieldConfig.type,
-                              children: (
-                                <FormField
-                                  ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
-                                    if (fieldRef) {
-                                      if (!this.formFieldsList[index]) this.formFieldsList[index] = []
-                                      this.formFieldsList[index][fieldIndex] = fieldRef
-                                      this.handleMount(index, fieldIndex)
-                                    }
-                                  }}
-                                  form={this.props.form}
-                                  formLayout={formLayout}
-                                  value={getValue(value[index], formFieldConfig.field)}
-                                  record={value[index]}
-                                  data={cloneDeep(data)}
-                                  step={step}
-                                  config={formFieldConfig}
-                                  onChange={(value: any) => this.handleChange(index, fieldIndex, value)}
-                                  onValueSet={async (path, value, validation) => this.handleValueSet(index, fieldIndex, path, value, validation)}
-                                  onValueUnset={async (path, validation) => this.handleValueUnset(index, fieldIndex, path, validation)}
-                                  onValueListAppend={async (path, value, validation) => this.handleValueListAppend(index, fieldIndex, path, value, validation)}
-                                  onValueListSplice={async (path, _index, count, validation) => this.handleValueListSplice(index, fieldIndex, path, _index, count, validation)}
-                                  onValueListSort={async (path, _index, sortType, validation) => await this.handleValueListSort(index, fieldIndex, path, _index, sortType, validation)}
-                                  baseRoute={this.props.baseRoute}
-                                  loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
-                                />
-                              )
-                            })
+              this.state.didMount
+                ? (Array.isArray(value) ? value : []).map((itemValue: any, index: number) => {
+                    return <React.Fragment key={index} >
+                      {this.renderItemComponent({
+                        index,
+                        isLastIndex: value.length - 1 === index,
+                        title: primaryField !== undefined ? getValue(itemValue, primaryField, '').toString() : index.toString(),
+                        removeText: removeText === undefined
+                          ? `删除 ${label}`
+                          : removeText,
+                        onRemove: canRemove ? async () => await this.handleRemove(index) : undefined,
+                        onSort: canSort ? async (sortType: 'up' | 'down') => await this.handleSort(index, sortType) : undefined,
+                        canCollapse,
+                        children: (fields || []).map((formFieldConfig, fieldIndex) => {
+                          if (!ConditionHelper(formFieldConfig.condition, { record: itemValue, data: this.props.data, step: this.props.step })) {
+                            if (!this.formFieldsMountedList[index]) this.formFieldsMountedList[index] = []
+                            this.formFieldsMountedList[index][fieldIndex] = false
+                            return null
                           }
-                        </div>
-                      )
-                    })
-                  })
+                          const FormField = this.getALLComponents(formFieldConfig.type) || Field
+
+                          let status = ((this.state.formDataList[index] || [])[fieldIndex] || {}).status || 'normal'
+
+                          if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
+                            status = 'normal'
+                          }
+                          // 渲染表单项容器
+                          return (
+                            <div key={fieldIndex}>
+                              {
+                                this.renderItemFieldComponent({
+                                  index: fieldIndex,
+                                  label: formFieldConfig.label,
+                                  status,
+                                  message: ((this.state.formDataList[index] || [])[fieldIndex] || {}).message || '',
+                                  extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),
+                                  required: getBoolean(formFieldConfig.required),
+                                  layout: formLayout,
+                                  fieldType: formFieldConfig.type,
+                                  children: (
+                                    <FormField
+                                      ref={(fieldRef: Field<FieldConfigs, any, any> | null) => {
+                                        if (fieldRef) {
+                                          if (!this.formFieldsList[index]) this.formFieldsList[index] = []
+                                          this.formFieldsList[index][fieldIndex] = fieldRef
+                                          this.handleMount(index, fieldIndex)
+                                        }
+                                      }}
+                                      form={this.props.form}
+                                      formLayout={formLayout}
+                                      value={getValue(value[index], formFieldConfig.field)}
+                                      record={value[index]}
+                                      data={cloneDeep(data)}
+                                      step={step}
+                                      config={formFieldConfig}
+                                      onChange={(value: any) => this.handleChange(index, fieldIndex, value)}
+                                      onValueSet={async (path, value, validation) => this.handleValueSet(index, fieldIndex, path, value, validation)}
+                                      onValueUnset={async (path, validation) => this.handleValueUnset(index, fieldIndex, path, validation)}
+                                      onValueListAppend={async (path, value, validation) => this.handleValueListAppend(index, fieldIndex, path, value, validation)}
+                                      onValueListSplice={async (path, _index, count, validation) => this.handleValueListSplice(index, fieldIndex, path, _index, count, validation)}
+                                      onValueListSort={async (path, _index, sortType, validation) => await this.handleValueListSort(index, fieldIndex, path, _index, sortType, validation)}
+                                      baseRoute={this.props.baseRoute}
+                                      loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                                    />
+                                  )
+                                })
+                              }
+                            </div>
+                          )
+                        })
+                      })
+                      }
+                    </React.Fragment >
                   }
-                </React.Fragment >
-              }
-              ) : []
+                  )
+                : []
             )
           })
         }

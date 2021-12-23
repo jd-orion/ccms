@@ -675,6 +675,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 label: formFieldConfig.label,
                 status,
                 message: formData[formFieldIndex]?.message || '',
+                extra: StatementHelper(formFieldConfig.extra, { data: this.props.data, step: this.props.step }),
                 required: getBoolean(formFieldConfig.required),
                 layout,
                 visitable: display,

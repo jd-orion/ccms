@@ -4,6 +4,8 @@ import { ParamConfig } from '../../interface'
 import { FieldConfigs as getFieldConfigs } from './'
 import ParamHelper from '../../util/param'
 import { ConditionConfig } from '../../util/condition'
+import { StatementConfig } from '../../util/statement'
+
 /**
  * 表单项基类配置文件格式定义
  * - field:    表单项字段名
@@ -33,6 +35,7 @@ export interface FieldConfig {
   display?: 'none'
   defaultValue?: ParamConfig,
   condition?: ConditionConfig
+  extra?: StatementConfig
 }
 
 /**
@@ -177,7 +180,7 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
 
 export class FieldError {
   message: string
-  constructor(message: string) {
+  constructor (message: string) {
     this.message = message
   }
 }

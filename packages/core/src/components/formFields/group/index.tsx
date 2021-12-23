@@ -5,6 +5,7 @@ import getALLComponents, { FieldConfigs } from '../'
 import { IFormItem } from '../../../steps/form'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
+import StatementHelper from '../../../util/statement'
 
 export interface GroupFieldConfig extends FieldConfig {
   type: 'group'
@@ -282,75 +283,78 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     return (
       <React.Fragment>
         {this.renderComponent({
-          children: this.state.didMount ? (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
-            if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
-              this.formFieldsMounted[formFieldIndex] = false
-              return null
-            }
-            let hidden: boolean = true
-            let display: boolean = true
+          children: this.state.didMount
+            ? (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
+                if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
+                  this.formFieldsMounted[formFieldIndex] = false
+                  return null
+                }
+                let hidden: boolean = true
+                let display: boolean = true
 
-            if (formFieldConfig.type === 'hidden') {
-              hidden = true
-              display = false
-            }
+                if (formFieldConfig.type === 'hidden') {
+                  hidden = true
+                  display = false
+                }
 
-            if (formFieldConfig.display === 'none') {
-              hidden = true
-              display = false
-            }
+                if (formFieldConfig.display === 'none') {
+                  hidden = true
+                  display = false
+                }
 
-            const FormField = this.getALLComponents(formFieldConfig.type) || Field
+                const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
-            let status = (this.state.formData[formFieldIndex] || {}).status || 'normal'
+                let status = (this.state.formData[formFieldIndex] || {}).status || 'normal'
 
-            if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
-              status = 'normal'
-            }
+                if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
+                  status = 'normal'
+                }
 
-            const renderData = {
-              key: formFieldIndex,
-              label: formFieldConfig.label,
-              status,
-              message: (this.state.formData[formFieldIndex] || {}).message || '',
-              required: getBoolean(formFieldConfig.required),
-              layout: formLayout,
-              visitable: display,
-              fieldType: formFieldConfig.type,
-              children: (
-                  <FormField
-                    key={formFieldIndex}
-                    ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                      if (formField) {
-                        this.formFields[formFieldIndex] = formField
-                        this.handleMount(formFieldIndex)
-                      }
-                    }}
-                    form={this.props.form}
-                    formLayout={formLayout}
-                    value={getValue(value, formFieldConfig.field)}
-                    record={record}
-                    data={cloneDeep(data)}
-                    step={step}
-                    config={formFieldConfig}
-                    onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
-                    onValueSet={async (path, value, validation) => this.handleValueSet(formFieldIndex, path, value, validation)}
-                    onValueUnset={async (path, validation) => this.handleValueUnset(formFieldIndex, path, validation)}
-                    onValueListAppend={async (path, value, validation) => this.handleValueListAppend(formFieldIndex, path, value, validation)}
-                    onValueListSplice={async (path, index, count, validation) => this.handleValueListSplice(formFieldIndex, path, index, count, validation)}
-                    onValueListSort={async (path, index, sortType, validation) => this.handleValueListSort(formFieldIndex, path, index, sortType, validation)}
-                    baseRoute={this.props.baseRoute}
-                    loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
-                  />
-              )
-            }
-            // 渲染表单项容器
-            return (
-              hidden
-                ? this.renderItemComponent(renderData)
-                : <React.Fragment key={formFieldIndex} />
-            )
-          }) : []
+                const renderData = {
+                  key: formFieldIndex,
+                  label: formFieldConfig.label,
+                  status,
+                  message: (this.state.formData[formFieldIndex] || {}).message || '',
+                  extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),
+                  required: getBoolean(formFieldConfig.required),
+                  layout: formLayout,
+                  visitable: display,
+                  fieldType: formFieldConfig.type,
+                  children: (
+                      <FormField
+                        key={formFieldIndex}
+                        ref={(formField: Field<FieldConfigs, any, any> | null) => {
+                          if (formField) {
+                            this.formFields[formFieldIndex] = formField
+                            this.handleMount(formFieldIndex)
+                          }
+                        }}
+                        form={this.props.form}
+                        formLayout={formLayout}
+                        value={getValue(value, formFieldConfig.field)}
+                        record={record}
+                        data={cloneDeep(data)}
+                        step={step}
+                        config={formFieldConfig}
+                        onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
+                        onValueSet={async (path, value, validation) => this.handleValueSet(formFieldIndex, path, value, validation)}
+                        onValueUnset={async (path, validation) => this.handleValueUnset(formFieldIndex, path, validation)}
+                        onValueListAppend={async (path, value, validation) => this.handleValueListAppend(formFieldIndex, path, value, validation)}
+                        onValueListSplice={async (path, index, count, validation) => this.handleValueListSplice(formFieldIndex, path, index, count, validation)}
+                        onValueListSort={async (path, index, sortType, validation) => this.handleValueListSort(formFieldIndex, path, index, sortType, validation)}
+                        baseRoute={this.props.baseRoute}
+                        loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                      />
+                  )
+                }
+                // 渲染表单项容器
+                return (
+                  hidden
+                    ? this.renderItemComponent(renderData)
+                    : <React.Fragment key={formFieldIndex} />
+                )
+              })
+            : []
         })}
       </React.Fragment>
     )
