@@ -31,6 +31,7 @@ export default class GroupFieldComponent extends GroupField {
       visitable,
       status,
       message,
+      extra,
       required,
       fieldType,
       children
@@ -38,6 +39,7 @@ export default class GroupFieldComponent extends GroupField {
 
     return (
       <Form.Item
+        extra={extra ? extra.trim() : ''}
         required={required}
         key={key}
         label={label}

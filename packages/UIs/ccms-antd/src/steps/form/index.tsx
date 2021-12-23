@@ -91,6 +91,7 @@ export default class FormStepComponent extends FormStep {
       label,
       status,
       message,
+      extra,
       required,
       fieldType,
       children
@@ -98,6 +99,7 @@ export default class FormStepComponent extends FormStep {
 
     return (
       <Form.Item
+        extra={extra ? extra.trim() : ''}
         required={required}
         key={key}
         label={label}

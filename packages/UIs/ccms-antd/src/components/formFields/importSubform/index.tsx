@@ -33,6 +33,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
       visitable,
       status,
       message,
+      extra,
       required,
       fieldType,
       children
@@ -49,6 +50,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
 
     return (
       <Form.Item
+        extra={extra ? extra.trim() : ''}
         key={key}
         required={required}
         label={label}

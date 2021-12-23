@@ -16,6 +16,7 @@ export default class FormFieldComponent extends FormField {
       label,
       status,
       message,
+      extra,
       required,
       fieldType,
       layout,
@@ -23,6 +24,7 @@ export default class FormFieldComponent extends FormField {
     } = props
     return (
       <Form.Item
+        extra={extra ? extra.trim() : ''}
         required={required}
         label={label}
         validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
