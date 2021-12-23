@@ -71,7 +71,7 @@ export default class NumberField extends Field<NumberFieldConfig, INumberField, 
         }
       }
 
-      if (value) {
+      if (typeof value === 'number') {
         if (min !== undefined && min !== '' && value < min) {
           errors.push(new FieldError(`值不能小于${min}`))
         }
