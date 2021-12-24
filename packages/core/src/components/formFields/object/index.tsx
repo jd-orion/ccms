@@ -3,7 +3,7 @@ import getALLComponents from '../'
 import React from 'react'
 import ConditionHelper from '../../../util/condition'
 import { cloneDeep } from 'lodash'
-import { getValue, setValue } from '../../../util/value'
+import { getValue, setValue, getBoolean } from '../../../util/value'
 import StatementHelper from '../../../util/statement'
 
 export interface ObjectFieldConfig extends FieldConfig {
@@ -34,6 +34,7 @@ export interface IObjectFieldItemField {
   description?: string
   message?: string
   extra?: string
+  required: boolean
   layout: 'horizontal' | 'vertical' | 'inline'
   visitable: boolean
   fieldType: string
@@ -449,6 +450,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                 status,
                                 message: ((this.state.formDataList[key] || [])[formFieldIndex] || {}).message || '',
                                 extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),
+                                required: getBoolean(formFieldConfig.required),
                                 layout: this.props.formLayout,
                                 visitable: display,
                                 fieldType: formFieldConfig.type,
