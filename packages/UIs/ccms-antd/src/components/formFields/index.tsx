@@ -19,6 +19,7 @@ import MultipleTextField from './multipleText'
 import CustomField from './custom'
 import ImportSubformField from './importSubform'
 import AnyField from './any'
+import TextDisplayComponent from './text/display'
 
 export default {
   text: TextField,
@@ -42,4 +43,8 @@ export default {
   custom: CustomField,
   import_subform: ImportSubformField,
   any: AnyField
+}
+
+export const display = {
+  text: TextDisplayComponent
 }
