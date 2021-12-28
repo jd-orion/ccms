@@ -1,8 +1,8 @@
 
 import TextField, { TextFieldConfig } from './text'
 
-import { DetailFieldConfig } from './common'
 import GroupField, { GroupFieldConfig } from './group'
+import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
 
 
 /**
@@ -10,13 +10,16 @@ import GroupField, { GroupFieldConfig } from './group'
  */
 export type DetailFieldConfigs =
     TextFieldConfig |
-    GroupFieldConfig
+    GroupFieldConfig |
+    ImportSubformFieldConfig
 
 export type componentType =
     'text' |
-    'group'
+    'group' |
+    'import_subform'
 
 export default {
   group: GroupField,
-  text: TextField
+  text: TextField,
+  import_subform: ImportSubformField
 }

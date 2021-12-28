@@ -1,6 +1,7 @@
 
 import FormField, { FormFieldConfig } from './form'
 import TextField, { TextFieldConfig } from './text'
+import TextDisplay from './text/display'
 import RadioField, { RadioFieldConfig } from './radio'
 import ColorField, { ColorFieldConfig } from './color'
 import UploadField, { UploadFieldConfig } from './upload'
@@ -106,4 +107,8 @@ export default {
   tabs: TabsField,
   multiple_text: MultipleTextField,
   custom: CustomField
+}
+
+export const display = {
+  text: TextDisplay,
 }

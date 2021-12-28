@@ -85,6 +85,7 @@ export interface DetailFieldProps<C extends DetailFieldConfig, T> {
   onValueListAppend: (path: string, value: any, validation: true | DetailFieldError[]) => Promise<void>
   // 事件：修改值 - 列表 - 删除
   onValueListSplice: (path: string, index: number, count: number, validation: true | DetailFieldError[]) => Promise<void>
+  baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
 }
 
@@ -160,6 +161,8 @@ export class DetailField<C extends DetailFieldConfig, E, T, S = {}> extends Reac
   fieldFormat: () => Promise<{}> = async () => {
     return {}
   }
+
+  didMount: () => Promise<void> = async () => { }
 
   renderComponent = (props: E) => {
     return <React.Fragment>

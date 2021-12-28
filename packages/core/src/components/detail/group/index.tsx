@@ -269,6 +269,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
                     onValueUnset={async (path, validation) => this.handleValueUnset(detailFieldIndex, path, validation)}
                     onValueListAppend={async (path, value, validation) => this.handleValueListAppend(detailFieldIndex, path, value, validation)}
                     onValueListSplice={async (path, index, count, validation) => this.handleValueListSplice(detailFieldIndex, path, index, count, validation)}
+                    baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                   />
               )

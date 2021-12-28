@@ -2,6 +2,7 @@ export { default as CCMS } from './main'
 export { default as FormStep } from './steps/form'
 export { default as FilterStep } from './steps/filter'
 export { default as SkipStep } from './steps/skip'
+
 export { default as TextField } from './components/formFields/text'
 export { default as FormField } from './components/formFields/form'
 export { default as RadioField } from './components/formFields/radio'
@@ -26,6 +27,8 @@ export { default as TabsField } from './components/formFields/tabs'
 export { default as MultipleTextField } from './components/formFields/multipleText'
 export { default as CustomField } from './components/formFields/custom'
 
+export { default as TextDisplay } from './components/formFields/text/display'
+
 export { default as TableStep } from './steps/table'
 export { default as TextColumn } from './components/tableColumns/text'
 export { default as DatetimeColumn } from './components/tableColumns/datetime'
@@ -41,6 +44,7 @@ export { default as FetchStep } from './steps/fetch'
 export { default as DetailStep } from './steps/detail'
 export { default as DetailGroupField } from './components/detail/group'
 export { default as DetailTextField } from './components/detail/text'
+export { default as DetailImportSubformField } from './components/detail/importSubform'
 
 export { default as HeaderStep } from './steps/header'
 

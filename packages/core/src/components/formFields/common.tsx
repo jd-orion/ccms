@@ -178,6 +178,59 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
   }
 }
 
+export interface DisplayProps<C extends FieldConfig, T> {
+  value: T,
+  record: { [field: string]: any },
+  data: any[],
+  step: number,
+  config: C,
+  // 事件：设置值
+  onValueSet: (path: string, value: T, validation: true | FieldError[]) => Promise<void>
+  // 事件：置空值
+  onValueUnset: (path: string, validation: true | FieldError[]) => Promise<void>
+  // 事件：修改值 - 列表 - 追加
+  onValueListAppend: (path: string, value: any, validation: true | FieldError[]) => Promise<void>
+  // 事件：修改值 - 列表 - 删除
+  onValueListSplice: (path: string, index: number, count: number, validation: true | FieldError[]) => Promise<void>
+  baseRoute: string,
+  loadDomain: (domain: string) => Promise<string>
+}
+
+export class Display<C extends FieldConfig, E, T, S = {}> extends React.Component<DisplayProps<C, T>, S> {
+  defaultValue = async () => {
+    const {
+      config
+    } = this.props
+    if (config.defaultValue !== undefined) {
+      return ParamHelper(config.defaultValue, { record: this.props.record, data: this.props.data, step: this.props.step })
+    }
+
+    return undefined
+  }
+  
+  reset: () => Promise<T> = async () => {
+    return this.defaultValue()
+  };
+
+  set: (value: any) => Promise<any> = async (value) => {
+    return value
+  };
+
+  renderComponent = (props: E) => {
+    return <React.Fragment>
+      当前UI库未实现该表单类型
+    </React.Fragment>
+  }
+
+  didMount: () => Promise<void> = async () => { }
+
+  render = () => {
+    return (<React.Fragment>
+      当前UI库未实现该表单类型
+    </React.Fragment>)
+  }
+}
+
 export class FieldError {
   message: string
   constructor (message: string) {

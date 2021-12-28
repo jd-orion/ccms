@@ -163,6 +163,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
           // 首次进入错误提示; 
           detailData[detailFieldIndex] = { status: 'error', message: validation[0].message, name: detailFieldConfig.label }
         }
+        await detailField.didMount()
       }
     }
 
@@ -419,6 +420,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                     onValueUnset={async (path, validation) => await this.handleValueUnset(detailFieldIndex, path, validation)}
                     onValueListAppend={async (path, value, validation) => await this.handleValueListAppend(detailFieldIndex, path, value, validation)}
                     onValueListSplice={async (path, index, count, validation) => await this.handleValueListSplice(detailFieldIndex, path, index, count, validation)}
+                    baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                   />
                 )
