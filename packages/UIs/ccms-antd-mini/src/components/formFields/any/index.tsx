@@ -15,7 +15,7 @@ export default class AnyFieldComponent extends AnyField {
 
   renderTypeComponent = (props: IAnyTypeField) => {
     return (
-      <Select value={props.type} onChange={(type) => props.onChange(type)}>
+      <Select getPopupContainer={(ele) => ele.parentElement || document.body} value={props.type} onChange={(type) => props.onChange(type)}>
         <Select.Option value="null">空</Select.Option>
         <Select.Option value="string">字符串</Select.Option>
         <Select.Option value="number">数值</Select.Option>
