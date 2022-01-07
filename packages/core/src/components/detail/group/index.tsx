@@ -12,6 +12,12 @@ export interface GroupFieldConfig extends DetailFieldConfig {
 }
 
 export interface IGroupField {
+  columns?: {
+    type?: 'span' | 'width'
+    value?: number | string,
+    wrap?: boolean
+    gutter?: number | string
+  }
   children: React.ReactNode[]
 }
 
@@ -223,6 +229,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     return (
       <React.Fragment>
         {this.renderComponent({
+          columns: config.columns,
           children: (this.props.config.fields || []).map((detailFieldConfig, detailFieldIndex) => {
             if (!ConditionHelper(detailFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
               this.detailFieldsMounted[detailFieldIndex] = false
@@ -246,6 +253,12 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
             const renderData = {
               key: detailFieldIndex,
               label: detailFieldConfig.label,
+              columns: {
+                type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
+                value: detailFieldConfig.columns?.value || config.columns?.value || 1,
+                wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
+                gutter: detailFieldConfig.columns?.gutter || config.columns?.gutter || 0
+              },
               layout: formLayout,
               visitable: display,
               fieldType: detailFieldConfig.type,

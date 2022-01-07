@@ -14,7 +14,13 @@ import ConditionHelper from '../../util/condition'
  * - layout: 表单布局类型
  * - * horizontal: 左侧文本、右侧输入框、纵向排列
  * - * vertical:   顶部文本、底部输入框、纵向排列
- * - * inline:     左侧文本、右侧输入框、横向排列
+ * - columns: 分栏设置
+ * - * type: 分栏类型
+ * - * - * span: 固定分栏
+ * - * - * width: 宽度分栏
+ * - * value: 分栏相关配置值
+ * - * wrap: 分栏后是否换行
+ * - * gutter: 分栏边距
  * - fields: 详情项配置列表
  * - defaultValue  默认值
  * - hiddenBack  是否隐藏返回按钮
@@ -22,7 +28,13 @@ import ConditionHelper from '../../util/condition'
  */
 export interface DetailConfig extends StepConfig {
   type: 'detail'
-  layout?: 'horizontal' | 'vertical' | 'inline'
+  layout?: 'horizontal' | 'vertical'
+  columns?: {
+    type?: 'span' | 'width'
+    value?: number | string,
+    wrap?: boolean
+    gutter?: number | string
+  }
   fields?: DetailFieldConfigs[]
   defaultValue?: ParamConfig
   hiddenBack?: boolean
@@ -35,10 +47,23 @@ export interface DetailConfig extends StepConfig {
  * - * horizontal: 左侧文本、右侧输入框、纵向排列
  * - * vertical:   顶部文本、底部输入框、纵向排列
  * - * inline:     左侧文本、右侧输入框、横向排列
+ * - columns: 分栏设置
+ * - * type: 分栏类型
+ * - * - * span: 固定分栏
+ * - * - * width: 宽度分栏
+ * - * value: 分栏相关配置值
+ * - * wrap: 分栏后是否换行
+ * - * gutter: 分栏边距
  * - children: 表单内容
  */
 export interface IDetail {
-  layout: 'horizontal' | 'vertical' | 'inline'
+  layout: 'horizontal' | 'vertical'
+  columns?: {
+    type?: 'span' | 'width'
+    value?: number | string,
+    wrap?: boolean
+    gutter?: number | string
+  }
   children: React.ReactNode[]
   onBack?: () => Promise<any>
   backText?: string
@@ -49,6 +74,7 @@ export interface IDetail {
  * - key: react需要的unique key
  * - label:       详情项名称
  * - layout:      详情项布局
+ * - collapsible: 详情页group展开收起配置
  * - visitable:  详情项可见性
  * - * horizontal:  左侧文本、右侧输入框、纵向排列
  * - * vertical:    顶部文本、底部输入框、纵向排列
@@ -58,7 +84,14 @@ export interface IDetail {
 export interface IDetailItem {
   key: string | number,
   label: string
-  layout: 'horizontal' | 'vertical' | 'inline'
+  layout: 'horizontal' | 'vertical'
+  columns?: {
+    type?: 'span' | 'width'
+    value?: number | string,
+    wrap?: boolean
+    gutter?: number | string
+  }
+  collapsible?: 'header' | 'disabled'
   visitable: boolean
   fieldType: string
   children: React.ReactNode
@@ -342,6 +375,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
 
   render () {
     const {
+      config,
       data,
       step
       // config: {
@@ -350,7 +384,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
       // }
     } = this.props
 
-    const layout = this.props.config?.layout || 'horizontal'
+    const layout = this.props.config?.layout || 'vertical'
     const fields = this.props.config?.fields || []
 
     const {
@@ -366,6 +400,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
           {this.renderComponent({
             layout,
             onBack: this.props.config.hiddenBack ? undefined : async () => this.handleCancel(),
+            columns: config.columns,
             backText: this.props.config?.backText?.replace(/(^\s*)|(\s*$)/g, ""),
             children: fields.map((detailFieldConfig, detailFieldIndex) => {
               if (!ConditionHelper(detailFieldConfig.condition, { record: detailValue, data, step })) {
@@ -397,6 +432,12 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                 label: detailFieldConfig.label,
                 // status: detailFieldConfig.field !== undefined ? getValue(detailData, detailFieldConfig.field, {}).status || 'normal' : 'normal',
                 // message: detailFieldConfig.field !== undefined ? getValue(detailData, detailFieldConfig.field, {}).message || '' : '',
+                columns: {
+                  type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
+                  value: detailFieldConfig.columns?.value || config.columns?.value || 1,
+                  wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
+                  gutter: detailFieldConfig.columns?.gutter || config.columns?.gutter || 0
+                },
                 layout,
                 visitable: display,
                 fieldType: detailFieldConfig.type,

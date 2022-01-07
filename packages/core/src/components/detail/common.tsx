@@ -21,9 +21,16 @@ import ParamHelper from '../../util/param'
 export interface DetailFieldConfig {
   field: string
   label: string
+  columns?: {
+    type: 'span' | 'width'
+    value: number | string,
+    wrap: boolean
+    gutter: number | string
+  }
   display?: 'none'
   defaultValue?: ParamConfig,
   condition?: DetailFieldConditionConfig
+  layout?: 'horizontal' | 'vertical'
   // styles?: object
 }
 
@@ -69,7 +76,7 @@ export interface IDetailField<T> {
 export interface DetailFieldProps<C extends DetailFieldConfig, T> {
   // 挂载事件
   ref: (instance: DetailField<C, {}, any> | null) => void
-  formLayout: 'horizontal' | 'vertical' | 'inline'
+  formLayout: 'horizontal' | 'vertical'
   value: T,
   record: { [field: string]: any },
   data: any[],
@@ -166,13 +173,13 @@ export class DetailField<C extends DetailFieldConfig, E, T, S = {}> extends Reac
 
   renderComponent = (props: E) => {
     return <React.Fragment>
-      当前UI库未实现该表单类型
+      当前UI库未实现该展示类型
     </React.Fragment>
   }
 
   render = () => {
     return (<React.Fragment>
-      当前UI库未实现该表单类型
+      当前UI库未实现该展示类型
     </React.Fragment>)
   }
 }

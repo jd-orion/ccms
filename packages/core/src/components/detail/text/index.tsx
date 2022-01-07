@@ -11,7 +11,6 @@ export interface ITextField {
 }
 
 export default class TextField extends DetailField<TextFieldConfig, ITextField, string> implements IDetailField<string> {
-  
   renderComponent = (props: ITextField) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现Text组件。

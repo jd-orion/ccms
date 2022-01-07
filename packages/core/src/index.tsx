@@ -43,6 +43,8 @@ export { default as ImageColumn } from './components/tableColumns/image'
 export { default as FetchStep } from './steps/fetch'
 export { default as DetailStep } from './steps/detail'
 export { default as DetailGroupField } from './components/detail/group'
+export { default as DetailEunmField } from './components/detail/enum'
+export { default as DetailStatementField } from './components/detail/statement'
 export { default as DetailTextField } from './components/detail/text'
 export { default as DetailImportSubformField } from './components/detail/importSubform'
 
