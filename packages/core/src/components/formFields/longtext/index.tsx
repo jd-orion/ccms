@@ -145,8 +145,7 @@ export default class LongTextField extends Field<LongtextFieldConfig, ILongtextF
         disabled,
         readonly,
         placeholder
-      },
-      onChange
+      }
     } = this.props
 
     return (

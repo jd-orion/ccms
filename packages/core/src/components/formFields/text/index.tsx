@@ -150,8 +150,7 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
         disabled,
         readonly,
         placeholder
-      },
-      onChange
+      }
     } = this.props
 
     return (
