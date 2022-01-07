@@ -98,19 +98,21 @@ export default class FormStepComponent extends FormStep {
     } = props
 
     return (
-      <Form.Item
-        extra={extra ? extra.trim() : ''}
-        required={required}
-        key={key}
-        label={label}
-        {...formItemLayout(layout, fieldType, label)}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
-        style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
-        className={styles[`ccms-antd-mini-form-${fieldType}`]}
-      >
-        {children}
-      </Form.Item>
+      <div>
+        <Form.Item
+          extra={extra ? extra.trim() : ''}
+          required={required}
+          key={key}
+          label={label}
+          {...formItemLayout(layout, fieldType, label)}
+          validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+          help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
+          style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
+          className={styles[`ccms-antd-mini-form-${fieldType}`]}
+        >
+          {children}
+        </Form.Item>
+      </div>
     )
   }
 }
