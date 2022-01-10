@@ -1,13 +1,14 @@
 import React from 'react'
 import { FormStep } from 'ccms'
 import { IForm, IFormItem, IFormStepModal, FormConfig, IButtonProps } from 'ccms/dist/src/steps/form'
-import { Button, Form, Space, Modal } from 'antd'
+import { Button, Form, Space, Modal, Collapse } from 'antd'
+const { Panel } = Collapse;
 
 import { FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/formFields'
 import OperationHelper from '../../util/operation'
 import styles from "./index.less"
-import { formItemLayout } from '../../components/formFields/common'
+import { formItemLayout, computedItemStyle } from '../../components/formFields/common'
 import newstyles from "../../main.less"
 
 export default class FormStepComponent extends FormStep {
@@ -32,6 +33,7 @@ export default class FormStepComponent extends FormStep {
   renderComponent = (props: IForm) => {
     const {
       layout,
+      columns,
       actions,
       onSubmit,
       onCancel,
@@ -48,6 +50,8 @@ export default class FormStepComponent extends FormStep {
           wrapperCol: { span: 18 }
         }
         : null
+    
+    const gutter = Number(columns?.gutter || 0)
 
     return (
       <Form
@@ -56,7 +60,14 @@ export default class FormStepComponent extends FormStep {
         layout="vertical" // 和drip同步 改为竖排
         className={newstyles['content']}
       >
-        {children}
+        <div
+        style={{
+          rowGap: `${gutter * 2}px`
+        }}
+        className={styles['ccms-antd-mini-form-row']}
+      >
+          {children}
+        </div>
         {
           (Array.isArray(actions) ? actions.length > 0 : (onSubmit || onCancel)) && <Form.Item>
             <Space>
@@ -88,6 +99,7 @@ export default class FormStepComponent extends FormStep {
       key,
       visitable,
       layout,
+      columns,
       label,
       status,
       message,
@@ -96,24 +108,48 @@ export default class FormStepComponent extends FormStep {
       fieldType,
       children
     } = props
+    const colStyle = computedItemStyle(columns, layout)
 
     return (
-      <div>
-        <Form.Item
-          extra={extra ? extra.trim() : ''}
-          required={required}
-          key={key}
-          label={label}
-          {...formItemLayout(layout, fieldType, label)}
-          validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-          help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
-          style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
-          className={styles[`ccms-antd-mini-form-${fieldType}`]}
-        >
-          {children}
-        </Form.Item>
+      <div
+        style={colStyle}
+        key={key}
+        className={
+          [
+            styles['detail-col'],
+            styles[`detail-col-${fieldType}`],
+            styles[`detail-col-${columns?.type || 'span'}`]
+          ].join(' ')
+        }
+      >
+        {
+          fieldType === 'group' ? this.renderGroupUI(label, children, 'header') :
+            <Form.Item
+              extra={extra ? extra.trim() : ''}
+              required={required}
+              key={key}
+              label={label}
+              {...formItemLayout(layout, fieldType, label)}
+              validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+              help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
+              style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
+              className={styles[`ccms-antd-mini-form-${fieldType}`]}
+            >
+              {children}
+            </Form.Item>}
       </div>
     )
+  }
+
+  // group UI
+  renderGroupUI = (label: string, children: any, collapsible?: 'header' | 'disabled') => {
+    return <Collapse collapsible="header" defaultActiveKey={['1']} >
+      <Panel header={label} key="1" collapsible={collapsible || 'header'}>
+        <div className={styles['form-group-content']}>
+          {children}
+        </div>
+      </Panel>
+    </Collapse>
   }
 }
 // <FormConfig, IForm>

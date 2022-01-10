@@ -7,8 +7,8 @@ import { DetailStep } from 'ccms'
 import { IDetail, IDetailItem, DetailConfig } from 'ccms/dist/src/steps/detail'
 
 import getALLComponents from '../../components/detail'
-import styles from "./index.less"
-import { formItemLayout } from '../../components/formFields/common'
+import style from "./index.less"
+import { computedItemStyle } from '../../components/detail/common'
 import newstyles from "../../main.less"
 
 export default class DetailStepComponent extends DetailStep {
@@ -23,15 +23,12 @@ export default class DetailStepComponent extends DetailStep {
       children
     } = props
     const gutter = Number(columns?.gutter || 0)
-    console.log(gutter, 'gutter', columns?.gutter)
     return (
       <div
         style={{
-          rowGap: `${gutter * 2}px`,
-          // marginLeft: `-${gutter / 2}px`,
-          // marginRight: `-${gutter / 2}px`
+          rowGap: `${gutter * 2}px`
         }}
-        className={styles['ccms-antd-mini-detail-row']}
+        className={style['ccms-antd-mini-detail-row']}
       >
         {children}
         {
@@ -45,40 +42,11 @@ export default class DetailStepComponent extends DetailStep {
     )
   }
 
-  computedStyle = (columns: any, layout: string) => {
-    const setStyle = {}
-    if (!columns) return {}
-    Object.assign(setStyle,
-      columns.gutter ? {
-        paddingLeft: `${columns.gutter / 2}px`,
-        paddingRight: `${columns.gutter / 2}px`,
-      } : {})
-    if (columns.type === 'span') {
-      Object.assign(setStyle, {
-        flex: `0 0 ${(100 / columns.value)}%`,
-        maxWidth: `${(100 / columns.value)}%`,
-      })
-    }
-    if (columns.type === 'width') {
-      Object.assign(setStyle, {
-        flex: `0 0 ${columns.value}`,
-        maxWidth: columns.value,
-      })
-    }
-    if (layout === 'horizontal') {
-      Object.assign(setStyle, {
-        flexDirection: 'column'
-      })
-    }
-
-    return setStyle
-  }
-
-
   renderItemComponent = (props: IDetailItem) => {
     const {
       key,
       layout,
+      styles,
       label,
       columns,
       collapsible,
@@ -86,24 +54,24 @@ export default class DetailStepComponent extends DetailStep {
       children
     } = props
 
-    const colStyle = this.computedStyle(columns, layout)
+    const colStyle = computedItemStyle(columns, layout)
 
     return (
       <div
-        style={colStyle}
+        style={Object.assign(colStyle, styles)}
         key={key}
         className={
           [
-            styles['detail-col'],
-            styles[`detail-col-${fieldType}`],
-            styles[`detail-col-${columns?.type || 'span'}`]
+            style['detail-col'],
+            style[`detail-col-${fieldType}`],
+            style[`detail-col-${columns?.type || 'span'}`]
           ].join(' ')
         }
       >
         {
           fieldType === 'group' ? this.renderGroupUI(label, children) :
-            <div className={styles['detail-group-content']}>
-              <div className={styles[`detail-${fieldType}-title`]}><span className={styles['down-arrow']} />{label}</div>
+            <div className={style['detail-group-content']}>
+              <div className={style[`detail-${fieldType}-title`]}><span className={style['down-arrow']} />{label}</div>
               {children}
             </div>
         }
@@ -115,7 +83,7 @@ export default class DetailStepComponent extends DetailStep {
   renderGroupUI = (label: string, children: any, collapsible?: 'header' | 'disabled') => {
     return <Collapse collapsible="header" defaultActiveKey={['1']} >
       <Panel header={label} key="1" collapsible={collapsible || 'header'}>
-        <div className={styles['detail-group-content']}>
+        <div className={style['detail-group-content']}>
           {children}
         </div>
       </Panel>

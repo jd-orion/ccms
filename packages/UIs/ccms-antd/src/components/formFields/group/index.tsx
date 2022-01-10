@@ -5,7 +5,7 @@ import { IFormItem } from "ccms/dist/src/steps/form";
 import { Form } from "antd"
 import getALLComponents from '../'
 import styles from './index.less'
-import { formItemLayout } from "../common";
+import { formItemLayout, computedItemStyle, computedGutterStyle } from "../common";
 
 export const PropsType = (props: GroupFieldConfig) => { };
 
@@ -14,10 +14,18 @@ export default class GroupFieldComponent extends GroupField {
 
   renderComponent = (props: IGroupField) => {
     const {
+      columns,
       children
     } = props
+
+    const gutter = computedGutterStyle(Number(columns?.gutter || 0), 'row')
+
     return (
-      <div>
+      <div
+        style={{
+          ...gutter
+        }}
+        className={styles['ccms-antd-mini-form-group-row']}>
         {children}
       </div>
     )
@@ -27,6 +35,7 @@ export default class GroupFieldComponent extends GroupField {
     const {
       key,
       layout,
+      columns,
       label,
       visitable,
       status,
@@ -37,20 +46,35 @@ export default class GroupFieldComponent extends GroupField {
       children
     } = props
 
+    const colStyle = computedItemStyle(columns, layout)
+
     return (
-      <Form.Item
-        extra={extra ? extra.trim() : ''}
-        required={required}
+      <div
+        style={colStyle}
         key={key}
-        label={label}
-        {...formItemLayout(layout, fieldType, label)}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-        help={fieldType === 'import_subform' || fieldType === 'group' || message === '' ? null : message}
-        className={styles[`ccms-antd-mini-form-${fieldType}`]}
-        style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
+        className={
+          [
+            styles['form-group-col'],
+            styles[`form-group-col-${fieldType}`],
+            styles[`form-group-col-${columns?.type || 'span'}`]
+          ].join(' ')
+        }
       >
-        {children}
-      </Form.Item>
+        <Form.Item
+          extra={extra ? extra.trim() : ''}
+          required={required}
+          key={key}
+          label={label}
+          {...formItemLayout(layout, fieldType, label)}
+          validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+          help={fieldType === 'import_subform' || fieldType === 'group' || message === '' ? null : message}
+          className={styles[`ccms-antd-mini-form-${fieldType}`]}
+          style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
+        >
+
+          {children}
+        </Form.Item>
+      </div>
     )
   }
 }
