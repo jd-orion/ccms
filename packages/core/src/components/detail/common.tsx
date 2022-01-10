@@ -31,7 +31,7 @@ export interface DetailFieldConfig {
   defaultValue?: ParamConfig,
   condition?: DetailFieldConditionConfig
   layout?: 'horizontal' | 'vertical'
-  // styles?: object
+  styles?: object
 }
 
 export interface DetailFieldConditionConfig {

@@ -12,7 +12,29 @@ export interface GroupFieldConfig extends FieldConfig {
   fields: FieldConfigs[]
 }
 
+/**
+ * 表单步骤组件 - UI渲染方法 - 入参格式
+ * - columns: 分栏设置
+ * - * type: 分栏类型
+ * - * - * span: 固定分栏
+ * - * - * width: 宽度分栏
+ * - * value: 分栏相关配置值
+ * - * wrap: 分栏后是否换行
+ * - * gutter: 分栏边距
+ * - * horizontal: 左侧文本、右侧输入框、纵向排列
+ * - * vertical:   顶部文本、底部输入框、纵向排列
+ * - * inline:     左侧文本、右侧输入框、横向排列
+ * - submit:   表单提交操作事件
+ * - cancel:   表单取消操作事件
+ * - children: 表单内容
+ */
 export interface IGroupField {
+  columns?: {
+    type?: 'span' | 'width'
+    value?: number | string,
+    wrap?: boolean
+    gutter?: number | string
+  }
   children: React.ReactNode[]
 }
 
@@ -313,6 +335,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                 const renderData = {
                   key: formFieldIndex,
                   label: formFieldConfig.label,
+                  columns: formFieldConfig.columns,
                   status,
                   message: (this.state.formData[formFieldIndex] || {}).message || '',
                   extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),

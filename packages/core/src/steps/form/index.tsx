@@ -16,6 +16,13 @@ import OperationHelper, { OperationConfig } from '../../util/operation'
  * - * horizontal: 左侧文本、右侧输入框、纵向排列
  * - * vertical:   顶部文本、底部输入框、纵向排列
  * - * inline:     左侧文本、右侧输入框、横向排列
+ * - columns: 分栏设置
+ * - * type: 分栏类型
+ * - * - * span: 固定分栏
+ * - * - * width: 宽度分栏
+ * - * value: 分栏相关配置值
+ * - * wrap: 分栏后是否换行
+ * - * gutter: 分栏边距
  * - fields: 表单项配置列表
  * - defaultValue: 默认值
  * - hiddenSubmit: 是否隐藏提交按钮
@@ -30,6 +37,12 @@ import OperationHelper, { OperationConfig } from '../../util/operation'
 export interface FormConfig extends StepConfig {
   type: 'form'
   layout?: 'horizontal' | 'vertical' | 'inline'
+  columns?: {
+    type?: 'span' | 'width'
+    value?: number | string,
+    wrap?: boolean
+    gutter?: number | string
+  }
   /**
    * 表单组件配置文件格式定义
    * 参照其它组件定义
@@ -89,6 +102,13 @@ export interface IFormStepModal {
 /**
  * 表单步骤组件 - UI渲染方法 - 入参格式
  * - layout:   表单布局类型
+ * - columns: 分栏设置
+ * - * type: 分栏类型
+ * - * - * span: 固定分栏
+ * - * - * width: 宽度分栏
+ * - * value: 分栏相关配置值
+ * - * wrap: 分栏后是否换行
+ * - * gutter: 分栏边距
  * - * horizontal: 左侧文本、右侧输入框、纵向排列
  * - * vertical:   顶部文本、底部输入框、纵向排列
  * - * inline:     左侧文本、右侧输入框、横向排列
@@ -98,6 +118,12 @@ export interface IFormStepModal {
  */
 export interface IForm {
   layout: 'horizontal' | 'vertical' | 'inline'
+  columns?: {
+    type?: 'span' | 'width'
+    value?: number | string,
+    wrap?: boolean
+    gutter?: number | string
+  }
   actions?: React.ReactNode[]
   children: React.ReactNode[]
   onSubmit?: () => Promise<any>
@@ -143,6 +169,12 @@ export interface IFormItem {
   message?: string
   extra?: string
   layout: 'horizontal' | 'vertical' | 'inline'
+  columns?: {
+    type?: 'span' | 'width'
+    value?: number | string,
+    wrap?: boolean
+    gutter?: number | string
+  }
   visitable: boolean
   fieldType: string
   children: React.ReactNode
@@ -567,6 +599,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
       data,
       step,
       config: {
+        columns,
         // layout = 'horizontal',
         // fields = []
         actions
@@ -634,6 +667,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
           {/* 渲染表单 */}
           {this.renderComponent({
             layout,
+            columns,
             actions: actions_,
             onSubmit: this.props.config.hiddenSubmit ? undefined : async () => this.handleSubmit(), // TODO 待删除
             onCancel: this.props.config.hiddenCancel ? undefined : async () => this.handleCancel(), // TODO 待删除
@@ -673,6 +707,12 @@ export default class FormStep extends Step<FormConfig, FormState> {
               const renderData = {
                 key: formFieldIndex,
                 label: formFieldConfig.label,
+                columns: {
+                  type: formFieldConfig.columns?.type || columns?.type || 'span',
+                  value: formFieldConfig.columns?.value || columns?.value || 1,
+                  wrap: formFieldConfig.columns?.wrap || columns?.wrap || false,
+                  gutter: formFieldConfig.columns?.gutter || columns?.gutter || 0
+                },
                 status,
                 message: formData[formFieldIndex]?.message || '',
                 extra: StatementHelper(formFieldConfig.extra, { data: this.props.data, step: this.props.step }),

@@ -74,6 +74,13 @@ export interface IDetail {
  * - key: react需要的unique key
  * - label:       详情项名称
  * - layout:      详情项布局
+ * - columns: 分栏设置
+ * - * type: 分栏类型
+ * - * - * span: 固定分栏
+ * - * - * width: 宽度分栏
+ * - * value: 分栏相关配置值
+ * - * wrap: 分栏后是否换行
+ * - * gutter: 分栏边距
  * - collapsible: 详情页group展开收起配置
  * - visitable:  详情项可见性
  * - * horizontal:  左侧文本、右侧输入框、纵向排列
@@ -91,6 +98,7 @@ export interface IDetailItem {
     wrap?: boolean
     gutter?: number | string
   }
+  styles?: object
   collapsible?: 'header' | 'disabled'
   visitable: boolean
   fieldType: string
@@ -439,6 +447,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                   gutter: detailFieldConfig.columns?.gutter || config.columns?.gutter || 0
                 },
                 layout,
+                styles: detailFieldConfig.styles || {},
                 visitable: display,
                 fieldType: detailFieldConfig.type,
                 children: (
