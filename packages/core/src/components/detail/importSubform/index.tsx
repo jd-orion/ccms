@@ -55,7 +55,7 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
 
   interfaceHelper = new InterfaceHelper()
 
-  constructor(props: DetailFieldProps<ImportSubformFieldConfig, any>) {
+  constructor (props: DetailFieldProps<ImportSubformFieldConfig, any>) {
     super(props)
 
     this.state = {
@@ -65,7 +65,7 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
     }
   }
 
-  getFullpath(field: string, path: string = '') {
+  getFullpath (field: string, path: string = '') {
     const withConfigPath = this.props.config.configFrom?.type === 'data' && this.props.config.configFrom.dataField ? `${this.props.config.configFrom.dataField}` : ''
     const _fullPath = `${withConfigPath}.${field}.${path}.`
     const fullPath = _fullPath.replace(/(^\.*)|(\.*$)|(\.){2,}/g, '$3')
@@ -190,7 +190,7 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
       })
     }
 
-    const fields = config.configFrom?.type === 'data' ? ( config.configFrom.configField ? getValue(value, config.configFrom.configField) : [] ) : this.state.fields
+    const fields = config.configFrom?.type === 'data' ? (config.configFrom.configField ? getValue(value, config.configFrom.configField) : []) : this.state.fields
 
     if (!fields || !Array.isArray(fields) || fields.length === 0) {
       return <React.Fragment />

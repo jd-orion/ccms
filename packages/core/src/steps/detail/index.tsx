@@ -35,6 +35,7 @@ export interface DetailConfig extends StepConfig {
     wrap?: boolean
     gutter?: number | string
   }
+  unstringify?: string[] // 反序列化字段
   fields?: DetailFieldConfigs[]
   defaultValue?: ParamConfig
   hiddenBack?: boolean
@@ -133,7 +134,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
    * 初始化表单的值
    * @param props
    */
-  constructor(props: StepProps<DetailConfig>) {
+  constructor (props: StepProps<DetailConfig>) {
     super(props)
     this.state = {
       ready: false,
@@ -159,7 +160,17 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     const detailData = cloneDeep(this.state.detailData)
 
     if (this.props.config.defaultValue) {
-      const detailDefault = ParamHelper(this.props.config.defaultValue, { data, step })
+      let detailDefault = ParamHelper(this.props.config.defaultValue, { data, step })
+      if (this.props.config.unstringify) {
+        for (const field of this.props.config.unstringify) {
+          const info = getValue(detailDefault, field)
+          try {
+            detailDefault = setValue(detailDefault, field, JSON.parse(info))
+          } catch (e) {
+            console.warn(`CCMS warning: 字段反序列化失败 - ${field}`)
+          }
+        }
+      }
       for (const detailFieldIndex in detailFieldsConfig) {
         const detailFieldConfig = detailFieldsConfig[detailFieldIndex]
         const value = getValue(detailDefault, detailFieldConfig.field)
@@ -201,7 +212,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
         if (validation === true) {
           detailData[detailFieldIndex] = { status: 'normal', name: detailFieldConfig.label }
         } else {
-          // 首次进入错误提示; 
+          // 首次进入错误提示;
           detailData[detailFieldIndex] = { status: 'error', message: validation[0].message, name: detailFieldConfig.label }
         }
         await detailField.didMount()
@@ -213,7 +224,6 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
       detailData: cloneDeep(detailData)
     })
   }
-
 
   /**
    * 处理表单返回事件
@@ -409,7 +419,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
             layout,
             onBack: this.props.config.hiddenBack ? undefined : async () => this.handleCancel(),
             columns: config.columns,
-            backText: this.props.config?.backText?.replace(/(^\s*)|(\s*$)/g, ""),
+            backText: this.props.config?.backText?.replace(/(^\s*)|(\s*$)/g, ''),
             children: fields.map((detailFieldConfig, detailFieldIndex) => {
               if (!ConditionHelper(detailFieldConfig.condition, { record: detailValue, data, step })) {
                 this.detailFieldsMounted[detailFieldIndex] = false

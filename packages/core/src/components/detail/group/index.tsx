@@ -41,7 +41,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
   }
 
   get = async () => {
-    let data: any = {};
+    let data: any = {}
 
     if (Array.isArray(this.props.config.fields)) {
       for (const detailFieldIndex in this.props.config.fields) {
@@ -56,7 +56,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
         }
       }
     }
-    
+
     return data
   }
 
@@ -64,7 +64,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     if (this.detailFieldsMounted[detailFieldIndex]) {
       return true
     }
-    
+
     this.detailFieldsMounted[detailFieldIndex] = true
 
     if (this.detailFields[detailFieldIndex]) {
@@ -77,7 +77,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
           value = await detailField.reset()
           this.props.onValueSet(detailFieldConfig.field, value, true)
         }
-        
+
         const validation = await detailField.validate(value)
         if (value === undefined || validation === true) {
           await this.setState(({ detailData }) => {
@@ -90,6 +90,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
             return { detailData: cloneDeep(detailData) }
           })
         }
+        await detailField?.didMount()
       }
     }
   }
@@ -128,7 +129,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     if (detailFieldConfig) {
       const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
       await this.props.onValueSet(fullPath, value, true)
-      
+
       const detailData = cloneDeep(this.state.detailData)
       if (validation === true) {
         detailData[detailFieldIndex] = { status: 'normal' }
@@ -147,7 +148,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     if (detailFieldConfig) {
       const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
       await this.props.onValueUnset(fullPath, true)
-      
+
       const detailData = cloneDeep(this.state.detailData)
       if (validation === true) {
         detailData[detailFieldIndex] = { status: 'normal' }
@@ -166,7 +167,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     if (detailFieldConfig) {
       const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
       await this.props.onValueListAppend(fullPath, value, true)
-      
+
       const detailData = cloneDeep(this.state.detailData)
       if (validation === true) {
         detailData[detailFieldIndex] = { status: 'normal' }
@@ -185,7 +186,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     if (detailFieldConfig) {
       const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
       await this.props.onValueListSplice(fullPath, index, count, true)
-      
+
       const detailData = cloneDeep(this.state.detailData)
       if (validation === true) {
         detailData[detailFieldIndex] = { status: 'normal' }
