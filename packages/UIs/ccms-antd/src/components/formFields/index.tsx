@@ -19,7 +19,18 @@ import MultipleTextField from './multipleText'
 import CustomField from './custom'
 import ImportSubformField from './importSubform'
 import AnyField from './any'
+
 import TextDisplayComponent from './text/display'
+import LongTextDisplayComponent from './longtext/display'
+import RadioDisplayComponent from './radio/display'
+import ColorDisplayComponent from './color/display'
+import NumberDisplayComponent from './number/display'
+import SwitchDisplayComponent from './switch/display'
+import UploadDisplayComponent from './upload/display'
+import DatetimeDisplayComponent from './datetime/display'
+import DatetimeRangeDisplayComponent from './datetimeRange/display'
+import SelectSingleDisplayComponent from './select/single/display'
+import SelectMultipleDisplayComponent from './select/multiple/display'
 
 export default {
   text: TextField,
@@ -46,5 +57,15 @@ export default {
 }
 
 export const display = {
-  text: TextDisplayComponent
+  text: TextDisplayComponent,
+  radio: RadioDisplayComponent,
+  longtext: LongTextDisplayComponent,
+  number: NumberDisplayComponent,
+  switch: SwitchDisplayComponent,
+  datetime: DatetimeDisplayComponent,
+  datetimeRange: DatetimeRangeDisplayComponent,
+  select_single: SelectSingleDisplayComponent,
+  select_multiple: SelectMultipleDisplayComponent,
+  color: ColorDisplayComponent,
+  upload: UploadDisplayComponent
 }
