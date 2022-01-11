@@ -36,7 +36,6 @@ export default class GroupFieldComponent extends GroupField {
       key,
       layout,
       columns,
-      styles: style,
       label,
       visitable,
       status,
