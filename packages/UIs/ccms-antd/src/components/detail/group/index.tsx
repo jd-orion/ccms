@@ -39,7 +39,7 @@ export default class GroupFieldComponent extends DetailGroupField {
       children
     } = props
     const colStyle = computedItemStyle(columns, layout)
-    console.log(colStyle, 'colstyle')
+    
     return (
       <div
         style={Object.assign(colStyle,itemstyle)}

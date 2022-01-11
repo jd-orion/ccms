@@ -42,7 +42,7 @@ export default class ImportSubformField extends DetailImportSubformField {
       <Form.Item
         key={key}
         label={label}
-        className={styles[`ccms-antd-mini-form-${fieldType}`]}
+        className={styles[`ccms-antd-mini-detail-${fieldType}`]}
         style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
       >
         {children}
