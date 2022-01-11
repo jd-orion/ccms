@@ -33,6 +33,7 @@ export default class GroupFieldComponent extends DetailGroupField {
     const {
       layout,
       label,
+      styles: itemstyle,
       columns,
       fieldType,
       children
@@ -41,7 +42,7 @@ export default class GroupFieldComponent extends DetailGroupField {
     console.log(colStyle, 'colstyle')
     return (
       <div
-        style={colStyle}
+        style={Object.assign(colStyle,itemstyle)}
         className={[styles['detail-group-col'], styles[`ccms-antd-mini-detail-${fieldType}`]].join(' ')}
       >
         <div className={styles['detail-group-content']}>

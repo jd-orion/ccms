@@ -1,6 +1,9 @@
-import { FormItemProps } from "antd";
+import { FormItemProps, Form } from "antd";
 
-export function formItemLayout (layout: 'horizontal' | 'vertical' | 'inline', fieldType: string, label: string | undefined) {
+
+
+
+export function formItemLayout(layout: 'horizontal' | 'vertical' | 'inline', fieldType: string, label: string | undefined) {
   const formItemLayout: FormItemProps = { labelAlign: 'left' }
   if (label) {
     formItemLayout.labelCol = { span: 24 }
@@ -22,15 +25,17 @@ export function computedItemStyle(columns: any, layout: string) {
       paddingRight: `${columns.gutter / 2}px`,
     } : {})
   if (columns.type === 'span') {
-    Object.assign(setStyle, {
+    columns.wrap ? Object.assign(setStyle, {
+      paddingRight: `${100 - (100 / columns.value)}%`
+    }) : Object.assign(setStyle, {
       flex: `0 0 ${(100 / columns.value)}%`,
-      maxWidth: `${(100 / columns.value)}%`,
+      maxWidth: `${(100 / columns.value)}%`
     })
   }
   if (columns.type === 'width') {
-    Object.assign(setStyle, {
+    columns.wrap ? null : Object.assign(setStyle, {
       flex: `0 0 ${columns.value}`,
-      maxWidth: columns.value,
+      maxWidth: columns.value
     })
   }
   if (layout === 'horizontal') {

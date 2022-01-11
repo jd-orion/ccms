@@ -1,23 +1,26 @@
-.ccms-antd-mini-form-import_subform, .ccms-antd-mini-form-group {
+.ccms-antd-mini-form-import_subform,
+.ccms-antd-mini-form-group {
   margin-bottom: 0 !important;
 
   &>:global(.ant-form-item-label) {
-    width: calc(100% + 16px) !important;
-    max-width: calc(100% + 16px) !important;
-    margin-left: -8px !important;
-    padding: 2px 8px !important;
-    flex: 0 0 auto !important;
+    width           : calc(100% + 16px) !important;
+    max-width       : calc(100% + 16px) !important;
+    margin-left     : -8px !important;
+    padding         : 2px 8px !important;
+    flex            : 0 0 auto !important;
     background-color: #00000008 !important;
   }
+
   &>:global(.ant-form-item-control) {
-    margin-left: -8px !important;
-    margin-right: -8px !important;
-    padding: 8px !important;
-    max-width: calc(100% + 16px) !important;
+    margin-left     : -8px !important;
+    margin-right    : -8px !important;
+    padding         : 8px !important;
+    max-width       : calc(100% + 16px) !important;
     background-color: #00000004 !important;
   }
+
   &>:global(.ant-form-item-control):first-child {
-    padding-top: 0 !important;
+    padding-top     : 0 !important;
     background-color: #00000000 !important;
   }
 }
@@ -40,33 +43,38 @@
   flex-flow    : row wrap;
   position     : relative;
 
-  .form-col {
-    margin-bottom   : 15px;
-    // display      : flex;
-    flex-direction  : row;
-    position        : relative;
-    max-width       : 100%;
-    min-height      : 1px;
-  }
+}
 
-  .form-group-content {
-    flex-direction: row;
-    display       : flex;
-  }
+.form-col {
+  margin-bottom   : 15px;
+  // display      : flex;
+  flex-direction  : row;
+  position        : relative;
+  max-width       : 100%;
+  min-height      : 1px;
+}
+.form-col-width,.form-col-span {
+  
+}
 
-  .ant-collapse-header-text {
-    font-weight: bold;
-    font-size  : 16px;
-  }
+.form-group-content {
+  flex-direction: row;
+  display       : flex;
+  margin-bottom: 15px;
+}
 
-  .ccms-antd-mini-form-group {
+.ant-collapse-header-text {
+  font-weight: bold;
+  font-size  : 16px;
+}
 
-    .form-group-title {
-      font-weight  : bold;
-      font-size    : 16px;
-      margin-bottom: 20px;
-      padding      : 16px 0;
-      border-bottom: 1px solid #f1f1f1;
-    }
+.ccms-antd-mini-form-group {
+
+  .form-group-title {
+    font-weight  : bold;
+    font-size    : 16px;
+    margin-bottom: 20px;
+    padding      : 16px 0;
+    border-bottom: 1px solid #f1f1f1;
   }
 }

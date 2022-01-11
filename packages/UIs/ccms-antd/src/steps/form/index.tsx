@@ -50,7 +50,7 @@ export default class FormStepComponent extends FormStep {
           wrapperCol: { span: 18 }
         }
         : null
-    
+
     const gutter = Number(columns?.gutter || 0)
 
     return (
@@ -61,11 +61,11 @@ export default class FormStepComponent extends FormStep {
         className={newstyles['content']}
       >
         <div
-        style={{
-          rowGap: `${gutter * 2}px`
-        }}
-        className={styles['ccms-antd-mini-form-row']}
-      >
+          style={{
+            rowGap: `${gutter * 2}px`
+          }}
+          className={styles['ccms-antd-mini-form-row']}
+        >
           {children}
         </div>
         {
@@ -109,6 +109,10 @@ export default class FormStepComponent extends FormStep {
       children
     } = props
     const colStyle = computedItemStyle(columns, layout)
+    const itemStyle = visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }
+    if (columns?.type === 'width' && columns?.value && columns.wrap) {
+      Object.assign(itemStyle, { width: columns.value })
+    }
 
     return (
       <div
@@ -116,9 +120,9 @@ export default class FormStepComponent extends FormStep {
         key={key}
         className={
           [
-            styles['detail-col'],
-            styles[`detail-col-${fieldType}`],
-            styles[`detail-col-${columns?.type || 'span'}`]
+            styles['form-col'],
+            styles[`form-col-${fieldType}`],
+            styles[`form-col-${columns?.type || 'span'}`]
           ].join(' ')
         }
       >
@@ -132,7 +136,7 @@ export default class FormStepComponent extends FormStep {
               {...formItemLayout(layout, fieldType, label)}
               validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
               help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
-              style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }}
+              style={itemStyle}
               className={styles[`ccms-antd-mini-form-${fieldType}`]}
             >
               {children}
