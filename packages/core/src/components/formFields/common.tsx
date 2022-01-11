@@ -42,6 +42,7 @@ export interface FieldConfig {
     wrap?: boolean
     gutter?: number | string
   }
+  styles?: object
 }
 
 /**

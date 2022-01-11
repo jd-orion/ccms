@@ -18,6 +18,7 @@ export interface IGroupField {
     wrap?: boolean
     gutter?: number | string
   }
+  styles?: object
   children: React.ReactNode[]
 }
 
@@ -72,11 +73,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
       if (detailField) {
         const detailFieldConfig = this.props.config.fields[detailFieldIndex]
 
-        let value = getValue(this.props.value, detailFieldConfig.field)
-        if ((detailFieldConfig.defaultValue) && value === undefined) {
-          value = await detailField.reset()
-          this.props.onValueSet(detailFieldConfig.field, value, true)
-        }
+        const value = getValue(this.props.value, detailFieldConfig.field)
 
         const validation = await detailField.validate(value)
         if (value === undefined || validation === true) {
@@ -260,6 +257,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
                 wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
                 gutter: detailFieldConfig.columns?.gutter || config.columns?.gutter || 0
               },
+              styles: detailFieldConfig.styles,
               layout: formLayout,
               visitable: display,
               fieldType: detailFieldConfig.type,

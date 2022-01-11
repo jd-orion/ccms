@@ -19,10 +19,23 @@ export default class TextField extends DetailField<TextFieldConfig, ITextField, 
     </React.Fragment>
   }
 
-  render = () => {
+  getValue = () => {
     const {
-      value
+      value,
+      config: {
+        defaultValue
+      }
     } = this.props
+
+    if (value === undefined || value === null || value === '') {
+      return defaultValue !== undefined ? defaultValue : ''
+    }
+    return value
+  }
+
+  render = () => {
+    const value = this.getValue()
+    console.log(value, 'text value ')
 
     return (
       <React.Fragment>

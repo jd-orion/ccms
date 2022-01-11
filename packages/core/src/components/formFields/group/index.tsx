@@ -336,6 +336,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                   key: formFieldIndex,
                   label: formFieldConfig.label,
                   columns: formFieldConfig.columns,
+                  styles: formFieldConfig.styles,
                   status,
                   message: (this.state.formData[formFieldIndex] || {}).message || '',
                   extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),

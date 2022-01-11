@@ -202,10 +202,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
       if (detailField) {
         const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
 
-        let value = getValue(this.detailValue, detailFieldConfig.field)
-        if ((detailFieldConfig.defaultValue) && value === undefined) {
-          value = await detailField.reset()
-        }
+        const value = getValue(this.detailValue, detailFieldConfig.field)
         this.detailValue = setValue(this.detailValue, detailFieldConfig.field, value)
 
         const validation = await detailField.validate(value)
@@ -444,7 +441,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
               }
 
               const DetailFieldComponent = this.getALLComponents(detailFieldConfig.type) || DetailField
-
+              console.log(detailFieldConfig.type,'detailFieldConfig.type',DetailFieldComponent)
               const renderData = {
                 key: detailFieldIndex,
                 label: detailFieldConfig.label,
@@ -470,7 +467,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                       }
                     }}
                     formLayout={layout}
-                    value={detailFieldConfig.field !== undefined ? getValue(detailValue, detailFieldConfig.field) : undefined}
+                    value={detailFieldConfig.field !== undefined ? getValue(detailValue, detailFieldConfig.field) || detailFieldConfig.defaultValue : undefined}
                     record={detailValue}
                     data={cloneDeep(data)}
                     step={step}

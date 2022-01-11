@@ -28,7 +28,7 @@ export interface DetailFieldConfig {
     gutter: number | string
   }
   display?: 'none'
-  defaultValue?: ParamConfig,
+  defaultValue?: string,
   condition?: DetailFieldConditionConfig
   layout?: 'horizontal' | 'vertical'
   styles?: object
@@ -50,13 +50,11 @@ export type DetailFieldConfigs = getFieldConfigs
 
 /**
  * 详情页表单项子类需实现的方法
- * - reset:    表单项重置当前值
  * - set:      表单项设置当前值
  * - get:      表单项获取当前值
  * - validate: 表单项的值校验方法
  */
 export interface IDetailField<T> {
-  reset: () => Promise<T>
   set: (value: T) => Promise<void>
   get: () => Promise<T>
   validate: (value: T) => Promise<true | DetailFieldError[]>
@@ -137,16 +135,9 @@ export class DetailField<C extends DetailFieldConfig, E, T, S = {}> extends Reac
     const {
       config
     } = this.props
-    if (config.defaultValue !== undefined) {
-      return ParamHelper(config.defaultValue, { record: this.props.record, data: this.props.data, step: this.props.step })
-    }
 
-    return undefined
+    return config.defaultValue
   }
-
-  reset: () => Promise<T> = async () => {
-    return this.defaultValue()
-  };
 
   set: (value: T) => Promise<void> = async (value) => {
     const {

@@ -1,3 +1,4 @@
+import { config } from 'process'
 import React from 'react'
 import { DetailField, DetailFieldConfig, DetailFieldError, DetailFieldProps, IDetailField } from '../common'
 
@@ -43,17 +44,21 @@ export default class EnumDetail extends DetailField<EnumDetailConfig, IEnumProps
     </React.Fragment>
   }
 
+  
   getValue = () => {
     const {
       value,
       config: {
         multiple,
-        options
+        options,
+        defaultValue
       }
     } = this.props
 
+    if (value === '' || value === undefined) return defaultValue
+
     let theValue = value
-    if (Object.prototype.toString.call(theValue) !== '[object Array]') {
+    if (Object.prototype.toString.call(theValue) !== "[object Array]") {
       if (typeof theValue !== 'string') { theValue = theValue?.toString() }
       if (multiple && typeof multiple !== 'boolean' && multiple.type === 'split' && multiple.split) {
         theValue = theValue?.split(multiple.split)
@@ -62,16 +67,15 @@ export default class EnumDetail extends DetailField<EnumDetailConfig, IEnumProps
       }
     }
     if (options && options.from === 'manual') {
-      const getKey = options.getKey || 'value'
       if (options.data) {
         if (multiple === undefined || multiple === false) {
-          const option = options.data.find((option: any) => option.key === value)
+          const option = options.data.find((option) => option.value === value)
           return option ? option.label : value.toString()
         } else if (multiple === true || multiple.type) {
           if (Array.isArray(theValue)) {
             return theValue.map((item) => {
-              const option = options.data.find((option: any) => {
-                return option[getKey] === Number(item)
+              const option = options.data.find((option) => {
+                return option.value === Number(item)
               })
               return option ? option.label : item.toString()
             }).join(',')
@@ -88,12 +92,12 @@ export default class EnumDetail extends DetailField<EnumDetailConfig, IEnumProps
   }
 
   render = () => {
-    const props: IEnumProps = {}
-    props.value = this.getValue() || this.reset()
-
+    const value = this.getValue()
     return (
       <React.Fragment>
-        {this.renderComponent(props)}
+        {this.renderComponent({
+          value
+        })}
       </React.Fragment>
     )
   }
