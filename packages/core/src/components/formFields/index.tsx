@@ -1,7 +1,6 @@
 
 import FormField, { FormFieldConfig } from './form'
 import TextField, { TextFieldConfig } from './text'
-import TextDisplay from './text/display'
 import RadioField, { RadioFieldConfig } from './radio'
 import ColorField, { ColorFieldConfig } from './color'
 import UploadField, { UploadFieldConfig } from './upload'
@@ -24,6 +23,19 @@ import HiddenField from './hidden'
 import TabsField, { TabsFieldConfig } from './tabs'
 import MultipleTextField, { MultipleTextFieldConfig } from './multipleText'
 import CustomField, { CustomFieldConfig } from './custom'
+
+import TextDisplay from './text/display'
+import RadioDisplay from './radio/display'
+import ColorDisplay from './color/display'
+import UploadDisplay from './upload/display'
+import LongtextDisplay from './longtext/display'
+import NumberDisplay from './number/display'
+import DatetimeDisplay from './datetime/display'
+import DatetimeRangeDisplay from './datetimeRange/display'
+import SelectSingleDisplay from './select/single/display'
+import SelectMultipleDisplay from './select/multiple/display'
+import SwitchDisplay from './switch/display'
+import MultipleTextDisplay from './multipleText/display'
 
 export interface HiddenFieldConfig extends FieldConfig {
     type: 'hidden' | 'none'
@@ -80,7 +92,7 @@ export type componentType =
     'switch' |
     'object' |
     'tabs' |
-    'multiple_text'| 
+    'multiple_text'|
     'custom'
 
 export default {
@@ -111,4 +123,15 @@ export default {
 
 export const display = {
   text: TextDisplay,
+  longtext: LongtextDisplay,
+  radio: RadioDisplay,
+  color: ColorDisplay,
+  upload: UploadDisplay,
+  number: NumberDisplay,
+  datetime: DatetimeDisplay,
+  datetimeRange: DatetimeRangeDisplay,
+  select_single: SelectSingleDisplay,
+  select_multiple: SelectMultipleDisplay,
+  switch: SwitchDisplay,
+  multiple_text: MultipleTextDisplay
 }

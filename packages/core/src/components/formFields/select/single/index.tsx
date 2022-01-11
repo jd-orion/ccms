@@ -148,7 +148,7 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
           const value = props.options[defaultSelect === true ? 0 : defaultSelect].value
           props.value = value
           this.props.onValueSet('', value, await this.validate(value))
-        })();
+        })()
       }
     }
 

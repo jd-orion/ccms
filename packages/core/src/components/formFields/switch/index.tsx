@@ -1,5 +1,5 @@
-import React from "react";
-import { Field, FieldConfig, IField } from "../common";
+import React from 'react'
+import { Field, FieldConfig, IField } from '../common'
 
 export interface SwitchFieldConfig extends FieldConfig {
   type: 'switch'

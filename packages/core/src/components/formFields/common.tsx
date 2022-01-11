@@ -213,7 +213,7 @@ export class Display<C extends FieldConfig, E, T, S = {}> extends React.Componen
 
     return undefined
   }
-  
+
   reset: () => Promise<T> = async () => {
     return this.defaultValue()
   };
@@ -221,6 +221,10 @@ export class Display<C extends FieldConfig, E, T, S = {}> extends React.Componen
   set: (value: any) => Promise<any> = async (value) => {
     return value
   };
+
+  get: () => Promise<T> = async () => {
+    return this.props.value
+  }
 
   renderComponent = (props: E) => {
     return <React.Fragment>

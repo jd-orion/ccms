@@ -42,7 +42,7 @@ export default class DatetimeField extends Field<DatetimeFieldConfig, IDatetimeF
 
     if (getBoolean(required)) {
       if (value === null || value === '' || value === undefined) {
-        errors.push(new FieldError(this.props.config?.placeholder ? this.props.config?.placeholder: '不能为空'))
+        errors.push(new FieldError(this.props.config?.placeholder ? this.props.config?.placeholder : '不能为空'))
       }
     }
 
