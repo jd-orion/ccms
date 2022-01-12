@@ -18,10 +18,18 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
 
   renderComponent = (props: IImportSubformField) => {
     const {
+      columns,
       children
     } = props
+
+    const gutter = computedGutterStyle(Number(columns?.gutter || 0), 'row')
+
     return (
-      <div>
+      <div
+        style={{
+          ...gutter
+        }}
+        className={styles['ccms-antd-mini-form-group-row']}>
         {children}
       </div>
     )
@@ -41,7 +49,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
       fieldType,
       children
     } = props
-
+    
     const colStyle = computedItemStyle(columns, layout)
     const itemStyle = visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }
     if (columns?.type === 'width' && columns?.value && columns.wrap) {
@@ -50,7 +58,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
 
     return (
       <div
-        style={colStyle}
+        style={Object.assign(colStyle, itemStyle)}
         key={key}
         className={
           [

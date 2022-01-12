@@ -54,7 +54,7 @@ export default class GroupFieldComponent extends GroupField {
 
     return (
       <div
-        style={colStyle}
+        style={Object.assign(colStyle, itemStyle)}
         key={key}
         className={
           [
