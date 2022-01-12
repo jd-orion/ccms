@@ -8,6 +8,7 @@ import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 import StatementHelper from '../../../util/statement'
+import { ColumnsConfig } from '../../../interface'
 
 /**
  * 子表单配置项
@@ -24,9 +25,11 @@ export interface ImportSubformFieldConfig extends FieldConfig {
     dataField: string
     configField: string
   }
+  childColumns?: ColumnsConfig
 }
 
 export interface IImportSubformField {
+  columns?: ColumnsConfig
   children: React.ReactNode[]
 }
 
@@ -367,6 +370,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       return (
         <React.Fragment>
           {this.renderComponent({
+            columns: config.columns,
             children: this.state.didMount
               ? (Array.isArray(this.state.fields) ? this.state.fields : []).map((formFieldConfig, formFieldIndex) => {
                   if (!ConditionHelper(formFieldConfig.condition, { record: value, data, step })) {
@@ -398,6 +402,12 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                     key: formFieldIndex,
                     label: formFieldConfig.label,
                     status,
+                    columns: {
+                      type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                      value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
+                      wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                      gutter: formFieldConfig.columns?.gutter || config.childColumns?.gutter || 0
+                    },
                     message: (this.state.formData[formFieldIndex] || {}).message || '',
                     extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),
                     required: getBoolean(formFieldConfig.required),

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ParamConfig } from '../../interface'
+import { ColumnsConfig, ParamConfig } from '../../interface'
 
 import { DetailFieldConfigs as getFieldConfigs } from './'
 import ParamHelper from '../../util/param'
@@ -21,12 +21,8 @@ import ParamHelper from '../../util/param'
 export interface DetailFieldConfig {
   field: string
   label: string
-  columns?: {
-    type: 'span' | 'width'
-    value: number | string,
-    wrap: boolean
-    gutter: number | string
-  }
+  columns?: ColumnsConfig
+  childColumns?: ColumnsConfig
   display?: 'none'
   defaultValue?: string,
   condition?: DetailFieldConditionConfig

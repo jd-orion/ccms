@@ -6,10 +6,12 @@ import { IFormItem } from '../../../steps/form'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 import StatementHelper from '../../../util/statement'
+import { ColumnsConfig } from '../../../interface'
 
 export interface GroupFieldConfig extends FieldConfig {
   type: 'group'
   fields: FieldConfigs[]
+  childColumns?: ColumnsConfig
 }
 
 /**
@@ -29,12 +31,7 @@ export interface GroupFieldConfig extends FieldConfig {
  * - children: 表单内容
  */
 export interface IGroupField {
-  columns?: {
-    type?: 'span' | 'width'
-    value?: number | string,
-    wrap?: boolean
-    gutter?: number | string
-  }
+  columns?: ColumnsConfig
   children: React.ReactNode[]
 }
 
@@ -305,6 +302,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     return (
       <React.Fragment>
         {this.renderComponent({
+          columns: config.columns,
           children: this.state.didMount
             ? (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
                 if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
@@ -335,7 +333,12 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                 const renderData = {
                   key: formFieldIndex,
                   label: formFieldConfig.label,
-                  columns: formFieldConfig.columns,
+                  columns: {
+                    type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                    value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
+                    wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                    gutter: formFieldConfig.columns?.gutter || config.childColumns?.gutter || 0
+                  },
                   styles: formFieldConfig.styles,
                   status,
                   message: (this.state.formData[formFieldIndex] || {}).message || '',

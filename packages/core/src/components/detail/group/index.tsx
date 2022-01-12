@@ -5,6 +5,7 @@ import { DetailField, DetailFieldConfig, DetailFieldError, DetailFieldProps, IDe
 import getALLComponents, { DetailFieldConfigs } from '../'
 import { IDetailItem } from '../../../steps/detail'
 import ConditionHelper from '../../../util/condition'
+import { ColumnsConfig } from '../../../interface'
 
 export interface GroupFieldConfig extends DetailFieldConfig {
   type: 'group'
@@ -12,12 +13,7 @@ export interface GroupFieldConfig extends DetailFieldConfig {
 }
 
 export interface IGroupField {
-  columns?: {
-    type?: 'span' | 'width'
-    value?: number | string,
-    wrap?: boolean
-    gutter?: number | string
-  }
+  columns?: ColumnsConfig
   styles?: object
   children: React.ReactNode[]
 }

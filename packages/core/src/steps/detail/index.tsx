@@ -3,7 +3,7 @@ import { DetailField, DetailFieldConfigs, DetailFieldError } from '../../compone
 import Step, { StepConfig, StepProps } from '../common'
 import getALLComponents from '../../components/detail'
 import { getValue, setValue } from '../../util/value'
-import { ParamConfig } from '../../interface'
+import { ColumnsConfig, ParamConfig } from '../../interface'
 import ParamHelper from '../../util/param'
 import { cloneDeep, get, set, unset } from 'lodash'
 import ConditionHelper from '../../util/condition'
@@ -29,12 +29,7 @@ import ConditionHelper from '../../util/condition'
 export interface DetailConfig extends StepConfig {
   type: 'detail'
   layout?: 'horizontal' | 'vertical'
-  columns?: {
-    type?: 'span' | 'width'
-    value?: number | string,
-    wrap?: boolean
-    gutter?: number | string
-  }
+  columns?: ColumnsConfig
   unstringify?: string[] // 反序列化字段
   fields?: DetailFieldConfigs[]
   defaultValue?: ParamConfig
@@ -59,12 +54,7 @@ export interface DetailConfig extends StepConfig {
  */
 export interface IDetail {
   layout: 'horizontal' | 'vertical'
-  columns?: {
-    type?: 'span' | 'width'
-    value?: number | string,
-    wrap?: boolean
-    gutter?: number | string
-  }
+  columns?: ColumnsConfig
   children: React.ReactNode[]
   onBack?: () => Promise<any>
   backText?: string
@@ -93,12 +83,7 @@ export interface IDetailItem {
   key: string | number,
   label: string
   layout: 'horizontal' | 'vertical'
-  columns?: {
-    type?: 'span' | 'width'
-    value?: number | string,
-    wrap?: boolean
-    gutter?: number | string
-  }
+  columns?: ColumnsConfig
   styles?: object
   collapsible?: 'header' | 'disabled'
   visitable: boolean
@@ -441,7 +426,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
               }
 
               const DetailFieldComponent = this.getALLComponents(detailFieldConfig.type) || DetailField
-              console.log(detailFieldConfig.type,'detailFieldConfig.type',DetailFieldComponent)
+
               const renderData = {
                 key: detailFieldIndex,
                 label: detailFieldConfig.label,

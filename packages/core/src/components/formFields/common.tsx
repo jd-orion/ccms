@@ -1,5 +1,5 @@
 import React from 'react'
-import { ParamConfig } from '../../interface'
+import { ColumnsConfig, ParamConfig } from '../../interface'
 
 import { FieldConfigs as getFieldConfigs } from './'
 import ParamHelper from '../../util/param'
@@ -36,12 +36,7 @@ export interface FieldConfig {
   defaultValue?: ParamConfig,
   condition?: ConditionConfig
   extra?: StatementConfig
-  columns?: {
-    type?: 'span' | 'width'
-    value?: number | string,
-    wrap?: boolean
-    gutter?: number | string
-  }
+  columns?: ColumnsConfig
   styles?: object
 }
 

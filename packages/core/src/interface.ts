@@ -61,3 +61,19 @@ interface StaticParamConfig {
   source: 'static',
   value: any
 }
+
+/**
+ * 表单/详情分栏配置定义
+* - * type: 分栏类型
+* - * - * span: 固定分栏
+* - * - * width: 宽度分栏
+* - * value: 分栏相关配置值
+* - * wrap: 分栏后是否换行
+* - * gutter: 分栏边距
+*/
+export interface ColumnsConfig {
+  type?: 'span' | 'width'
+  value?: number | string,
+  wrap?: boolean
+  gutter?: number | string
+}

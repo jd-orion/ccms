@@ -3,7 +3,7 @@ import { Field, FieldConfigs, FieldError } from '../../components/formFields/com
 import Step, { StepConfig, StepProps } from '../common'
 import getALLComponents from '../../components/formFields'
 import { getValue, setValue, listItemMove, getBoolean } from '../../util/value'
-import { ParamConfig } from '../../interface'
+import { ColumnsConfig, ParamConfig } from '../../interface'
 import ParamHelper from '../../util/param'
 import { cloneDeep, get, set, unset } from 'lodash'
 import ConditionHelper, { ConditionConfig } from '../../util/condition'
@@ -37,12 +37,7 @@ import OperationHelper, { OperationConfig } from '../../util/operation'
 export interface FormConfig extends StepConfig {
   type: 'form'
   layout?: 'horizontal' | 'vertical' | 'inline'
-  columns?: {
-    type?: 'span' | 'width'
-    value?: number | string,
-    wrap?: boolean
-    gutter?: number | string
-  }
+  columns?: ColumnsConfig
   /**
    * 表单组件配置文件格式定义
    * 参照其它组件定义
@@ -118,12 +113,7 @@ export interface IFormStepModal {
  */
 export interface IForm {
   layout: 'horizontal' | 'vertical' | 'inline'
-  columns?: {
-    type?: 'span' | 'width'
-    value?: number | string,
-    wrap?: boolean
-    gutter?: number | string
-  }
+  columns?: ColumnsConfig
   actions?: React.ReactNode[]
   children: React.ReactNode[]
   onSubmit?: () => Promise<any>
@@ -169,12 +159,7 @@ export interface IFormItem {
   message?: string
   extra?: string
   layout: 'horizontal' | 'vertical' | 'inline'
-  columns?: {
-    type?: 'span' | 'width'
-    value?: number | string,
-    wrap?: boolean
-    gutter?: number | string
-  }
+  columns?: ColumnsConfig
   visitable: boolean
   fieldType: string
   children: React.ReactNode
@@ -660,7 +645,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
         }
       }
     }
-
+    
     if (ready) {
       return (
         <React.Fragment>
@@ -708,10 +693,14 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 key: formFieldIndex,
                 label: formFieldConfig.label,
                 columns: {
-                  type: formFieldConfig.columns?.type || columns?.type || 'span',
-                  value: formFieldConfig.columns?.value || columns?.value || 1,
-                  wrap: formFieldConfig.columns?.wrap || columns?.wrap || false,
-                  gutter: formFieldConfig.columns?.gutter || columns?.gutter || 0
+                  // @ts-ignore
+                  type: formFieldConfig.columns?.type || formFieldConfig?.childColumns?.type || columns?.type || 'span',
+                  // @ts-ignore
+                  value: formFieldConfig.columns?.value || formFieldConfig?.childColumns?.value || columns?.value || 1,
+                  // @ts-ignore
+                  wrap: formFieldConfig.columns?.wrap || formFieldConfig?.childColumns?.wrap || columns?.wrap || false,
+                  // @ts-ignore
+                  gutter: formFieldConfig.columns?.gutter || formFieldConfig?.childColumns?.gutter || columns?.gutter || 0
                 },
                 status,
                 message: formData[formFieldIndex]?.message || '',
