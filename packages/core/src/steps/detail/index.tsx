@@ -437,7 +437,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                   value: detailFieldConfig.columns?.value || config.columns?.value || 1,
                   wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
                   gap: detailFieldConfig.columns?.gap || config.columns?.gap || 0,
-                  rowGap: detailFieldConfig.columns?.rowGap || config.columns?.rowGap || 0,
+                  rowGap: detailFieldConfig.columns?.rowGap || config.columns?.rowGap || 0
                 },
                 layout,
                 styles: detailFieldConfig.styles || {},

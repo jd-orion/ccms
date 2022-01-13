@@ -1,11 +1,11 @@
 import React from 'react'
-import { setValue, getValue, getBoolean } from '../../../util/value'
+import { getValue } from '../../../util/value'
 
 import { DetailField, DetailFieldConfig, DetailFieldProps, IDetailField } from '../common'
 import { Display } from '../../formFields/common'
 import { display as getALLComponents, FieldConfigs } from '../../formFields'
 import { IDetailItem } from '../../../steps/detail'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 import { ColumnsConfig } from '../../../interface'
@@ -84,9 +84,7 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
     if (this.formFieldsMounted[formFieldIndex]) {
       return true
     }
-
     this.formFieldsMounted[formFieldIndex] = true
-
     if (this.formFields[formFieldIndex]) {
       const formField = this.formFields[formFieldIndex]
       if (formField) {
@@ -192,8 +190,15 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
       })
     }
 
-    const fields = config.configFrom?.type === 'data' ? (config.configFrom.configField ? getValue(value, config.configFrom.configField) : []) : this.state.fields
-
+    let fields = this.state.fields
+    if (config.configFrom && config.configFrom.type === 'data') {
+      fields = config.configFrom.configField ? getValue(value, config.configFrom.configField) : []
+      if (!isEqual(fields, this.state.fields)) {
+        this.setState({
+          fields
+        })
+      }
+    }
     if (!fields || !Array.isArray(fields) || fields.length === 0) {
       return <React.Fragment />
     } else {
@@ -223,6 +228,12 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
                   children: (
                     <FormField
                       key={formFieldIndex}
+                      ref={(formField: Display<FieldConfigs, any, any> | null) => {
+                        if (formField) {
+                          this.formFields[formFieldIndex] = formField
+                          this.handleMount(formFieldIndex)
+                        }
+                      }}
                       value={getValue(value, this.getFullpath(formFieldConfig.field))}
                       record={record}
                       data={cloneDeep(data)}
