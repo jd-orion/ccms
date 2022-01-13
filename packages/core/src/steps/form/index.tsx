@@ -22,7 +22,7 @@ import OperationHelper, { OperationConfig } from '../../util/operation'
  * - * - * width: 宽度分栏
  * - * value: 分栏相关配置值
  * - * wrap: 分栏后是否换行
- * - * gutter: 分栏边距
+ * - * gap: 分栏边距
  * - fields: 表单项配置列表
  * - defaultValue: 默认值
  * - hiddenSubmit: 是否隐藏提交按钮
@@ -103,7 +103,7 @@ export interface IFormStepModal {
  * - * - * width: 宽度分栏
  * - * value: 分栏相关配置值
  * - * wrap: 分栏后是否换行
- * - * gutter: 分栏边距
+ * - * gap: 分栏边距
  * - * horizontal: 左侧文本、右侧输入框、纵向排列
  * - * vertical:   顶部文本、底部输入框、纵向排列
  * - * inline:     左侧文本、右侧输入框、横向排列
@@ -652,7 +652,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
           {/* 渲染表单 */}
           {this.renderComponent({
             layout,
-            columns,
+            columns: columns?.enable ? columns : undefined,
             actions: actions_,
             onSubmit: this.props.config.hiddenSubmit ? undefined : async () => this.handleSubmit(), // TODO 待删除
             onCancel: this.props.config.hiddenCancel ? undefined : async () => this.handleCancel(), // TODO 待删除
@@ -692,16 +692,15 @@ export default class FormStep extends Step<FormConfig, FormState> {
               const renderData = {
                 key: formFieldIndex,
                 label: formFieldConfig.label,
-                columns: {
-                  // @ts-ignore
-                  type: formFieldConfig.columns?.type || formFieldConfig?.childColumns?.type || columns?.type || 'span',
-                  // @ts-ignore
-                  value: formFieldConfig.columns?.value || formFieldConfig?.childColumns?.value || columns?.value || 1,
-                  // @ts-ignore
-                  wrap: formFieldConfig.columns?.wrap || formFieldConfig?.childColumns?.wrap || columns?.wrap || false,
-                  // @ts-ignore
-                  gutter: formFieldConfig.columns?.gutter || formFieldConfig?.childColumns?.gutter || columns?.gutter || 0
-                },
+                columns: columns?.enable
+                  ? {
+                      type: formFieldConfig.columns?.type || columns?.type || 'span',
+                      value: formFieldConfig.columns?.value || columns?.value || 1,
+                      wrap: formFieldConfig.columns?.wrap || columns?.wrap || false,
+                      gap: columns?.gap || 0,
+                      rowGap: columns?.rowGap || 0
+                    }
+                  : undefined,
                 status,
                 message: formData[formFieldIndex]?.message || '',
                 extra: StatementHelper(formFieldConfig.extra, { data: this.props.data, step: this.props.step }),

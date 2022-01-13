@@ -20,7 +20,7 @@ import ConditionHelper from '../../util/condition'
  * - * - * width: 宽度分栏
  * - * value: 分栏相关配置值
  * - * wrap: 分栏后是否换行
- * - * gutter: 分栏边距
+ * - * gap: 分栏边距
  * - fields: 详情项配置列表
  * - defaultValue  默认值
  * - hiddenBack  是否隐藏返回按钮
@@ -49,7 +49,7 @@ export interface DetailConfig extends StepConfig {
  * - * - * width: 宽度分栏
  * - * value: 分栏相关配置值
  * - * wrap: 分栏后是否换行
- * - * gutter: 分栏边距
+ * - * gap: 分栏边距
  * - children: 表单内容
  */
 export interface IDetail {
@@ -71,7 +71,7 @@ export interface IDetail {
  * - * - * width: 宽度分栏
  * - * value: 分栏相关配置值
  * - * wrap: 分栏后是否换行
- * - * gutter: 分栏边距
+ * - * gap: 分栏边距
  * - collapsible: 详情页group展开收起配置
  * - visitable:  详情项可见性
  * - * horizontal:  左侧文本、右侧输入框、纵向排列
@@ -436,7 +436,8 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                   type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
                   value: detailFieldConfig.columns?.value || config.columns?.value || 1,
                   wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
-                  gutter: detailFieldConfig.columns?.gutter || config.columns?.gutter || 0
+                  gap: detailFieldConfig.columns?.gap || config.columns?.gap || 0,
+                  rowGap: detailFieldConfig.columns?.rowGap || config.columns?.rowGap || 0,
                 },
                 layout,
                 styles: detailFieldConfig.styles || {},

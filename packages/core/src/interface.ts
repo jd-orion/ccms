@@ -69,11 +69,13 @@ interface StaticParamConfig {
 * - * - * width: 宽度分栏
 * - * value: 分栏相关配置值
 * - * wrap: 分栏后是否换行
-* - * gutter: 分栏边距
+* - * gap: 分栏边距
 */
 export interface ColumnsConfig {
+  enable?: boolean
   type?: 'span' | 'width'
   value?: number | string,
   wrap?: boolean
-  gutter?: number | string
+  gap?: number | string
+  rowGap?: number | string
 }

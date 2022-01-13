@@ -22,7 +22,7 @@ export interface GroupFieldConfig extends FieldConfig {
  * - * - * width: 宽度分栏
  * - * value: 分栏相关配置值
  * - * wrap: 分栏后是否换行
- * - * gutter: 分栏边距
+ * - * gap: 分栏边距
  * - * horizontal: 左侧文本、右侧输入框、纵向排列
  * - * vertical:   顶部文本、底部输入框、纵向排列
  * - * inline:     左侧文本、右侧输入框、横向排列
@@ -302,7 +302,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     return (
       <React.Fragment>
         {this.renderComponent({
-          columns: config.columns,
+          columns: config?.columns?.enable ? config.columns : undefined,
           children: this.state.didMount
             ? (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
                 if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
@@ -333,12 +333,15 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                 const renderData = {
                   key: formFieldIndex,
                   label: formFieldConfig.label,
-                  columns: {
-                    type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
-                    value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
-                    wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
-                    gutter: formFieldConfig.columns?.gutter || config.childColumns?.gutter || 0
-                  },
+                  columns: config.columns?.enable
+                    ? {
+                        type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                        value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
+                        wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                        gap: config.columns?.gap || 0,
+                        rowGap: config.columns?.rowGap || 0
+                      }
+                    : undefined,
                   styles: formFieldConfig.styles,
                   status,
                   message: (this.state.formData[formFieldIndex] || {}).message || '',

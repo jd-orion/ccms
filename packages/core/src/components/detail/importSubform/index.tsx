@@ -8,6 +8,7 @@ import { IDetailItem } from '../../../steps/detail'
 import { cloneDeep } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
+import { ColumnsConfig } from '../../../interface'
 
 /**
  * 子表单配置项
@@ -33,6 +34,7 @@ interface ImportSubformConfigFromInterface {
 }
 
 export interface IImportSubformField {
+  columns?: ColumnsConfig
   children: React.ReactNode[]
 }
 

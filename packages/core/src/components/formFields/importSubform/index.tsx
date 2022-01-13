@@ -402,12 +402,15 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                     key: formFieldIndex,
                     label: formFieldConfig.label,
                     status,
-                    columns: {
-                      type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
-                      value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
-                      wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
-                      gutter: formFieldConfig.columns?.gutter || config.childColumns?.gutter || 0
-                    },
+                    columns: config.columns?.enable
+                      ? {
+                          type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                          value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
+                          wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                          gap: config.columns?.gap || 0,
+                          rowGap: config.columns?.rowGap || 0
+                        }
+                      : undefined,
                     message: (this.state.formData[formFieldIndex] || {}).message || '',
                     extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),
                     required: getBoolean(formFieldConfig.required),
