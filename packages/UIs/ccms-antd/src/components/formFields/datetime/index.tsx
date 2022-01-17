@@ -3,6 +3,7 @@ import { DatetimeField } from 'ccms'
 import { DatePicker, TimePicker } from 'antd'
 import { IDatetimeField, DatetimeFieldConfig } from 'ccms/dist/src/components/formFields/datetime'
 import pickerLocale from 'antd/lib/date-picker/locale/zh_CN'
+import styles from "./index.less"
 
 export default class DatetimeFieldComponent extends DatetimeField {
   renderComponent = (props: IDatetimeField) => {
@@ -17,7 +18,8 @@ export default class DatetimeFieldComponent extends DatetimeField {
     if (mode === 'time') {
       return (
         <TimePicker
-          disabled={disabled}
+          className={readonly ? styles['picker-readonly'] : null}
+          disabled={disabled || readonly}
           inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={value}
@@ -31,7 +33,8 @@ export default class DatetimeFieldComponent extends DatetimeField {
     } else if (mode === 'date') {
       return (
         <DatePicker
-          disabled={disabled}
+          className={readonly ? styles['picker-readonly'] : null}
+          disabled={disabled || readonly}
           inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={value}
@@ -45,7 +48,8 @@ export default class DatetimeFieldComponent extends DatetimeField {
     } else if (mode === 'datetime') {
       return (
         <DatePicker
-          disabled={disabled}
+          className={readonly ? styles['picker-readonly'] : null}
+          disabled={disabled || readonly}
           inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={value}
@@ -60,7 +64,8 @@ export default class DatetimeFieldComponent extends DatetimeField {
     } else {
       return (
         <DatePicker
-          disabled={disabled}
+          className={readonly ? styles['picker-readonly'] : null}
+          disabled={disabled || readonly}
           inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={value}

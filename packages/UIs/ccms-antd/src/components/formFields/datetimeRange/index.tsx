@@ -7,11 +7,14 @@ import { RangePickerProps } from 'antd/lib/date-picker/generatePicker'
 const { RangePicker: DateRangePicker } = DatePicker
 const { RangePicker: TimeRangePicker } = TimePicker
 import pickerLocale from 'antd/lib/date-picker/locale/zh_CN'
+import styles from "./index.less"
 
 export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
   renderComponent = (props: IDatetimeRangeField) => {
     const {
       value,
+      disabled,
+      readonly,
       mode
     } = props
 
@@ -21,6 +24,9 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
     if (mode === 'time') {
       return (
         <TimeRangePicker
+          className={readonly ? styles['picker-readonly'] : null}
+          disabled={disabled || readonly}
+          inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={_value}
           format={props.format}
@@ -32,6 +38,8 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
     } else if (mode === 'date') {
       return (
         <DateRangePicker
+          disabled={disabled}
+          inputReadOnly={readonly || readonly}
           style={{ width: '100%' }}
           value={_value}
           format={props.format}
@@ -43,6 +51,9 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
     } else if (mode === 'datetime') {
       return (
         <DateRangePicker
+          className={readonly ? styles['picker-readonly'] : null}
+          disabled={disabled || readonly}
+          inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={_value}
           format={props.format}
@@ -55,6 +66,9 @@ export default class DatetimeRangeFieldComponent extends DatetimeRangeField {
     } else {
       return (
         <DateRangePicker
+          className={readonly ? styles['picker-readonly'] : null}
+          disabled={disabled || readonly}
+          inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={_value}
           format={props.format}
