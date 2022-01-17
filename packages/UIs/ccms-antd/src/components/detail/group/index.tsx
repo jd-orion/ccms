@@ -5,7 +5,7 @@ import { IDetailItem } from "ccms/dist/src/steps/detail";
 import { Col, Row } from "antd"
 import getALLComponents from '../'
 import styles from './index.less'
-import { computedItemStyle, computedGutterStyle } from "../common";
+import { computedItemStyle, computedGapStyle } from "../common";
 
 export const PropsType = (props: GroupFieldConfig) => { };
 
@@ -17,11 +17,11 @@ export default class GroupFieldComponent extends DetailGroupField {
       children,
       columns
     } = props
-    const gutter = computedGutterStyle(Number(columns?.gutter || 0), 'row')
+    const gap = computedGapStyle(columns, 'row')
     return (
       <div
         style={{
-          ...gutter
+          ...gap
         }}
         className={styles['ccms-antd-mini-detail-group-row']}>
         {children}
@@ -42,13 +42,13 @@ export default class GroupFieldComponent extends DetailGroupField {
     
     return (
       <div
-        style={Object.assign(colStyle,itemstyle)}
-        className={[styles['detail-group-col'], styles[`ccms-antd-mini-detail-${fieldType}`]].join(' ')}
+        style={colStyle}
+        className={[styles['detail-group-col'], styles[`ccms-antd-mini-detail-gruop`]].join(' ')}
       >
         <div className={styles['detail-group-content']}>
 
-          <div className={styles[`ccms-antd-mini-detail-${fieldType}-title`]}>{label}</div>
-          <div>{children}</div>
+          <div className={styles[`ccms-antd-mini-detail-gruop-title`]}>{label}</div>
+          <div style={itemstyle}>{children}</div>
         </div>
       </div>
     )

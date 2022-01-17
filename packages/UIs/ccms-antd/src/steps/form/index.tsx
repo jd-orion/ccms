@@ -8,7 +8,7 @@ import { FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/formFields'
 import OperationHelper from '../../util/operation'
 import styles from "./index.less"
-import { formItemLayout, computedItemStyle } from '../../components/formFields/common'
+import { formItemLayout, computedItemStyle, computedGapStyle } from '../../components/formFields/common'
 import newstyles from "../../main.less"
 
 export default class FormStepComponent extends FormStep {
@@ -51,7 +51,7 @@ export default class FormStepComponent extends FormStep {
         }
         : null
 
-    const gutter = Number(columns?.gutter || 0)
+    const gapStyle = computedGapStyle(columns , 'row')
 
     return (
       <Form
@@ -61,9 +61,7 @@ export default class FormStepComponent extends FormStep {
         className={newstyles['content']}
       >
         <div
-          style={{
-            rowGap: `${gutter * 2}px`
-          }}
+          style={gapStyle}
           className={styles['ccms-antd-mini-form-row']}
         >
           {children}

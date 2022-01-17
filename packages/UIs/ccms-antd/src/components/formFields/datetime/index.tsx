@@ -8,6 +8,8 @@ export default class DatetimeFieldComponent extends DatetimeField {
   renderComponent = (props: IDatetimeField) => {
     const {
       value,
+      disabled,
+      readonly,
       mode,
       placeholder
     } = props
@@ -15,6 +17,8 @@ export default class DatetimeFieldComponent extends DatetimeField {
     if (mode === 'time') {
       return (
         <TimePicker
+          disabled={disabled}
+          inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={value}
           format={props.format}
@@ -27,6 +31,8 @@ export default class DatetimeFieldComponent extends DatetimeField {
     } else if (mode === 'date') {
       return (
         <DatePicker
+          disabled={disabled}
+          inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={value}
           format={props.format}
@@ -39,6 +45,8 @@ export default class DatetimeFieldComponent extends DatetimeField {
     } else if (mode === 'datetime') {
       return (
         <DatePicker
+          disabled={disabled}
+          inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={value}
           format={props.format}
@@ -52,6 +60,8 @@ export default class DatetimeFieldComponent extends DatetimeField {
     } else {
       return (
         <DatePicker
+          disabled={disabled}
+          inputReadOnly={readonly}
           style={{ width: '100%' }}
           value={value}
           format={props.format}

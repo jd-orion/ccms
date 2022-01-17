@@ -6,7 +6,7 @@ import { Form } from "antd"
 import { FormItemProps } from "antd/lib/form";
 import getALLComponents from '../'
 import styles from './index.less'
-import { formItemLayout, computedItemStyle, computedGutterStyle } from "../common";
+import { computedItemStyle, computedGapStyle } from "../common";
 import InterfaceHelper from "../../../util/interface";
 
 export const PropsType = (props: ImportSubformFieldConfig) => { };
@@ -22,12 +22,12 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
       children
     } = props
 
-    const gutter = computedGutterStyle(Number(columns?.gutter || 0), 'row')
+    const gap = computedGapStyle(columns, 'row')
 
     return (
       <div
         style={{
-          ...gutter
+          ...gap
         }}
         className={styles['ccms-antd-mini-form-group-row']}>
         {children}
@@ -58,13 +58,12 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
 
     return (
       <div
-        style={Object.assign(colStyle, itemStyle)}
+        style={colStyle}
         key={key}
         className={
           [
             styles['form-group-col'],
-            styles[`form-group-col-${fieldType}`],
-            styles[`form-group-col-${columns?.type || 'span'}`]
+            styles[`form-group-col-${fieldType}`]
           ].join(' ')
         }
       >
@@ -76,7 +75,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
           validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
           help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
           className={styles[`ccms-antd-mini-form-${fieldType}`]}
-          style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
+          style={itemStyle}
         >
           {children}
         </Form.Item>

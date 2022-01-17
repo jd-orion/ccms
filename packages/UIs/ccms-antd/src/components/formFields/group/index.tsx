@@ -5,7 +5,7 @@ import { IFormItem } from "ccms/dist/src/steps/form";
 import { Form } from "antd"
 import getALLComponents from '../'
 import styles from './index.less'
-import { formItemLayout, computedItemStyle, computedGutterStyle } from "../common";
+import { formItemLayout, computedItemStyle, computedGapStyle } from "../common";
 
 export const PropsType = (props: GroupFieldConfig) => { };
 
@@ -18,12 +18,12 @@ export default class GroupFieldComponent extends GroupField {
       children
     } = props
 
-    const gutter = computedGutterStyle(Number(columns?.gutter || 0), 'row')
+    const gap = computedGapStyle(columns, 'row')
 
     return (
       <div
         style={{
-          ...gutter
+          ...gap
         }}
         className={styles['ccms-antd-mini-form-group-row']}>
         {children}
@@ -51,16 +51,15 @@ export default class GroupFieldComponent extends GroupField {
     if (columns?.type === 'width' && columns?.value && columns.wrap) {
       Object.assign(itemStyle, { width: columns.value })
     }
-
+    
     return (
       <div
-        style={Object.assign(colStyle, itemStyle)}
+        style={colStyle}
         key={key}
         className={
           [
             styles['form-group-col'],
-            styles[`form-group-col-${fieldType}`],
-            styles[`form-group-col-${columns?.type || 'span'}`]
+            styles[`form-group-col-${fieldType}`]
           ].join(' ')
         }
       >

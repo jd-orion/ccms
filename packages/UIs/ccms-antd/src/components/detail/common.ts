@@ -33,9 +33,9 @@ export function computedItemStyle(columns: any, layout: string) {
   const setStyle = {}
   if (!columns) return {}
   Object.assign(setStyle,
-    columns.gutter ? {
-      paddingLeft: `${columns.gutter / 2}px`,
-      paddingRight: `${columns.gutter / 2}px`,
+    columns.gap ? {
+      paddingLeft: `${columns.gap / 2}px`,
+      paddingRight: `${columns.gap / 2}px`,
     } : {})
   if (columns.type === 'span') {
     Object.assign(setStyle, {
@@ -58,14 +58,16 @@ export function computedItemStyle(columns: any, layout: string) {
   return setStyle
 }
 
-export function computedGutterStyle(gutter: any, type: string) {
+export function computedGapStyle(columns: any, type: string) {
   const setStyle = {}
+
+  const gap = (Number(columns?.gap || columns?.rowGap) || 0)/2
 
   if (type === 'row') {
     Object.assign(setStyle, {
-      rowGap: `${gutter}px`,
-      marginLeft: `-${gutter / 2}px`,
-      marginRight: `-${gutter / 2}px`
+      rowGap: `${gap}px`,
+      marginLeft: `-${gap / 2}px`,
+      marginRight: `-${gap / 2}px`
     })
   }
 

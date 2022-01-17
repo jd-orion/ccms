@@ -22,11 +22,11 @@ export default class DetailStepComponent extends DetailStep {
       backText,
       children
     } = props
-    const gutter = Number(columns?.gutter || 0)
+    const gap = Number(columns?.gap || 0)
     return (
       <div
         style={{
-          rowGap: `${gutter * 2}px`
+          rowGap: `${gap * 2}px`
         }}
         className={style['ccms-antd-mini-detail-row']}
       >
@@ -71,7 +71,7 @@ export default class DetailStepComponent extends DetailStep {
         {
           fieldType === 'group' ? this.renderGroupUI(label, children) :
             <div className={style['detail-group-content']}>
-              <div className={style[`detail-${fieldType}-title`]}><span className={style['down-arrow']} />{label}</div>
+              <div className={style[`detail-${fieldType}-title`]}>{label}</div>
               {children}
             </div>
         }
