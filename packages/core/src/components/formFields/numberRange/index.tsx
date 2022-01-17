@@ -38,7 +38,7 @@ export default class NumberRangeField extends Field<NumberRangeFieldConfig, INum
       const errors: FieldError[] = []
 
       if (getBoolean(required)) {
-        if (value === null) {
+        if (value === '' || value === null || value === undefined) {
           errors.push(new FieldError('不能为空'))
         }
       }

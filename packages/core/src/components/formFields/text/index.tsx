@@ -55,7 +55,7 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
     const errors: FieldError[] = []
 
     if (getBoolean(required)) {
-      if (value === '' || value === undefined) {
+      if (value === '' || value === undefined || value === null || String(value).trim() === '') {
         errors.push(new FieldError(`请输入${label}`))
         return errors
       }
