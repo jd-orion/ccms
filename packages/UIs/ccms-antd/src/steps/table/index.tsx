@@ -1,8 +1,8 @@
 import React from 'react'
 import { TableStep } from 'ccms'
 import { ITable, ITableColumn, ITableStepOperationConfirm, ITableStepOperationModal, ITableStepRowOperation, ITableStepRowOperationButton, ITableStepRowOperationGroup, ITableStepRowOperationGroupItem, ITableStepTableOperation, ITableStepTableOperationButton, ITableStepTableOperationGroup, ITableStepTableOperationGroupItem } from 'ccms/dist/src/steps/table'
-import { Table, Button, Dropdown, Menu, Modal, Space } from 'antd'
-import { DownOutlined } from '@ant-design/icons'
+import { Table, Button, Dropdown, Menu, Modal, Space, Tooltip } from 'antd'
+import { DownOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import getALLComponents from '../../components/tableColumns'
 import CCMS from '../../main'
 import InterfaceHelper from '../../util/interface'
@@ -32,14 +32,44 @@ export default class TableStepComponent extends TableStep {
       primary,
       columns,
       data,
-      pagination
+      pagination,
+      description
     } = props
 
     return (
       <div className={styles['ccms-antd-table']}>
-        {(title || tableOperations) && (
+        {(title || (description && ((description.label !== undefined && description.label !== '') || description.showIcon)) || tableOperations) && (
           <div className={styles['ccms-antd-table-header']}>
-            <div className={styles['ccms-antd-table-title']}>{title}</div>
+            <div className={styles['ccms-antd-table-title']}>{title}
+              <div className={styles['ccms-antd-table-title-explain']}>
+                {(description && description.type === 'text' && ((description.label !== undefined && description.label !== "") || description.showIcon)) && 
+                  <span> {(description.showIcon) && (<InfoCircleOutlined style={{ marginRight: "5px" }}/>)} 
+                  {description.label} </span>
+                }
+                {(description && description.type === 'tooltip' && ((description.label !== undefined && description.label !== "") || description.showIcon)) &&
+                  <Tooltip
+                    overlayStyle={{ color: 'white' }}
+                    placement="topLeft"
+                    title={description.content} 
+                    getPopupContainer={(ele) => ele.parentElement || document.body}>
+                    {(description.showIcon) && (<InfoCircleOutlined style={{ marginRight: "5px" }}/>)} 
+                    {description.label}
+                  </Tooltip>
+                }
+                {(description && description.type === 'modal' && ((description.label !== undefined && description.label !== "") || description.showIcon)) &&
+                  <span style={{ cursor: 'pointer' }} onClick={()=>{
+                    Modal.info({
+                      getContainer: () => document.getElementById('ccms-antd') || document.body,
+                      content: (<div style={{ overflow: 'hidden' }}>{description.content}</div>),
+                      okText: '知道了'
+                    });
+                  }}>
+                  {(description.showIcon) && (<InfoCircleOutlined style={{ marginRight: "5px" }}/>)} 
+                  {description.label}
+                  </span>
+                }
+              </div>
+            </div>
             <div className={styles['ccms-antd-table-tableOperation']}>{tableOperations}</div>
           </div>
         )}
