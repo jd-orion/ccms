@@ -54,7 +54,7 @@ export interface TableOperationConfig {
   level?: 'normal' | 'primary' | 'danger'
   check?: { enable: false } | TableOperationCheckConfig
   confirm?: { enable: false } | TableOperationConfirmConfig
-  handle: TableCCMSOperationConfig
+  handle: TableCCMSOperationConfig | TableLinkOperationConfig
   condition?: ConditionConfig
 }
 
@@ -64,6 +64,15 @@ export interface TableCCMSOperationConfig {
   target: 'current' | 'page' | 'open' | 'handle'
   targetURL: string
   data: { [key: string]: ParamConfig }
+  params?: { field: string, data: ParamConfig }[]
+  callback?: boolean
+  debug?: boolean
+}
+
+export interface TableLinkOperationConfig {
+  type: 'link'
+  target: '_blank' | '_self'
+  targetURL: string
   params?: { field: string, data: ParamConfig }[]
   callback?: boolean
   debug?: boolean
@@ -338,6 +347,62 @@ export default class TableStep extends Step<TableConfig, TableState> {
         window.open(`${targetURL}${targetKey}`)
       }
     }
+
+    //  当按钮的响应类型是第三方链接时
+    if (operation.handle.type === 'link') {
+      const params = {}
+      if (operation.handle.params !== undefined) {
+        for (const { field, data: dataConfig } of operation.handle.params) {
+          const value = getParam(dataConfig, { record, data, step })
+          set(params, field, value)
+        }
+
+        if (operation.handle.debug) {
+          console.log('CCMS debug: operation - operation.handle.type === link', params)
+        }
+
+        // 提取跳转URL地址，合并URL参数拼接
+        const targetURL = operation.handle.targetURL || ''
+        const urlParams = this.queryUrlParams(targetURL)
+        const query = urlParams.paramsResult
+        const hash = urlParams.hashResult.hash?.replace('#/', '')
+        const url = targetURL?.split('#')[0]?.split('?')[0]
+        // const { url, query, fragmentIdentifier } = queryString.parseUrl(targetURL, { arrayFormat: 'bracket', parseFragmentIdentifier: true })
+        const jumpUrl = queryString.stringifyUrl({ url, query: { ...query, ...params }, fragmentIdentifier: hash }, { arrayFormat: 'bracket' }) || ''
+
+        this.urlJumpHandler(jumpUrl, operation.handle.target)
+      }
+    }
+  }
+
+  /**
+   * 获取URL中的路由和参数
+   * @param url url地址
+   */
+  queryUrlParams = (url: string) => {
+    const paramsResult: any = {}
+    const hashResult: any = {}
+    const paramReg = /([^?=&#]+)=([^?=&#]+)/g
+    const hashReg = /#[^?=&#]+/g
+    // eslint-disable-next-line no-return-assign
+    url.replace(paramReg, (n, x, y) => paramsResult[x] = y)
+    // eslint-disable-next-line no-return-assign
+    url.replace(hashReg, (n) => hashResult.hash = n)
+    return { paramsResult, hashResult }
+  }
+
+  /**
+   * 链接跳转处理方法
+   * @param url 跳转地址
+   * @param target 跳转方式
+   */
+  urlJumpHandler = (url: string, target: string) => {
+    const a = document.createElement('a')
+    document.body.appendChild(a)
+    a.href = url
+    a.target = target
+    a.click()
+    document.body.removeChild(a)
   }
 
   /**

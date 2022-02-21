@@ -1,6 +1,6 @@
-import { set, cloneDeep, template } from "lodash"
-import { ParamConfig } from "../interface";
-import ParamHelper from "./param";
+import { set, cloneDeep, template } from 'lodash'
+import { ParamConfig } from '../interface'
+import ParamHelper from './param'
 
 export interface ConditionConfig {
   /**
@@ -22,13 +22,17 @@ export interface ConditionConfig {
   debug?: boolean
 }
 
-export default function ConditionHelper(condition: ConditionConfig | undefined, datas: { record?: object, data: object[], step: number }): boolean {
+export default function ConditionHelper (condition: ConditionConfig | undefined, datas: { record?: object, data: object[], step: number }): boolean {
+  // 条件语句模版
+  let conditionTemplate = ''
+  // 条件语句模版入参
+  let statementParams = {}
+
   if (condition === undefined || ((condition.statement === undefined || condition.statement === '') && (condition.template === undefined || condition.template === ''))) {
     return true
   } else {
     if (condition.template) {
-      const statementTemplate = template(condition.template)
-      let statementParams = {}
+      conditionTemplate = condition.template
       if (condition.params) {
         condition.params.forEach((param) => {
           if (param.field !== undefined && param.data !== undefined) {
@@ -41,46 +45,15 @@ export default function ConditionHelper(condition: ConditionConfig | undefined, 
           }
         })
       }
-
-      try {
-        const statement = statementTemplate(statementParams)
-        try {
-          const result = eval(statement)
-          if (result) {
-            if (condition.debug) {
-              console.info('CCMS debug: condition - `' + statement + '` => true')
-            }
-            return true
-          } else {
-            if (condition.debug) {
-              console.info('CCMS debug: condition - `' + statement + '` => false')
-            }
-            return false
-          }
-        } catch (e) {
-          if (condition.debug) {
-            console.info('CCMS debug: condition - `' + condition.template + '` => `' + statement + '` => error')
-          }
-          console.error('表单项展示条件语句执行错误。', condition.template, statement)
-          return false
-        }
-      } catch (e) {
-        if (condition.debug) {
-          console.info('CCMS debug: condition - `' + condition.template + '` => error')
-        }
-        console.error('表单项展示条件语句执行错误。', condition.template)
-        return false
-      }
     } else {
       // 用于兼容旧版本中的通配符
       // V2新增逻辑段 - 开始
       // const statementTemplate = template(condition.statement)
       // V2新增逻辑段 - 结束
       // V2移除逻辑段 - 开始
-      const statementPolyfill = condition.statement?.replace(/([^\$])\{/g, '$1${')
-      const statementTemplate = template(statementPolyfill)
+      conditionTemplate = condition.statement?.replace(/([^\$])\{/g, '$1${') || ''
       // V2移除逻辑段 - 结束
-      let statementParams = {}
+
       if (condition.params) {
         condition.params.forEach((param) => {
           if (param.field !== undefined && param.data !== undefined) {
@@ -92,36 +65,39 @@ export default function ConditionHelper(condition: ConditionConfig | undefined, 
           }
         })
       }
-      
+    }
+
+    return execConditionHandler(condition, conditionTemplate, statementParams)
+  }
+}
+
+// 执行条件语句，返回结果
+const execConditionHandler = (condition: ConditionConfig | undefined, conditionTemplate: string, statementParams: object): boolean => {
+  try {
+    if (Object.values(statementParams).some((param) => param === undefined)) {
+      if (condition?.debug) {
+        console.info(`CCMS debug: condition ${conditionTemplate} => false`)
+      }
+      return false
+    } else {
+      const statement = template(conditionTemplate)(statementParams)
+
       try {
-        const statement = statementTemplate(statementParams)
-        try {
-          const result = eval(statement)
-          if (result) {
-            if (condition.debug) {
-              console.info('CCMS debug: condition - `' + statement + '` => true')
-            }
-            return true
-          } else {
-            if (condition.debug) {
-              console.info('CCMS debug: condition - `' + statement + '` => false')
-            }
-            return false
-          }
-        } catch (e) {
-          if (condition.debug) {
-            console.info('CCMS debug: condition - `' + condition.statement + '` => `' + statement + '` => error')
-          }
-          console.error('表单项展示条件语句执行错误。', condition.statement, statement)
-          return false
+        const result = eval(statement)
+        if (condition?.debug) {
+          console.info(`CCMS debug: condition ${statement} => ${result}`)
         }
+        return result
       } catch (e) {
-        if (condition.debug) {
-          console.info('CCMS debug: condition - `' + condition.statement + '` => error')
-        }
-        console.error('表单项展示条件语句执行错误。', condition.statement)
+        console.error('表单项展示条件语句执行错误。', conditionTemplate, statement)
         return false
       }
     }
+  } catch (e) {
+    if (condition?.debug) {
+      console.info('CCMS debug: condition - `' + conditionTemplate + '` => error')
+    }
+    console.error('表单项展示条件语句执行错误。', conditionTemplate)
+    return false
   }
 }
