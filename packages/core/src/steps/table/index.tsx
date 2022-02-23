@@ -361,48 +361,17 @@ export default class TableStep extends Step<TableConfig, TableState> {
           console.log('CCMS debug: operation - operation.handle.type === link', params)
         }
 
-        // 提取跳转URL地址，合并URL参数拼接
-        const targetURL = operation.handle.targetURL || ''
-        const urlParams = this.queryUrlParams(targetURL)
-        const query = urlParams.paramsResult
-        const hash = urlParams.hashResult.hash?.replace('#/', '')
-        const url = targetURL?.split('#')[0]?.split('?')[0]
-        // const { url, query, fragmentIdentifier } = queryString.parseUrl(targetURL, { arrayFormat: 'bracket', parseFragmentIdentifier: true })
-        const jumpUrl = queryString.stringifyUrl({ url, query: { ...query, ...params }, fragmentIdentifier: hash }, { arrayFormat: 'bracket' }) || ''
-
-        this.urlJumpHandler(jumpUrl, operation.handle.target)
+        const targetURL = operation.handle.targetURL
+        const { query } = queryString.parseUrl(targetURL, { arrayFormat: 'bracket' })
+        const targetKey = queryString.stringifyUrl({ url: '', query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
+        const jumpUrl = `${targetURL}${targetKey}`
+        if (operation.handle.target === '_blank') {
+          window.open(jumpUrl)
+        } else {
+          window.location.href = jumpUrl
+        }
       }
     }
-  }
-
-  /**
-   * 获取URL中的路由和参数
-   * @param url url地址
-   */
-  queryUrlParams = (url: string) => {
-    const paramsResult: any = {}
-    const hashResult: any = {}
-    const paramReg = /([^?=&#]+)=([^?=&#]+)/g
-    const hashReg = /#[^?=&#]+/g
-    // eslint-disable-next-line no-return-assign
-    url.replace(paramReg, (n, x, y) => paramsResult[x] = y)
-    // eslint-disable-next-line no-return-assign
-    url.replace(hashReg, (n) => hashResult.hash = n)
-    return { paramsResult, hashResult }
-  }
-
-  /**
-   * 链接跳转处理方法
-   * @param url 跳转地址
-   * @param target 跳转方式
-   */
-  urlJumpHandler = (url: string, target: string) => {
-    const a = document.createElement('a')
-    document.body.appendChild(a)
-    a.href = url
-    a.target = target
-    a.click()
-    document.body.removeChild(a)
   }
 
   /**
