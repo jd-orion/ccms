@@ -10,6 +10,7 @@ import DatetimeRangeField from './datetimeRange'
 import SelectSingleField from './select/single'
 import SelectMultipleField from './select/multiple'
 import DescField from './description'
+import TreeSelectField from './treeSelect'
 import ImageUrlField from './imageurl'
 import SwitchField from './switch'
 import GroupField from './group'
@@ -44,6 +45,7 @@ export default {
   select_single: SelectSingleField,
   select_multiple: SelectMultipleField,
   desc: DescField,
+  tree_select: TreeSelectField,
   color: ColorField,
   upload: UploadField,
   imageurl: ImageUrlField,

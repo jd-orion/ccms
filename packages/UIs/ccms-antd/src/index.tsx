@@ -6,6 +6,7 @@ export { default as FormField } from './components/formFields/form'
 export { default as RadioField } from './components/formFields/radio'
 export { default as SelectSingleField } from './components/formFields/select/single'
 export { default as SelectMultipleField } from './components/formFields/select/multiple'
+export { default as TreeSelectField } from './components/formFields/treeSelect'
 
 export { default as Table } from './steps/table'
 
