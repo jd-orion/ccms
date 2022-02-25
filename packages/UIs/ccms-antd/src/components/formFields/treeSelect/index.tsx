@@ -1,14 +1,14 @@
 /*
  * @Author: zjt
  * @Date: 2022-02-21 21:19:29
- * @LastEditTime: 2022-02-23 20:57:07
+ * @LastEditTime: 2022-02-25 19:58:52
  * @LastEditors: zjt
  * @Description: 树形选框
  */
 import React, { Key } from 'react'
 import { TreeSelectField } from 'ccms'
 import { Table, Tree } from 'antd'
-import { ITreeSelectField } from 'ccms/src/components/formFields/treeSelect'
+import { ITreeSelectField } from 'ccms/dist/src/components/formFields/treeSelect'
 import InterfaceHelper from '../../../util/interface'
 export default class TreeSelectFieldComponent extends TreeSelectField {
   interfaceHelper = new InterfaceHelper()
