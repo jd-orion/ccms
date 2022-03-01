@@ -51,7 +51,7 @@ export default class FormStepComponent extends FormStep {
         }
         : null
 
-    const gapStyle = computedGapStyle(columns , 'row')
+    const gapStyle = computedGapStyle(columns, 'row')
 
     return (
       <Form
@@ -106,7 +106,7 @@ export default class FormStepComponent extends FormStep {
       fieldType,
       children
     } = props
-    const colStyle = computedItemStyle(columns, layout)
+    const colStyle = computedItemStyle(columns, layout, visitable)
     const itemStyle = visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }
     if (columns?.type === 'width' && columns?.value && columns.wrap) {
       Object.assign(itemStyle, { width: columns.value })

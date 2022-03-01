@@ -1,7 +1,5 @@
+
 import { FormItemProps, Form } from "antd";
-
-
-
 
 export function formItemLayout(layout: 'horizontal' | 'vertical' | 'inline', fieldType: string, label: string | undefined) {
   const formItemLayout: FormItemProps = { labelAlign: 'left' }
@@ -16,7 +14,7 @@ export function formItemLayout(layout: 'horizontal' | 'vertical' | 'inline', fie
 
 
 
-export function computedItemStyle(columns: any, layout: string) {
+export function computedItemStyle(columns: any, layout: string, visitable: boolean) {
   const setStyle = {}
   if (!columns) return {}
   Object.assign(setStyle,
@@ -44,14 +42,20 @@ export function computedItemStyle(columns: any, layout: string) {
     })
   }
 
+  if (!visitable) {
+    Object.assign(setStyle, {
+      display: 'none'
+    })
+  }
+
   return setStyle
 }
 
 
 export function computedGapStyle(columns: any, type: string) {
   const setStyle = {}
-  const gap = (Number(columns?.gap) || 0)/2
-  const rowgap = (Number(columns?.rowGap) || 0)/2
+  const gap = (Number(columns?.gap) || 0) / 2
+  const rowgap = (Number(columns?.rowGap) || 0) / 2
 
   if (type === 'row') {
     Object.assign(setStyle, {
