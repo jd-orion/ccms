@@ -16,7 +16,12 @@ export function formItemLayout(layout: 'horizontal' | 'vertical' | 'inline', fie
 
 export function computedItemStyle(columns: any, layout: string, visitable: boolean) {
   const setStyle = {}
-  if (!columns) return {}
+  if (!visitable) {
+    Object.assign(setStyle, {
+      display: 'none'
+    })
+  }
+  if (!columns) return setStyle
   Object.assign(setStyle,
     columns.gap ? {
       paddingLeft: `${columns.gap / 2}px`,
@@ -41,13 +46,6 @@ export function computedItemStyle(columns: any, layout: string, visitable: boole
       flexDirection: 'column'
     })
   }
-
-  if (!visitable) {
-    Object.assign(setStyle, {
-      display: 'none'
-    })
-  }
-
   return setStyle
 }
 
