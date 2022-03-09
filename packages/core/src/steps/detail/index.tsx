@@ -119,7 +119,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
    * 初始化表单的值
    * @param props
    */
-  constructor (props: StepProps<DetailConfig>) {
+  constructor(props: StepProps<DetailConfig>) {
     super(props)
     this.state = {
       ready: false,
@@ -373,7 +373,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     </React.Fragment>
   }
 
-  render () {
+  render() {
     const {
       config,
       data,
@@ -399,8 +399,8 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
           {/* 渲染表单 */}
           {this.renderComponent({
             layout,
+            columns: config.columns?.enable ? config.columns : undefined,
             onBack: this.props.config.hiddenBack ? undefined : async () => this.handleCancel(),
-            columns: config.columns,
             backText: this.props.config?.backText?.replace(/(^\s*)|(\s*$)/g, ''),
             children: fields.map((detailFieldConfig, detailFieldIndex) => {
               if (!ConditionHelper(detailFieldConfig.condition, { record: detailValue, data, step })) {
@@ -432,13 +432,15 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                 label: detailFieldConfig.label,
                 // status: detailFieldConfig.field !== undefined ? getValue(detailData, detailFieldConfig.field, {}).status || 'normal' : 'normal',
                 // message: detailFieldConfig.field !== undefined ? getValue(detailData, detailFieldConfig.field, {}).message || '' : '',
-                columns: {
-                  type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
-                  value: detailFieldConfig.columns?.value || config.columns?.value || 1,
-                  wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
-                  gap: detailFieldConfig.columns?.gap || config.columns?.gap || 0,
-                  rowGap: detailFieldConfig.columns?.rowGap || config.columns?.rowGap || 0
-                },
+                columns: config.columns?.enable
+                  ? {
+                      type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
+                      value: detailFieldConfig.columns?.value || config.columns?.value || 1,
+                      wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
+                      gap: detailFieldConfig.columns?.gap || config.columns?.gap || 0,
+                      rowGap: detailFieldConfig.columns?.rowGap || config.columns?.rowGap || 0
+                    }
+                  : undefined,
                 layout,
                 styles: detailFieldConfig.styles || {},
                 visitable: display,

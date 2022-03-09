@@ -10,6 +10,7 @@ import { ColumnsConfig } from '../../../interface'
 export interface GroupFieldConfig extends DetailFieldConfig {
   type: 'group'
   fields: DetailFieldConfigs[]
+  childColumns?: ColumnsConfig
 }
 
 export interface IGroupField {
@@ -223,6 +224,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     return (
       <React.Fragment>
         {this.renderComponent({
+          columns: config?.columns?.enable ? config.columns : undefined,
           children: (this.props.config.fields || []).map((detailFieldConfig, detailFieldIndex) => {
             if (!ConditionHelper(detailFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
               this.detailFieldsMounted[detailFieldIndex] = false
@@ -248,11 +250,11 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
               label: detailFieldConfig.label,
               columns: config.columns?.enable
                 ? {
-                    type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
-                    value: detailFieldConfig.columns?.value || config.columns?.value || 1,
-                    wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
-                    gap: detailFieldConfig.columns?.gap || config.columns?.gap || 0,
-                    rowGap: detailFieldConfig.columns?.rowGap || config.columns?.rowGap || 0
+                    type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                    value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
+                    wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                    gap: config.columns?.gap || 0,
+                    rowGap: config.columns?.rowGap || 0
                   }
                 : undefined,
               styles: detailFieldConfig.styles,

@@ -20,6 +20,7 @@ import { ColumnsConfig } from '../../../interface'
 export interface ImportSubformFieldConfig extends DetailFieldConfig {
   type: 'import_subform',
   configFrom?: ImportSubformConfigFromData | ImportSubformConfigFromInterface
+  childColumns?: ColumnsConfig
 }
 
 interface ImportSubformConfigFromData {
@@ -205,6 +206,7 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
       return (
         <React.Fragment>
           {this.renderComponent({
+            columns: config?.columns?.enable ? config.columns : undefined,
             children: this.state.didMount
               ? fields.map((formFieldConfig, formFieldIndex) => {
                 if (!ConditionHelper(formFieldConfig.condition, { record: value, data, step })) {
@@ -222,6 +224,15 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
                 const renderData: IDetailItem = {
                   key: formFieldIndex,
                   label: formFieldConfig.label,
+                  columns: config.columns?.enable
+                    ? {
+                        type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                        value: formFieldConfig.columns?.value || config.childColumns?.value || 1,
+                        wrap: formFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                        gap: config.columns?.gap || 0,
+                        rowGap: config.columns?.rowGap || 0
+                      }
+                    : undefined,
                   layout: formLayout,
                   visitable: display,
                   fieldType: formFieldConfig.type,
