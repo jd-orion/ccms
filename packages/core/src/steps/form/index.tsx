@@ -79,6 +79,7 @@ export interface ActionConfig {
   type: 'submit' | 'cancel' | 'ccms',
   label: string,
   mode: 'normal' | 'primary' | 'link',
+  submitValidate: boolean
   condition?: ConditionConfig
   handle?: OperationConfig
   callback?: {
@@ -620,6 +621,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
             onClick: () => this.handleCancel()
           }))
         } else {
+          const submitValidate = actions[index].submitValidate
           const OperationHelperWrapper = <this.OperationHelper
             key={index}
             config={actions[index].handle}
@@ -637,7 +639,15 @@ export default class FormStep extends Step<FormConfig, FormState> {
               this.renderButtonComponent({
                 label: actions[index].label || '',
                 mode: actions[index].mode,
-                onClick
+                onClick: submitValidate
+                  ? async () => {
+                    await this.handleValidations()
+                    console.info('表单参数信息', this.submitData, this.state.formValue, this.formData)
+                    if (this.canSubmit) {
+                      onClick()
+                    }
+                  }
+                  : onClick
               })
             )}
           </this.OperationHelper>
@@ -645,7 +655,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
         }
       }
     }
-    
+
     if (ready) {
       return (
         <React.Fragment>

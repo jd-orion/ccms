@@ -62,7 +62,9 @@ export interface TableCCMSOperationConfig {
   type: 'ccms'
   page: any
   target: 'current' | 'page' | 'open' | 'handle'
+  historyTpye?: 'replace'
   targetURL: string
+  width: string
   data: { [key: string]: ParamConfig }
   params?: { field: string, data: ParamConfig }[]
   callback?: boolean
@@ -98,6 +100,7 @@ interface TableOperationConfirmConfig {
 export interface ITable {
   title: string | null
   primary: string
+  width: string
   data: { [field: string]: any }[]
   columns: ITableColumn[]
   pagination?: {
@@ -213,6 +216,7 @@ interface TableState {
   operation: {
     enable: boolean
     target: 'current' | 'handle'
+    width: string
     title: string
     visible: boolean
     config: CCMSConfig
@@ -245,6 +249,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         enable: false,
         target: 'current',
         title: '',
+        width: '400px',
         visible: false,
         config: {},
         data: {},
@@ -322,6 +327,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
           operation: {
             enable: true,
             target: operation.handle.target,
+            width: operation.handle.width,
             title: operation.label,
             visible: true,
             config: operationConfig,
@@ -337,7 +343,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
         if (this.props.handlePageRedirect) {
           this.props.handlePageRedirect(`${targetURL}${targetKey}`)
         } else {
-          window.location.href = `${targetURL}${targetKey}`
+          if (operation.handle.historyTpye === 'replace') {
+            window.location.replace(`${targetURL}${targetKey}`)
+          } else {
+            window.location.href = `${targetURL}${targetKey}`
+          }
         }
       } else if (operation.handle.target === 'open') {
         const sourceURL = await this.props.loadPageFrameURL(operation.handle.page)
@@ -502,6 +512,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
       operation: {
         enable: operationEnable,
         target: operationTarget,
+        width: operationWidth,
         title: operationTitle,
         visible: operationVisible,
         config: operationConfig,
@@ -518,6 +529,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
 
     const props: ITable = {
       title: label,
+      width,
       primary,
       data: getDate,
       columns: (columns || []).filter((column) => column.field !== undefined && column.field !== '').map((column, index) => {
@@ -702,11 +714,11 @@ export default class TableStep extends Step<TableConfig, TableState> {
         {operationEnable && (
           operationTarget === 'current'
             ? (
-              this.renderOperationModal({
-                title: operationTitle,
-                width,
-                visible: operationVisible,
-                children: (
+                this.renderOperationModal({
+                  title: operationTitle,
+                  width: operationWidth,
+                  visible: operationVisible,
+                  children: (
                   <CCMS
                     config={operationConfig}
                     sourceData={operationData}
@@ -733,15 +745,15 @@ export default class TableStep extends Step<TableConfig, TableState> {
                       }
                     }}
                   />
-                ),
-                onClose: () => {
-                  const { operation } = this.state
-                  operation.enable = false
-                  operation.visible = false
-                  this.setState({ operation })
-                }
-              })
-            )
+                  ),
+                  onClose: () => {
+                    const { operation } = this.state
+                    operation.enable = false
+                    operation.visible = false
+                    this.setState({ operation })
+                  }
+                })
+              )
             : (
               <CCMS
                 config={operationConfig}
@@ -769,7 +781,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   }
                 }}
               />
-            )
+              )
         )}
       </React.Fragment >
     )
