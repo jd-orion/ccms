@@ -68,6 +68,7 @@ export interface TableCCMSOperationConfig {
   data: { [key: string]: ParamConfig }
   params?: { field: string, data: ParamConfig }[]
   callback?: boolean
+  closeCallback?: boolean
   debug?: boolean
 }
 
@@ -222,6 +223,8 @@ interface TableState {
     config: CCMSConfig
     data: any
     callback?: boolean
+    closeCallback?: boolean
+
   }
   pageAuth: { [page: string]: boolean }
 }
@@ -241,7 +244,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
   /* 服务端分页情况下页码溢出标识：页码溢出时退回重新请求，此标识符用于防止死循环判断 */
   pageOverflow: boolean = false
 
-  constructor(props: StepProps<TableConfig>) {
+  constructor (props: StepProps<TableConfig>) {
     super(props)
 
     this.state = {
@@ -253,7 +256,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
         visible: false,
         config: {},
         data: {},
-        callback: false
+        callback: false,
+        closeCallback: false
       },
       pageAuth: {}
     }
@@ -332,7 +336,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
             visible: true,
             config: operationConfig,
             data: params,
-            callback: operation.handle.callback
+            callback: operation.handle.callback,
+            closeCallback: operation.handle.closeCallback
           }
         })
       } else if (operation.handle.target === 'page') {
@@ -492,7 +497,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     document.body.appendChild(mask)
   }
 
-  render() {
+  render () {
     const {
       config: {
         field,
@@ -517,7 +522,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
         visible: operationVisible,
         config: operationConfig,
         data: operationData,
-        callback: operationCallback
+        callback: operationCallback,
+        closeCallback: operationcloseCallback
       },
       pageAuth
     } = this.state
@@ -750,6 +756,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
                     const { operation } = this.state
                     operation.enable = false
                     operation.visible = false
+                    if ((operationcloseCallback && operationcloseCallback === true) || Boolean(operationcloseCallback)) {
+                      onUnmount(true)
+                    }
                     this.setState({ operation })
                   }
                 })
