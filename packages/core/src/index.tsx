@@ -58,6 +58,7 @@ export { default as DetailEunmField } from './components/detail/enum'
 export { default as DetailStatementField } from './components/detail/statement'
 export { default as DetailTextField } from './components/detail/text'
 export { default as DetailImportSubformField } from './components/detail/importSubform'
+export { default as DetailInfoField } from './components/detail/detailInfo'
 
 export { default as HeaderStep } from './steps/header'
 

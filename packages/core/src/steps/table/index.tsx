@@ -9,7 +9,8 @@ import CCMS, { CCMSConfig } from '../../main'
 import { cloneDeep, get, set } from 'lodash'
 import InterfaceHelper, { InterfaceConfig } from '../../util/interface'
 import ConditionHelper, { ConditionConfig } from '../../util/condition'
-
+import StatementHelper, { StatementConfig } from '../../util/statement'
+import marked from 'marked'
 /**
  * 表格步骤配置文件格式定义
  * - field:   表格列表数据来源字段
@@ -34,6 +35,13 @@ export interface TableConfig extends StepConfig {
     current?: string
     pageSize?: string
     total?: string
+  },
+  description?: {
+    type: 'text' | 'tooltip' | 'modal'
+    label?: StatementConfig
+    mode: 'plain' | 'markdown' | 'html'
+    content?: StatementConfig
+    showIcon: boolean
   }
 }
 
@@ -128,8 +136,14 @@ export interface ITable {
     onChange: (page: number, pageSize: number) => void
   }
   tableOperations: React.ReactNode | null
+  multirowOperations: React.ReactNode | null,
+  description?: {
+    type: 'text' | 'tooltip' | 'modal'
+    label: string | undefined
+    content: React.ReactNode
+    showIcon: boolean
+  },
   leftTableOperations: React.ReactNode | null
-  multirowOperations: React.ReactNode | null
 }
 
 /**
@@ -521,7 +535,6 @@ export default class TableStep extends Step<TableConfig, TableState> {
       您当前使用的UI版本没有实现Table组件的OperationDropdownItem部分。
     </React.Fragment>
   }
-
   renderOperationModal = (props: ITableStepOperationModal) => {
     const mask = document.createElement('DIV')
     mask.style.position = 'fixed'
@@ -624,7 +637,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
         primary,
         columns,
         operations,
-        pagination
+        pagination,
+        description
       },
       data,
       step,
@@ -650,7 +664,6 @@ export default class TableStep extends Step<TableConfig, TableState> {
     if (Object.prototype.toString.call(getDate) !== '[object Array]') {
       getDate = []
     }
-
     const props: ITable = {
       title: label,
       width,
@@ -658,7 +671,6 @@ export default class TableStep extends Step<TableConfig, TableState> {
       data: getDate,
       columns: (columns || []).filter((column) => column.field !== undefined && column.field !== '').map((column, index) => {
         const field = column.field.split('.')[0]
-
         return {
           field,
           label: column.label,
@@ -688,7 +700,44 @@ export default class TableStep extends Step<TableConfig, TableState> {
       leftTableOperations: this.tableOperations(operations?.leftTableOperations || [], getDate),
       multirowOperations: null
     }
-
+    if(description) {
+      if(description.type === 'text') {
+        props.description = {
+          type: 'text',
+          label: StatementHelper(description.label, { data: this.props.data, step: this.props.step }),
+          content: description.content,
+          showIcon: description.showIcon
+        }
+      } else if (description.type === 'tooltip') {
+        props.description = {
+          type: 'tooltip',
+          label: StatementHelper(description.label, { data: this.props.data, step: this.props.step }),
+          content: description.content,
+          showIcon: description.showIcon
+        }
+      } else {
+        props.description = {
+          type: 'modal',
+          label: StatementHelper(description.label, { data: this.props.data, step: this.props.step }),
+          content: description.content,
+          showIcon: description.showIcon
+        }
+      }
+      if(description.content !== undefined) {
+        const descriptionType = description.mode
+        switch (descriptionType) {
+          case 'plain':
+            props.description && (props.description.content = StatementHelper(description.content, { data: this.props.data, step: this.props.step }))
+            break
+          case 'markdown':
+            props.description && (props.description.content = <div dangerouslySetInnerHTML={{ __html: marked(StatementHelper(description.content, { data: this.props.data, step: this.props.step })) }}></div>)
+            break
+          case 'html':
+            props.description && (props.description.content = <div dangerouslySetInnerHTML={{ __html: StatementHelper(description.content, { data: this.props.data, step: this.props.step })}}></div>) 
+            break
+        }
+      }
+    }
     if (pagination && pagination.mode === 'server') {
       const paginationCurrent = Number((pagination.current === undefined || pagination.current === '') ? data[step] : get(data[step], pagination.current, 1))
       const paginationPageSize = Number((pagination.pageSize === undefined || pagination.pageSize === '') ? data[step] : get(data[step], pagination.pageSize, 10))
