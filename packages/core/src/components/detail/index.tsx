@@ -6,6 +6,7 @@ import StatementDetail, { StatementDetailConfig } from './statement'
 import GroupField, { GroupFieldConfig } from './group'
 import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
 import InfoDetail, { InfoDetailConfig } from './detailInfo'
+import ColorDetail, { ColorDetailConfig } from './detailColor'
 
 /**
  * 详情步骤内详情项配置文件格式定义 - 枚举
@@ -16,7 +17,8 @@ export type DetailFieldConfigs =
     StatementDetailConfig |
     GroupFieldConfig |
     ImportSubformFieldConfig |
-    InfoDetailConfig
+    InfoDetailConfig |
+    ColorDetailConfig
 
 
 export type componentType =
@@ -25,7 +27,8 @@ export type componentType =
     'detail_enum' |
     'statement' |
     'import_subform' |
-    'detail_info'
+    'detail_info' |
+    'detail_color'
 
 export default {
   group: GroupField,
@@ -33,5 +36,6 @@ export default {
   import_subform: ImportSubformField,
   detail_enum: EnumDetail,
   statement: StatementDetail,
-  detail_info: InfoDetail
+  detail_info: InfoDetail,
+  detail_color: ColorDetail
 }
