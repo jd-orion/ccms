@@ -1,0 +1,74 @@
+.ccms-config {
+  position: relative;
+  height: calc(100vh - 160px);
+
+  & > .preview {
+    width: calc(100% - 350px);
+    height: 100%;
+    overflow: auto;
+  }
+
+  & > :nth-child(2) > .ant-drawer {
+    height: auto;
+    position: absolute;
+    top: -24px;
+    right: -23px !important;
+    bottom: -24px;
+
+    & > .ant-drawer-content-wrapper > .ant-drawer-content > .ant-drawer-wrapper-body > .ant-drawer-body {
+      padding: 0;
+
+      & > .ant-card {
+        height: 100%;
+
+        & > .ant-card-head {
+          & > .ant-tabs {
+            margin-right: -23px;
+          }
+        }
+
+        & > .ant-card-body {
+          height: calc(100% - 86px);
+          overflow: auto;
+
+          .ant-form-item {
+            margin-bottom: 0;
+          }
+
+          .ant-radio-group-small {
+            .ant-radio-button-wrapper.ccms-page-template {
+              width: 75px;
+              height: 60px;
+              text-align: center;
+
+              .ccms-page-template-icon {
+                width: 28px;
+                height: 28px;
+                margin: auto;
+                margin-top: 7px;
+                margin-bottom: 0;
+                border: 1px solid black;
+                border-radius: 2px;
+                border-color: #666;
+
+                div {
+                  border-color: #666 !important;
+                }
+              }
+
+              &.ant-radio-button-wrapper-checked {
+                .ccms-page-template-icon {
+                  border-color: #40a9ff;
+
+                  div {
+                    border-color: #40a9ff !important;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
