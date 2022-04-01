@@ -1,7 +1,7 @@
 {
-  "name": "@test/ccms-editor-test",
-  "version": "0.0.16",
-  "description": "ccms编辑器",
+  "name": "ccms-editor",
+  "version": "0.0.1",
+  "description": "ccms编辑器,",
   "main": "dist/index.js",
   "files": [
     "dist/*"
@@ -34,7 +34,7 @@
     "url": ""
   },
   "author": "cui",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@drip/drip-design": "^4.0.8",
     "@drip/drip-design-icons": "^4.6.8",

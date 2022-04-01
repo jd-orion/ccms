@@ -35,8 +35,8 @@ import 'antd/dist/antd.css'
                 type: 'form',
                 fields: [
                   {
-                    field: 'text2',
-                    label: 'text2',
+                    field: 'text',
+                    label: 'text',
                     type: 'text'
                   }
                 ],
