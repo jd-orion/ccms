@@ -12,7 +12,7 @@ module.exports = {
     libraryTarget: "umd",
   },
   externals: {
-    react: {
+    'react': {
       commonjs: 'react',
       commonjs2: 'react',
       amd: 'react',
@@ -23,7 +23,8 @@ module.exports = {
       commonjs2: 'react-dom',
       amd: 'react-dom',
       root: 'ReactDOM',
-    }
+    },
+    'qiankun': 'qiankun'
   },
   module: {
     rules: [
