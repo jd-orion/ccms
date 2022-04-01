@@ -13,55 +13,8 @@ const config: FieldConfigs[] = [
   {
     "field": "page",
     "label": "目标页面",
-    "type": "tree_select",
-    "treeData": {
-      "from": "interface",
-      "interface": {
-        "url": "/api/menu/${applicationName}/all${businessSuffix}",
-        "urlParams": [
-          {
-            "field": "applicationName",
-            "data": {
-              "source": "source",
-              "field": "applicationName"
-            }
-          },
-          {
-            "field": "businessSuffix",
-            "data": {
-              "source": "source",
-              "field": "businessSuffix"
-            }
-          }
-        ],
-        "method": "GET",
-        "withCredentials": true,
-        "response": {
-          "root": "rs"
-        },
-        "condition": {
-          "enable": true,
-          "field": "code",
-          "value": 1000,
-          "success": {
-            "type": "none"
-          },
-          "fail": {
-            "type": "modal",
-            "content": {
-              "type": "field",
-              "field": "msg"
-            }
-          }
-        }
-      },
-      "format": {
-        "type": "list",
-        "keyField": "menuId",
-        "titleField": "menuName",
-        "childrenField": "children"
-      }
-    }
+    "type": "custom",
+    "entry": "https://storage.360buyimg.com/swm-plus/loadpagelist/index.html"
   },
   {
     "field": "params",

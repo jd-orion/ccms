@@ -13,6 +13,7 @@ import './antd.less'; // 加载antd样式（用于样式隔离）
 import './app.less';
 import ConfigJSON from './component/ConfigJSON';
 import { StepConfigs as IStepConfigs } from 'ccms/dist/src/steps';
+import { ISelectFieldOption } from "ccms/dist/src/components/formFields/treeSelect";
 
 /**
  * 页面配置
@@ -79,7 +80,9 @@ const basicForm: FormConfig = {
 
 
 export interface AppProps {
+  // config: FormConfig,
   config: any,
+  sourceData:any,
   applicationName: string,
   type: 'application' | 'business',
   version: string,
@@ -89,6 +92,7 @@ export interface AppProps {
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  loadPageList: () => Promise<Array<ISelectFieldOption>>
   loadDomain: (name: string) => Promise<string>
   handlePageRedirect?: (path: string) => void
   onChange: (value: any) => void
@@ -218,6 +222,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
       loadPageURL,
       loadPageFrameURL,
       loadPageConfig,
+      loadPageList,
       loadDomain,
       handlePageRedirect,
       onCancel
@@ -238,9 +243,10 @@ class App extends React.Component<AppProps, CCMSConsigState> {
               loadPageURL={loadPageURL}
               loadPageFrameURL={loadPageFrameURL}
               loadPageConfig={loadPageConfig}
+              loadPageList={loadPageList}
               loadDomain={loadDomain}
               handlePageRedirect={handlePageRedirect}
-              sourceData={{ applicationName }}
+              sourceData={this.props.sourceData}
               baseRoute={this.props.baseRoute}
               callback={() => {
                 // if (window.history.length > 1) {
@@ -256,7 +262,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 
         {/* 配置化步骤内容 */}
         <Drawer
-          width={350}
+          width={240}
           mask={false}
           placement="right"
           closable={false}
@@ -459,6 +465,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                     })
                   }}
                   loadDomain={this.props.loadDomain}
+                  loadPageList={loadPageList}
                 />
               </>
             )}

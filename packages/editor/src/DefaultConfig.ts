@@ -145,36 +145,6 @@ const DefaultConfig = {
       "type": "header"
     },
     {
-      "type": "form",
-      "columns": {},
-      "fields": [
-        {
-          "label": "a",
-          "field": "a",
-          "type": "diffcode",
-          "height": 520,
-          "codeType": "xml",
-          "theme": "black"
-        }
-      ],
-      "actions": [
-        {
-          "type": "submit",
-          "label": "提交",
-          "mode": "primary"
-        },
-        {
-          "type": "cancel",
-          "label": "取消",
-          "mode": "normal"
-        }
-      ],
-      "applicationName": "example",
-      "businessSuffix": "",
-      "version": "1.0.0",
-      "subversion": "0"
-    },
-    {
       "type": "fetch",
       "interface": {
         "url": "",
@@ -198,9 +168,48 @@ const DefaultConfig = {
               "field": "msg"
             }
           }
+        },
+        "cache": {
+          "disabled": true
         }
       },
       "nextStep": false
+    },
+    {
+      "type": "table",
+      "field": "",
+      "label": "",
+      "description": {
+        "type": "text"
+      },
+      "primary": "id",
+      "rowOperationsPosition": "left",
+      "columns": [
+        {
+          "label": "ID",
+          "field": "id",
+          "type": "text",
+          "align": "left",
+          "linkUrl": false
+        }
+      ],
+      "operations": {
+        "leftTableOperations": [
+          {
+            "label": "创建",
+            "type": "button",
+            "handle": {
+              "type": "ccms",
+              "page": 0,
+              "target": "current"
+            },
+            "confirm": {
+              "enable": false
+            },
+            "level": "primary"
+          }
+        ]
+      }
     }
   ],
   "ui": "antd"

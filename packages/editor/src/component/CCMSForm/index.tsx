@@ -1,12 +1,14 @@
 import React from "react";
 import { FormStep } from "ccms-antd-mini";
 import { FormConfig } from "ccms/dist/src/steps/form";
+import { ISelectFieldOption } from "ccms/dist/src/components/formFields/treeSelect";
 
 interface CCMSFormProps {
   data: any
   config: FormConfig
   onChange: (data: any) => void
   loadDomain: (name: string) => Promise<string>
+  loadPageList: () => Promise<Array<ISelectFieldOption>>
 }
 
 interface CCMSFormState {
@@ -40,6 +42,7 @@ export default class CCMSForm extends React.Component<CCMSFormProps, CCMSFormSta
         loadPageURL={async () => ''}
         loadPageFrameURL={async () => ''}
         loadPageConfig={async () => ({})}
+        loadPageList={this.props.loadPageList}
         loadDomain={this.props.loadDomain}
         baseRoute="/"
       />
