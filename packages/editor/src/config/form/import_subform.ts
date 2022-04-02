@@ -65,7 +65,7 @@ const config: FieldConfigs[] = [
         "label": "接口配置",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/common/InterfaceConfig.json",
+          "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/InterfaceConfig.json",
           "urlParams": [
             {
               "field": "version",

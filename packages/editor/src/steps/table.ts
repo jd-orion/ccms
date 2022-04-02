@@ -77,7 +77,7 @@ export const Config: FormConfig = {
                   "field": "data",
                   "type": "import_subform",
                   "interface": {
-                    "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                    "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
                     "urlParams": [
                       {
                         "field": "version",
@@ -181,7 +181,7 @@ export const Config: FormConfig = {
                   "field": "data",
                   "type": "import_subform",
                   "interface": {
-                    "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                    "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
                     "urlParams": [
                       {
                         "field": "version",
@@ -340,7 +340,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/column/text.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/column/text.json",
             "urlParams": [
               {
                 "field": "version",
@@ -380,7 +380,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/column/datetime.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/column/datetime.json",
             "urlParams": [
               {
                 "field": "version",
@@ -420,7 +420,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/column/datetimeRange.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/column/datetimeRange.json",
             "urlParams": [
               {
                 "field": "version",
@@ -460,7 +460,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/column/enum.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/column/enum.json",
             "urlParams": [
               {
                 "field": "version",
@@ -500,7 +500,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/column/image.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/column/image.json",
             "urlParams": [
               {
                 "field": "version",
@@ -540,7 +540,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/column/custom.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/column/custom.json",
             "urlParams": [
               {
                 "field": "version",
@@ -737,7 +737,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/common/TableOperationConfig.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/TableOperationConfig.json",
             "urlParams": [
               {
                 "field": "version",
@@ -815,7 +815,7 @@ export const Config: FormConfig = {
               "label": "",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/common/TableOperationConfig.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/TableOperationConfig.json",
                 "urlParams": [
                   {
                     "field": "version",
@@ -932,7 +932,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/common/TableOperationConfig.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/TableOperationConfig.json",
             "urlParams": [
               {
                 "field": "version",
@@ -1022,7 +1022,7 @@ export const Config: FormConfig = {
               "label": "",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/common/TableOperationConfig.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/TableOperationConfig.json",
                 "urlParams": [
                   {
                     "field": "version",
@@ -1100,7 +1100,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/common/TableOperationConfig.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/TableOperationConfig.json",
             "urlParams": [
               {
                 "field": "version",
@@ -1178,7 +1178,7 @@ export const Config: FormConfig = {
               "label": "",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/common/TableOperationConfig.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/TableOperationConfig.json",
                 "urlParams": [
                   {
                     "field": "version",

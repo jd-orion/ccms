@@ -39,7 +39,7 @@ export const Config: FormConfig = {
               "field": "data",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
                 "urlParams": [
                   {
                     "field": "version",
@@ -96,7 +96,7 @@ export const Config: FormConfig = {
               "field": "data",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
                 "urlParams": [
                   {
                     "field": "version",
@@ -209,7 +209,7 @@ export const Config: FormConfig = {
               "field": "action",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/common/OperationConfig.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/OperationConfig.json",
                 "urlParams": [
                   {
                     "field": "version",
@@ -346,7 +346,7 @@ export const Config: FormConfig = {
               "field": "data",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
                 "urlParams": [
                   {
                     "field": "version",
@@ -399,7 +399,7 @@ export const Config: FormConfig = {
           "label": "数据来源",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
             "urlParams": [
               {
                 "field": "version",
@@ -462,7 +462,7 @@ export const Config: FormConfig = {
               "label": "",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/detail/index.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/detail/index.json",
                 "urlParams": [
                   {
                     "field": "version",
@@ -553,7 +553,7 @@ export const Config: FormConfig = {
               "field": "value",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
                 "urlParams": [
                   {
                     "field": "version",
@@ -586,7 +586,7 @@ export const Config: FormConfig = {
                   "label": "",
                   "type": "import_subform",
                   "interface": {
-                    "url": "/ccms/config/${version}/${subversion}/common/EnumerationConfig.json",
+                    "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/EnumerationConfig.json",
                     "urlParams": [
                       {
                         "field": "version",
@@ -731,7 +731,7 @@ export const Config: FormConfig = {
               "field": "value",
               "type": "import_subform",
               "interface": {
-                "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
                 "urlParams": [
                   {
                     "field": "version",

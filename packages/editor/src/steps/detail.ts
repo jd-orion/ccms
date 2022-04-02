@@ -23,7 +23,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
             "urlParams": [
               {
                 "field": "version",
@@ -76,7 +76,7 @@ export const Config: FormConfig = {
       "label": "分栏配置",
       "type": "import_subform",
       "interface": {
-        "url": "/ccms/config/${version}/${subversion}/common/ColumnsConfig.json",
+        "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ColumnsConfig.json",
         "urlParams": [
           {
             "field": "version",
@@ -136,7 +136,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/detail/index.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/detail/index.json",
             "urlParams": [
               {
                 "field": "version",

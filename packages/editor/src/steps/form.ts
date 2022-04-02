@@ -22,7 +22,7 @@ export const Config: FormConfig = {
       "label": "分栏配置",
       "type": "import_subform",
       "interface": {
-        "url": "/ccms/config/${version}/${subversion}/common/ColumnsConfig.json",
+        "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ColumnsConfig.json",
         "urlParams": [
           {
             "field": "version",
@@ -124,7 +124,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/form/index.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/index.json",
             "urlParams": [
               {
                 "field": "version",
@@ -164,7 +164,7 @@ export const Config: FormConfig = {
           "label": "校验条件",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/common/ConditionConfig.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ConditionConfig.json",
             "urlParams": [
               {
                 "field": "version",
@@ -213,7 +213,7 @@ export const Config: FormConfig = {
                   "label": "",
                   "type": "import_subform",
                   "interface": {
-                    "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                    "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
                     "urlParams": [
                       {
                         "field": "version",
@@ -260,7 +260,7 @@ export const Config: FormConfig = {
           "label": "",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
             "urlParams": [
               {
                 "field": "version",
@@ -412,7 +412,7 @@ export const Config: FormConfig = {
           "label": "展示条件",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/common/ConditionConfig.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ConditionConfig.json",
             "urlParams": [
               {
                 "field": "version",
@@ -440,7 +440,7 @@ export const Config: FormConfig = {
           "field": "handle",
           "type": "import_subform",
           "interface": {
-            "url": "/ccms/config/${version}/${subversion}/common/OperationConfig.json",
+            "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/OperationConfig.json",
             "urlParams": [
               {
                 "field": "version",

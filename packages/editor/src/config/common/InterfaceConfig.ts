@@ -31,7 +31,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+          "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
           "urlParams": [
             {
               "field": "version",
@@ -131,7 +131,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+          "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
           "urlParams": [
             {
               "field": "version",
@@ -176,7 +176,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+          "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
           "urlParams": [
             {
               "field": "version",

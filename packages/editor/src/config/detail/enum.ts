@@ -11,7 +11,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/common/EnumerationConfig.json",
+          "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/EnumerationConfig.json",
           "urlParams": [
             {
               "field": "version",
