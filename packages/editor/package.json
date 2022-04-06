@@ -1,7 +1,7 @@
 {
   "name": "ccms-editor",
-  "version": "0.0.1",
-  "description": "ccms编辑器,",
+  "version": "0.0.4-beta.20",
+  "description": "ccms编辑器",
   "main": "dist/index.js",
   "files": [
     "dist/*"
@@ -36,14 +36,9 @@
   "author": "cui",
   "license": "MIT",
   "dependencies": {
-    "@drip/drip-design": "^4.0.8",
-    "@drip/drip-design-icons": "^4.6.8",
-    "@drip/drip-design-react-slick": "^0.27.11",
     "@monaco-editor/react": "^4.3.1",
     "@types/react": "^17.0.2",
-    "antd": "^4.14.0",
     "axios": "^0.21.1",
-    "ccms-drip": "^1.1.0",
     "copy-html-to-clipboard": "^4.0.1",
     "file-loader": "^6.2.0",
     "lodash": "^4.17.21",
