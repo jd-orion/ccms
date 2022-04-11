@@ -262,7 +262,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 
         {/* 配置化步骤内容 */}
         <Drawer
-          width={240}
+          width={320}
           mask={false}
           placement="right"
           closable={false}
