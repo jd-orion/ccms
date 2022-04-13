@@ -35,7 +35,7 @@ export interface IEnumProps {
 export default class EnumDetail extends DetailField<EnumDetailConfig, IEnumProps, any> implements IDetailField<string> {
   reset: () => Promise<string> = async () => {
     const defaults = await this.defaultValue()
-    return (defaults === undefined) ? '' : defaults
+    return (defaults === undefined) ? '/' : defaults
   }
 
   renderComponent = (props: IEnumProps) => {

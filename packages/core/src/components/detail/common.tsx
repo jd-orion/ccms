@@ -24,7 +24,7 @@ export interface DetailFieldConfig {
   columns?: ColumnsConfig
   childColumns?: ColumnsConfig
   display?: 'none'
-  defaultValue?: string,
+  defaultValue?: ParamConfig,
   condition?: DetailFieldConditionConfig
   layout?: 'horizontal' | 'vertical'
   styles?: object
@@ -132,7 +132,13 @@ export class DetailField<C extends DetailFieldConfig, E, T, S = {}> extends Reac
       config
     } = this.props
 
-    return config.defaultValue
+    if (typeof config.defaultValue === 'string') {
+      return config.defaultValue
+    }
+    if (config.defaultValue !== undefined) {
+      return ParamHelper(config.defaultValue, { record: this.props.record, data: this.props.data, step: this.props.step })
+    }
+    return undefined
   }
 
   set: (value: T) => Promise<void> = async (value) => {

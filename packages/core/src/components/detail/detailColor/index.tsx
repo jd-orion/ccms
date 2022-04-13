@@ -10,13 +10,26 @@ export interface IColorProps {
 }
 
 export default class InfoDetail extends DetailField<ColorDetailConfig, IColorProps, string> implements IDetailField<string> {
+  reset: () => Promise<string> = async () => {
+    const defaults = await this.defaultValue()
+    return (defaults === undefined) ? '' : defaults
+  }
+
+  state = {
+    value: ''
+  }
+
   renderComponent = (props: IColorProps) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现colorDetail组件。
     </React.Fragment>
   }
 
-  getValue = () => {
+  componentDidMount() {
+    this.getValue()
+  }
+
+  getValue = async () => {
     const {
       value,
       config: {
@@ -24,14 +37,24 @@ export default class InfoDetail extends DetailField<ColorDetailConfig, IColorPro
       }
     } = this.props
 
-    if (value === undefined || value === null || value === '') {
-      return defaultValue !== undefined ? defaultValue : ''
+    if (value && typeof value === 'string') {
+      return this.setState({
+        value
+      })
     }
-    return value
+    if (typeof defaultValue === 'string') {
+      this.setState({
+        value: defaultValue
+      })
+    } else {
+      this.setState({
+        value: await this.reset()
+      })
+    }
   }
 
   render = () => {
-    const value = this.getValue()
+    const { value } = this.state
 
     return (
       <React.Fragment>
