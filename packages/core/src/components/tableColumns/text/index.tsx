@@ -3,10 +3,13 @@ import Column, { ColumnConfig } from '../common'
 
 export interface TextColumnConfig extends ColumnConfig {
   type: 'text'
+  // 临时方案 后续优化
+  linkUrl: boolean
 }
 
 export interface ITextColumn {
   value: string
+  linkUrl: boolean
 }
 
 export default class TextColumn extends Column<TextColumnConfig, ITextColumn> {
@@ -31,11 +34,17 @@ export default class TextColumn extends Column<TextColumnConfig, ITextColumn> {
   }
 
   render = () => {
+    const {
+      config: {
+        linkUrl
+      }
+    } = this.props
+
     const value = this.getValue()
 
     return (
       <React.Fragment>
-        {this.renderComponent({ value })}
+        {this.renderComponent({ value, linkUrl })}
       </React.Fragment>
     )
   }
