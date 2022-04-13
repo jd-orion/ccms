@@ -7,7 +7,7 @@ export interface TextFieldConfig extends DetailFieldConfig {
 }
 
 export interface ITextField {
-  value: string
+  value: string | Array<string>
 }
 
 export default class TextField extends DetailField<TextFieldConfig, ITextField, string> implements IDetailField<string> {
