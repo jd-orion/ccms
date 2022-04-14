@@ -20,6 +20,8 @@ import MultipleTextField from './multipleText'
 import CustomField from './custom'
 import ImportSubformField from './importSubform'
 import AnyField from './any'
+import CodeField from './code'
+import DiffCodeField from './diffCode'
 
 import TextDisplayComponent from './text/display'
 import LongTextDisplayComponent from './longtext/display'
@@ -55,7 +57,9 @@ export default {
   multiple_text: MultipleTextField,
   custom: CustomField,
   import_subform: ImportSubformField,
-  any: AnyField
+  any: AnyField,
+  code: CodeField,
+  diffcode: DiffCodeField
 }
 
 export const display = {

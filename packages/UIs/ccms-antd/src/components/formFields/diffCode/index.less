@@ -1,0 +1,88 @@
+.editor-page {
+  .header-wrapper {
+    padding: 5px 20px 5px 0;
+    text-align: right;
+  }
+  .header-wrapper-black {
+    color: #fff;
+    background-color: #474747;
+  }
+  .header-wrapper-white {
+    color: #000;
+    background-color: #f3f3f3;
+  }
+  .editor-fullscreen {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100000;
+  }
+  .sp-cube-wrapper {
+    position: absolute;
+    left:50%;
+    top:50%;
+    -webkit-animation: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    border-radius: 4px;
+    }
+  .sp-cube {
+      transform: scale(.3);
+    }
+  .sp-cube * {
+    position: absolute;
+    width: 96px;
+    height: 96px;
+    box-sizing: border-box;
+  }
+  .sp-cube .sp-sides * {
+    border: 10px solid #757678;
+    border-radius: 8px;
+  }
+  .sp-cube .sp-sides {
+    -webkit-animation: sp-cube-rotate 2s linear infinite;
+    animation: sp-cube-rotate 2s linear infinite;
+    animation-fill-mode: forwards;
+    transform-style: preserve-3d;
+  }
+  @-webkit-keyframes sp-cube-rotate {
+    from {
+    -webkit-transform: rotateX(-25.5deg) rotateY(45deg);
+      transform: rotateX(-25.5deg) rotateY(45deg);
+    }
+    to {
+      -webkit-transform: rotateX(-25.5deg) rotateY(405deg);
+      transform: rotateX(-25.5deg) rotateY(405deg);
+    }
+  }
+  .sp-cube .sp-sides .sp-top {
+    transform: rotateX(90deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+
+  .sp-cube .sp-sides .sp-right {
+    transform: rotateY(90deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+  .sp-cube .sp-sides .sp-bottom {
+    transform: rotateX(-90deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+  .sp-cube .sp-sides .sp-left {
+    transform: rotateY(-90deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+
+  .sp-cube .sp-sides .sp-front {
+    transform: rotateY(0deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+  .sp-cube .sp-sides .sp-back {
+    transform: rotateY(-180deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+}

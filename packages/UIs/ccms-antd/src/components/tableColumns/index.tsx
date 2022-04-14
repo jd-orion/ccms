@@ -6,6 +6,7 @@ import NumberRangeColumn from './numberRange'
 import MultirowColumn from './multirowText'
 import EnumColumn from './enum'
 import ImageColumn from './image'
+import CustomColumn from './custom'
 
 export default {
   text: TextColumns,
@@ -15,5 +16,6 @@ export default {
   numberRange: NumberRangeColumn,
   multirowText: MultirowColumn,
   Aenum: EnumColumn,
-  image: ImageColumn
+  image: ImageColumn,
+  custom: CustomColumn
 }
