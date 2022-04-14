@@ -434,12 +434,12 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                 // message: detailFieldConfig.field !== undefined ? getValue(detailData, detailFieldConfig.field, {}).message || '' : '',
                 columns: config.columns?.enable
                   ? {
-                      type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
-                      value: detailFieldConfig.columns?.value || config.columns?.value || 1,
-                      wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
-                      gap: detailFieldConfig.columns?.gap || config.columns?.gap || 0,
-                      rowGap: detailFieldConfig.columns?.rowGap || config.columns?.rowGap || 0
-                    }
+                    type: detailFieldConfig.columns?.type || config.columns?.type || 'span',
+                    value: detailFieldConfig.columns?.value || config.columns?.value || 1,
+                    wrap: detailFieldConfig.columns?.wrap || config.columns?.wrap || false,
+                    gap: detailFieldConfig.columns?.gap || config.columns?.gap || 0,
+                    rowGap: detailFieldConfig.columns?.rowGap || config.columns?.rowGap || 0
+                  }
                   : undefined,
                 layout,
                 styles: detailFieldConfig.styles || {},
@@ -447,6 +447,12 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                 fieldType: detailFieldConfig.type,
                 children: (
                   <DetailFieldComponent
+                    onUnmount={this.props.onUnmount}
+                    checkPageAuth={this.props.checkPageAuth}
+                    loadPageConfig={this.props.loadPageConfig}
+                    loadPageURL={this.props.loadPageURL}
+                    loadPageFrameURL={this.props.loadPageFrameURL}
+                    handlePageRedirect={() => this.props.handlePageRedirect}
                     key={detailFieldIndex}
                     ref={(detailField: DetailField<DetailFieldConfigs, any, any> | null) => {
                       if (detailFieldIndex !== null) {
@@ -460,6 +466,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                     data={cloneDeep(data)}
                     step={step}
                     config={detailFieldConfig}
+                    detail={this}
                     onChange={async (value: any) => { await this.handleChange(detailFieldIndex, value) }}
                     onValueSet={async (path, value, validation) => await this.handleValueSet(detailFieldIndex, path, value, validation)}
                     onValueUnset={async (path, validation) => await this.handleValueUnset(detailFieldIndex, path, validation)}

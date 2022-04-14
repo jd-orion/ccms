@@ -60,6 +60,7 @@ export { default as DetailTextField } from './components/detail/text'
 export { default as DetailImportSubformField } from './components/detail/importSubform'
 export { default as DetailInfoField } from './components/detail/detailInfo'
 export { default as DetailColorField } from './components/detail/detailColor'
+export { default as DetailTableField } from './components/detail/table'
 
 export { default as HeaderStep } from './steps/header'
 

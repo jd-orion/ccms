@@ -3,6 +3,8 @@ import { ColumnsConfig, ParamConfig } from '../../interface'
 
 import { DetailFieldConfigs as getFieldConfigs } from './'
 import ParamHelper from '../../util/param'
+import { CCMSConfig } from '../../main'
+
 /**
  * 详情页表单项基类配置文件格式定义
  * - field:    表单项字段名
@@ -76,6 +78,8 @@ export interface DetailFieldProps<C extends DetailFieldConfig, T> {
   data: any[],
   step: number,
   config: C
+  // 挂载引用
+  detail?: React.ReactNode
   // TODO 待删除
   onChange: (value: T) => Promise<void>
   // 事件：设置值
@@ -88,6 +92,12 @@ export interface DetailFieldProps<C extends DetailFieldConfig, T> {
   onValueListSplice: (path: string, index: number, count: number, validation: true | DetailFieldError[]) => Promise<void>
   baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
+  loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  handlePageRedirect: (path: string) => void
+  checkPageAuth: (pageID: any) => Promise<boolean>
+  onUnmount: (reload?: boolean, data?: any) => Promise<void>
+  loadPageURL: (pageID: any) => Promise<string>
+  loadPageFrameURL: (pageID: any) => Promise<string>
 }
 
 /**

@@ -29,14 +29,18 @@ export interface ColumnProps<T, V = any> {
   value: V
   data: any[],
   step: number,
-  config: T
+  config: T,
+  // 挂载引用
+  table?: React.ReactNode
+  baseRoute: string
+  loadDomain: (domain: string) => Promise<string>
 }
 
 interface ColumnState {
 }
 
 export default class Column<T, E, V = any> extends React.Component<ColumnProps<T, V>, ColumnState> implements IColumn<V> {
-  constructor (props: ColumnProps<T>) {
+  constructor(props: ColumnProps<T>) {
     super(props)
     this.state = {}
   }

@@ -30,7 +30,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
   detailFields: Array<DetailField<DetailFieldConfigs, {}, any> | null> = []
   detailFieldsMounted: Array<boolean> = []
 
-  constructor (props: DetailFieldProps<GroupFieldConfig, any>) {
+  constructor(props: DetailFieldProps<GroupFieldConfig, any>) {
     super(props)
 
     this.state = {
@@ -250,40 +250,47 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
               label: detailFieldConfig.label,
               columns: config.columns?.enable
                 ? {
-                    type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
-                    value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
-                    wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
-                    gap: config.columns?.gap || 0,
-                    rowGap: config.columns?.rowGap || 0
-                  }
+                  type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                  value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
+                  wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                  gap: config.columns?.gap || 0,
+                  rowGap: config.columns?.rowGap || 0
+                }
                 : undefined,
               styles: detailFieldConfig.styles,
               layout: formLayout,
               visitable: display,
               fieldType: detailFieldConfig.type,
               children: (
-                  <DetailFieldComponent
-                    key={detailFieldIndex}
-                    ref={(detailField: DetailField<DetailFieldConfigs, any, any> | null) => {
-                      if (detailFieldIndex !== null) {
-                        this.detailFields[detailFieldIndex] = detailField
-                        this.handleMount(detailFieldIndex)
-                      }
-                    }}
-                    formLayout={formLayout}
-                    value={getValue(value, detailFieldConfig.field)}
-                    record={record}
-                    data={cloneDeep(data)}
-                    step={step}
-                    config={detailFieldConfig}
-                    onChange={async (value: any) => { await this.handleChange(detailFieldIndex, value) }}
-                    onValueSet={async (path, value, validation) => this.handleValueSet(detailFieldIndex, path, value, validation)}
-                    onValueUnset={async (path, validation) => this.handleValueUnset(detailFieldIndex, path, validation)}
-                    onValueListAppend={async (path, value, validation) => this.handleValueListAppend(detailFieldIndex, path, value, validation)}
-                    onValueListSplice={async (path, index, count, validation) => this.handleValueListSplice(detailFieldIndex, path, index, count, validation)}
-                    baseRoute={this.props.baseRoute}
-                    loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
-                  />
+                <DetailFieldComponent
+                  checkPageAuth={this.props.checkPageAuth}
+                  loadPageURL={this.props.loadPageURL}
+                  loadPageFrameURL={this.props.loadPageFrameURL}
+                  loadPageConfig={this.props.loadPageConfig}
+                  handlePageRedirect={this.props.handlePageRedirect}
+                  onUnmount={this.props.onUnmount}
+                  key={detailFieldIndex}
+                  ref={(detailField: DetailField<DetailFieldConfigs, any, any> | null) => {
+                    if (detailFieldIndex !== null) {
+                      this.detailFields[detailFieldIndex] = detailField
+                      this.handleMount(detailFieldIndex)
+                    }
+                  }}
+                  formLayout={formLayout}
+                  value={getValue(value, detailFieldConfig.field)}
+                  record={record}
+                  data={cloneDeep(data)}
+                  step={step}
+                  config={detailFieldConfig}
+                  detail={this.props.detail}
+                  onChange={async (value: any) => { await this.handleChange(detailFieldIndex, value) }}
+                  onValueSet={async (path, value, options) => this.handleValueSet(detailFieldIndex, path, value, options)}
+                  onValueUnset={async (path, options) => this.handleValueUnset(detailFieldIndex, path, options)}
+                  onValueListAppend={async (path, value, options) => this.handleValueListAppend(detailFieldIndex, path, value, options)}
+                  onValueListSplice={async (path, index, count, options) => this.handleValueListSplice(detailFieldIndex, path, index, count, options)}
+                  baseRoute={this.props.baseRoute}
+                  loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                />
               )
             }
             // 渲染表单项容器
