@@ -10,7 +10,7 @@ import InterfaceHelper from "../../../util/interface";
 
 export default class UploadFieldComponent extends UploadField {
   interfaceHelper = new InterfaceHelper()
-  
+
   renderComponent = (props: IUploadField) => {
     const {
       mode = 'file',
@@ -34,14 +34,20 @@ export default class UploadFieldComponent extends UploadField {
                 <img className={styles['image']} src={value} alt={value} />
                 <div className={styles['mask']}>
                   <Space>
-                    <Tooltip overlay="上传"><UploadOutlined /></Tooltip>
-                    <Tooltip overlay="查看">
+                    <Tooltip
+                      getPopupContainer={(ele) => ele.parentElement || document.body}
+                      overlay="上传" ><UploadOutlined /></Tooltip>
+                    <Tooltip
+                      getPopupContainer={(ele) => ele.parentElement || document.body}
+                      overlay="查看">
                       <EyeOutlined onClick={(e) => {
                         e.stopPropagation()
                         window.open(value)
                       }} />
                     </Tooltip>
-                    <Tooltip overlay="清除">
+                    <Tooltip
+                      getPopupContainer={(ele) => ele.parentElement || document.body}
+                      overlay="清除">
                       <DeleteOutlined onClick={(e) => {
                         e.stopPropagation()
                         onCancel()

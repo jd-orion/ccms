@@ -5,7 +5,7 @@ import { Radio, Select } from 'antd'
 import InterfaceHelper from '../../../../util/interface'
 export default class SelectSingleFieldComponent extends SelectSingleField {
   interfaceHelper = new InterfaceHelper()
-  
+
   renderDorpdownComponent = (props: ISelectSingleField) => {
     const {
       value,
@@ -19,6 +19,8 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
 
     return (
       <Select
+        showSearch
+        optionFilterProp="label"
         getPopupContainer={(ele) => ele.parentElement || document.body}
         disabled={disabled || readonly}
         placeholder={placeholder}
@@ -30,7 +32,7 @@ export default class SelectSingleFieldComponent extends SelectSingleField {
         style={{ minWidth: '100px' }}
       >
         {options.map((option) => (
-          <Select.Option key={option.value as any} value={option.value as any}>{option.label}</Select.Option>
+          <Select.Option key={option.value as any} value={option.value as any} label={option.label}>{option.label}</Select.Option>
         ))}
       </Select>
     )
