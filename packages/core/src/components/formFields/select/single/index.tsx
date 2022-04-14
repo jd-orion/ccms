@@ -144,11 +144,9 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
       console.warn('单项选择框的值需要是字符串或数值。')
     } else if (value === undefined) {
       if (defaultSelect !== undefined && defaultSelect !== false && props.options.length) {
-        (async () => {
-          const value = props.options[defaultSelect === true ? 0 : defaultSelect].value
-          props.value = value
-          this.props.onValueSet('', value, await this.validate(value))
-        })()
+        const value = props.options[defaultSelect === true ? 0 : defaultSelect]?.value
+        props.value = value
+        this.props.onValueSet('', value, true)
       }
     }
 
