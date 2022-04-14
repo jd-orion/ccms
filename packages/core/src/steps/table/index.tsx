@@ -82,6 +82,8 @@ export interface TableOperationConfig {
   confirm?: { enable: false } | TableOperationConfirmConfig
   handle: TableCCMSOperationConfig | TableLinkOperationConfig
   condition?: ConditionConfig
+  modalWidthMode?: 'none' | 'percentage' | 'pixel'
+  modalWidthValue?: string | number
 }
 
 export interface TableCCMSOperationConfig {
@@ -244,6 +246,8 @@ export interface ITableStepOperationModal {
   width: string
   children: React.ReactNode
   onClose: () => void
+  modalWidthMode?: 'none' | 'percentage' | 'pixel'
+  modalWidthValue?: string | number
 }
 
 interface TableState {
@@ -253,6 +257,8 @@ interface TableState {
     width: string
     title: string
     visible: boolean
+    modalWidthMode?: 'none' | 'percentage' | 'pixel'
+    modalWidthValue?: string | number
     config: CCMSConfig
     data: any
     callback?: boolean
@@ -290,6 +296,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
         config: {},
         data: {},
         callback: false,
+        modalWidthMode: 'none',
+        modalWidthValue: '',
         closeCallback: false
       },
       pageAuth: {}
@@ -367,6 +375,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
             width: operation.handle.width,
             title: operation.label,
             visible: true,
+            modalWidthMode: operation.modalWidthMode,
+            modalWidthValue: operation.modalWidthValue,
             config: operationConfig,
             data: params,
             callback: operation.handle.callback,
@@ -656,7 +666,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
         config: operationConfig,
         data: operationData,
         callback: operationCallback,
-        closeCallback: operationcloseCallback
+        closeCallback: operationcloseCallback,
+        modalWidthMode: operationModalWidthMode,
+        modalWidthValue: operationModalWidthValue
       },
       pageAuth
     } = this.state
@@ -853,11 +865,13 @@ export default class TableStep extends Step<TableConfig, TableState> {
         {operationEnable && (
           operationTarget === 'current'
             ? (
-              this.renderOperationModal({
-                title: operationTitle,
-                width: operationWidth,
-                visible: operationVisible,
-                children: (
+                this.renderOperationModal({
+                  title: operationTitle,
+                  width: operationWidth,
+                  visible: operationVisible,
+                  modalWidthMode: operationModalWidthMode,
+                  modalWidthValue: operationModalWidthValue,
+                  children: (
                   <CCMS
                     config={operationConfig}
                     sourceData={operationData}
