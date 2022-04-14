@@ -6,6 +6,7 @@ import ImportSubformField from './importSubform'
 import InfoDetail from './detailInfo'
 import ColorDetail from './detailColor'
 import CustomFieldComponent from './custom'
+import TableFieldComponent from './table'
 
 export default {
   text: TextField,
@@ -15,5 +16,6 @@ export default {
   import_subform: ImportSubformField,
   detail_info: InfoDetail,
   detail_color: ColorDetail,
-  custom: CustomFieldComponent
+  custom: CustomFieldComponent,
+  table: TableFieldComponent
 }
