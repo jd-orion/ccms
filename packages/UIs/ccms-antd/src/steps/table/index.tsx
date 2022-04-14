@@ -222,11 +222,24 @@ export default class TableStepComponent extends TableStep {
       title,
       visible,
       children,
-      onClose
+      onClose,
+      modalWidthMode,
+      modalWidthValue
     } = props
 
+    let modelWitdh : string | undefined
+    if(modalWidthMode === 'none') {
+      modelWitdh = undefined
+    } else if(modalWidthMode === 'percentage') {
+      modelWitdh = modalWidthValue + '%'
+    } else if(modalWidthMode === 'pixel') {
+      modelWitdh = modalWidthValue + 'px'
+    }
+
+    
     return (
       <Modal
+        width={modelWitdh}
         title={title}
         visible={visible}
         forceRender={true}
