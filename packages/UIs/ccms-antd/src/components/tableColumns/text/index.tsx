@@ -9,7 +9,7 @@ export default class TextColumnComponent extends TextColumn {
   showMore = (value) => {
     Modal.info({
       getContainer: () => document.getElementById('ccms-antd') || document.body,
-      content: (<div style={{ overflow: 'hidden', overflowY: 'scroll', height: '400px' }}>{value}</div>),
+      content: (<div style={{ overflow: 'auto', height: '400px' }}>{value}</div>),
       okText: '确定',
       width: '50%',
       maskClosable: true
@@ -31,7 +31,7 @@ export default class TextColumnComponent extends TextColumn {
           <div className={styles['ccms-table-text']} style={{ WebkitBoxOrient: 'vertical', WebkitLineClamp: showLines, lineClamp: showLines }}>
             {value}
           </div>
-          {showMore && <Button onClick={() => this.showMore(value)} type='link'>查看全部</Button>}
+          {showMore && <Button className={styles['ccms-table-text-button']} onClick={() => this.showMore(value)} type='link'>查看</Button>}
         </>
         : <>
           {value}
