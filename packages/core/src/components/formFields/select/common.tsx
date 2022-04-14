@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import EnumerationHelper, { EnumerationOptionsConfig } from '../../../util/enumeration'
+import EnumerationHelper, { EnumerationOptionsConfig, InterfaceEnumerationOptionsKVConfig, InterfaceEnumerationOptionsListConfig } from '../../../util/enumeration'
 import InterfaceHelper from '../../../util/interface'
 import { Field, FieldConfig, FieldProps, IField, Display, DisplayProps } from '../common'
 
@@ -25,7 +25,7 @@ interface SelectSingleFieldState {
 export default class SelectField<C extends SelectFieldConfig, E, T> extends Field<C, E, T, SelectSingleFieldState> implements IField<T> {
   interfaceHelper = new InterfaceHelper()
 
-  constructor (props: FieldProps<C, T>) {
+  constructor(props: FieldProps<C, T>) {
     super(props)
 
     this.state = {
@@ -37,7 +37,11 @@ export default class SelectField<C extends SelectFieldConfig, E, T> extends Fiel
     config: EnumerationOptionsConfig | undefined
   ) => {
     if (config) {
-      EnumerationHelper.options(config, (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain })).then((options) => {
+      EnumerationHelper.options(
+        config,
+        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }),
+        { record: this.props.record, data: this.props.data, step: this.props.step }
+      ).then((options) => {
         if (JSON.stringify(this.state.options) !== JSON.stringify(options)) {
           this.setState({
             options
@@ -54,7 +58,7 @@ export default class SelectField<C extends SelectFieldConfig, E, T> extends Fiel
 export class SelectDisplay<C extends SelectFieldConfig, E, T> extends Display<C, E, T, SelectSingleFieldState> {
   interfaceHelper = new InterfaceHelper()
 
-  constructor (props: DisplayProps<C, T>) {
+  constructor(props: DisplayProps<C, T>) {
     super(props)
 
     this.state = {
@@ -66,7 +70,11 @@ export class SelectDisplay<C extends SelectFieldConfig, E, T> extends Display<C,
     config: EnumerationOptionsConfig | undefined
   ) => {
     if (config) {
-      EnumerationHelper.options(config, (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain })).then((options) => {
+      EnumerationHelper.options(
+        config,
+        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }),
+        { record: this.props.record, data: this.props.data, step: this.props.step }
+      ).then((options) => {
         if (JSON.stringify(this.state.options) !== JSON.stringify(options)) {
           this.setState({
             options

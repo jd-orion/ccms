@@ -114,10 +114,32 @@ export const listItemMove = (list: any[], currentIndex: number, sortType: 'up' |
   switch (sortType) {
     case 'up':
       currentIndex !== 0 && (list[currentIndex] = list.splice(currentIndex - 1, 1, list[currentIndex])[0])
-      break;
+      break
     case 'down':
       currentIndex < list.length - 1 && (list[currentIndex] = list.splice(currentIndex + 1, 1, list[currentIndex])[0])
-      break;
+      break
   }
   return list
+}
+
+/**
+ * 转化value数组中的值类型
+ * @param list value数组
+ * @param type 值类型
+ * @returns value数组
+ */
+export const transformValueType = (list: any[], type: 'string' | 'number' | 'boolean' | undefined) => {
+  switch (type) {
+    case 'string':
+      return list.map(v => String(v))
+
+    case 'number':
+      return list.map(v => +v)
+
+    case 'boolean':
+      return list.map(v => Boolean(v))
+
+    default:
+      return list
+  }
 }

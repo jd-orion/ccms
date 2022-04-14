@@ -1,5 +1,5 @@
 import React from 'react'
-import { getBoolean } from '../../../../util/value'
+import { getBoolean, transformValueType } from '../../../../util/value'
 import { FieldError } from '../../common'
 import SelectField, { ISelectFieldOption, SelectFieldConfig } from '../common'
 
@@ -17,7 +17,8 @@ interface SelectMultipleArrayConfig {
 
 interface SelectMultipleSplitConfig {
   type: 'split',
-  split?: string
+  split?: string,
+  valueType?: 'string' | 'number' | 'boolean' | undefined
 }
 
 export interface ISelectMultipleField {
@@ -114,7 +115,13 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
     const props: ISelectMultipleField = {
       value: undefined,
       options: this.options(optionsConfig),
-      onChange: async (value) => { await this.props.onValueSet('', value, await this.validate(value)) },
+      onChange: async (value: string | Array<string | number> | undefined) => {
+        let useV = value
+        if (Array.isArray(useV) && multiple !== true && multiple?.type === 'split') {
+          useV = useV.join(multiple.split || ',')
+        }
+        return await this.props.onValueSet('', useV, await this.validate(useV))
+      },
       onClear: this.props.config.canClear ? async () => { await this.props.onValueSet('', undefined, await this.validate(undefined)) } : undefined,
       disabled: getBoolean(disabled),
       readonly: getBoolean(readonly),
@@ -129,8 +136,8 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
         console.warn('数组类型的多项选择框的值需要是字符串或数值的数组。')
       }
     } else if (multiple?.type === 'split') {
-      if (typeof value === 'string') {
-        props.value = String(value).split(multiple.split || ',')
+      if (typeof value === 'string' && value !== '') {
+        props.value = transformValueType(String(value).split(multiple.split || ','), multiple?.valueType)
       } else if (value !== undefined) {
         props.value = undefined
         console.warn('字符串分隔类型的多项选择框的值需要是字符串。')
@@ -140,8 +147,9 @@ export default class SelectMultipleField extends SelectField<SelectMultipleField
     }
 
     if (props.value !== undefined) {
+      const values = props.options.map((option) => option.value)
       props.value.filter((v) => {
-        if (props.options.map((option) => option.value).includes(v.toString())) {
+        if (values.includes(v)) {
           return true
         } else {
           console.warn(`选择框的当前值中${v}不在选项中。`)

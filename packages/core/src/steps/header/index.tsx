@@ -226,9 +226,9 @@ export default class HeaderStep extends Step<HeaderConfig> {
         ref={(e: Step<DetailConfig, {}> | null) => { e && e.stepPush() }}
         data={this.props.data}
         step={this.props.step}
-        onSubmit={async (data, unmountView) => {}}
-        onMount={async () => {}}
-        onUnmount={async (reload = false, data) => {}}
+        onSubmit={async (data, unmountView) => { }}
+        onMount={async () => { }}
+        onUnmount={async (reload = false, data) => { }}
         config={merge(config, defaultConfig)}
         baseRoute={this.props.baseRoute}
         checkPageAuth={this.props.checkPageAuth}
@@ -252,7 +252,11 @@ export default class HeaderStep extends Step<HeaderConfig> {
           })
         case 'enumeration':
           if (statistic.options) {
-            EnumerationHelper.options(statistic.options, (config, source) => this.interfaceHelper.request(config, source, { data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain })).then((options) => {
+            EnumerationHelper.options(
+              statistic.options,
+              (config, source) => this.interfaceHelper.request(config, source, { data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }),
+              { data: this.props.data, step: this.props.step }
+            ).then((options) => {
               if (!this.state || JSON.stringify(this.state[`statistic_options_${_position}_${index}`]) !== JSON.stringify(options)) {
                 this.setState({
                   [`statistic_options_${_position}_${index}`]: options
@@ -289,7 +293,7 @@ export default class HeaderStep extends Step<HeaderConfig> {
     }
   }
 
-  render () {
+  render() {
     const props: IHeaderProps = {}
 
     if (this.props.config.breadcrumb && this.props.config.breadcrumb.enable) {
