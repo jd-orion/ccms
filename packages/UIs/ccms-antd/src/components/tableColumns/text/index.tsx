@@ -10,7 +10,9 @@ export default class TextColumnComponent extends TextColumn {
     Modal.info({
       getContainer: () => document.getElementById('ccms-antd') || document.body,
       content: (<div style={{ overflow: 'hidden' }}>{value}</div>),
-      okText: '确定'
+      okText: '确定',
+      width: '50%',
+      style: { overflowY: 'scroll', height: '400px' }
     });
   }
 
