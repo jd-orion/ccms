@@ -47,7 +47,7 @@ export interface CCMSProps {
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
   loadDomain: (domain: string) => Promise<string>
-  handlePageRedirect?: (path: string) => void
+  handlePageRedirect?: (path: string, replaceHistory: boolean) => void
   callback: (success: boolean) => void
   onMount?: () => void
 }

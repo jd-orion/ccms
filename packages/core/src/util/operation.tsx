@@ -58,7 +58,7 @@ interface OperationHelperProps {
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>,
   baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
-  handlePageRedirect?: (path: string) => void
+  handlePageRedirect?: (path: string, replaceHistory: boolean) => void
 
   children?: (handleOperation: () => void) => React.ReactNode
   callback?: (success: boolean) => void
@@ -122,7 +122,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
           const sourceURL = await loadPageURL(config.page)
           const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
           if (handlePageRedirect) {
-            handlePageRedirect(queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || '')
+            handlePageRedirect(queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || '', false)
           } else {
             window.location.href = queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || ''
           }

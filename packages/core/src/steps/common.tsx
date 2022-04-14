@@ -32,7 +32,7 @@ export interface StepProps<C extends StepConfig> {
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
-  handlePageRedirect?: (path: string) => void
+  handlePageRedirect?: (path: string, replaceHistory: boolean) => void
 }
 
 /**

@@ -88,7 +88,7 @@ export interface TableCCMSOperationConfig {
   type: 'ccms'
   page: any
   target: 'current' | 'page' | 'open' | 'handle'
-  historyTpye?: 'replace'
+  replaceHistory?: boolean
   targetURL: string
   width: string
   data: { [key: string]: ParamConfig }
@@ -379,9 +379,9 @@ export default class TableStep extends Step<TableConfig, TableState> {
         const targetURL = operation.handle.targetURL || ''
         const targetKey = queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
         if (this.props.handlePageRedirect) {
-          this.props.handlePageRedirect(`${targetURL}${targetKey}`)
+          this.props.handlePageRedirect(`${targetURL}${targetKey}`, operation.handle?.replaceHistory || false)
         } else {
-          if (operation.handle.historyTpye === 'replace') {
+          if (operation.handle.replaceHistory) {
             window.location.replace(`${targetURL}${targetKey}`)
           } else {
             window.location.href = `${targetURL}${targetKey}`
