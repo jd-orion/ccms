@@ -72,6 +72,7 @@ export default class DiffCodeField extends Field<DiffCodeFieldConfig, IDiffCodeF
   }
 
   keydownCallback = (e: KeyboardEvent) => {
+    e.stopPropagation()
     const keyCode = e.keyCode || e.which || e.charCode
     const ctrlKey = e.ctrlKey || e.metaKey
     if (this.props.config.fullScreen) {
