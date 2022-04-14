@@ -1,15 +1,26 @@
 import React from 'react'
 import Column, { ColumnConfig } from '../common'
 
+/**
+ * 表格文本配置项
+ * - type: 文本类型
+ * - linkUrl: 可跳转文本超链接，临时方案，后续优化。
+ * - showLines: 显示行数多行省略
+ * - showMore: 查看更多 showLines 大于1时显示
+ */
 export interface TextColumnConfig extends ColumnConfig {
   type: 'text'
   // 临时方案 后续优化
   linkUrl: boolean
+  showLines?: number
+  showMore?: boolean
 }
 
 export interface ITextColumn {
   value: string
   linkUrl: boolean
+  showLines?: number
+  showMore?: boolean
 }
 
 export default class TextColumn extends Column<TextColumnConfig, ITextColumn> {
@@ -36,7 +47,9 @@ export default class TextColumn extends Column<TextColumnConfig, ITextColumn> {
   render = () => {
     const {
       config: {
-        linkUrl
+        linkUrl,
+        showLines,
+        showMore
       }
     } = this.props
 
@@ -44,7 +57,7 @@ export default class TextColumn extends Column<TextColumnConfig, ITextColumn> {
 
     return (
       <React.Fragment>
-        {this.renderComponent({ value, linkUrl })}
+        {this.renderComponent({ value, linkUrl, showLines, showMore })}
       </React.Fragment>
     )
   }
