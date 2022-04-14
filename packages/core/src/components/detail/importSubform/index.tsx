@@ -12,10 +12,11 @@ import { ColumnsConfig } from '../../../interface'
 
 /**
  * 子表单配置项
- * - withConfig: 拓展配置
- * - * - enable: 是否开启
- * - * - dataField: （序列化）数据
- * - * - configField: （序列化）配置
+ * - configFrom: 配置来源(get用途)
+ * - * - type: 'data' | 'interface' // 来源类型
+ * - * - dataField: 值来源字段 // 仅type为data时生效
+ * - * - configField: 配置来源字段 // 仅type为data时生效
+ * - * - interface: 来源接口配置 // 仅type为interface时生效
  */
 export interface ImportSubformFieldConfig extends DetailFieldConfig {
   type: 'import_subform',
@@ -45,7 +46,7 @@ interface IImportSubformFieldState {
   formData: { status: 'normal' | 'error' | 'loading', message?: string }[]
 }
 
-export default class ImportSubformField extends DetailField<ImportSubformFieldConfig, IImportSubformField, any, IImportSubformFieldState> implements IDetailField<string> {
+export default class DetailImportSubformField extends DetailField<ImportSubformFieldConfig, IImportSubformField, any, IImportSubformFieldState> implements IDetailField<string> {
   // 各表单项对应的类型所使用的UI组件的类
   getALLComponents = (type: any): typeof Display => getALLComponents[type]
 
@@ -98,42 +99,42 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
         }
         value = await formField.set(value)
         if (source !== value) {
-          this.props.onValueSet(this.getFullpath(formFieldConfig.field), value, true)
+          this.props.onValueSet(this.getFullpath(formFieldConfig.field), value)
         }
         await formField.didMount()
       }
     }
   }
 
-  handleValueSet = async (formFieldIndex: number, path: string, value: any) => {
+  handleValueSet = async (formFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = this.getFullpath(formFieldConfig.field, path)
-      await this.props.onValueSet(fullPath, value, true)
+      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      await this.props.onValueSet(fullPath, value)
     }
   }
 
-  handleValueUnset = async (formFieldIndex: number, path: string) => {
+  handleValueUnset = async (formFieldIndex: number, path: string, options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = this.getFullpath(formFieldConfig.field, path)
-      await this.props.onValueUnset(fullPath, true)
+      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      await this.props.onValueUnset(fullPath)
     }
   }
 
-  handleValueListAppend = async (formFieldIndex: number, path: string, value: any) => {
+  handleValueListAppend = async (formFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = this.getFullpath(formFieldConfig.field, path)
-      await this.props.onValueListAppend(fullPath, value, true)
+      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      await this.props.onValueListAppend(fullPath, value)
     }
   }
 
-  handleValueListSplice = async (formFieldIndex: number, path: string, index: number, count: number) => {
+  handleValueListSplice = async (formFieldIndex: number, path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = this.getFullpath(formFieldConfig.field, path)
-      await this.props.onValueListSplice(fullPath, index, count, true)
+      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      await this.props.onValueListSplice(fullPath, index, count)
     }
   }
 
@@ -250,10 +251,10 @@ export default class ImportSubformField extends DetailField<ImportSubformFieldCo
                       data={cloneDeep(data)}
                       step={step}
                       config={formFieldConfig}
-                      onValueSet={async (path, value) => this.handleValueSet(formFieldIndex, path, value)}
-                      onValueUnset={async (path) => this.handleValueUnset(formFieldIndex, path)}
-                      onValueListAppend={async (path, value) => this.handleValueListAppend(formFieldIndex, path, value)}
-                      onValueListSplice={async (path, index, count) => this.handleValueListSplice(formFieldIndex, path, index, count)}
+                      onValueSet={async (path, value, options) => this.handleValueSet(formFieldIndex, path, value, options)}
+                      onValueUnset={async (path, options) => this.handleValueUnset(formFieldIndex, path, options)}
+                      onValueListAppend={async (path, value, options) => this.handleValueListAppend(formFieldIndex, path, value, options)}
+                      onValueListSplice={async (path, index, count, options) => this.handleValueListSplice(formFieldIndex, path, index, count, options)}
                       baseRoute={this.props.baseRoute}
                       loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                     />

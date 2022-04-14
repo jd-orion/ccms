@@ -7,6 +7,7 @@ import DatetimeColumn, { DatetimeColumnConfig } from './datetime'
 import DatetimeRangeColumn, { DatetimeRangeColumnConfig } from './datetimeRange'
 import MultirowColumn, { MultirowColumnConfig } from './multirowText'
 import ImageColumn, { ImageColumnConfig } from './image'
+import CustomColumn, { CustomColumnConfig } from './custom'
 
 export interface componentType {
     type: 'text'
@@ -17,6 +18,7 @@ export interface componentType {
     | 'Aenum'
     | 'multirowText'
     | 'image'
+    | 'custom'
 }
 
 export type ColumnConfigs = TextColumnConfig
@@ -27,6 +29,7 @@ export type ColumnConfigs = TextColumnConfig
     | NumberColumnConfig
     | NumberRangeColumnConfig
     | ImageColumnConfig
+    | CustomColumnConfig
 
 export default {
   text: TextColumn,
@@ -36,5 +39,6 @@ export default {
   Aenum: EnumColumn,
   number: NumberColumn,
   numberRange: NumberRangeColumn,
-  image: ImageColumn
+  image: ImageColumn,
+  custom: CustomColumn
 }

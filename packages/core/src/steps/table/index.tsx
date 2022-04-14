@@ -2,6 +2,7 @@ import React from 'react'
 import queryString from 'query-string'
 import { getParam, getParamText, getValue } from '../../util/value'
 import getALLComponents, { ColumnConfigs } from '../../components/tableColumns'
+import Column from '../../components/tableColumns/common'
 import Step, { StepConfig, StepProps } from '../common'
 import { ParamConfig } from '../../interface'
 import ColumnStyleComponent from './common/columnStyle'
@@ -266,7 +267,7 @@ interface TableState {
  */
 export default class TableStep extends Step<TableConfig, TableState> {
   CCMS = CCMS
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type: any): typeof Column => getALLComponents[type]
   interfaceHelper = new InterfaceHelper()
   /**
    * 页面权限获取状态

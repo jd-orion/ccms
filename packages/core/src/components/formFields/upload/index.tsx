@@ -11,6 +11,7 @@ export interface UploadFieldConfigBasic extends FieldConfig {
   interface: InterfaceConfig
   requireField: string
   responseField: string
+  extraResponseField: Array<{from: string, to: string}>
 }
 
 export interface UploadFieldConfigImage extends UploadFieldConfigBasic {
@@ -150,7 +151,6 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
 
       await checkSize()
     }
-
     if (this.errors.length === 0) {
       // TODO 实际执行上传
 
@@ -164,8 +164,12 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
         }
       )
       const value = getValue(response, config.responseField)
-
       this.props.onValueSet('', value, true)
+      const extraField = config.extraResponseField || []
+      for (let i = 0; i < extraField.length; i++) {
+        const resField = response[extraField[i].from]
+        this.props.onValueSet(extraField[i].to, resField, true, { noPathCombination: true })
+      }
     } else {
       this.props.onValueSet('', this.props.value, this.errors)
     }

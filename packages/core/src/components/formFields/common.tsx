@@ -83,16 +83,16 @@ export interface FieldProps<C extends FieldConfig, T> {
   config: C
   // TODO 待删除
   onChange: (value: T) => Promise<void>
-  // 事件：设置值
-  onValueSet: (path: string, value: T, validation: true | FieldError[]) => Promise<void>
+  // 事件：设置值  noPathCombination：为true时不做路径拼接
+  onValueSet: (path: string, value: T, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：置空值
-  onValueUnset: (path: string, validation: true | FieldError[]) => Promise<void>
+  onValueUnset: (path: string, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 追加
-  onValueListAppend: (path: string, value: any, validation: true | FieldError[]) => Promise<void>
+  onValueListAppend: (path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 删除
-  onValueListSplice: (path: string, index: number, count: number, validation: true | FieldError[]) => Promise<void>
+  onValueListSplice: (path: string, index: number, count: number, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 修改顺序
-  onValueListSort: (path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => Promise<void>
+  onValueListSort: (path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
   baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
 }
@@ -187,13 +187,13 @@ export interface DisplayProps<C extends FieldConfig, T> {
   step: number,
   config: C,
   // 事件：设置值
-  onValueSet: (path: string, value: T, validation: true | FieldError[]) => Promise<void>
+  onValueSet: (path: string, value: T, options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：置空值
-  onValueUnset: (path: string, validation: true | FieldError[]) => Promise<void>
+  onValueUnset: (path: string, options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 追加
-  onValueListAppend: (path: string, value: any, validation: true | FieldError[]) => Promise<void>
+  onValueListAppend: (path: string, value: any, options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 删除
-  onValueListSplice: (path: string, index: number, count: number, validation: true | FieldError[]) => Promise<void>
+  onValueListSplice: (path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => Promise<void>
   baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
 }

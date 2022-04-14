@@ -1,4 +1,3 @@
-import { config } from 'process'
 import React from 'react'
 import { DetailField, DetailFieldProps, DetailFieldConfig, IDetailField } from '../common'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'

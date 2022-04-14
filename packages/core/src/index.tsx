@@ -26,6 +26,8 @@ export { default as HiddenField } from './components/formFields/hidden'
 export { default as TabsField } from './components/formFields/tabs'
 export { default as MultipleTextField } from './components/formFields/multipleText'
 export { default as CustomField } from './components/formFields/custom'
+export { default as CodeField } from './components/formFields/code'
+export { default as DiffCodeField } from './components/formFields/diffCode'
 
 export { default as TextDisplay } from './components/formFields/text/display'
 export { default as LongTextDisplay } from './components/formFields/longtext/display'
@@ -50,6 +52,7 @@ export { default as NumberRangeColumn } from './components/tableColumns/numberRa
 export { default as MultirowTextColumn } from './components/tableColumns/multirowText'
 export { default as DatetimeRangeColumn } from './components/tableColumns/datetimeRange'
 export { default as ImageColumn } from './components/tableColumns/image'
+export { default as CustomColumn } from './components/tableColumns/custom'
 
 export { default as FetchStep } from './steps/fetch'
 export { default as DetailStep } from './steps/detail'

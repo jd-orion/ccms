@@ -1,7 +1,7 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
 import { setValue, getValue } from '../../../util/value'
-import { DetailField, DetailFieldConfig, DetailFieldError, DetailFieldProps, IDetailField } from '../common'
+import { DetailField, DetailFieldConfig, DetailFieldProps, IDetailField } from '../common'
 import getALLComponents, { DetailFieldConfigs } from '../'
 import { IDetailItem } from '../../../steps/detail'
 import ConditionHelper from '../../../util/condition'
@@ -20,7 +20,6 @@ export interface IGroupField {
 }
 
 interface IGroupFieldState {
-  detailData: { status: 'normal' | 'error' | 'loading', message?: string }[]
 }
 
 export default class GroupField extends DetailField<GroupFieldConfig, IGroupField, any, IGroupFieldState> implements IDetailField<string> {
@@ -33,9 +32,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
   constructor(props: DetailFieldProps<GroupFieldConfig, any>) {
     super(props)
 
-    this.state = {
-      detailData: []
-    }
+    this.state = {}
   }
 
   get = async () => {
@@ -68,22 +65,6 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     if (this.detailFields[detailFieldIndex]) {
       const detailField = this.detailFields[detailFieldIndex]
       if (detailField) {
-        const detailFieldConfig = this.props.config.fields[detailFieldIndex]
-
-        const value = getValue(this.props.value, detailFieldConfig.field)
-
-        const validation = await detailField.validate(value)
-        if (value === undefined || validation === true) {
-          await this.setState(({ detailData }) => {
-            detailData[detailFieldIndex] = { status: 'normal' }
-            return { detailData: cloneDeep(detailData) }
-          })
-        } else {
-          await this.setState(({ detailData }) => {
-            detailData[detailFieldIndex] = { status: 'error', message: validation[0].message }
-            return { detailData: cloneDeep(detailData) }
-          })
-        }
         await detailField?.didMount()
       }
     }
@@ -118,79 +99,35 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     // }
   }
 
-  handleValueSet = async (detailFieldIndex: number, path: string, value: any, validation: true | DetailFieldError[]) => {
+  handleValueSet = async (detailFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
-      await this.props.onValueSet(fullPath, value, true)
-
-      const detailData = cloneDeep(this.state.detailData)
-      if (validation === true) {
-        detailData[detailFieldIndex] = { status: 'normal' }
-      } else {
-        detailData[detailFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        detailData
-      })
+      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      await this.props.onValueSet(fullPath, value)
     }
   }
 
-  handleValueUnset = async (detailFieldIndex: number, path: string, validation: true | DetailFieldError[]) => {
+  handleValueUnset = async (detailFieldIndex: number, path: string, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
-      await this.props.onValueUnset(fullPath, true)
-
-      const detailData = cloneDeep(this.state.detailData)
-      if (validation === true) {
-        detailData[detailFieldIndex] = { status: 'normal' }
-      } else {
-        detailData[detailFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        detailData
-      })
+      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      await this.props.onValueUnset(fullPath)
     }
   }
 
-  handleValueListAppend = async (detailFieldIndex: number, path: string, value: any, validation: true | DetailFieldError[]) => {
+  handleValueListAppend = async (detailFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
-      await this.props.onValueListAppend(fullPath, value, true)
-
-      const detailData = cloneDeep(this.state.detailData)
-      if (validation === true) {
-        detailData[detailFieldIndex] = { status: 'normal' }
-      } else {
-        detailData[detailFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        detailData
-      })
+      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      await this.props.onValueListAppend(fullPath, value)
     }
   }
 
-  handleValueListSplice = async (detailFieldIndex: number, path: string, index: number, count: number, validation: true | DetailFieldError[]) => {
+  handleValueListSplice = async (detailFieldIndex: number, path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
-      await this.props.onValueListSplice(fullPath, index, count, true)
-
-      const detailData = cloneDeep(this.state.detailData)
-      if (validation === true) {
-        detailData[detailFieldIndex] = { status: 'normal' }
-      } else {
-        detailData[detailFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        detailData
-      })
+      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      await this.props.onValueListSplice(fullPath, index, count)
     }
   }
 

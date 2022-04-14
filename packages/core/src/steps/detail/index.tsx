@@ -98,7 +98,6 @@ export interface IDetailItem {
 interface DetailState {
   ready: boolean
   detailValue: { [field: string]: any }
-  detailData: { status: 'normal' | 'error' | 'loading', message?: string, name: string }[]
 }
 
 /**
@@ -123,8 +122,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     super(props)
     this.state = {
       ready: false,
-      detailValue: {},
-      detailData: []
+      detailValue: {}
     }
   }
 
@@ -142,8 +140,6 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
       onMount
     } = this.props
 
-    const detailData = cloneDeep(this.state.detailData)
-
     if (this.props.config.defaultValue) {
       let detailDefault = ParamHelper(this.props.config.defaultValue, { data, step })
       if (this.props.config.unstringify) {
@@ -160,14 +156,12 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
         const detailFieldConfig = detailFieldsConfig[detailFieldIndex]
         const value = getValue(detailDefault, detailFieldConfig.field)
         this.detailValue = setValue(this.detailValue, detailFieldConfig.field, value)
-        detailData[detailFieldIndex] = { status: 'normal', name: detailFieldConfig.label }
       }
     }
 
     await this.setState({
       ready: true,
-      detailValue: this.detailValue,
-      detailData: cloneDeep(detailData)
+      detailValue: this.detailValue
     })
 
     // 表单初始化结束，展示表单界面。
@@ -180,8 +174,6 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     }
     this.detailFieldsMounted[detailFieldIndex] = true
 
-    const detailData = cloneDeep(this.state.detailData)
-
     if (this.detailFields[detailFieldIndex]) {
       const detailField = this.detailFields[detailFieldIndex]
       if (detailField) {
@@ -190,20 +182,12 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
         const value = getValue(this.detailValue, detailFieldConfig.field)
         this.detailValue = setValue(this.detailValue, detailFieldConfig.field, value)
 
-        const validation = await detailField.validate(value)
-        if (validation === true) {
-          detailData[detailFieldIndex] = { status: 'normal', name: detailFieldConfig.label }
-        } else {
-          // 首次进入错误提示;
-          detailData[detailFieldIndex] = { status: 'error', message: validation[0].message, name: detailFieldConfig.label }
-        }
         await detailField.didMount()
       }
     }
 
     await this.setState({
-      detailValue: this.detailValue,
-      detailData: cloneDeep(detailData)
+      detailValue: this.detailValue
     })
   }
 
@@ -224,23 +208,13 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
    * @param value 目标值
    */
   handleChange = async (detailFieldIndex: number, value: any) => {
-    const detailData = cloneDeep(this.state.detailData)
-
     const detailField = this.detailFields[detailFieldIndex]
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailField && detailFieldConfig) {
       this.detailValue = setValue(this.detailValue, detailFieldConfig.field, value)
 
-      const validation = await detailField.validate(value)
-      if (validation === true) {
-        detailData[detailFieldIndex] = { status: 'normal', name: detailFieldConfig.label }
-      } else {
-        detailData[detailFieldIndex] = { status: 'error', message: validation[0].message, name: detailFieldConfig.label }
-      }
-
       await this.setState({
-        detailValue: this.detailValue,
-        detailData
+        detailValue: this.detailValue
       })
       if (this.props.onChange) {
         this.props.onChange(this.detailValue)
@@ -248,10 +222,10 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     }
   }
 
-  handleValueSet = async (detailFieldIndex: number, path: string, value: any, validation: true | DetailFieldError[]) => {
+  handleValueSet = async (detailFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
+      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
 
       set(this.detailValue, fullPath, value)
       this.setState({
@@ -260,22 +234,13 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
       if (this.props.onChange) {
         this.props.onChange(this.detailValue)
       }
-
-      if (validation === true) {
-        this.detailData[detailFieldIndex] = { status: 'normal', name: detailFieldConfig.label, hidden: false }
-      } else {
-        this.detailData[detailFieldIndex] = { status: 'error', message: validation[0].message, name: detailFieldConfig.label, hidden: false }
-      }
-      await this.setState({
-        detailData: this.detailData
-      })
     }
   }
 
-  handleValueUnset = async (detailFieldIndex: number, path: string, validation: true | DetailFieldError[]) => {
+  handleValueUnset = async (detailFieldIndex: number, path: string, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
+      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
 
       unset(this.detailValue, fullPath)
       this.setState({
@@ -284,23 +249,13 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
       if (this.props.onChange) {
         this.props.onChange(this.detailValue)
       }
-
-      if (validation === true) {
-        this.detailData[detailFieldIndex] = { status: 'normal', name: detailFieldConfig.label, hidden: false }
-      } else {
-        this.detailData[detailFieldIndex] = { status: 'error', message: validation[0].message, name: detailFieldConfig.label, hidden: false }
-      }
-
-      await this.setState({
-        detailData: this.detailData
-      })
     }
   }
 
-  handleValueListAppend = async (detailFieldIndex: number, path: string, value: any, validation: true | DetailFieldError[]) => {
+  handleValueListAppend = async (detailFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
+      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
 
       const list = get(this.detailValue, fullPath, [])
       list.push(value)
@@ -311,23 +266,13 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
       if (this.props.onChange) {
         this.props.onChange(this.detailValue)
       }
-
-      if (validation === true) {
-        this.detailData[detailFieldIndex] = { status: 'normal', name: detailFieldConfig.label, hidden: false }
-      } else {
-        this.detailData[detailFieldIndex] = { status: 'error', message: validation[0].message, name: detailFieldConfig.label, hidden: false }
-      }
-
-      await this.setState({
-        detailData: this.detailData
-      })
     }
   }
 
-  handleValueListSplice = async (detailFieldIndex: number, path: string, index: number, count: number, validation: true | DetailFieldError[]) => {
+  handleValueListSplice = async (detailFieldIndex: number, path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`
+      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
 
       const list = get(this.detailValue, fullPath, [])
       list.splice(index, count)
@@ -338,16 +283,6 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
       if (this.props.onChange) {
         this.props.onChange(this.detailValue)
       }
-
-      if (validation === true) {
-        this.detailData[detailFieldIndex] = { status: 'normal', name: detailFieldConfig.label, hidden: false }
-      } else {
-        this.detailData[detailFieldIndex] = { status: 'error', message: validation[0].message, name: detailFieldConfig.label, hidden: false }
-      }
-
-      await this.setState({
-        detailData: this.detailData
-      })
     }
   }
 
@@ -389,8 +324,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
 
     const {
       ready,
-      detailValue,
-      detailData
+      detailValue
     } = this.state
 
     if (ready) {
@@ -468,10 +402,10 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                     config={detailFieldConfig}
                     detail={this}
                     onChange={async (value: any) => { await this.handleChange(detailFieldIndex, value) }}
-                    onValueSet={async (path, value, validation) => await this.handleValueSet(detailFieldIndex, path, value, validation)}
-                    onValueUnset={async (path, validation) => await this.handleValueUnset(detailFieldIndex, path, validation)}
-                    onValueListAppend={async (path, value, validation) => await this.handleValueListAppend(detailFieldIndex, path, value, validation)}
-                    onValueListSplice={async (path, index, count, validation) => await this.handleValueListSplice(detailFieldIndex, path, index, count, validation)}
+                    onValueSet={async (path, value) => await this.handleValueSet(detailFieldIndex, path, value)}
+                    onValueUnset={async (path) => await this.handleValueUnset(detailFieldIndex, path)}
+                    onValueListAppend={async (path, value) => await this.handleValueListAppend(detailFieldIndex, path, value)}
+                    onValueListSplice={async (path, index, count) => await this.handleValueListSplice(detailFieldIndex, path, index, count)}
                     baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                   />

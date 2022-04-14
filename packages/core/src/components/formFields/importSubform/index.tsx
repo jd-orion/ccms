@@ -4,7 +4,7 @@ import { setValue, getValue, getBoolean } from '../../../util/value'
 import { Field, FieldConfig, FieldError, FieldProps, IField } from '../common'
 import getALLComponents, { FieldConfigs } from '../'
 import { IFormItem } from '../../../steps/form'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 import ConditionHelper from '../../../util/condition'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 import StatementHelper from '../../../util/statement'
@@ -12,7 +12,12 @@ import { ColumnsConfig } from '../../../interface'
 
 /**
  * 子表单配置项
- * - withConfig: 拓展配置
+ * - configFrom: 配置来源(get用途)
+ * - * - type: 'data' | 'interface' // 来源类型
+ * - * - dataField: 值来源字段 // 仅type为data时生效
+ * - * - configField: 配置项来源字段 // 仅type为data时生效
+ * - * - interface: 来源接口配置 // 仅type为interface时生效
+ * - withConfig: 拓展配置(set用途)
  * - * - enable: 是否开启
  * - * - dataField: （序列化）数据
  * - * - configField: （序列化）配置
@@ -20,6 +25,7 @@ import { ColumnsConfig } from '../../../interface'
 export interface ImportSubformFieldConfig extends FieldConfig {
   type: 'import_subform',
   interface?: InterfaceConfig
+  configFrom?: ImportSubformConfigFromData | ImportSubformConfigFromInterface
   withConfig?: {
     enable: boolean
     dataField: string
@@ -27,7 +33,16 @@ export interface ImportSubformFieldConfig extends FieldConfig {
   }
   childColumns?: ColumnsConfig
 }
+interface ImportSubformConfigFromData {
+  type: 'data'
+  dataField?: string
+  configField?: string
+}
 
+interface ImportSubformConfigFromInterface {
+  type: 'interface'
+  interface?: InterfaceConfig
+}
 export interface IImportSubformField {
   columns?: ColumnsConfig
   children: React.ReactNode[]
@@ -85,7 +100,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
           continue
         }
         const formField = this.formFields[formFieldIndex]
-        if (formField) {
+        if (formField && !formFieldConfig.disabled) {
           const value = await formField.get()
           data = setValue(data, this.getFullpath(formFieldConfig.field), value)
         }
@@ -121,7 +136,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
 
     for (const fieldIndex in (this.state.fields || [])) {
       const formItem = this.formFields[fieldIndex]
-      if (formItem !== null && formItem !== undefined) {
+      if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
         const validation = await formItem.validate(getValue(value, this.getFullpath((this.state.fields || [])[fieldIndex].field)))
 
         if (validation === true || this.formFieldsMounted[fieldIndex] === false) {
@@ -214,10 +229,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     // }
   }
 
-  handleValueSet = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
+  handleValueSet = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = this.getFullpath(formFieldConfig.field, path)
+      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueSet(fullPath, value, true)
 
       const formData = cloneDeep(this.state.formData)
@@ -233,10 +248,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     }
   }
 
-  handleValueUnset = async (formFieldIndex: number, path: string, validation: true | FieldError[]) => {
+  handleValueUnset = async (formFieldIndex: number, path: string, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = this.getFullpath(formFieldConfig.field, path)
+      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueUnset(fullPath, true)
 
       const formData = cloneDeep(this.state.formData)
@@ -252,10 +267,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     }
   }
 
-  handleValueListAppend = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
+  handleValueListAppend = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = this.getFullpath(formFieldConfig.field, path)
+      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueListAppend(fullPath, value, true)
 
       const formData = cloneDeep(this.state.formData)
@@ -271,10 +286,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     }
   }
 
-  handleValueListSplice = async (formFieldIndex: number, path: string, index: number, count: number, validation: true | FieldError[]) => {
+  handleValueListSplice = async (formFieldIndex: number, path: string, index: number, count: number, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = this.getFullpath(formFieldConfig.field, path)
+      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueListSplice(fullPath, index, count, true)
 
       const formData = cloneDeep(this.state.formData)
@@ -290,10 +305,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     }
   }
 
-  handleValueListSort = async (formFieldIndex: number, path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
+  handleValueListSort = async (formFieldIndex: number, path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = this.getFullpath(formFieldConfig.field, path)
+      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
       await this.props.onValueListSort(fullPath, index, sortType, true)
 
       const formData = cloneDeep(this.state.formData)
@@ -307,6 +322,24 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
         formData
       })
     }
+  }
+
+  /**
+   * 处理data 兼容非法json的情况
+   * @param  {any} data 待处理数据
+   * @returns 返回data反序列化形式
+   */
+  handleDataToUnstringfy = (data: any) => {
+    let dataToUnstringfy = data
+    if (Object.prototype.toString.call(data) === '[object String]') {
+      try {
+        dataToUnstringfy = JSON.parse(data)
+      } catch (e) {
+        console.error('当前动态子表单接口响应数据格式不是合格的json字符串')
+        dataToUnstringfy = []
+      }
+    }
+    return dataToUnstringfy
   }
 
   renderComponent = (props: IImportSubformField) => {
@@ -336,27 +369,36 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       step
     } = this.props
 
-    if (config.interface) {
+    let fields = this.state.fields
+    let interfaceConfig: InterfaceConfig | undefined
+    if (config.configFrom) {
+      if (config.configFrom.type === 'interface') {
+        if (config.configFrom.interface) {
+          interfaceConfig = config.configFrom.interface
+        }
+      } else if (config.configFrom.type === 'data') {
+        fields = config.configFrom.configField ? getValue(value, config.configFrom.configField) : []
+        const dataToUnstringfy = this.handleDataToUnstringfy(fields)
+        if (!isEqual(dataToUnstringfy, this.state.fields)) {
+          this.setState({
+            fields: dataToUnstringfy
+          })
+        }
+      }
+    } else if (config.interface) {
+      interfaceConfig = config.interface
+    }
+
+    if (interfaceConfig) {
       this.interfaceHelper.request(
-        config.interface,
+        interfaceConfig,
         {},
         { record: this.props.record, data: this.props.data, step: this.props.step },
         { loadDomain: this.props.loadDomain }
       ).then((data: any) => {
-        let dataToUnstringfy = data
-        let dataToStringfy = JSON.stringify(data)
-        if (Object.prototype.toString.call(data) === '[object String]') {
-          try {
-            dataToStringfy = data
-            dataToUnstringfy = JSON.parse(data)
-          } catch (e) {
-            console.error('当前动态子表单接口响应数据格式不是合格的json字符串')
-            dataToUnstringfy = []
-            dataToStringfy = '[]'
-          }
-        }
-        (this.props.config.withConfig?.enable && this.props.config.withConfig?.configField) && this.props.onValueSet(this.props.config.withConfig.configField, data, true)
-        if (dataToStringfy !== JSON.stringify(this.state.fields)) {
+        const dataToUnstringfy = this.handleDataToUnstringfy(data)
+        if (this.props.config.withConfig?.enable && this.props.config.withConfig?.configField) this.props.onValueSet(this.props.config.withConfig.configField, data, true)
+        if (!isEqual(dataToUnstringfy, this.state.fields)) {
           this.setState({
             fields: dataToUnstringfy
           })
@@ -364,7 +406,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       })
     }
 
-    if (!this.state.fields || this.state.fields.length === 0) {
+    if (!fields || !Array.isArray(fields) || fields.length === 0) {
       return <React.Fragment />
     } else {
       return (
@@ -434,11 +476,11 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                           step={step}
                           config={formFieldConfig}
                           onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
-                          onValueSet={async (path, value, validation) => this.handleValueSet(formFieldIndex, path, value, validation)}
-                          onValueUnset={async (path, validation) => this.handleValueUnset(formFieldIndex, path, validation)}
-                          onValueListAppend={async (path, value, validation) => this.handleValueListAppend(formFieldIndex, path, value, validation)}
-                          onValueListSplice={async (path, index, count, validation) => this.handleValueListSplice(formFieldIndex, path, index, count, validation)}
-                          onValueListSort={async (path, index, sortType, validation) => this.handleValueListSort(formFieldIndex, path, index, sortType, validation)}
+                          onValueSet={async (path, value, validation, options) => this.handleValueSet(formFieldIndex, path, value, validation, options)}
+                          onValueUnset={async (path, validation, options) => this.handleValueUnset(formFieldIndex, path, validation, options)}
+                          onValueListAppend={async (path, value, validation, options) => this.handleValueListAppend(formFieldIndex, path, value, validation, options)}
+                          onValueListSplice={async (path, index, count, validation, options) => this.handleValueListSplice(formFieldIndex, path, index, count, validation, options)}
+                          onValueListSort={async (path, index, sortType, validation, options) => this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)}
                           baseRoute={this.props.baseRoute}
                           loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                         />

@@ -94,7 +94,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
           continue
         }
         const formField = this.formFieldsList[index] && this.formFieldsList[index][formFieldIndex]
-        if (formField) {
+        if (formField && !formFieldConfig.disabled) {
           const value = await formField.get()
           const fullPath = tab.field === '' || formFieldConfig.field === '' ? `${tab.field}${formFieldConfig.field}` : `${tab.field}.${formFieldConfig.field}`
           data = setValue(data, fullPath, value)
@@ -125,7 +125,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
         const formItem = formItems[fieldIndex]
         const formFieldConfig = fields[fieldIndex]
         const fullPath = tab.field === '' || formFieldConfig.field === '' ? `${tab.field}${formFieldConfig.field}` : `${tab.field}.${formFieldConfig.field}`
-        if (formItem !== null && formItem !== undefined) {
+        if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
           const validation = await formItem.validate(getValue(value, fullPath))
 
           if (validation === true) {
@@ -202,13 +202,13 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
   handleChange = async (index: number, formFieldIndex: number, value: any) => {
   }
 
-  handleValueSet = async (index: number, formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
+  handleValueSet = async (index: number, formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const tab = (this.props.config.tabs || [])[index]
 
     const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[index] || {}).fields || [])
     const formFieldConfig = fields[formFieldIndex]
     if (formFieldConfig) {
-      const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fieldPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueSet(fullPath, value, true)
 
@@ -226,13 +226,13 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     }
   }
 
-  handleValueUnset = async (index: number, formFieldIndex: number, path: string, validation: true | FieldError[]) => {
+  handleValueUnset = async (index: number, formFieldIndex: number, path: string, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const tab = (this.props.config.tabs || [])[index]
 
     const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[index] || {}).fields || [])
     const formFieldConfig = fields[formFieldIndex]
     if (formFieldConfig) {
-      const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fieldPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueUnset(fullPath, true)
 
@@ -250,13 +250,13 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     }
   }
 
-  handleValueListAppend = async (index: number, formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
+  handleValueListAppend = async (index: number, formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const tab = (this.props.config.tabs || [])[index]
 
     const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[index] || {}).fields || [])
     const formFieldConfig = fields[formFieldIndex]
     if (formFieldConfig) {
-      const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fieldPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueListAppend(fullPath, value, true)
 
@@ -274,13 +274,13 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     }
   }
 
-  handleValueListSplice = async (index: number, formFieldIndex: number, path: string, _index: number, count: number, validation: true | FieldError[]) => {
+  handleValueListSplice = async (index: number, formFieldIndex: number, path: string, _index: number, count: number, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const tab = (this.props.config.tabs || [])[index]
 
     const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[index] || {}).fields || [])
     const formFieldConfig = fields[formFieldIndex]
     if (formFieldConfig) {
-      const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fieldPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueListSplice(fullPath, _index, count, true)
 
@@ -298,13 +298,13 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     }
   }
 
-  handleValueListSort = async (index: number, formFieldIndex: number, path: string, _index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
+  handleValueListSort = async (index: number, formFieldIndex: number, path: string, _index: number, sortType: 'up' | 'down', validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const tab = (this.props.config.tabs || [])[index]
 
     const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[index] || {}).fields || [])
     const formFieldConfig = fields[formFieldIndex]
     if (formFieldConfig) {
-      const fieldPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fieldPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueListSort(fullPath, _index, sortType, true)
 
@@ -432,11 +432,11 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                                         step={this.props.step}
                                         config={formFieldConfig}
                                         onChange={(value: any) => this.handleChange(index, formFieldIndex, value)}
-                                        onValueSet={async (path, value, validation) => this.handleValueSet(index, formFieldIndex, path, value, validation)}
-                                        onValueUnset={async (path, validation) => this.handleValueUnset(index, formFieldIndex, path, validation)}
-                                        onValueListAppend={async (path, value, validation) => this.handleValueListAppend(index, formFieldIndex, path, value, validation)}
-                                        onValueListSplice={async (path, _index, count, validation) => this.handleValueListSplice(index, formFieldIndex, path, _index, count, validation)}
-                                        onValueListSort={async (path, _index, sortType, validation) => this.handleValueListSort(index, formFieldIndex, path, _index, sortType, validation)}
+                                        onValueSet={async (path, value, validation, options) => this.handleValueSet(index, formFieldIndex, path, value, validation, options)}
+                                        onValueUnset={async (path, validation, options) => this.handleValueUnset(index, formFieldIndex, path, validation, options)}
+                                        onValueListAppend={async (path, value, validation, options) => this.handleValueListAppend(index, formFieldIndex, path, value, validation, options)}
+                                        onValueListSplice={async (path, _index, count, validation, options) => this.handleValueListSplice(index, formFieldIndex, path, _index, count, validation, options)}
+                                        onValueListSort={async (path, _index, sortType, validation, options) => this.handleValueListSort(index, formFieldIndex, path, _index, sortType, validation, options)}
                                         baseRoute={this.props.baseRoute}
                                         loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                                       />

@@ -23,6 +23,8 @@ import HiddenField from './hidden'
 import TabsField, { TabsFieldConfig } from './tabs'
 import MultipleTextField, { MultipleTextFieldConfig } from './multipleText'
 import CustomField, { CustomFieldConfig } from './custom'
+import CodeField, { CodeFieldConfig } from './code'
+import DiffCodeField, { DiffCodeFieldConfig } from './diffCode'
 
 import TextDisplay from './text/display'
 import RadioDisplay from './radio/display'
@@ -67,7 +69,9 @@ export type FieldConfigs =
     ObjectFieldConfig |
     TabsFieldConfig |
     MultipleTextFieldConfig |
-    CustomFieldConfig
+    CustomFieldConfig |
+    CodeFieldConfig |
+    DiffCodeFieldConfig
 
 export type componentType =
     'text' |
@@ -93,7 +97,9 @@ export type componentType =
     'object' |
     'tabs' |
     'multiple_text'|
-    'custom'
+    'custom' |
+    'code' |
+    'diffcode'
 
 export default {
   text: TextField,
@@ -118,7 +124,9 @@ export default {
   hidden: HiddenField,
   tabs: TabsField,
   multiple_text: MultipleTextField,
-  custom: CustomField
+  custom: CustomField,
+  code: CodeField,
+  diffcode: DiffCodeField
 }
 
 export const display = {

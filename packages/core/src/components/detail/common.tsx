@@ -83,13 +83,13 @@ export interface DetailFieldProps<C extends DetailFieldConfig, T> {
   // TODO 待删除
   onChange: (value: T) => Promise<void>
   // 事件：设置值
-  onValueSet: (path: string, value: T, validation: true | DetailFieldError[]) => Promise<void>
+  onValueSet: (path: string, value: T, options?: { noPathCombination?: boolean }) => Promise<void>
   // // 事件：置空值
-  onValueUnset: (path: string, validation: true | DetailFieldError[]) => Promise<void>
+  onValueUnset: (path: string, options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 追加
-  onValueListAppend: (path: string, value: any, validation: true | DetailFieldError[]) => Promise<void>
+  onValueListAppend: (path: string, value: any, options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 删除
-  onValueListSplice: (path: string, index: number, count: number, validation: true | DetailFieldError[]) => Promise<void>
+  onValueListSplice: (path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => Promise<void>
   baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>

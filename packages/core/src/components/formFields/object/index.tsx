@@ -83,7 +83,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
             continue
           }
           const formField = this.formFieldsList[key] && this.formFieldsList[key][formFieldIndex]
-          if (formField) {
+          if (formField && !formFieldConfig.disabled) {
             const value = await formField.get()
             item = setValue(item, formFieldConfig.field, value)
           }
@@ -112,7 +112,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
       const formItems = this.formFieldsList[formItemsKey]
       for (const fieldIndex in (this.props.config.fields || [])) {
         const formItem = formItems[fieldIndex]
-        if (formItem !== null && formItem !== undefined) {
+        if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
           const validation = await formItem.validate(getValue(value[formItemsKey], (this.props.config.fields || [])[fieldIndex].field))
 
           if (validation === true) {
@@ -259,10 +259,10 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     // }
   }
 
-  handleValueSet = async (key: string, formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
+  handleValueSet = async (key: string, formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueSet(fullPath === '' ? key : `${key}.${fullPath}`, value, true)
 
       const formDataList = cloneDeep(this.state.formDataList)
@@ -278,10 +278,10 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     }
   }
 
-  handleValueUnset = async (key: string, formFieldIndex: number, path: string, validation: true | FieldError[]) => {
+  handleValueUnset = async (key: string, formFieldIndex: number, path: string, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueUnset(fullPath === '' ? key : `${key}.${fullPath}`, true)
 
       const formDataList = cloneDeep(this.state.formDataList)
@@ -297,10 +297,10 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     }
   }
 
-  handleValueListAppend = async (key: string, formFieldIndex: number, path: string, value: any, validation: true | FieldError[]) => {
+  handleValueListAppend = async (key: string, formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueListAppend(fullPath === '' ? key : `${key}.${fullPath}`, value, true)
 
       const formDataList = cloneDeep(this.state.formDataList)
@@ -316,10 +316,10 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     }
   }
 
-  handleValueListSplice = async (key: string, formFieldIndex: number, path: string, _index: number, count: number, validation: true | FieldError[]) => {
+  handleValueListSplice = async (key: string, formFieldIndex: number, path: string, _index: number, count: number, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueListSplice(fullPath === '' ? key : `${key}.${fullPath}`, _index, count, true)
 
       const formDataList = cloneDeep(this.state.formDataList)
@@ -335,10 +335,10 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     }
   }
 
-  handleValueListSort = async (key: string, formFieldIndex: number, path: string, _index: number, sortType: 'up' | 'down', validation: true | FieldError[]) => {
+  handleValueListSort = async (key: string, formFieldIndex: number, path: string, _index: number, sortType: 'up' | 'down', validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`
+      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueListSort(fullPath === '' ? key : `${key}.${fullPath}`, _index, sortType, true)
 
       const formDataList = cloneDeep(this.state.formDataList)
@@ -472,11 +472,11 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                       step={this.props.step}
                                       config={formFieldConfig}
                                       onChange={(value: any) => this.handleChange(key, formFieldIndex, value)}
-                                      onValueSet={async (path, value, validation) => this.handleValueSet(key, formFieldIndex, path, value, validation)}
-                                      onValueUnset={async (path, validation) => this.handleValueUnset(key, formFieldIndex, path, validation)}
-                                      onValueListAppend={async (path, value, validation) => this.handleValueListAppend(key, formFieldIndex, path, value, validation)}
-                                      onValueListSplice={async (path, _index, count, validation) => this.handleValueListSplice(key, formFieldIndex, path, _index, count, validation)}
-                                      onValueListSort={async (path, _index, sortType, validation) => this.handleValueListSort(key, formFieldIndex, path, _index, sortType, validation)}
+                                      onValueSet={async (path, value, validation, options) => this.handleValueSet(key, formFieldIndex, path, value, validation, options)}
+                                      onValueUnset={async (path, validation, options) => this.handleValueUnset(key, formFieldIndex, path, validation, options)}
+                                      onValueListAppend={async (path, value, validation, options) => this.handleValueListAppend(key, formFieldIndex, path, value, validation, options)}
+                                      onValueListSplice={async (path, _index, count, validation, options) => this.handleValueListSplice(key, formFieldIndex, path, _index, count, validation, options)}
+                                      onValueListSort={async (path, _index, sortType, validation, options) => this.handleValueListSort(key, formFieldIndex, path, _index, sortType, validation, options)}
                                       baseRoute={this.props.baseRoute}
                                       loadDomain={async (domain: string) => this.props.loadDomain(domain)}
                                     />
