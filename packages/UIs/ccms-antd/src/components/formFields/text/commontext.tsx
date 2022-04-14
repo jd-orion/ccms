@@ -8,24 +8,36 @@ type Props = {
   placeholder?: string
   onChange: (value: string) => Promise<void>
 };
-
+type State = {
+  wait: boolean
+  flag:  boolean
+  input: string
+  firstComposition: boolean
+}
 export default class TextComponent extends PureComponent<Props, {}> {
   isOnComposition = false
   selectionStart: number | null = null
   selectionEnd: number | null = null
-
+  timer: NodeJS.Timeout | null = null
+  ref: any
   state = {
+    wait: false,
     flag: false,
     input: this.props.value || '',
-    firstCompositon: true
+    firstComposition: true
   }
-
+  componentDidUpdate (prevProps: Props, prevState: State) {
+    if (prevProps.value != this.props.value && prevState.wait === false) {
+      this.ref.input.selectionStart = this.selectionStart
+      this.ref.input.selectionEnd = this.selectionEnd
+    }
+  }
   handleComposition = (e: any) => {
-    const { flag, firstCompositon } = this.state
-    if (firstCompositon) {
+    const { flag, firstComposition } = this.state
+    if (firstComposition) {
       e.target.value = this.props.value
       this.setState({
-        firstCompositon: false
+        firstComposition: false
       })
     }
 
@@ -47,6 +59,9 @@ export default class TextComponent extends PureComponent<Props, {}> {
     } else {
       this.isOnComposition = true
     }
+    if (flag !== this.isOnComposition) {
+      this.setFlag(this.isOnComposition)
+    }
   }
 
   setFlag = (flag: boolean) => {
@@ -57,42 +72,44 @@ export default class TextComponent extends PureComponent<Props, {}> {
 
   setInput = (value: string) => {
     this.setState({
-      input: value
+      input: value,
+      wait: true
     })
   }
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setFlag(true)
+    const { onChange } = this.props
+    const value = e.target.value
+    this.selectionStart = e.target.selectionStart
+    this.selectionEnd = e.target.selectionEnd
     this.setInput(e.target.value)
+    if (this.isOnComposition) return
+    if (this.timer !== null) clearTimeout(this.timer)
+    this.timer = setTimeout(() => {
+      this.setState({
+        wait: false
+      })
+    
+    onChange && onChange(value)
+    }, 100)
   }
 
   render() {
     const { value, readonly, disabled, placeholder } = this.props
-    const { flag, input } = this.state
+    const { wait, flag, input } = this.state
 
     const Component = Input
 
     return <Component
+      ref={(e)=>{ this.ref= e }}
       readOnly={readonly}
       disabled={disabled}
       placeholder={placeholder}
-      value={!flag ? value : input}
+      value={!flag && !wait ? value : input}
       onCompositionStart={this.handleComposition}
       onCompositionUpdate={this.handleComposition}
       onCompositionEnd={this.handleComposition}
       onChange={(e) => {
-        this.selectionStart = e.target.selectionStart
-        this.selectionEnd = e.target.selectionEnd
-        const eTaget = e.target
         this.handleChange(e)
-        setTimeout(() => {
-          eTaget.selectionStart = this.selectionStart
-          eTaget.selectionEnd = this.selectionEnd
-        })
-      }}
-      onBlur={(e) => {
-        const { onChange } = this.props
-        onChange && onChange(e.target.value)
-        this.setFlag(false)
       }}
     />
   }
