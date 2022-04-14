@@ -26,7 +26,7 @@ export default class TextColumnComponent extends TextColumn {
       <a href={value} target='_blank' rel="noreferrer">{value} </a>
       : showLines && showLines > 0 ?
         <>
-          <div className={styles['ccms-table-text']} style={{ WebkitLineClamp: showLines, lineClamp: showLines }}>
+          <div className={styles['ccms-table-text']} style={{ WebkitBoxOrient: 'vertical', WebkitLineClamp: showLines, lineClamp: showLines }}>
             {value}
           </div>
           {showMore && <Button onClick={() => this.showMore(value)} type='link'>查看全部</Button>}
