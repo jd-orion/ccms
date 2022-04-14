@@ -6,11 +6,7 @@ import styles from './index.less'
 import { Modal, Button } from "antd"
 export default class TextColumnComponent extends TextColumn {
 
-  showMore = (props: ITextColumn) => {
-    const {
-      value
-    } = props
-
+  showMore = (value) => {
     Modal.info({
       getContainer: () => document.getElementById('ccms-antd') || document.body,
       content: (<div style={{ overflow: 'hidden' }}>{value}</div>),
@@ -28,12 +24,12 @@ export default class TextColumnComponent extends TextColumn {
 
     return (linkUrl ?
       <a href={value} target='_blank' rel="noreferrer">{value} </a>
-      : showLines > 1 ?
+      : showLines && showLines > 0 ?
         <>
           <div className={styles['ccms-table-text']}>
             {value}
           </div>
-          {showMore && <Button onClick={this.showMore} type='link'>查看全部</Button>}
+          {showMore && <Button onClick={()=>this.showMore(value)} type='link'>查看全部</Button>}
         </>
         : <>
           {value}
