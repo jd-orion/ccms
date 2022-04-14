@@ -1,18 +1,35 @@
-/*
- * @Author: zjt
- * @Date: 2022-02-21 21:19:29
- * @LastEditTime: 2022-02-25 19:58:52
- * @LastEditors: zjt
- * @Description: 树形选框
- */
 import React, { Key } from 'react'
 import { TreeSelectField } from 'ccms'
-import { Table, Tree } from 'antd'
+import { Table, Tree, TreeSelect } from 'antd'
 import { ITreeSelectField } from 'ccms/dist/src/components/formFields/treeSelect'
 import InterfaceHelper from '../../../util/interface'
 export default class TreeSelectFieldComponent extends TreeSelectField {
   interfaceHelper = new InterfaceHelper()
 
+  //树选择treeselect
+  renderComponent = (props: ITreeSelectField) => {
+    const {
+      treeData,
+      value,
+      onChange
+    } = props
+
+    return (
+      <div>
+        <TreeSelect
+          style={{ width: '100%' }}
+          value={value}
+          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+          treeData={treeData}
+          treeDefaultExpandAll
+          onChange={onChange}
+          getPopupContainer={(ele) => ele.parentElement || document.body}
+        />
+      </div>
+    )
+  }
+
+  // 树形控件
   renderTreeComponent = (props: ITreeSelectField): React.ReactElement => {
     const {
       value,
@@ -30,6 +47,7 @@ export default class TreeSelectFieldComponent extends TreeSelectField {
     />
   }
 
+  // 树形表格控件
   renderTableComponent = (props: ITreeSelectField): React.ReactElement => {
     const {
       value,
