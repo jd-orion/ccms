@@ -131,11 +131,13 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     const errors: FieldError[] = []
 
     let childrenError = 0
+    const childrenErrorMsg: Array<{name:string, msg:string}> = []
 
     const formData = cloneDeep(this.state.formData)
 
     for (const fieldIndex in (this.state.fields || [])) {
       const formItem = this.formFields[fieldIndex]
+      const formConfig = this.state.fields?.[fieldIndex]
       if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
         const validation = await formItem.validate(getValue(value, this.getFullpath((this.state.fields || [])[fieldIndex].field)))
 
@@ -144,6 +146,10 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
         } else {
           childrenError++
           formData[fieldIndex] = { status: 'error', message: validation[0].message }
+          childrenErrorMsg.push({
+            name: formConfig?.label,
+            msg: validation[0].message
+          })
         }
       }
     }
@@ -153,7 +159,8 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     })
 
     if (childrenError > 0) {
-      errors.push(new FieldError('子项中存在错误'))
+      const errTips = `${this.props.config.label || ''}子项中错误。\n ${childrenErrorMsg.map(err => `${err.name}:${err.msg}`).join('; ')}。`
+      errors.push(new FieldError(errTips))
     }
 
     return errors.length ? errors : true
@@ -417,6 +424,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
               ? (Array.isArray(this.state.fields) ? this.state.fields : []).map((formFieldConfig, formFieldIndex) => {
                   if (!ConditionHelper(formFieldConfig.condition, { record: value, data, step })) {
                     this.formFieldsMounted[formFieldIndex] = false
+                    this.formFields && (this.formFields[formFieldIndex] = null)
                     return null
                   }
                   let hidden: boolean = true

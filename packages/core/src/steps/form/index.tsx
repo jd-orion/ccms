@@ -671,6 +671,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
             children: fields.map((formFieldConfig, formFieldIndex) => {
               if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
                 this.formFieldsMounted[formFieldIndex] = false
+                this.formFields && (this.formFields[formFieldIndex] = null)
                 return null
               }
               let hidden: boolean = true

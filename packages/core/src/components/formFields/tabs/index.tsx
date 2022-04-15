@@ -113,6 +113,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     }
 
     let childrenError = 0
+    const childrenErrorMsg: Array<{name:string, msg:string}> = []
 
     const formDataList = cloneDeep(this.state.formDataList)
 
@@ -133,6 +134,10 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
           } else {
             childrenError++
             formDataList[formItemsIndex][fieldIndex] = { status: 'error', message: validation[0].message }
+            childrenErrorMsg.push({
+              name: formFieldConfig?.label,
+              msg: validation[0].message
+            })
           }
         }
       }
@@ -143,7 +148,8 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     })
 
     if (childrenError > 0) {
-      errors.push(new FieldError(`子项中存在${childrenError}个错误。`))
+      const errTips = `${this.props.config.label || ''}子项中存在错误。\n ${childrenErrorMsg.map(err => `${err.name}:${err.msg}`).join('; ')}`
+      errors.push(new FieldError(errTips))
     }
 
     return errors.length ? errors : true
@@ -380,6 +386,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                             if (!ConditionHelper(formFieldConfig.condition, { record: this.props.record, data: this.props.data, step: this.props.step })) {
                               if (!this.formFieldsMountedList[index]) this.formFieldsMountedList[index] = []
                               this.formFieldsMountedList[index][formFieldIndex] = false
+                              this.formFieldsList[index] && (this.formFieldsList[index][formFieldIndex] = null)
                               return null
                             }
                             let hidden: boolean = true

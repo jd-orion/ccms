@@ -66,6 +66,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     const errors: FieldError[] = []
 
     let childrenError = 0
+    const childrenErrorMsg: Array<{name:string, msg:string}> = []
 
     const formData = cloneDeep(this.state.formData)
 
@@ -75,11 +76,15 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
       if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
         const validation = await formItem.validate(getValue(value, (this.props.config.fields || [])[fieldIndex].field))
 
-        if (validation === true || this.formFieldsMounted[fieldIndex] === false) {
+        if (validation === true) {
           formData[fieldIndex] = { status: 'normal' }
         } else {
           childrenError++
           formData[fieldIndex] = { status: 'error', message: validation[0].message }
+          childrenErrorMsg.push({
+            name: formConfig?.label,
+            msg: validation[0].message
+          })
         }
       }
     }
@@ -89,7 +94,8 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     })
 
     if (childrenError > 0) {
-      errors.push(new FieldError(`子项中存在${childrenError}个错误。`))
+      const errTips = `${this.props.config.label || ''}子项中存在错误。\n ${childrenErrorMsg.map(err => `${err.name}:${err.msg}`).join('; ')}。`
+      errors.push(new FieldError(errTips))
     }
 
     return errors.length ? errors : true
@@ -308,6 +314,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
             ? (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
                 if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
                   this.formFieldsMounted[formFieldIndex] = false
+                  this.formFields && (this.formFields[formFieldIndex] = null)
                   return null
                 }
                 let hidden: boolean = true
