@@ -2,7 +2,7 @@ import TextField, { TextFieldConfig } from './text'
 import EnumDetail, { EnumDetailConfig } from './enum'
 import StatementDetail, { StatementDetailConfig } from './statement'
 import ImageDetail, { ImageDetailConfig } from './image'
-
+import CustomDetail, { CustomDetailConfig } from './custom'
 import GroupField, { GroupFieldConfig } from './group'
 import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
 import InfoDetail, { InfoDetailConfig } from './detailInfo'
@@ -21,7 +21,8 @@ export type DetailFieldConfigs =
     ImportSubformFieldConfig |
     InfoDetailConfig |
     ColorDetailConfig |
-    TableFieldConfig
+    TableFieldConfig |
+    CustomDetailConfig
 
 export type componentType =
     'text' |
@@ -32,7 +33,8 @@ export type componentType =
     'import_subform' |
     'detail_info' |
     'detail_color' |
-    'table'
+    'table' |
+    'custom'
 
 export default {
   group: GroupField,
@@ -43,5 +45,6 @@ export default {
   statement: StatementDetail,
   detail_info: InfoDetail,
   detail_color: ColorDetail,
-  table: TableField
+  table: TableField,
+  custom: CustomDetail
 }

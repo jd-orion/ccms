@@ -128,7 +128,6 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
         const fullPath = tab.field === '' || formFieldConfig.field === '' ? `${tab.field}${formFieldConfig.field}` : `${tab.field}.${formFieldConfig.field}`
         if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
           const validation = await formItem.validate(getValue(value, fullPath))
-
           if (validation === true) {
             formDataList[formItemsIndex][fieldIndex] = { status: 'normal' }
           } else {
@@ -146,7 +145,6 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     await this.setState({
       formDataList
     })
-
     if (childrenError > 0) {
       const errTips = `${this.props.config.label || ''}子项中存在错误。\n ${childrenErrorMsg.map(err => `${err.name}:${err.msg}`).join('; ')}`
       errors.push(new FieldError(errTips))

@@ -316,7 +316,6 @@ export default class FormStep extends Step<FormConfig, FormState> {
         if (formField && formFieldConfig && !formFieldConfig.disabled) {
           const value = await formField.get()
           const validation = await formField.validate(value)
-
           if (validation !== true) {
             console.warn('表单项中存在问题', value, formFieldConfig)
             this.formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }

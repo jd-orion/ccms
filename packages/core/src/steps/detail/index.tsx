@@ -398,6 +398,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                     value={detailFieldConfig.field !== undefined ? getValue(detailValue, detailFieldConfig.field) || detailFieldConfig.defaultValue : undefined}
                     record={detailValue}
                     data={cloneDeep(data)}
+                    detail={this}
                     step={step}
                     config={detailFieldConfig}
                     detail={this}
