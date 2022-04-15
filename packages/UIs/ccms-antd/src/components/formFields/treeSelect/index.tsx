@@ -9,6 +9,7 @@ export default class TreeSelectFieldComponent extends TreeSelectField {
   //树选择treeselect
   renderComponent = (props: ITreeSelectField) => {
     const {
+      multiple,
       treeData,
       value,
       onChange
@@ -17,6 +18,7 @@ export default class TreeSelectFieldComponent extends TreeSelectField {
     return (
       <div>
         <TreeSelect
+          multiple={multiple}
           style={{ width: '100%' }}
           value={value}
           dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -38,11 +40,10 @@ export default class TreeSelectFieldComponent extends TreeSelectField {
     } = props
     return <Tree
       checkable
-      onCheck={(checked: Key[] | { checked: Key[]; halfChecked: Key[]; }) => {
-        console.log("onCheck", checked);
-        onChange(checked as string | (string | number)[]);
+      onCheck={(checked) => {
+        onChange(checked as Array<string | number>);
       }}
-      checkedKeys={value}
+      checkedKeys={value as Array<string | number>}
       treeData={treeData}
     />
   }
@@ -66,16 +67,10 @@ export default class TreeSelectFieldComponent extends TreeSelectField {
       }]}
       rowSelection={{
         checkStrictly: false,
-        onChange: (selectedRowKeys, selectedRows) => {
-          console.log(
-            `selectedRowKeys: ${selectedRowKeys}`,
-            "selectedRows: ",
-            selectedRows
-          );
-          console.log('typeof', typeof selectedRowKeys, selectedRowKeys)
+        onChange: (selectedRowKeys) => {
           onChange(selectedRowKeys)
         },
-        selectedRowKeys: value || []
+        selectedRowKeys: value as Array<string | number> || []
       }}
       dataSource={treeData}
     />
