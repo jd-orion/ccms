@@ -401,7 +401,6 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                     detail={this}
                     step={step}
                     config={detailFieldConfig}
-                    detail={this}
                     onChange={async (value: any) => { await this.handleChange(detailFieldIndex, value) }}
                     onValueSet={async (path, value) => await this.handleValueSet(detailFieldIndex, path, value)}
                     onValueUnset={async (path) => await this.handleValueUnset(detailFieldIndex, path)}
