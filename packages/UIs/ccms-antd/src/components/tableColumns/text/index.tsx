@@ -26,10 +26,10 @@ export default class TextColumnComponent extends TextColumn {
 
     return (showLines && showLines > 0 ?
       <>
+        {showMore && <Button className={styles['ccms-table-text-button']} onClick={() => this.showMore(value)} type='link'>查看</Button>}
         <div className={styles['ccms-table-text']} style={{ WebkitBoxOrient: 'vertical', WebkitLineClamp: showLines || 0, lineClamp: showLines || 0 }}>
           {linkUrl ? <a href={value} target='_blank' rel="noreferrer">{value} </a> :  value}
         </div>
-        {showMore && <Button className={styles['ccms-table-text-button']} onClick={() => this.showMore(value)} type='link'>查看</Button>}
       </>
       : <>
         {linkUrl ? <a href={value} target='_blank' rel="noreferrer">{value} </a> :  value } 
