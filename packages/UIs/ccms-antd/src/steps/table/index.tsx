@@ -1,6 +1,6 @@
 import React from 'react'
 import { TableStep } from 'ccms'
-import { ITable, ITableColumn, ITableStepOperationConfirm, ITableStepOperationModal, ITableStepRowOperation, ITableStepRowOperationButton, ITableStepRowOperationGroup, ITableStepRowOperationGroupItem, ITableStepTableOperation, ITableStepTableOperationButton, ITableStepTableOperationGroup, ITableStepTableOperationGroupItem } from 'ccms/dist/src/steps/table'
+import { ITable, ITableColumn, ITableStepOperationConfirm, ITableStepOperationModal, ITableStepRowOperation, ITableStepRowOperationButton, ITableStepRowOperationGroup, ITableStepRowOperationGroupItem, ITableStepTableOperation, ITableStepTableOperationButton, ITableStepTableOperationGroup, ITableStepTableOperationGroupItem, DescriptionConfig } from 'ccms/dist/src/steps/table'
 import { Table, Button, Dropdown, Menu, Modal, Space, Tooltip } from 'antd'
 import { DownOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import getALLComponents from '../../components/tableColumns'
@@ -25,10 +25,13 @@ export default class TableStepComponent extends TableStep {
     })
   }
 
+
   renderComponent = (props: ITable) => {
     const {
       title,
+      width,
       tableOperations,
+      leftTableOperations,
       primary,
       columns,
       data,
@@ -38,37 +41,14 @@ export default class TableStepComponent extends TableStep {
 
     return (
       <div className={styles['ccms-antd-table']}>
-        {(title || (description && ((description.label !== undefined && description.label !== '') || description.showIcon)) || tableOperations) && (
+        {(title || (description && ((description.label !== undefined && description.label !== '') || description.showIcon)) || tableOperations || leftTableOperations) && (
           <div className={styles['ccms-antd-table-header']}>
-            <div className={styles['ccms-antd-table-title']}>{title}
+            <div className={styles['ccms-antd-table-left']}>
+              <div className={styles['ccms-antd-table-title']}>{title}</div>
               <div className={styles['ccms-antd-table-title-explain']}>
-                {(description && description.type === 'text' && ((description.label !== undefined && description.label !== "") || description.showIcon)) && 
-                  <span> {(description.showIcon) && (<InfoCircleOutlined style={{ marginRight: "5px" }}/>)} 
-                  {description.label} </span>
-                }
-                {(description && description.type === 'tooltip' && ((description.label !== undefined && description.label !== "") || description.showIcon)) &&
-                  <Tooltip
-                    overlayStyle={{ color: 'white' }}
-                    placement="topLeft"
-                    title={description.content} 
-                    getPopupContainer={(ele) => ele.parentElement || document.body}>
-                    {(description.showIcon) && (<InfoCircleOutlined style={{ marginRight: "5px" }}/>)} 
-                    {description.label}
-                  </Tooltip>
-                }
-                {(description && description.type === 'modal' && ((description.label !== undefined && description.label !== "") || description.showIcon)) &&
-                  <span style={{ cursor: 'pointer' }} onClick={()=>{
-                    Modal.info({
-                      getContainer: () => document.getElementById('ccms-antd') || document.body,
-                      content: (<div style={{ overflow: 'hidden' }}>{description.content}</div>),
-                      okText: '知道了'
-                    });
-                  }}>
-                  {(description.showIcon) && (<InfoCircleOutlined style={{ marginRight: "5px" }}/>)} 
-                  {description.label}
-                  </span>
-                }
+                {description && this.renderExplainComponent(description)}
               </div>
+              <div>{leftTableOperations}</div>
             </div>
             <div className={styles['ccms-antd-table-tableOperation']}>{tableOperations}</div>
           </div>
@@ -83,9 +63,9 @@ export default class TableStepComponent extends TableStep {
             render: (value: any, record: { [field: string]: any }, index: number) => column.render(value, record, index)
           }))}
           dataSource={data}
-          scroll={{ x: 1000 }}
+          scroll={{ x: width || 1000 }}
           size="middle"
-          pagination={ pagination === undefined ? false : {
+          pagination={pagination === undefined ? false : {
             current: pagination.current,
             pageSize: pagination.pageSize,
             total: pagination.total,
@@ -99,6 +79,37 @@ export default class TableStepComponent extends TableStep {
         />
       </div>
     )
+  }
+
+  renderExplainComponent = (description: DescriptionConfig) => {
+    return <>
+      {(description && description.type === 'text' && ((description.label !== undefined && description.label !== "") || description.showIcon)) &&
+        <span> {(description.showIcon) && (<InfoCircleOutlined style={{ marginRight: "5px" }} />)}
+          {description.label} </span>
+      }
+      {(description && description.type === 'tooltip' && ((description.label !== undefined && description.label !== "") || description.showIcon)) &&
+        <Tooltip
+          overlayStyle={{ color: 'white' }}
+          placement="topLeft"
+          title={description.content}
+          getPopupContainer={(ele) => ele.parentElement || document.body}>
+          {(description.showIcon) && (<InfoCircleOutlined style={{ marginRight: "5px" }} />)}
+          {description.label}
+        </Tooltip>
+      }
+      {(description && description.type === 'modal' && ((description.label !== undefined && description.label !== "") || description.showIcon)) &&
+        <span style={{ cursor: 'pointer' }} onClick={() => {
+          Modal.info({
+            getContainer: () => document.getElementById('ccms-antd') || document.body,
+            content: (<div style={{ overflow: 'hidden' }}>{description.content}</div>),
+            okText: '知道了'
+          });
+        }}>
+          {(description.showIcon) && (<InfoCircleOutlined style={{ marginRight: "5px" }} />)}
+          {description.label}
+        </span>
+      }
+    </>
   }
 
   renderRowOperationComponent = (props: ITableStepRowOperation) => {
@@ -121,7 +132,7 @@ export default class TableStepComponent extends TableStep {
     return <a onClick={() => onClick()}>{label}</a>
   }
 
-  renderRowOperationGroupComponent = (props: ITableStepRowOperationGroup) => {
+  renderRowOperationDropdownComponent = (props: ITableStepRowOperationGroup) => {
     const {
       label,
       children
@@ -134,10 +145,31 @@ export default class TableStepComponent extends TableStep {
             {children}
           </Menu>
         )}
-
       >
         <a>{label}</a>
       </Dropdown>
+    )
+  }
+
+  renderRowOperationDropdownItemComponent = (props: ITableStepRowOperationGroupItem) => {
+    const {
+      label,
+      disabled,
+      onClick
+    } = props
+    return (
+      <Menu.Item disabled={disabled} onClick={() => onClick()}>{label}</Menu.Item>
+    )
+  }
+
+  renderRowOperationGroupComponent = (props: ITableStepTableOperation) => {
+    const {
+      children
+    } = props
+    return (
+      <Button.Group>
+        {children}
+      </Button.Group>
     )
   }
 
@@ -153,17 +185,17 @@ export default class TableStepComponent extends TableStep {
   }
 
 
-
   renderTableOperationComponent = (props: ITableStepTableOperation) => {
     const {
       children
     } = props
     return (
-      <Button.Group>
+      <div>
         {children}
-      </Button.Group>
+      </div>
     )
   }
+
 
   renderTableOperationButtonComponent = (props: ITableStepTableOperationButton) => {
     const {
@@ -182,7 +214,7 @@ export default class TableStepComponent extends TableStep {
     return <Button {...button_props} onClick={() => onClick()}>{label}</Button>
   }
 
-  renderTableOperationGroupComponent = (props: ITableStepTableOperationGroup) => {
+  renderTableOperationDropdownComponent = (props: ITableStepTableOperationGroup) => {
     const {
       label,
       children
@@ -206,7 +238,7 @@ export default class TableStepComponent extends TableStep {
     )
   }
 
-  renderTableOperationGroupItemComponent = (props: ITableStepTableOperationGroupItem) => {
+  renderTableOperationDropdownItemComponent = (props: ITableStepTableOperationGroupItem) => {
     const {
       label,
       disabled,
@@ -215,6 +247,35 @@ export default class TableStepComponent extends TableStep {
     return (
       <Menu.Item disabled={disabled} onClick={() => onClick()}>{label}</Menu.Item>
     )
+  }
+
+  renderTableOperationGroupComponent = (props: ITableStepTableOperationGroup) => {
+    const {
+      children
+    } = props
+
+    return (
+      <Button.Group>
+        {children}
+      </Button.Group>
+    )
+  }
+
+  renderTableOperationGroupItemComponent = (props: ITableStepTableOperationGroupItem) => {
+    const {
+      label,
+      level,
+      disabled,
+      onClick
+    } = props
+
+    const button_props: ButtonProps = { disabled }
+    if (level === 'primary') {
+      button_props.type = 'primary'
+    } else if (level === 'danger') {
+      button_props.danger = true
+    }
+    return <Button {...button_props} onClick={() => onClick()}>{label}</Button>
   }
 
   renderOperationModal = (props: ITableStepOperationModal) => {
