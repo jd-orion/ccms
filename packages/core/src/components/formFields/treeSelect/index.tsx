@@ -33,15 +33,14 @@ export interface DataOptionsConfig {
 export interface ManualOptionsConfig {
   from: 'manual'
   defaultIndex?: string | number
-  data?: treeTableDataConfig[]
+  data?: TreeSelectFieldOption[]
 }
-
-export interface treeTableDataConfig {
+export interface TreeSelectFieldOption {
+  key: string | number
   value: string | number
   title: string
-  children: treeTableDataConfig[]
+  children?: Array<TreeSelectFieldOption>
 }
-
 export interface InterfaceOptionsConfig {
   from: 'interface'
   interface?: InterfaceConfig
@@ -59,13 +58,6 @@ export interface InterfaceOptionsListConfig {
   childrenField?: string
 }
 
-export interface TreeSelectFieldOption {
-  key?: string | number
-  value: string | number,
-  title: ReactNode
-  children?: Array<TreeSelectFieldOption>
-}
-
 interface TreeSelectFieldState {
   interfaceOptionsData: TreeSelectFieldOption[]
 }
@@ -73,6 +65,7 @@ interface TreeSelectFieldState {
 type TreeSelectValueType = string | Array<string | number> | undefined
 
 export interface ITreeSelectField {
+  multiple?: boolean
   value: TreeSelectValueType,
   treeData: Array<TreeSelectFieldOption>
   titleColumn?: string
@@ -102,7 +95,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
     return undefined
   }
 
-  formatTree = (treeList: Array<TreeSelectFieldOption>, value: string, title: string, children: string) => {
+  formatTree = (treeList: TreeSelectFieldOption[], value: string, title: string, children: string) => {
     const rsMenu: TreeSelectFieldOption[] = []
 
     treeList.forEach((val: TreeSelectFieldOption) => {
@@ -283,7 +276,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
         console.warn('字符串分隔类型的树形选框的值需要是字符串。')
       }
     } else {
-      props.value = Array.isArray(value) ? value : undefined
+      props.value = Array.isArray(value) ? value : (mode === 'treeSelect' ? value : undefined)
     }
 
     if (mode === 'table') {
@@ -292,13 +285,10 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
     } else if (mode === 'tree') {
       return this.renderTreeComponent(props)
     } else {
+      props.multiple = multiple === true || multiple?.type === 'array'
       return (
         <React.Fragment>
-          {this.renderComponent({
-            value,
-            treeData: this.state.interfaceOptionsData,
-            onChange: async (value: TreeSelectValueType) => await this.props.onValueSet('', value, await this.validate(value))
-          })}
+          {this.renderComponent(props)}
         </React.Fragment>
       )
     }
