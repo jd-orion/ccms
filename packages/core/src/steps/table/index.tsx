@@ -72,6 +72,16 @@ export interface TableOperationDropdownConfig {
 }
 
 /**
+ * 表格步骤-操作配置文件下拉菜单
+ */
+export interface TableOperationDropdownConfig {
+  type: 'dropdown'
+  label?: string
+  level?: 'normal' | 'primary' | 'danger'
+  operations: Array<TableOperationConfig>
+}
+
+/**
  * 表格步骤-操作配置文件格式
  */
 export interface TableOperationConfig {
@@ -122,6 +132,12 @@ interface TableOperationConfirmConfig {
   cancelText: string
 }
 
+export interface DescriptionConfig {
+  type: 'text' | 'tooltip' | 'modal'
+  label: string | undefined
+  content: React.ReactNode
+  showIcon: boolean
+}
 /**
  * 表格步骤组件 - UI渲染方法 - 入参
  * - data: 数据
@@ -139,14 +155,9 @@ export interface ITable {
     onChange: (page: number, pageSize: number) => void
   }
   tableOperations: React.ReactNode | null
-  multirowOperations: React.ReactNode | null,
-  description?: {
-    type: 'text' | 'tooltip' | 'modal'
-    label: string | undefined
-    content: React.ReactNode
-    showIcon: boolean
-  },
   leftTableOperations: React.ReactNode | null
+  multirowOperations: React.ReactNode | null,
+  description?: DescriptionConfig
 }
 
 /**
@@ -546,6 +557,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
       您当前使用的UI版本没有实现Table组件的OperationDropdownItem部分。
     </React.Fragment>
   }
+
   renderOperationModal = (props: ITableStepOperationModal) => {
     const mask = document.createElement('DIV')
     mask.style.position = 'fixed'
