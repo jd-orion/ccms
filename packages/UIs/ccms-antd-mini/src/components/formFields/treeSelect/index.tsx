@@ -6,7 +6,7 @@ import InterfaceHelper from "../../../util/interface";
 
 export default class TreeSelectComponent extends TreeSelectField {
   interfaceHelper = new InterfaceHelper()
-  
+
   renderComponent = (props: ITreeSelectField) => {
     const {
       treeData,
@@ -17,6 +17,8 @@ export default class TreeSelectComponent extends TreeSelectField {
     return (
       <div>
         <TreeSelect
+          showSearch
+          treeNodeFilterProp="title"
           style={{ width: '100%' }}
           value={value}
           dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
