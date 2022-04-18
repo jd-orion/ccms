@@ -9,6 +9,12 @@ type Props = {
   onChange: (value: string) => Promise<void>
 };
 
+type State = {
+  wait: boolean
+  flag: boolean
+  input: string
+  firstComposition: boolean
+}
 export default class TextComponent extends PureComponent<Props, {}> {
   isOnComposition = false
   selectionStart: number | null = null
@@ -19,6 +25,14 @@ export default class TextComponent extends PureComponent<Props, {}> {
     wait: false,
     flag: false,
     input: ''
+  }
+  ref: any
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevProps.value != this.props.value && prevState.wait === false) {
+      this.ref.input.selectionStart = this.selectionStart
+      this.ref.input.selectionEnd = this.selectionEnd
+    }
   }
 
   handleComposition = (e: any) => {
@@ -47,6 +61,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
       input: value,
       wait: true
     })
+
     if (this.isOnComposition) return
 
     if (this.timer !== null) clearTimeout(this.timer)
@@ -68,6 +83,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
     let Component = Input
 
     return <Component
+      ref={(e) => { this.ref = e }}
       readOnly={readonly}
       disabled={disabled}
       placeholder={placeholder}
