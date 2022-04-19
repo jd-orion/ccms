@@ -17,15 +17,13 @@ import 'antd/dist/antd.css'
         subversion="0"
         config={props.config || DefaultConfig}
         sourceData={props.sourceData}
-        onChange={(v)=>{console.log('ccms-editor', v)}}
-        baseRoute={'/'}
-        checkPageAuth={async (_) => true}
-        loadPageURL={async (_) => '#'}
-        loadPageFrameURL={async (_) => '#'}
+        baseRoute={props.baseRoute}
+        customConfigCDN={props.baseRoute || ''}
+        onChange={(v)=>{console.log('ccms-editor=0..5', v)}}
+        checkPageAuth={(pageId) => props.checkPageAuth(pageId)}
+        loadPageURL={async (pageId) => props.loadPageURL(pageId)}
+        loadPageFrameURL={async (pageId) => props.loadPageFrameURL(pageId)}
         loadPageConfig={async (pageId) => {
-          console.log('pageId--ed', pageId);
-          console.log('pageConfig=', await props.loadPageConfig(pageId));
-          
           if (props.loadPageConfig && await props.loadPageConfig(pageId)) {
             return await props.loadPageConfig(pageId)
           }
@@ -45,9 +43,9 @@ import 'antd/dist/antd.css'
             ]
         })}}
         loadPageList={props.loadPageList}
-        loadDomain={async () => ''}
-        onSubmit={(config) => console.log(JSON.stringify(config, undefined, 2))}
-        onCancel={() => {}}
+        loadDomain={props.loadDomain}
+        onSubmit={props.onSubmit}
+        onCancel={props.onCancel}
       />
     )
 }

@@ -88,6 +88,7 @@ export interface AppProps {
   version: string,
   subversion: string,
   baseRoute: string,
+  customConfigCDN?: string,
   checkPageAuth: (pageID: any) => Promise<boolean>
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
