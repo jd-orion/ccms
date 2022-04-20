@@ -31,10 +31,10 @@ const config: FieldConfigs[] = [
               },
             },
             {
-              field: "subversion",
+              "field": "subversion",
               data: {
-                source: 'source',
-                field: "subversion"
+                "source": 'source',
+                "field": "subversion"
               },
             },
           ],
@@ -66,10 +66,10 @@ const config: FieldConfigs[] = [
               },
             },
             {
-              field: "subversion",
+              "field": "subversion",
               data: {
-                source: "source",
-                field: "subversion"
+                "source": "source",
+                "field": "subversion"
               },
             },
           ],
