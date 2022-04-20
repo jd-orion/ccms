@@ -89,7 +89,7 @@ test('文本框默认值 -数据值 query', () => {
           cleanup()
           resolve(true)
         }}
-        config={{ field: 'jest', label: 'jest', type: 'text', defaultValue: { source: 'query', filed: 'default' } }}
+        config={{ field: 'jest', label: 'jest', type: 'text', defaultValue: { source: 'query', field: 'default' } }}
       />
     )
   })
@@ -108,7 +108,7 @@ test('文本框默认值 -数据值 hash', () => {
           cleanup()
           resolve(true)
         }}
-        config={{ field: 'jest', label: 'jest', type: 'text', defaultValue: { source: 'hash', filed: 'default' } }}
+        config={{ field: 'jest', label: 'jest', type: 'text', defaultValue: { source: 'hash', field: 'default' } }}
       />
     )
   })

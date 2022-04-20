@@ -76,7 +76,7 @@ export interface DetailFieldProps<C extends DetailFieldConfig, T> {
   value: T,
   record: { [field: string]: any },
   data: any[],
-  step: number,
+  step: { [field: string]: any } // formValue挂载
   config: C
   // 挂载引用
   detail?: React.ReactNode

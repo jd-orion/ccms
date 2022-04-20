@@ -2,8 +2,8 @@ import { Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from
 import getALLComponents from '../'
 import React from 'react'
 import ConditionHelper from '../../../util/condition'
-import { cloneDeep } from 'lodash'
-import { getValue, setValue, getBoolean } from '../../../util/value'
+import { set, setValue } from '../../../util/produce'
+import { getValue, getBoolean, getChainPath } from '../../../util/value'
 import StatementHelper from '../../../util/statement'
 
 export type TabsFieldConfig = TabsFieldConfig_Same | TabsFieldConfig_Diff
@@ -90,7 +90,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
 
       for (const formFieldIndex in fields) {
         const formFieldConfig = fields[formFieldIndex]
-        if (!ConditionHelper(formFieldConfig.condition, { record: getValue(this.props.value, tab.field), data: this.props.data, step: this.props.step })) {
+        if (!ConditionHelper(formFieldConfig.condition, { record: getValue(this.props.value, tab.field), data: this.props.data, step: this.props.step, extraContainerPath: getChainPath(this.props.config.field, tab.field) }, this)) {
           continue
         }
         const formField = this.formFieldsList[index] && this.formFieldsList[index][formFieldIndex]
@@ -115,7 +115,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
     let childrenError = 0
     const childrenErrorMsg: Array<{name:string, msg:string}> = []
 
-    const formDataList = cloneDeep(this.state.formDataList)
+    let formDataList = this.state.formDataList
 
     for (const formItemsIndex in this.formFieldsList) {
       if (!formDataList[formItemsIndex]) formDataList[formItemsIndex] = []
@@ -129,10 +129,10 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
         if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
           const validation = await formItem.validate(getValue(value, fullPath))
           if (validation === true) {
-            formDataList[formItemsIndex][fieldIndex] = { status: 'normal' }
+            formDataList = set(formDataList, `[${formItemsIndex}][${fieldIndex}]`, { status: 'normal' })
           } else {
             childrenError++
-            formDataList[formItemsIndex][fieldIndex] = { status: 'error', message: validation[0].message }
+            formDataList = set(formDataList, `[${formItemsIndex}][${fieldIndex}]`, { status: 'error', message: validation[0].message })
             childrenErrorMsg.push({
               name: formFieldConfig?.label,
               msg: validation[0].message
@@ -155,12 +155,12 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
 
   handleMount = async (index: number, formFieldIndex: number) => {
     if (!this.formFieldsMountedList[index]) {
-      this.formFieldsMountedList[index] = []
+      this.formFieldsMountedList = set(this.formFieldsMountedList, `[${index}]`, [])
     }
     if (this.formFieldsMountedList[index][formFieldIndex]) {
       return true
     }
-    this.formFieldsMountedList[index][formFieldIndex] = true
+    this.formFieldsMountedList = set(this.formFieldsMountedList, `[${index}][${formFieldIndex}]`, true)
 
     const tab = (this.props.config.tabs || [])[index]
 
@@ -184,19 +184,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
 
         if (value !== undefined) {
           const validation = await formField.validate(value)
-          if (validation === true) {
-            await this.setState(({ formDataList }) => {
-              if (!formDataList[index]) formDataList[index] = []
-              formDataList[index][formFieldIndex] = { status: 'normal' }
-              return { formDataList: cloneDeep(formDataList) }
-            })
-          } else {
-            await this.setState(({ formDataList }) => {
-              if (!formDataList[index]) formDataList[index] = []
-              formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
-              return { formDataList: cloneDeep(formDataList) }
-            })
-          }
+          this.handleValueCallback(index, formFieldIndex, validation)
         }
         await formField.didMount()
       }
@@ -204,6 +192,23 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
   }
 
   handleChange = async (index: number, formFieldIndex: number, value: any) => {
+  }
+
+  /**
+ * 处理set、unset、append、splice、sort后的操作
+ */
+  handleValueCallback = async (index: number, formFieldIndex: number, validation: true | FieldError[]) => {
+    let formDataList = this.state.formDataList
+    // if (!formDataList[index]) formDataList = set(formDataList, `[${index}]`, [])
+    if (validation === true) {
+      formDataList = set(formDataList, `[${index}][${formFieldIndex}]`, { status: 'normal' })
+    } else {
+      formDataList = set(formDataList, `[${index}][${formFieldIndex}]`, { status: 'error', message: validation[0].message })
+    }
+
+    this.setState({
+      formDataList
+    })
   }
 
   handleValueSet = async (index: number, formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
@@ -216,17 +221,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueSet(fullPath, value, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
-      if (!formDataList[index]) formDataList[index] = []
-      if (validation === true) {
-        formDataList[index][formFieldIndex] = { status: 'normal' }
-      } else {
-        formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formDataList
-      })
+      this.handleValueCallback(index, formFieldIndex, validation)
     }
   }
 
@@ -240,17 +235,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueUnset(fullPath, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
-      if (!formDataList[index]) formDataList[index] = []
-      if (validation === true) {
-        formDataList[index][formFieldIndex] = { status: 'normal' }
-      } else {
-        formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formDataList
-      })
+      this.handleValueCallback(index, formFieldIndex, validation)
     }
   }
 
@@ -264,17 +249,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueListAppend(fullPath, value, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
-      if (!formDataList[index]) formDataList[index] = []
-      if (validation === true) {
-        formDataList[index][formFieldIndex] = { status: 'normal' }
-      } else {
-        formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formDataList
-      })
+      this.handleValueCallback(index, formFieldIndex, validation)
     }
   }
 
@@ -288,17 +263,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueListSplice(fullPath, _index, count, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
-      if (!formDataList[index]) formDataList[index] = []
-      if (validation === true) {
-        formDataList[index][formFieldIndex] = { status: 'normal' }
-      } else {
-        formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formDataList
-      })
+      this.handleValueCallback(index, formFieldIndex, validation)
     }
   }
 
@@ -312,17 +277,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
       const fullPath = tab.field === '' || fieldPath === '' ? `${tab.field}${fieldPath}` : `${tab.field}.${fieldPath}`
       await this.props.onValueListSort(fullPath, _index, sortType, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
-      if (!formDataList[index]) formDataList[index] = []
-      if (validation === true) {
-        formDataList[index][formFieldIndex] = { status: 'normal' }
-      } else {
-        formDataList[index][formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formDataList
-      })
+      this.handleValueCallback(index, formFieldIndex, validation)
     }
   }
 
@@ -342,29 +297,26 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
    * @param props
    * @returns
    */
-   renderItemComponent = (props: ITabsFieldItem) => {
-     return <React.Fragment>
+  renderItemComponent = (props: ITabsFieldItem) => {
+    return <React.Fragment>
       您当前使用的UI版本没有实现FormField组件的renderItemComponent方法。
     </React.Fragment>
-   }
+  }
 
-   /**
-   * 用于展示子表单组件中的每一子项中的每一个子表单项组件
-   * @param props
-   * @returns
-   */
-   renderItemFieldComponent = (props: ITabsFieldItemField) => {
-     return <React.Fragment>
+  /**
+  * 用于展示子表单组件中的每一子项中的每一个子表单项组件
+  * @param props
+  * @returns
+  */
+  renderItemFieldComponent = (props: ITabsFieldItemField) => {
+    return <React.Fragment>
       您当前使用的UI版本没有实现FormField组件的renderItemFieldComponent方法。
     </React.Fragment>
-   }
+  }
 
   render = () => {
     const {
-      value = {},
-      config: {
-        label
-      }
+      value = {}
     } = this.props
 
     return (
@@ -376,85 +328,87 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                 ? (this.props.config.tabs || []).map((tab: any, index: number) => {
                     const fields = this.props.config.mode === 'same' ? (this.props.config.fields || []) : (((this.props.config.tabs || [])[index] || {}).fields || [])
                     return (
-                      <React.Fragment key={index}>
-                        {this.renderItemComponent({
-                          key: index.toString(),
-                          label: tab.label,
-                          children: fields.map((formFieldConfig, formFieldIndex) => {
-                            if (!ConditionHelper(formFieldConfig.condition, { record: this.props.record, data: this.props.data, step: this.props.step })) {
-                              if (!this.formFieldsMountedList[index]) this.formFieldsMountedList[index] = []
-                              this.formFieldsMountedList[index][formFieldIndex] = false
-                              this.formFieldsList[index] && (this.formFieldsList[index][formFieldIndex] = null)
-                              return null
-                            }
-                            let hidden: boolean = true
-                            let display: boolean = true
+                    <React.Fragment key={index}>
+                      {this.renderItemComponent({
+                        key: index.toString(),
+                        label: tab.label,
+                        children: fields.map((formFieldConfig, formFieldIndex) => {
+                          if (!ConditionHelper(formFieldConfig.condition, { record: getValue(value, tab.field), data: this.props.data, step: this.props.step, extraContainerPath: getChainPath(this.props.config.field, tab.field) }, this)) {
+                            if (!this.formFieldsMountedList[index]) this.formFieldsMountedList = set(this.formFieldsMountedList, `[${index}]`, [])
+                            this.formFieldsMountedList = set(this.formFieldsMountedList, `[${index}][${formFieldIndex}]`, false)
+                            this.formFieldsList[index] && (this.formFieldsList[index][formFieldIndex] = null)
+                            return null
+                          }
+                          let hidden: boolean = true
+                          let display: boolean = true
 
-                            if (formFieldConfig.type === 'hidden') {
-                              hidden = true
-                              display = false
-                            }
+                          if (formFieldConfig.type === 'hidden') {
+                            hidden = true
+                            display = false
+                          }
 
-                            if (formFieldConfig.display === 'none') {
-                              hidden = true
-                              display = false
-                            }
+                          if (formFieldConfig.display === 'none') {
+                            hidden = true
+                            display = false
+                          }
 
-                            const FormField = this.getALLComponents(formFieldConfig.type) || Field
+                          const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
-                            let status = ((this.state.formDataList[index] || [])[formFieldIndex] || {}).status || 'normal'
+                          let status = ((this.state.formDataList[index] || [])[formFieldIndex] || {}).status || 'normal'
 
-                            if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
-                              status = 'normal'
-                            }
+                          if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
+                            status = 'normal'
+                          }
 
-                            // 渲染表单项容器
-                            if (hidden) {
-                              return (
-                                <div key={formFieldIndex} style={display ? { position: 'relative' } : { overflow: 'hidden', width: 0, height: 0 }}>
-                                  {this.renderItemFieldComponent({
-                                    index: formFieldIndex,
-                                    label: formFieldConfig.label,
-                                    status,
-                                    message: ((this.state.formDataList[index] || [])[formFieldIndex] || {}).message || '',
-                                    required: getBoolean(formFieldConfig.required),
-                                    extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),
-                                    layout: this.props.formLayout,
-                                    fieldType: formFieldConfig.type,
-                                    children: (
-                                      <FormField
-                                        key={formFieldIndex}
-                                        ref={(formField: Field<FieldConfigs, any, any> | null) => {
-                                          if (!this.formFieldsList[index]) this.formFieldsList[index] = []
-                                          this.formFieldsList[index][formFieldIndex] = formField
-                                          this.handleMount(index, formFieldIndex)
-                                        }}
-                                        form={this.props.form}
-                                        formLayout={this.props.formLayout}
-                                        value={getValue(getValue(value, tab.field), formFieldConfig.field)}
-                                        record={getValue(value, tab.field)}
-                                        data={cloneDeep(this.props.data)}
-                                        step={this.props.step}
-                                        config={formFieldConfig}
-                                        onChange={(value: any) => this.handleChange(index, formFieldIndex, value)}
-                                        onValueSet={async (path, value, validation, options) => this.handleValueSet(index, formFieldIndex, path, value, validation, options)}
-                                        onValueUnset={async (path, validation, options) => this.handleValueUnset(index, formFieldIndex, path, validation, options)}
-                                        onValueListAppend={async (path, value, validation, options) => this.handleValueListAppend(index, formFieldIndex, path, value, validation, options)}
-                                        onValueListSplice={async (path, _index, count, validation, options) => this.handleValueListSplice(index, formFieldIndex, path, _index, count, validation, options)}
-                                        onValueListSort={async (path, _index, sortType, validation, options) => this.handleValueListSort(index, formFieldIndex, path, _index, sortType, validation, options)}
-                                        baseRoute={this.props.baseRoute}
-                                        loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
-                                      />
-                                    )
-                                  })}
-                                </div>
-                              )
-                            } else {
-                              return <React.Fragment key={formFieldIndex} />
-                            }
-                          })
-                        })}
-                      </React.Fragment>
+                          // 渲染表单项容器
+                          if (hidden) {
+                            return (
+                              <div key={formFieldIndex} style={display ? { position: 'relative' } : { overflow: 'hidden', width: 0, height: 0 }}>
+                                {this.renderItemFieldComponent({
+                                  index: formFieldIndex,
+                                  label: formFieldConfig.label,
+                                  status,
+                                  message: ((this.state.formDataList[index] || [])[formFieldIndex] || {}).message || '',
+                                  required: getBoolean(formFieldConfig.required),
+                                  extra: StatementHelper(formFieldConfig.extra, { record: getValue(value, tab.field), data: this.props.data, step: this.props.step, extraContainerPath: getChainPath(this.props.config.field, tab.field) }, this),
+                                  layout: this.props.formLayout,
+                                  fieldType: formFieldConfig.type,
+                                  children: (
+                                    <FormField
+                                      key={formFieldIndex}
+                                      ref={(formField: Field<FieldConfigs, any, any> | null) => {
+                                        if (!this.formFieldsList[index]) this.formFieldsList = set(this.formFieldsList, `[${index}]`, [])
+                                        this.formFieldsList = set(this.formFieldsList, `[${index}][${formFieldIndex}]`, formField)
+                                        this.handleMount(index, formFieldIndex)
+                                      }}
+                                      form={this.props.form}
+                                      formLayout={this.props.formLayout}
+                                      value={getValue(value, getChainPath(tab.field, formFieldConfig.field))}
+                                      record={getValue(value, tab.field)}
+                                      data={this.props.data}
+                                      step={this.props.step}
+                                      config={formFieldConfig}
+                                      onChange={(value: any) => this.handleChange(index, formFieldIndex, value)}
+                                      onValueSet={async (path, value, validation, options) => this.handleValueSet(index, formFieldIndex, path, value, validation, options)}
+                                      onValueUnset={async (path, validation, options) => this.handleValueUnset(index, formFieldIndex, path, validation, options)}
+                                      onValueListAppend={async (path, value, validation, options) => this.handleValueListAppend(index, formFieldIndex, path, value, validation, options)}
+                                      onValueListSplice={async (path, _index, count, validation, options) => this.handleValueListSplice(index, formFieldIndex, path, _index, count, validation, options)}
+                                      onValueListSort={async (path, _index, sortType, validation, options) => this.handleValueListSort(index, formFieldIndex, path, _index, sortType, validation, options)}
+                                      baseRoute={this.props.baseRoute}
+                                      loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                                      containerPath={getChainPath(this.props.containerPath, this.props.config.field, tab.field)}
+                                      onReportFields={async (field: string) => await this.handleReportFields(field)}
+                                    />
+                                  )
+                                })}
+                              </div>
+                            )
+                          } else {
+                            return <React.Fragment key={formFieldIndex} />
+                          }
+                        })
+                      })}
+                    </React.Fragment>
                     )
                   })
                 : []

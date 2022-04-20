@@ -1,9 +1,10 @@
 import React from 'react'
-import { setValue, getValue, getBoolean } from '../../../util/value'
+import { getValue, getBoolean, getChainPath } from '../../../util/value'
 import { Field, FieldConfig, FieldError, FieldProps, IField } from '../common'
 import getALLComponents, { FieldConfigs } from '../'
 import { IFormItem } from '../../../steps/form'
-import { cloneDeep } from 'lodash'
+// import { cloneDeep } from 'lodash'
+import { set, setValue } from '../../../util/produce'
 import ConditionHelper from '../../../util/condition'
 import StatementHelper from '../../../util/statement'
 import { ColumnsConfig } from '../../../interface'
@@ -68,7 +69,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     let childrenError = 0
     const childrenErrorMsg: Array<{name:string, msg:string}> = []
 
-    const formData = cloneDeep(this.state.formData)
+    let formData = this.state.formData
 
     for (const fieldIndex in (this.props.config.fields || [])) {
       const formItem = this.formFields[fieldIndex]
@@ -76,11 +77,11 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
       if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
         const validation = await formItem.validate(getValue(value, (this.props.config.fields || [])[fieldIndex].field))
 
-        if (validation === true) {
-          formData[fieldIndex] = { status: 'normal' }
+        if (validation === true || this.formFieldsMounted[fieldIndex] === false) {
+          formData = set(formData, `[${fieldIndex}]`, { status: 'normal' })
         } else {
           childrenError++
-          formData[fieldIndex] = { status: 'error', message: validation[0].message }
+          formData = set(formData, `[${fieldIndex}]`, { status: 'error', message: validation[0].message })
           childrenErrorMsg.push({
             name: formConfig?.label,
             msg: validation[0].message
@@ -107,7 +108,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (Array.isArray(this.props.config.fields)) {
       for (const formFieldIndex in this.props.config.fields) {
         const formFieldConfig = this.props.config.fields[formFieldIndex]
-        if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step })) {
+        if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step, extraContainerPath: this.props.config.field }, this)) {
           continue
         }
         const formField = this.formFields[formFieldIndex]
@@ -124,13 +125,12 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (this.formFieldsMounted[formFieldIndex]) {
       return true
     }
-    this.formFieldsMounted[formFieldIndex] = true
+    this.formFieldsMounted = set(this.formFieldsMounted, `[${formFieldIndex}]`, true)
 
     if (this.formFields[formFieldIndex]) {
       const formField = this.formFields[formFieldIndex]
       if (formField) {
         const formFieldConfig = this.props.config.fields[formFieldIndex]
-
         let value = getValue(this.props.value, formFieldConfig.field)
         const source = value
         if ((formFieldConfig.defaultValue) && value === undefined) {
@@ -143,17 +143,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
 
         if (value !== undefined) {
           const validation = await formField.validate(value)
-          if (validation === true) {
-            await this.setState(({ formData }) => {
-              formData[formFieldIndex] = { status: 'normal', name: formFieldConfig.label }
-              return { formData: cloneDeep(formData) }
-            })
-          } else {
-            await this.setState(({ formData }) => {
-              formData[formFieldIndex] = { status: 'error', message: validation[0].message, name: formFieldConfig.label }
-              return { formData: cloneDeep(formData) }
-            })
-          }
+          this.handleValueCallback(formFieldIndex, validation)
         }
         await formField.didMount()
       }
@@ -189,21 +179,28 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     // }
   }
 
+  /**
+   * 处理set、unset、append、splice、sort后的操作
+   */
+  handleValueCallback = async (formFieldIndex: number, validation: true | FieldError[]) => {
+    let formData = this.state.formData
+    if (validation === true) {
+      formData = set(formData, `[${formFieldIndex}]`, { status: 'normal' })
+    } else {
+      formData = set(formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message })
+    }
+
+    await this.setState({
+      formData
+    })
+  }
+
   handleValueSet = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueSet(fullPath, value, true)
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
@@ -212,16 +209,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (formFieldConfig) {
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueUnset(fullPath, true)
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
@@ -230,16 +218,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (formFieldConfig) {
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueListAppend(fullPath, value, true)
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
@@ -248,16 +227,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (formFieldConfig) {
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueListSplice(fullPath, index, count, true)
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
@@ -266,16 +236,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
     if (formFieldConfig) {
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueListSort(fullPath, index, sortType, true)
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
@@ -301,7 +262,6 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
       config,
       formLayout,
       value,
-      record,
       data,
       step
     } = this.props
@@ -312,8 +272,8 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
           columns: config?.columns?.enable ? config.columns : undefined,
           children: this.state.didMount
             ? (this.props.config.fields || []).map((formFieldConfig, formFieldIndex) => {
-                if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
-                  this.formFieldsMounted[formFieldIndex] = false
+                if (!ConditionHelper(formFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step, extraContainerPath: this.props.config.field }, this)) {
+                  this.formFieldsMounted = set(this.formFieldsMounted, `[${formFieldIndex}]`, false)
                   this.formFields && (this.formFields[formFieldIndex] = null)
                   return null
                 }
@@ -353,7 +313,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                   styles: formFieldConfig.styles,
                   status,
                   message: (this.state.formData[formFieldIndex] || {}).message || '',
-                  extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),
+                  extra: StatementHelper(formFieldConfig.extra, { record: this.props.value, data: this.props.data, step: this.props.step, extraContainerPath: this.props.config.field }, this),
                   required: getBoolean(formFieldConfig.required),
                   layout: formLayout,
                   visitable: display,
@@ -363,15 +323,15 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                         key={formFieldIndex}
                         ref={(formField: Field<FieldConfigs, any, any> | null) => {
                           if (formField) {
-                            this.formFields[formFieldIndex] = formField
+                            this.formFields = set(this.formFields, `[${formFieldIndex}]`, formField)
                             this.handleMount(formFieldIndex)
                           }
                         }}
                         form={this.props.form}
                         formLayout={formLayout}
                         value={getValue(value, formFieldConfig.field)}
-                        record={record}
-                        data={cloneDeep(data)}
+                        record={value}
+                        data={data}
                         step={step}
                         config={formFieldConfig}
                         onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
@@ -382,6 +342,8 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                         onValueListSort={async (path, index, sortType, validation, options) => this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)}
                         baseRoute={this.props.baseRoute}
                         loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                        containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
+                        onReportFields={async (field: string) => await this.handleReportFields(field)}
                       />
                   )
                 }

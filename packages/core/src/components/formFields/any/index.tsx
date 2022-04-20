@@ -1,6 +1,7 @@
 
 import React, { ReactNode } from 'react'
 import { Field, FieldConfig, IField, FieldInterface } from '../common'
+import { getChainPath } from '../../../util/value'
 import TextField from '../text'
 import * as _ from 'lodash'
 import NumberField from '../number'
@@ -29,8 +30,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
 
   handleChangeType = (type: 'null' | 'string' | 'number' | 'boolean') => {
     const {
-      value,
-      onChange
+      value
     } = this.props
     if (type === 'null') {
       this.props.onValueSet('', null, true)
@@ -80,60 +80,67 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
             type: type === 'string' || type === 'number' || type === 'boolean' ? type : 'null',
             onChange: (type) => this.handleChangeType(type)
           }),
-          valueContent: type === 'string' ? <this.TextField
-            ref={() => {}}
-            form={this.props.form}
-            formLayout={'horizontal'}
-            value={typeof value === 'string' ? value : ''}
-            record={record}
-            data={_.cloneDeep(data)}
-            step={step}
-            config={{ type: 'text', field: '', label: '' }}
-            onChange={async (value: string) => { await onChange(value) }}
-            onValueSet={this.props.onValueSet}
-            onValueUnset={this.props.onValueUnset}
-            onValueListAppend={this.props.onValueListAppend}
-            onValueListSplice={this.props.onValueListSplice}
-            onValueListSort={this.props.onValueListSort}
-            baseRoute={this.props.baseRoute}
-            loadDomain={this.props.loadDomain}
-          /> : (
-            type === 'number' ? <this.NumberField
-              ref={() => {}}
-              form={this.props.form}
-              formLayout={'horizontal'}
-              record={record}
-              value={typeof value === 'number' ? value : ''}
-              data={_.cloneDeep(data)}
-              step={step}
-              config={{ type: 'number', field: '', label: '' }}
-              onChange={async (value) => { await onChange(Number(value)) }}
-              onValueSet={async (path, value, validation) => await this.props.onValueSet(path, Number(value), validation)}
-              onValueUnset={this.props.onValueUnset}
-              onValueListAppend={this.props.onValueListAppend}
-              onValueListSplice={this.props.onValueListSplice}
-              onValueListSort={this.props.onValueListSort}
-              baseRoute={this.props.baseRoute}
-              loadDomain={this.props.loadDomain}
-            /> : <this.BooleanField
-              ref={() => {}}
-              form={this.props.form}
-              formLayout={'horizontal'}
-              record={record}
-              value={typeof value === 'boolean' ? value : false}
-              data={_.cloneDeep(data)}
-              step={step}
-              config={{ type: 'switch', field: '', label: '' }}
-              onChange={async (value) => { await onChange(Boolean(value)) }}
-              onValueSet={this.props.onValueSet}
-              onValueUnset={this.props.onValueUnset}
-              onValueListAppend={this.props.onValueListAppend}
-              onValueListSplice={this.props.onValueListSplice}
-              onValueListSort={this.props.onValueListSort}
-              baseRoute={this.props.baseRoute}
-              loadDomain={this.props.loadDomain}
-            />
-          )
+          valueContent:
+            type === 'string'
+              ? <this.TextField
+                ref={() => {}}
+                form={this.props.form}
+                formLayout={'horizontal'}
+                value={typeof value === 'string' ? value : ''}
+                record={record}
+                data={_.cloneDeep(data)}
+                step={step}
+                config={{ type: 'text', field: '', label: '' }}
+                onChange={async (value: string) => { await onChange(value) }}
+                onValueSet={this.props.onValueSet}
+                onValueUnset={this.props.onValueUnset}
+                onValueListAppend={this.props.onValueListAppend}
+                onValueListSplice={this.props.onValueListSplice}
+                onValueListSort={this.props.onValueListSort}
+                baseRoute={this.props.baseRoute}
+                loadDomain={this.props.loadDomain}
+                containerPath={getChainPath(this.props.containerPath, '')}
+              />
+              : (
+                  type === 'number'
+                    ? <this.NumberField
+                      ref={() => {}}
+                      form={this.props.form}
+                      formLayout={'horizontal'}
+                      record={record}
+                      value={typeof value === 'number' ? value : ''}
+                      data={_.cloneDeep(data)}
+                      step={step}
+                      config={{ type: 'number', field: '', label: '' }}
+                      onChange={async (value) => { await onChange(Number(value)) }}
+                      onValueSet={async (path, value, validation) => await this.props.onValueSet(path, Number(value), validation)}
+                      onValueUnset={this.props.onValueUnset}
+                      onValueListAppend={this.props.onValueListAppend}
+                      onValueListSplice={this.props.onValueListSplice}
+                      onValueListSort={this.props.onValueListSort}
+                      baseRoute={this.props.baseRoute}
+                      loadDomain={this.props.loadDomain}
+                      containerPath={getChainPath(this.props.containerPath, '')}
+                    />
+                    : <this.BooleanField
+                      ref={() => {}}
+                      form={this.props.form}
+                      formLayout={'horizontal'}
+                      record={record}
+                      value={typeof value === 'boolean' ? value : false}
+                      data={_.cloneDeep(data)}
+                      step={step}
+                      config={{ type: 'switch', field: '', label: '' }}
+                      onChange={async (value) => { await onChange(Boolean(value)) }}
+                      onValueSet={this.props.onValueSet}
+                      onValueUnset={this.props.onValueUnset}
+                      onValueListAppend={this.props.onValueListAppend}
+                      onValueListSplice={this.props.onValueListSplice}
+                      onValueListSort={this.props.onValueListSort}
+                      baseRoute={this.props.baseRoute}
+                      loadDomain={this.props.loadDomain}
+                      containerPath={getChainPath(this.props.containerPath, '')}
+                    />)
         })}
       </React.Fragment>
     )

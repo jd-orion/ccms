@@ -18,7 +18,7 @@ import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
 import GroupField, { GroupFieldConfig } from './group'
 import AnyField, { AnyFieldConfig } from './any'
 import SwitchField, { SwitchFieldConfig } from './switch'
-import ObjectField, { ObjectFieldConfig } from './object'
+// import ObjectField, { ObjectFieldConfig } from './object'
 import HiddenField from './hidden'
 import TabsField, { TabsFieldConfig } from './tabs'
 import MultipleTextField, { MultipleTextFieldConfig } from './multipleText'
@@ -66,7 +66,7 @@ export type FieldConfigs =
     ImportSubformFieldConfig |
     GroupFieldConfig |
     AnyFieldConfig |
-    ObjectFieldConfig |
+    // ObjectFieldConfig |
     TabsFieldConfig |
     MultipleTextFieldConfig |
     CustomFieldConfig |
@@ -94,7 +94,7 @@ export type componentType =
     'group' |
     'any' |
     'switch' |
-    'object' |
+    // 'object' |
     'tabs' |
     'multiple_text'|
     'custom' |
@@ -120,7 +120,7 @@ export default {
   group: GroupField,
   any: AnyField,
   switch: SwitchField,
-  object: ObjectField,
+  // object: ObjectField,
   hidden: HiddenField,
   tabs: TabsField,
   multiple_text: MultipleTextField,

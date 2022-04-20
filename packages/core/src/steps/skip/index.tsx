@@ -52,11 +52,11 @@ export default class SkipStep extends Step<SkipConfig> {
           }
           break
         case 'data':
-          if (data && data[step]) {
+          if (data && step) {
             if (defaultField) {
-              formDefault = getValue(data[step], defaultField)
+              formDefault = getValue(step, defaultField)
             } else {
-              formDefault = data[step]
+              formDefault = step
             }
           }
           break

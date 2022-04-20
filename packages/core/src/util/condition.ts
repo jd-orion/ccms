@@ -1,6 +1,8 @@
-import { set, cloneDeep, template } from 'lodash'
+import { template } from 'lodash'
+import { set } from '../util/produce'
 import { ParamConfig } from '../interface'
 import ParamHelper from './param'
+import { Field } from '../components/formFields/common'
 
 export interface ConditionConfig {
   /**
@@ -22,12 +24,11 @@ export interface ConditionConfig {
   debug?: boolean
 }
 
-export default function ConditionHelper (condition: ConditionConfig | undefined, datas: { record?: object, data: object[], step: number }): boolean {
+export default function ConditionHelper (condition: ConditionConfig | undefined, datas: { record?: object, data: object[], step: { [field: string]: any }, extraContainerPath?: string }, _this?: Field<any, any, any>): boolean {
   // 条件语句模版
   let conditionTemplate = ''
   // 条件语句模版入参
   let statementParams = {}
-
   if (condition === undefined || ((condition.statement === undefined || condition.statement === '') && (condition.template === undefined || condition.template === ''))) {
     return true
   } else {
@@ -36,11 +37,11 @@ export default function ConditionHelper (condition: ConditionConfig | undefined,
       if (condition.params) {
         condition.params.forEach((param) => {
           if (param.field !== undefined && param.data !== undefined) {
-            const value = ParamHelper(param.data, cloneDeep(datas))
+            const value = ParamHelper(param.data, datas, _this)
             if (param.field === '') {
               statementParams = value === undefined ? 'undefined' : JSON.stringify(value)
             } else {
-              set(statementParams, param.field, value === undefined ? 'undefined' : JSON.stringify(value))
+              statementParams = set(statementParams, param.field, value === undefined ? 'undefined' : JSON.stringify(value))
             }
           }
         })
@@ -58,9 +59,9 @@ export default function ConditionHelper (condition: ConditionConfig | undefined,
         condition.params.forEach((param) => {
           if (param.field !== undefined && param.data !== undefined) {
             if (param.field === '') {
-              statementParams = ParamHelper(param.data, cloneDeep(datas))
+              statementParams = ParamHelper(param.data, datas, _this)
             } else {
-              set(statementParams, param.field, ParamHelper(param.data, cloneDeep(datas)))
+              statementParams = set(statementParams, param.field, ParamHelper(param.data, datas, _this))
             }
           }
         })

@@ -40,7 +40,7 @@ export default class FetchStep extends Step<FetchConfig, FetchState> {
       try {
         const content = await this.interfaceHelper.request(
           merge(config.interface, { cache: { disabled: true } }),
-          {...(this.popData || {}), ...(init_data || {}), ...(this.props.data[this.props.step] || {})},
+          {...(this.popData || {}), ...(init_data || {}), ...(this.props.step || {})},
           {
             data: this.props.data,
             step: this.props.step

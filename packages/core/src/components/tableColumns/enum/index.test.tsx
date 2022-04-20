@@ -16,12 +16,13 @@ const defaultProps: ColumnProps<EnumColumnConfig> = {
     label: 'test',
     valueType: 'string',
     multiple: true,
+    align: 'left',
     options: {
       from: 'manual',
       data: [{
         extra: 'a', // todo
         label: '1',
-        key: 'filed'
+        key: 'field'
       }]
     },
     defaultValue: ''

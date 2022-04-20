@@ -28,7 +28,7 @@ export interface ColumnProps<T, V = any> {
   record: { [field: string]: any }
   value: V
   data: any[],
-  step: number,
+  step: { [field: string]: any },
   config: T,
   // 挂载引用
   table?: React.ReactNode

@@ -2,8 +2,9 @@ import { Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from
 import getALLComponents from '../'
 import React from 'react'
 import ConditionHelper from '../../../util/condition'
-import { cloneDeep } from 'lodash'
-import { getValue, setValue, getBoolean } from '../../../util/value'
+// import { cloneDeep } from 'lodash'
+import { set, setValue } from '../../../util/produce'
+import { getValue, getBoolean, getChainPath, updateCommonPrefixItem } from '../../../util/value'
 import StatementHelper from '../../../util/statement'
 
 export interface ObjectFieldConfig extends FieldConfig {
@@ -79,7 +80,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
       if (Array.isArray(this.props.config.fields)) {
         for (const formFieldIndex in this.props.config.fields) {
           const formFieldConfig = this.props.config.fields[formFieldIndex]
-          if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value[key], data: this.props.data, step: this.props.step })) {
+          if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value[key], data: this.props.data, step: this.props.step }, this)) {
             continue
           }
           const formField = this.formFieldsList[key] && this.formFieldsList[key][formFieldIndex]
@@ -105,10 +106,10 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
 
     let childrenError = 0
 
-    const formDataList = cloneDeep(this.state.formDataList)
+    let formDataList = this.state.formDataList
 
     for (const formItemsKey in this.formFieldsList) {
-      if (!formDataList[formItemsKey]) formDataList[formItemsKey] = []
+      if (!formDataList[formItemsKey]) formDataList = set(formDataList, `[${formItemsKey}]`, [])
       const formItems = this.formFieldsList[formItemsKey]
       for (const fieldIndex in (this.props.config.fields || [])) {
         const formItem = formItems[fieldIndex]
@@ -116,10 +117,10 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
           const validation = await formItem.validate(getValue(value[formItemsKey], (this.props.config.fields || [])[fieldIndex].field))
 
           if (validation === true) {
-            formDataList[formItemsKey][fieldIndex] = { status: 'normal' }
+            formDataList = set(formDataList, `[${formItemsKey}][${fieldIndex}]`, { status: 'normal' })
           } else {
             childrenError++
-            formDataList[formItemsKey][fieldIndex] = { status: 'error', message: validation[0].message }
+            formDataList = set(formDataList, `[${formItemsKey}][${fieldIndex}]`, { status: 'error', message: validation[0].message })
           }
         }
       }
@@ -138,18 +139,18 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
 
   handleMount = async (key: string, formFieldIndex: number) => {
     if (!this.formFieldsMountedList[key]) {
-      this.formFieldsMountedList[key] = []
+      this.formFieldsMountedList = set(this.formFieldsMountedList, `[${key}]`, [])
     }
     if (this.formFieldsMountedList[key][formFieldIndex]) {
       return true
     }
-    this.formFieldsMountedList[key][formFieldIndex] = true
+    this.formFieldsMountedList = set(this.formFieldsMountedList, `[${key}][${formFieldIndex}]`, true)
 
     if (this.formFieldsList[key] && this.formFieldsList[key][formFieldIndex]) {
       const formField = this.formFieldsList[key][formFieldIndex]
       if (formField) {
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
-
+        
         let value = getValue(this.props.value[key], formFieldConfig.field)
         const source = value
         if ((formFieldConfig.defaultValue) && value === undefined) {
@@ -164,15 +165,15 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
           const validation = await formField.validate(value)
           if (validation === true) {
             await this.setState(({ formDataList }) => {
-              if (!formDataList[key]) formDataList[key] = []
-              formDataList[key][formFieldIndex] = { status: 'normal' }
-              return { formDataList: cloneDeep(formDataList) }
+              if (!formDataList[key]) formDataList = set(formDataList, `[${key}]`, [])
+              formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'normal' })
+              return { formDataList: formDataList }
             })
           } else {
             await this.setState(({ formDataList }) => {
-              if (!formDataList[key]) formDataList[key] = []
-              formDataList[key][formFieldIndex] = { status: 'error', message: validation[0].message }
-              return { formDataList: cloneDeep(formDataList) }
+              if (!formDataList[key]) formDataList = set(formDataList, `[${key}]`, [])
+              formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'error', message: validation[0].message })
+              return { formDataList: formDataList }
             })
           }
         }
@@ -190,11 +191,11 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
 
     const key = `item_${i}`
 
-    this.formFieldsList[key] = []
-    this.formFieldsMountedList[key] = []
+    this.formFieldsList = set(this.formFieldsList, `${key}`, [])
+    this.formFieldsMountedList = set(this.formFieldsMountedList, `${key}`, [])
     await this.setState(({ formDataList }) => {
       formDataList[key] = []
-      return { formDataList: cloneDeep(formDataList) }
+      return { formDataList: formDataList }
     })
 
     this.props.onValueSet(key, {}, true)
@@ -203,27 +204,27 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
   }
 
   handleRemove = async (key: string) => {
-    delete this.formFieldsList[key]
-    delete this.formFieldsMountedList[key]
+    this.formFieldsList = set(this.formFieldsList, `${this.formFieldsList[key]}`)
+    this.formFieldsMountedList = set(this.formFieldsMountedList, `${this.formFieldsMountedList[key]}`)
     await this.setState(({ formDataList }) => {
-      delete formDataList[key]
-      return { formDataList: cloneDeep(formDataList) }
+      formDataList = set(formDataList, `${formDataList[key]}`)
+      return { formDataList: formDataList }
     })
 
     this.props.onValueUnset(key, true)
   }
 
   handleChangeKey = async (prev: string, next: string) => {
-    this.formFieldsList[next] = this.formFieldsList[prev]
-    delete this.formFieldsList[prev]
+    this.formFieldsList = set(this.formFieldsList, `[${next}]`, this.formFieldsList[prev])
+    this.formFieldsList = set(this.formFieldsList, `${this.formFieldsList[prev]}`)
 
-    this.formFieldsMountedList[next] = this.formFieldsMountedList[prev]
-    delete this.formFieldsMountedList[prev]
+    this.formFieldsMountedList = set(this.formFieldsMountedList, `[${next}]`, this.formFieldsMountedList[prev])
+    this.formFieldsMountedList = set(this.formFieldsMountedList, `${this.formFieldsMountedList[prev]}`)
 
     await this.setState(({ formDataList }) => {
-      formDataList[next] = formDataList[prev]
-      delete formDataList[prev]
-      return { formDataList: cloneDeep(formDataList) }
+      formDataList = set(formDataList, `[${next}]`, formDataList[prev])
+      formDataList = set(formDataList, `${formDataList[prev]}`)
+      return { formDataList: formDataList }
     })
 
     this.props.onValueSet(next, this.props.value[prev], true)
@@ -242,17 +243,17 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
     //     }
     //   }
 
-    //   const validation = await formField.validate(value)
+    //   let validation = await formField.validate(value)
     //   if (validation === true) {
     //     await this.setState(({ formDataList }) => {
-    //       if (!formDataList[key]) formDataList[key] = []
-    //       formDataList[key][formFieldIndex] = { value, status: 'normal' }
+    //       if (!formDataList[key]) formDataList = set(formDataList, `[${key}]`, [])
+    //       formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'normal' })
     //       return { formDataList: cloneDeep(formDataList) }
     //     })
     //   } else {
     //     await this.setState(({ formDataList }) => {
-    //       if (!formDataList[key]) formDataList[key] = []
-    //       formDataList[key][formFieldIndex] = { value, status: 'error', message: validation[0].message }
+    //       if (!formDataList[key]) formDataList = set(formDataList, `[${key}]`, [])
+    //       formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'error', message: validation[0].message })
     //       return { formDataList: cloneDeep(formDataList) }
     //     })
     //   }
@@ -265,11 +266,11 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueSet(fullPath === '' ? key : `${key}.${fullPath}`, value, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
+      let formDataList = this.state.formDataList
       if (validation === true) {
-        formDataList[key][formFieldIndex] = { status: 'normal' }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'normal' })
       } else {
-        formDataList[key][formFieldIndex] = { status: 'error', message: validation[0].message }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'error', message: validation[0].message })
       }
 
       this.setState({
@@ -284,11 +285,11 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueUnset(fullPath === '' ? key : `${key}.${fullPath}`, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
+      let formDataList = this.state.formDataList
       if (validation === true) {
-        formDataList[key][formFieldIndex] = { status: 'normal' }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'normal' })
       } else {
-        formDataList[key][formFieldIndex] = { status: 'error', message: validation[0].message }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'error', message: validation[0].message })
       }
 
       this.setState({
@@ -303,11 +304,11 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueListAppend(fullPath === '' ? key : `${key}.${fullPath}`, value, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
+      let formDataList = this.state.formDataList
       if (validation === true) {
-        formDataList[key][formFieldIndex] = { status: 'normal' }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'normal' })
       } else {
-        formDataList[key][formFieldIndex] = { status: 'error', message: validation[0].message }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'error', message: validation[0].message })
       }
 
       this.setState({
@@ -322,11 +323,11 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueListSplice(fullPath === '' ? key : `${key}.${fullPath}`, _index, count, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
+      let formDataList = this.state.formDataList
       if (validation === true) {
-        formDataList[key][formFieldIndex] = { status: 'normal' }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'normal' })
       } else {
-        formDataList[key][formFieldIndex] = { status: 'error', message: validation[0].message }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'error', message: validation[0].message })
       }
 
       this.setState({
@@ -341,11 +342,11 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
       const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
       await this.props.onValueListSort(fullPath === '' ? key : `${key}.${fullPath}`, _index, sortType, true)
 
-      const formDataList = cloneDeep(this.state.formDataList)
+      let formDataList = this.state.formDataList
       if (validation === true) {
-        formDataList[key][formFieldIndex] = { status: 'normal' }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'normal' })
       } else {
-        formDataList[key][formFieldIndex] = { status: 'error', message: validation[0].message }
+        formDataList = set(formDataList, `[${key}][${formFieldIndex}]`, { status: 'error', message: validation[0].message })
       }
 
       this.setState({
@@ -353,6 +354,9 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
       })
     }
   }
+
+
+
 
   /**
    * 用于展示子表单组件
@@ -415,9 +419,9 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                         onChange: async (value) => await this.handleChangeKey(key, value),
                         onRemove: async () => await this.handleRemove(key),
                         children: (Array.isArray(this.props.config.fields) ? this.props.config.fields : []).map((formFieldConfig, formFieldIndex) => {
-                          if (!ConditionHelper(formFieldConfig.condition, { record: this.props.record, data: this.props.data, step: this.props.step })) {
-                            if (!this.formFieldsMountedList[key]) this.formFieldsMountedList[key] = []
-                            this.formFieldsMountedList[key][formFieldIndex] = false
+                          if (!ConditionHelper(formFieldConfig.condition, { record: this.props.record, data: this.props.data, step: this.props.step }, this)) {
+                            if (!this.formFieldsMountedList[key]) this.formFieldsMountedList = set(this.formFieldsMountedList, `[${key}]`, [])
+                            this.formFieldsMountedList = set(this.formFieldsMountedList, `[${key}][${formFieldIndex}]`, false)
                             return null
                           }
                           let hidden: boolean = true
@@ -459,8 +463,8 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                       key={formFieldIndex}
                                       ref={(formField: Field<FieldConfigs, any, any> | null) => {
                                         if (formField) {
-                                          if (!this.formFieldsList[key]) this.formFieldsList[key] = []
-                                          this.formFieldsList[key][formFieldIndex] = formField
+                                          if (!this.formFieldsList[key]) this.formFieldsList = set(this.formFieldsList, `[${key}]`, [])
+                                          this.formFieldsList = set(this.formFieldsList, `[${key}][${formFieldIndex}]`, formField)
                                           this.handleMount(key, formFieldIndex)
                                         }
                                       }}
@@ -468,7 +472,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                       form={this.props.form}
                                       value={getValue(value[key], formFieldConfig.field)}
                                       record={value[key]}
-                                      data={cloneDeep(this.props.data)}
+                                      data={this.props.data}
                                       step={this.props.step}
                                       config={formFieldConfig}
                                       onChange={(value: any) => this.handleChange(key, formFieldIndex, value)}
@@ -479,6 +483,8 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                       onValueListSort={async (path, _index, sortType, validation, options) => this.handleValueListSort(key, formFieldIndex, path, _index, sortType, validation, options)}
                                       baseRoute={this.props.baseRoute}
                                       loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                                      containerPath={getChainPath(this.props.containerPath, this.props.config.field, key)}
+                                      onReportFields={async (field: string) => await this.handleReportFields(field)}
                                     />
                                 )
                               })

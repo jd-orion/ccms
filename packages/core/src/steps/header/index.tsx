@@ -75,7 +75,6 @@ export interface statisticContentConfig extends basicContentConfig {
   statistics?: (valueStatisticConfig | enumerationStatisticConfig)[]
 }
 
-
 interface basicStatisticConfig {
   label?: string
   value?: ParamConfig
@@ -341,20 +340,19 @@ export default class HeaderStep extends Step<HeaderConfig> {
       switch (mainContent.type) {
         case 'plain':
           props.mainContent = this.handlePlainContent(mainContent, 'main')
-          break;
+          break
         case 'markdown':
           props.mainContent = this.handleMarkdownContent(mainContent, 'main')
-          break;
+          break
         case 'html':
           props.mainContent = this.handleHTMLContent(mainContent, 'main')
-          break;
+          break
         case 'detail':
           props.mainContent = this.handleDetailContent(mainContent, 'main')
-          break;
+          break
         case 'statistic':
           props.mainContent = this.handleStatisticContent(mainContent, 'main')
-        default:
-          break;
+          break
       }
     }
 
@@ -363,12 +361,12 @@ export default class HeaderStep extends Step<HeaderConfig> {
       switch (extraContent.type) {
         case 'statistic':
           props.extraContent = this.handleStatisticContent(extraContent, 'extra')
-          break;
+          break
         case 'image':
           props.extraContent = this.handleImageContent(extraContent, 'extra')
-          break;
+          break
         default:
-          break;
+          break
       }
     }
 

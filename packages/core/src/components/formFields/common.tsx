@@ -3,8 +3,10 @@ import { ColumnsConfig, ParamConfig } from '../../interface'
 
 import { FieldConfigs as getFieldConfigs } from './'
 import ParamHelper from '../../util/param'
+import { updateCommonPrefixItem } from '../../util/value'
 import { ConditionConfig } from '../../util/condition'
 import { StatementConfig } from '../../util/statement'
+import { isEqual, get } from 'lodash'
 
 /**
  * 表单项基类配置文件格式定义
@@ -79,7 +81,6 @@ export interface FieldProps<C extends FieldConfig, T> {
   value: T,
   record: { [field: string]: any },
   data: any[],
-  step: number,
   config: C
   // TODO 待删除
   onChange: (value: T) => Promise<void>
@@ -94,6 +95,9 @@ export interface FieldProps<C extends FieldConfig, T> {
   // 事件：修改值 - 列表 - 修改顺序
   onValueListSort: (path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
   baseRoute: string,
+  containerPath: string, // 容器组件所在路径以字段拼接展示  1.3.0新增
+  onReportFields?: (field: string) => Promise<void> // 向父组件上报依赖字段  1.3.0新增
+  step: { [field: string]: any } // 传递formValue
   loadDomain: (domain: string) => Promise<string>
 }
 
@@ -127,6 +131,7 @@ export interface FieldInterface {
  * - S: 表单项的扩展状态
  */
 export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<FieldProps<C, T>, S> implements IField<T> {
+  dependentFields: string[] = [] // 组件param依赖字段存放数组  1.3.0新增
   static defaultProps = {
     config: {}
   };
@@ -134,12 +139,12 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
   /**
    * 获取默认值
    */
-  defaultValue = async () => {
+  defaultValue : () => Promise<any> = async () => {
     const {
       config
     } = this.props
     if (config.defaultValue !== undefined) {
-      return ParamHelper(config.defaultValue, { record: this.props.record, data: this.props.data, step: this.props.step })
+      return ParamHelper(config.defaultValue, { record: this.props.record, data: this.props.data, step: this.props.step }, this)
     }
 
     return undefined
@@ -167,10 +172,50 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
 
   didMount: () => Promise<void> = async () => { }
 
+  /**
+   * 上报param依赖字段名称
+   * @param field
+   */
+  handleReportFields: (field: string) => void = async (field) => {
+    const update: string[] | boolean = updateCommonPrefixItem(this.dependentFields, field)
+    if (typeof update === 'boolean') return
+    this.dependentFields = update
+    this.props.onReportFields && await this.props.onReportFields(field)
+  }
+
   renderComponent = (props: E) => {
     return <React.Fragment>
       当前UI库未实现该表单类型
     </React.Fragment>
+  }
+
+  shouldComponentUpdate (nextProps: FieldProps<C, T>, nextState: S) {
+    // console.log('nextProps', nextProps, this.props, nextProps.value == this.props.value);
+
+    const dependentFieldsArr = this.dependentFields
+    // console.log('dependentFieldsArr',dependentFieldsArr);
+    let dependentIsChange = false
+    if (dependentFieldsArr && dependentFieldsArr.length) {
+      for (let i = dependentFieldsArr.length; i >= 0; i--) {
+        const nextDependentField = get(nextProps.step, dependentFieldsArr[i])
+        const currentDependentField = get(this.props.step, dependentFieldsArr[i])
+
+        if ((nextDependentField || currentDependentField) && nextDependentField !== currentDependentField) {
+          dependentIsChange = true
+          break
+        }
+      }
+    }
+
+    /**
+     * data提交前不变, 去掉这项的比较
+     * record也不比较，需要比较的话就在dependentFieldsArr取出record绝对路径
+     * */
+    if (!dependentIsChange && isEqual(this.state, nextState) && nextProps.value === this.props.value && this.props.config === nextProps.config) {
+      // console.log('no update' );
+      return false
+    }
+    return true
   }
 
   render = () => {
@@ -184,7 +229,7 @@ export interface DisplayProps<C extends FieldConfig, T> {
   value: T,
   record: { [field: string]: any },
   data: any[],
-  step: number,
+  step: { [field: string]: any }
   config: C,
   // 事件：设置值
   onValueSet: (path: string, value: T, options?: { noPathCombination?: boolean }) => Promise<void>

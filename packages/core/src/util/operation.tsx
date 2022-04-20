@@ -1,9 +1,10 @@
-import React from 'react';
-import queryString from 'query-string';
-import { set } from "lodash";
-import { ParamConfig } from "../interface";
-import { CCMSConfig, CCMSProps } from "../main";
-import { getParam } from "./value";
+import React from 'react'
+import queryString from 'query-string'
+// import { set } from "lodash";
+import { set } from '../util/produce'
+import { ParamConfig } from '../interface'
+import { CCMSConfig, CCMSProps } from '../main'
+import { getParam } from './value'
 
 export type OperationConfig = CCMSOperationConfig
 
@@ -50,8 +51,8 @@ interface CCMSInvisibleOperationConfig extends _CCMSOperationConfig {
 type CCMSOperationConfig = CCMSPopupOperationConfig | CCMSRedirectOperationConfig | CCMSWindowOperationConfig | CCMSInvisibleOperationConfig
 
 interface OperationHelperProps {
-  config?: OperationConfig, 
-  datas: { record?: object, data: object[], step: number },
+  config?: OperationConfig,
+  datas: { record?: object, data: object[], step: { [field: string]: any } },
   checkPageAuth: (pageID: any) => Promise<boolean>,
   loadPageURL: (pageID: any) => Promise<string>,
   loadPageFrameURL: (pageID: any) => Promise<string>,
@@ -77,7 +78,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
       operationConfig: null
     }
   }
-  
+
   protected renderModal (props: IOperationModal) {
     return <React.Fragment>
       您当前使用的UI版本没有实现OpertionHelper组件。
@@ -100,16 +101,16 @@ export default class OperationHelper extends React.Component<OperationHelperProp
     } = this.props
     return async () => {
       if (config.type === 'ccms') {
-        const sourceData = {}
+        let sourceData = {}
         if (config.params === undefined) {
           for (const [field, param] of Object.entries(config.data || {})) {
             const value = getParam(param, datas)
-            set(sourceData, field, value)
+            sourceData = set(sourceData, field, value)
           }
         } else {
-          for (const {field, data} of config.params) {
+          for (const { field, data } of config.params) {
             const value = getParam(data, datas)
-            set(sourceData, field, value)
+            sourceData = set(sourceData, field, value)
           }
         }
         if (config.mode === 'popup' || config.mode === 'invisible') {
@@ -134,7 +135,6 @@ export default class OperationHelper extends React.Component<OperationHelperProp
       }
     }
   }
-
 
   render () {
     if (this.props.config) {

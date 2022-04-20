@@ -39,7 +39,7 @@ export default class SelectField<C extends SelectFieldConfig, E, T> extends Fiel
     if (config) {
       EnumerationHelper.options(
         config,
-        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }),
+        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }, this),
         { record: this.props.record, data: this.props.data, step: this.props.step }
       ).then((options) => {
         if (JSON.stringify(this.state.options) !== JSON.stringify(options)) {

@@ -1,10 +1,11 @@
 import React from 'react'
-import { setValue, getValue, getBoolean } from '../../../util/value'
+import { isEqual } from 'lodash'
+import { getValue, getBoolean, getChainPath } from '../../../util/value'
 
 import { Field, FieldConfig, FieldError, FieldProps, IField } from '../common'
 import getALLComponents, { FieldConfigs } from '../'
 import { IFormItem } from '../../../steps/form'
-import { cloneDeep, isEqual } from 'lodash'
+import { set, setValue } from '../../../util/produce'
 import ConditionHelper from '../../../util/condition'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 import StatementHelper from '../../../util/statement'
@@ -64,7 +65,6 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
 
   formFields: Array<Field<FieldConfigs, {}, any> | null> = []
   formFieldsMounted: Array<boolean> = []
-
   interfaceHelper = new InterfaceHelper()
 
   constructor (props: FieldProps<ImportSubformFieldConfig, any>) {
@@ -75,13 +75,6 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       fields: [],
       formData: []
     }
-  }
-
-  getFullpath (field: string, path: string = '') {
-    const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
-    const _fullPath = `${withConfigPath}.${field}.${path}.`
-    const fullPath = _fullPath.replace(/(^\.*)|(\.*$)|(\.){2,}/g, '$3')
-    return fullPath
   }
 
   didMount = async () => {
@@ -96,13 +89,14 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     if (Array.isArray(this.state.fields)) {
       for (const formFieldIndex in this.state.fields) {
         const formFieldConfig = this.state.fields[formFieldIndex]
-        if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step })) {
+        if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step, extraContainerPath: this.props.config.field }, this)) {
           continue
         }
         const formField = this.formFields[formFieldIndex]
         if (formField && !formFieldConfig.disabled) {
+          const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
           const value = await formField.get()
-          data = setValue(data, this.getFullpath(formFieldConfig.field), value)
+          data = setValue(data, getChainPath(withConfigPath, formFieldConfig.field), value)
         }
       }
     }
@@ -133,19 +127,20 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     let childrenError = 0
     const childrenErrorMsg: Array<{name:string, msg:string}> = []
 
-    const formData = cloneDeep(this.state.formData)
+    let formData = this.state.formData
 
     for (const fieldIndex in (this.state.fields || [])) {
       const formItem = this.formFields[fieldIndex]
-      const formConfig = this.state.fields?.[fieldIndex]
-      if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
-        const validation = await formItem.validate(getValue(value, this.getFullpath((this.state.fields || [])[fieldIndex].field)))
+    const formConfig = this.state.fields?.[fieldIndex]
+    if (formItem !== null && formItem !== undefined) {
+        const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
+        const validation = await formItem.validate(getValue(value, getChainPath(withConfigPath, (this.state.fields || [])[fieldIndex].field)))
 
         if (validation === true || this.formFieldsMounted[fieldIndex] === false) {
-          formData[fieldIndex] = { status: 'normal' }
+          formData = set(formData, `[${fieldIndex}]`, { status: 'normal' })
         } else {
           childrenError++
-          formData[fieldIndex] = { status: 'error', message: validation[0].message }
+          formData = set(formData, `[${fieldIndex}]`, { status: 'error', message: validation[0].message })
           childrenErrorMsg.push({
             name: formConfig?.label,
             msg: validation[0].message
@@ -171,36 +166,27 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       return true
     }
 
-    this.formFieldsMounted[formFieldIndex] = true
+    this.formFieldsMounted = set(this.formFieldsMounted, `[${formFieldIndex}]`, true)
 
     if (this.formFields[formFieldIndex]) {
       const formField = this.formFields[formFieldIndex]
       if (formField) {
+        const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
         const formFieldConfig = this.state.fields[formFieldIndex]
 
-        let value = getValue(this.props.value, this.getFullpath(formFieldConfig.field))
+        let value = getValue(this.props.value, getChainPath(withConfigPath, formFieldConfig.field))
         const source = value
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
         }
         value = await formField.set(value)
         if (source !== value) {
-          this.props.onValueSet(this.getFullpath(formFieldConfig.field), value, true)
+          this.props.onValueSet(getChainPath(withConfigPath, formFieldConfig.field), value, true)
         }
 
         if (value !== undefined) {
           const validation = await formField.validate(value)
-          if (validation === true) {
-            await this.setState(({ formData }) => {
-              formData[formFieldIndex] = { status: 'normal' }
-              return { formData: cloneDeep(formData) }
-            })
-          } else {
-            await this.setState(({ formData }) => {
-              formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-              return { formData: cloneDeep(formData) }
-            })
-          }
+          this.handleValueCallback(formFieldIndex, validation)
         }
         await formField.didMount()
       }
@@ -236,98 +222,73 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     // }
   }
 
+  /**
+   * 处理set、unset、append、splice、sort后的操作
+   */
+  handleValueCallback = async (formFieldIndex: number, validation: true | FieldError[]) => {
+    let formData = this.state.formData
+    if (validation === true) {
+      formData = set(formData, `[${formFieldIndex}]`, { status: 'normal' })
+    } else {
+      formData = set(formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message })
+    }
+    await this.setState({
+      formData
+    })
+  }
+
   handleValueSet = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
+      const fullPath = options && options.noPathCombination ? path : getChainPath(withConfigPath, formFieldConfig.field, path)
       await this.props.onValueSet(fullPath, value, true)
 
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
   handleValueUnset = async (formFieldIndex: number, path: string, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
+      const fullPath = options && options.noPathCombination ? path : getChainPath(withConfigPath, formFieldConfig.field, path)
       await this.props.onValueUnset(fullPath, true)
 
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
   handleValueListAppend = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
+      const fullPath = options && options.noPathCombination ? path : getChainPath(withConfigPath, formFieldConfig.field, path)
       await this.props.onValueListAppend(fullPath, value, true)
 
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
   handleValueListSplice = async (formFieldIndex: number, path: string, index: number, count: number, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+    const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
+    const fullPath = options && options.noPathCombination ? path : getChainPath(withConfigPath, formFieldConfig.field, path)
       await this.props.onValueListSplice(fullPath, index, count, true)
 
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
   handleValueListSort = async (formFieldIndex: number, path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+    const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
+    const fullPath = options && options.noPathCombination ? path : getChainPath(withConfigPath, formFieldConfig.field, path)
       await this.props.onValueListSort(fullPath, index, sortType, true)
 
-      const formData = cloneDeep(this.state.formData)
-      if (validation === true) {
-        formData[formFieldIndex] = { status: 'normal' }
-      } else {
-        formData[formFieldIndex] = { status: 'error', message: validation[0].message }
-      }
-
-      this.setState({
-        formData
-      })
+      this.handleValueCallback(formFieldIndex, validation)
     }
   }
 
@@ -371,7 +332,6 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
       config,
       formLayout,
       value,
-      record,
       data,
       step
     } = this.props
@@ -401,7 +361,8 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
         interfaceConfig,
         {},
         { record: this.props.record, data: this.props.data, step: this.props.step },
-        { loadDomain: this.props.loadDomain }
+        { loadDomain: this.props.loadDomain },
+        this
       ).then((data: any) => {
         const dataToUnstringfy = this.handleDataToUnstringfy(data)
         if (this.props.config.withConfig?.enable && this.props.config.withConfig?.configField) this.props.onValueSet(this.props.config.withConfig.configField, data, true)
@@ -416,14 +377,15 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
     if (!fields || !Array.isArray(fields) || fields.length === 0) {
       return <React.Fragment />
     } else {
+      const withConfigPath = this.props.config.withConfig?.enable && this.props.config.withConfig?.dataField ? `${this.props.config.withConfig.dataField}` : ''
       return (
         <React.Fragment>
           {this.renderComponent({
             columns: config.columns,
             children: this.state.didMount
               ? (Array.isArray(this.state.fields) ? this.state.fields : []).map((formFieldConfig, formFieldIndex) => {
-                  if (!ConditionHelper(formFieldConfig.condition, { record: value, data, step })) {
-                    this.formFieldsMounted[formFieldIndex] = false
+                  if (!ConditionHelper(formFieldConfig.condition, { record: value, data, step, extraContainerPath: this.props.config.field }, this)) {
+                    this.formFieldsMounted = set(this.formFieldsMounted, `[${formFieldIndex}]`, false)
                     this.formFields && (this.formFields[formFieldIndex] = null)
                     return null
                   }
@@ -462,7 +424,7 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                         }
                       : undefined,
                     message: (this.state.formData[formFieldIndex] || {}).message || '',
-                    extra: StatementHelper(formFieldConfig.extra, { record: this.props.record, data: this.props.data, step: this.props.step }),
+                    extra: StatementHelper(formFieldConfig.extra, { record: this.props.value, data: this.props.data, step: this.props.step, extraContainerPath: this.props.config.field }, this),
                     required: getBoolean(formFieldConfig.required),
                     layout: formLayout,
                     visitable: display,
@@ -472,16 +434,16 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                           key={formFieldIndex}
                           ref={(formField: Field<FieldConfigs, any, any> | null) => {
                             if (formField) {
-                              this.formFields[formFieldIndex] = formField
+                              this.formFields = set(this.formFields, `[${formFieldIndex}]`, formField)
                               this.handleMount(formFieldIndex)
                             }
                           }}
                           form={this.props.form}
                           formLayout={formLayout}
-                          value={getValue(value, this.getFullpath(formFieldConfig.field))}
-                          record={record}
-                          data={cloneDeep(data)}
-                          step={step}
+                          value={getValue(value, getChainPath(withConfigPath, formFieldConfig.field))}
+                          record={value}
+                          step={this.props.step}
+                          data={data}
                           config={formFieldConfig}
                           onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
                           onValueSet={async (path, value, validation, options) => this.handleValueSet(formFieldIndex, path, value, validation, options)}
@@ -491,6 +453,8 @@ export default class ImportSubformField extends Field<ImportSubformFieldConfig, 
                           onValueListSort={async (path, index, sortType, validation, options) => this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)}
                           baseRoute={this.props.baseRoute}
                           loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                          containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
+                          onReportFields={async (field: string) => await this.handleReportFields(field)}
                         />
                     )
                   }

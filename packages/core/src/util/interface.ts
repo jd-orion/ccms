@@ -1,8 +1,11 @@
-import { isEqual, cloneDeep, template, get, set, merge } from "lodash"
+// import { isEqual, cloneDeep, template, get, set, merge } from "lodash"
+import { isEqual, template, get, merge } from "lodash"
+import { set } from '../util/produce'
 import axios, { AxiosRequestConfig } from 'axios'
-import { ParamConfig } from "../interface";
-import ParamHelper from "./param";
-import { getValue } from "./value";
+import { ParamConfig } from '../interface'
+import ParamHelper from './param'
+import { getValue } from './value'
+import { Field } from '../components/formFields/common'
 
 export interface InterfaceConfig {
   domain?: string
@@ -20,12 +23,12 @@ export interface InterfaceConfig {
     enable?: boolean,
     field?: string,
     value?: any,
-    success?: { type: 'none' } | 
-              { type: 'modal', content?: { type: 'static', content?: string } | 
-                                         { type: 'field',  field?: string }},
-    fail?: { type: 'none' } | 
+    success?: { type: 'none' } |
+              { type: 'modal', content?: { type: 'static', content?: string } |
+                                         { type: 'field', field?: string }},
+    fail?: { type: 'none' } |
            { type: 'modal', content?: {type: 'static', content?: string } |
-                                      {type: 'field',  field?: string }}
+                                      {type: 'field', field?: string }}
   }
 
   response?: {
@@ -96,11 +99,12 @@ export default class InterfaceHelper {
   public request (
     config: InterfaceConfig,
     source: any,
-    datas: { record?: object, data: object[], step: number },
+    datas: { record?: object, data: object[], step: { [field: string]: any }, extraContainerPath?: string },
     option?: {
       loadDomain?: (domain: string) => Promise<string>
       extra_data?: { params?: any, data?: any }
-    }
+    },
+    _this?: Field<any, any, any>
   ): Promise<any> {
     return new Promise(async (resolve, reject) => {
       // 处理URL
@@ -110,9 +114,9 @@ export default class InterfaceHelper {
         config.urlParams.forEach((param) => {
           if (param.field !== undefined && param.data !== undefined) {
             if (param.field === '') {
-              urlParams = ParamHelper(param.data, datas)
+              urlParams = ParamHelper(param.data, datas, _this)
             } else {
-              set(urlParams, param.field, ParamHelper(param.data, datas))
+              urlParams = set(urlParams, param.field, ParamHelper(param.data, datas, _this))
             }
           }
         })
@@ -143,9 +147,9 @@ export default class InterfaceHelper {
         config.params.forEach((param) => {
           if (param.field !== undefined && param.data !== undefined) {
             if (param.field === '') {
-              params = ParamHelper(param.data, datas)
+              params = ParamHelper(param.data, datas, _this)
             } else {
-              set(params, param.field, ParamHelper(param.data, datas))
+              params = set(params, param.field, ParamHelper(param.data, datas, _this))
             }
           }
         })
@@ -157,7 +161,7 @@ export default class InterfaceHelper {
         if (config.data) {
           config.data.forEach((param) => {
             if (param.field !== undefined && param.data !== undefined) {
-              (data as FormData).append(param.field, ParamHelper(param.data, datas))
+              (data as FormData).append(param.field, ParamHelper(param.data, datas, _this))
             }
           })
         }
@@ -171,9 +175,9 @@ export default class InterfaceHelper {
           config.data.forEach((param) => {
             if (param.field !== undefined && param.data !== undefined) {
               if (param.field === '') {
-                data = ParamHelper(param.data, datas)
+                data = ParamHelper(param.data, datas, _this)
               } else {
-                set(data, param.field, ParamHelper(param.data, datas))
+                data = set(data, param.field, ParamHelper(param.data, datas, _this))
               }
             }
           })
@@ -182,12 +186,12 @@ export default class InterfaceHelper {
           merge(data, option.extra_data.data)
         }
       }
-      
+
       // 缓存判断
       if (config.cache && config.cache.global && Object.keys(InterfaceHelper.cache).includes(config.cache.global)) {
         resolve(InterfaceHelper.cache[config.cache.global])
       } else if (
-        (!config.cache || !config.cache.disabled) && 
+        (!config.cache || !config.cache.disabled) &&
         isEqual(this._config, config) &&
         isEqual(this._url, url) &&
         isEqual(this._params, params) &&
@@ -195,11 +199,11 @@ export default class InterfaceHelper {
       ) {
         return this._response
       } else {
-        this._config = cloneDeep(config)
+        this._config = config
         this._url = url
-        this._params = cloneDeep(params)
-        this._data = cloneDeep(data)
-  
+        this._params = params
+        this._data = data
+
         const request: AxiosRequestConfig = {
           url,
           method: config.method || 'GET',
@@ -210,10 +214,10 @@ export default class InterfaceHelper {
         if (config.method === 'POST') {
           request.data = data
         }
-  
+
         try {
           const response = await axios(request).then((response) => response.data)
-  
+
           if (config.condition && config.condition.enable) {
             if (get(response, config.condition.field || '') === config.condition.value) {
               if (config.condition.success) {
@@ -243,7 +247,7 @@ export default class InterfaceHelper {
               return
             }
           }
-  
+
           if (config.response) {
             if (Array.isArray(config.response)) {
               let content = {}
@@ -252,7 +256,7 @@ export default class InterfaceHelper {
                 if (field === undefined || field === '') {
                   content = value
                 } else {
-                  set(content, field, value)
+                  content = set(content, field, value)
                 }
               }
               this._response = content

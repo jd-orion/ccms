@@ -397,9 +397,9 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                     formLayout={layout}
                     value={detailFieldConfig.field !== undefined ? getValue(detailValue, detailFieldConfig.field) || detailFieldConfig.defaultValue : undefined}
                     record={detailValue}
+                    step={cloneDeep(detailValue)}
                     data={cloneDeep(data)}
                     detail={this}
-                    step={step}
                     config={detailFieldConfig}
                     onChange={async (value: any) => { await this.handleChange(detailFieldIndex, value) }}
                     onValueSet={async (path, value) => await this.handleValueSet(detailFieldIndex, path, value)}

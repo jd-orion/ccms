@@ -1,13 +1,15 @@
-import { set, cloneDeep, template } from "lodash"
-import { ParamConfig } from "../interface";
-import ParamHelper from "./param";
+import { template } from 'lodash'
+import { set } from '../util/produce'
+import { ParamConfig } from '../interface'
+import ParamHelper from './param'
+import { Field } from '../components/formFields/common'
 
 export interface StatementConfig {
   statement: string
   params: { field: string, data: ParamConfig }[]
 }
 
-export default function StatementHelper(config: StatementConfig | undefined, datas: { record?: object, data: object[], step: number }): string {
+export default function StatementHelper (config: StatementConfig | undefined, datas: { record?: object, data: object[], step: { [field: string]: any }, extraContainerPath?: string }, _this?: Field<any, any, any>): string {
   if (config === undefined || config.statement === undefined || config.statement === '') {
     return ''
   } else {
@@ -17,14 +19,14 @@ export default function StatementHelper(config: StatementConfig | undefined, dat
       config.params.forEach((param) => {
         if (param.field !== undefined && param.data !== undefined) {
           if (param.field === '') {
-            statementParams = ParamHelper(param.data, cloneDeep(datas))
+            statementParams = ParamHelper(param.data, datas, _this)
           } else {
-            set(statementParams, param.field, ParamHelper(param.data, cloneDeep(datas)))
+            statementParams = set(statementParams, param.field, ParamHelper(param.data, datas, _this))
           }
         }
       })
     }
-    
+
     try {
       const statement = statementTemplate(statementParams)
       return statement

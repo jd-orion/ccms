@@ -557,9 +557,9 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
       })
     }
     if (pagination && pagination.mode === 'server') {
-      const paginationCurrent = Number((pagination.current === undefined || pagination.current === '') ? data[step] : get(data[step], pagination.current, 1))
-      const paginationPageSize = Number((pagination.pageSize === undefined || pagination.pageSize === '') ? data[step] : get(data[step], pagination.pageSize, 10))
-      const paginationTotal = Number((pagination.total === undefined || pagination.total === '') ? data[step] : get(data[step], pagination.total, 0))
+      const paginationCurrent = Number((pagination.current === undefined || pagination.current === '') ? step : get(step, pagination.current, 1))
+      const paginationPageSize = Number((pagination.pageSize === undefined || pagination.pageSize === '') ? step : get(step, pagination.pageSize, 10))
+      const paginationTotal = Number((pagination.total === undefined || pagination.total === '') ? step : get(step, pagination.total, 0))
 
       props.pagination = {
         current: Number.isNaN(paginationCurrent) ? 1 : paginationCurrent,

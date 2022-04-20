@@ -73,6 +73,7 @@
     "@types/react": "^16.9.46",
     "@types/react-router-dom": "^5.1.5",
     "axios": "^0.20.0",
+    "immer": "^9.0.7",
     "lodash": "^4.17.21",
     "marked": "^1.2.5",
     "moment": "^2.29.0",

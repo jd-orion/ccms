@@ -20,7 +20,7 @@ export interface StepConfig {
 export interface StepProps<C extends StepConfig> {
   ref: (instance: Step<C> | null) => void
   data: any[]
-  step: number
+  step: {[field: string]: any}
   config: C
   onChange?: (data: any) => Promise<void>
   onSubmit: (data: any, unmountView?: boolean) => Promise<void>
@@ -33,6 +33,7 @@ export interface StepProps<C extends StepConfig> {
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
+  handleFormValue?: (payload: object) => object
 }
 
 /**

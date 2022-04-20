@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import marked from 'marked'
 import Step, { StepProps } from './steps/common'
 import StepComponents, { StepConfigs } from './steps'
 import { RichStringConfig } from './interface'
-
 /**
  * 页面配置文件格式定义
  * - basic: 页面基本配置
@@ -38,7 +37,7 @@ export interface ICCMS {
  * - config: 页面配置文件
  * - sourceData: 传入数据
  */
-export interface CCMSProps {
+export interface CCMSProps  {
   config: CCMSConfig
   sourceData: any
   baseRoute: string
@@ -50,6 +49,7 @@ export interface CCMSProps {
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
   callback: (success: boolean) => void
   onMount?: () => void
+  handleFormValue?: (payload: object) => object
 }
 
 /**
@@ -58,7 +58,7 @@ export interface CCMSProps {
  * - viewStep: 界面当前所在步骤
  * - data: 各步骤数据
  */
-interface CCMSState {
+export interface CCMSState {
   realStep: number
   viewStep: number[]
   data: any[]
@@ -236,7 +236,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
       loadDomain,
       handlePageRedirect
     } = this.props
-
+   const handleFormValue = this.props.handleFormValue ? this.props.handleFormValue : (payload: object) => ({})
     const {
       realStep,
       viewStep,
@@ -265,7 +265,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
               const props: StepProps<any> = {
                 ref: (e) => { this.steps[index] = e },
                 data,
-                step: index,
+                step: data[index],
                 onSubmit: (data: any, unmountView: boolean = true) => this.handleSubmit(index, data, unmountView),
                 onMount: () => this.handleMount(index),
                 onUnmount: (reload: boolean = false, data?: any) => this.handleUnmount(index, reload, data),
@@ -276,12 +276,13 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
                 loadPageFrameURL,
                 loadPageConfig,
                 loadDomain,
-                handlePageRedirect
+                handlePageRedirect,
+                handleFormValue
               }
-
+              
               const StepComponent = this.getStepComponent(currentStep.type)
               const children = (
-                StepComponent ? <StepComponent {...props} /> : <React.Fragment>您当前使用的UI版本没有实现{currentStep.type}步骤组件。</React.Fragment>
+                StepComponent ? <StepComponent {...props}/> : <React.Fragment>您当前使用的UI版本没有实现{currentStep.type}步骤组件。</React.Fragment>
               )
               return (
                 <div key={index} style={{ display: viewStep.includes(index) ? 'block' : 'none' }}>{children}</div>

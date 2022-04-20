@@ -1,5 +1,5 @@
 import React from 'react'
-import { getValue } from '../../../util/value'
+import { getValue , getChainPath} from '../../../util/value'
 
 import { DetailField, DetailFieldConfig, DetailFieldProps, IDetailField } from '../common'
 import { Display } from '../../formFields/common'
@@ -69,12 +69,7 @@ export default class DetailImportSubformField extends DetailField<ImportSubformF
     }
   }
 
-  getFullpath (field: string, path: string = '') {
-    const withConfigPath = this.props.config.configFrom?.type === 'data' && this.props.config.configFrom.dataField ? `${this.props.config.configFrom.dataField}` : ''
-    const _fullPath = `${withConfigPath}.${field}.${path}.`
-    const fullPath = _fullPath.replace(/(^\.*)|(\.*$)|(\.){2,}/g, '$3')
-    return fullPath
-  }
+
 
   didMount = async () => {
     await this.setState({
@@ -91,15 +86,16 @@ export default class DetailImportSubformField extends DetailField<ImportSubformF
       const formField = this.formFields[formFieldIndex]
       if (formField) {
         const formFieldConfig = this.state.fields[formFieldIndex]
+        const withConfigPath = this.props.config.configFrom?.type === 'data' && this.props.config.configFrom.dataField ? `${this.props.config.configFrom.dataField}` : ''
 
-        let value = getValue(this.props.value, this.getFullpath(formFieldConfig.field))
+        let value = getValue(this.props.value, getChainPath(withConfigPath, formFieldConfig.field))
         const source = value
         if ((formFieldConfig.defaultValue) && value === undefined) {
           value = await formField.reset()
         }
         value = await formField.set(value)
         if (source !== value) {
-          this.props.onValueSet(this.getFullpath(formFieldConfig.field), value)
+          this.props.onValueSet(getChainPath(withConfigPath, formFieldConfig.field), value)
         }
         await formField.didMount()
       }
@@ -107,33 +103,37 @@ export default class DetailImportSubformField extends DetailField<ImportSubformF
   }
 
   handleValueSet = async (formFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
+    const withConfigPath = this.props.config.configFrom?.type === 'data' && this.props.config.configFrom.dataField ? `${this.props.config.configFrom.dataField}` : ''
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      const fullPath = options && options.noPathCombination ? path : getChainPath(withConfigPath, formFieldConfig.field, path)
       await this.props.onValueSet(fullPath, value)
     }
   }
 
   handleValueUnset = async (formFieldIndex: number, path: string, options?: { noPathCombination?: boolean }) => {
+    const withConfigPath = this.props.config.configFrom?.type === 'data' && this.props.config.configFrom.dataField ? `${this.props.config.configFrom.dataField}` : ''
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      const fullPath = options && options.noPathCombination ? path : getChainPath(withConfigPath, formFieldConfig.field, path)
       await this.props.onValueUnset(fullPath)
     }
   }
 
   handleValueListAppend = async (formFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
+    const withConfigPath = this.props.config.configFrom?.type === 'data' && this.props.config.configFrom.dataField ? `${this.props.config.configFrom.dataField}` : ''
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      const fullPath = options && options.noPathCombination ? path : getChainPath(withConfigPath, formFieldConfig.field, path)
       await this.props.onValueListAppend(fullPath, value)
     }
   }
 
   handleValueListSplice = async (formFieldIndex: number, path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => {
+    const withConfigPath = this.props.config.configFrom?.type === 'data' && this.props.config.configFrom.dataField ? `${this.props.config.configFrom.dataField}` : ''
     const formFieldConfig = (this.state.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : this.getFullpath(formFieldConfig.field, path)
+      const fullPath = options && options.noPathCombination ? path : getChainPath(withConfigPath, formFieldConfig.field, path)
       await this.props.onValueListSplice(fullPath, index, count)
     }
   }
@@ -204,6 +204,7 @@ export default class DetailImportSubformField extends DetailField<ImportSubformF
     if (!fields || !Array.isArray(fields) || fields.length === 0) {
       return <React.Fragment />
     } else {
+      const withConfigPath = this.props.config.configFrom?.type === 'data' && this.props.config.configFrom.dataField ? `${this.props.config.configFrom.dataField}` : ''
       return (
         <React.Fragment>
           {this.renderComponent({
@@ -246,7 +247,7 @@ export default class DetailImportSubformField extends DetailField<ImportSubformF
                           this.handleMount(formFieldIndex)
                         }
                       }}
-                      value={getValue(value, this.getFullpath(formFieldConfig.field))}
+                      value={getValue(value, getChainPath(withConfigPath, formFieldConfig.field))}
                       record={record}
                       data={cloneDeep(data)}
                       step={step}

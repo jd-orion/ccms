@@ -2,7 +2,7 @@ import React, { RefObject } from 'react'
 import { Field, FieldConfig, IField, FieldInterface, FieldProps, FieldError } from '../common'
 import { loadMicroApp, MicroApp } from 'qiankun'
 import moment from 'moment'
-import { cloneDeep } from 'lodash'
+// import { cloneDeep } from 'lodash'
 
 export interface CustomFieldConfig extends FieldConfig, FieldInterface {
   type: 'custom'
@@ -53,7 +53,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
         this.customField.update({
           value: this.props.value,
           record: this.props.record,
-          data: cloneDeep(this.props.data),
+          data: this.props.data,
           form: this.props.form,
           step: this.props.step,
           config: this.props.config,
@@ -82,7 +82,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
         props: {
           value: this.props.value,
           record: this.props.record,
-          data: cloneDeep(this.props.data),
+          data: this.props.data,
           form: this.props.form,
           step: this.props.step,
           config: this.props.config,

@@ -161,7 +161,8 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
         {
           loadDomain: this.props.loadDomain,
           extra_data: { data: { [config.requireField]: file } }
-        }
+        },
+        this
       )
       const value = getValue(response, config.responseField)
       this.props.onValueSet('', value, true)

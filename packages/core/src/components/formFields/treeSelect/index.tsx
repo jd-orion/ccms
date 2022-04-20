@@ -123,7 +123,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
     datas: {
       record?: object
       data: object[]
-      step: number
+      step: { [field: string]: any }
     }
   ) => {
     if (config) {
@@ -149,7 +149,8 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
             config.interface,
             {},
             { record: this.props.record, data: this.props.data, step: this.props.step },
-            { loadDomain: this.props.loadDomain }
+            { loadDomain: this.props.loadDomain },
+            this
           ).then((data) => {
             this.setState({
               interfaceOptionsData: this.formatTree(
