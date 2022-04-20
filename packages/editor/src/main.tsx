@@ -18,7 +18,7 @@ import 'antd/dist/antd.css'
         config={props.config || DefaultConfig}
         sourceData={props.sourceData}
         baseRoute={props.baseRoute}
-        customConfigCDN={props.baseRoute || ''}
+        customConfigCDN={props.customConfigCDN || ''}
         onChange={(v)=>{console.log('ccms-editor=0..5', v)}}
         checkPageAuth={(pageId) => props.checkPageAuth(pageId)}
         loadPageURL={async (pageId) => props.loadPageURL(pageId)}

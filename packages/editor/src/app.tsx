@@ -453,7 +453,8 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                     applicationName,
                     businessSuffix: type === 'business' ? '/business' : '',
                     version: this.props.version,
-                    subversion: this.props.subversion
+                    subversion: this.props.subversion,
+                    customConfigCDN: this.props.customConfigCDN
                   }]}
                   config={(StepConfigs[((pageConfig.steps || [])[activeTab] || {}).type] || {}) as FormConfig}
                   onChange={(data) => {
