@@ -1193,12 +1193,12 @@ const render = () => {
 ReactDOM.render(<App
   applicationName="example"
   type="application"
-  version={"1.0.0"} // 后面改为appInfo.version
+  version={appInfo.version}
   subversion="0"
   config={DefaultConfig}
   sourceData={{}}
   baseRoute={'/'}
-  customConfigCDN={''}
+  customConfigCDN={undefined}
   onChange={(v)=>{console.log('ccms-editor', v)}}
   checkPageAuth={async (_) => true}
   loadPageURL={async (_) => '#'}
