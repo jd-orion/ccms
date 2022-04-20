@@ -1157,7 +1157,7 @@ const treeData = [
       //   subversion="0"
       //   config={props.config || DefaultConfig}
       //   sourceData={props.sourceData}
-      //   customConfigCDN={props.customConfigCDN}
+      //   configDomain={props.customConfigCDN || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/dist/config`}
       //   onChange={(v)=>{console.log('ccms-editor', v)}}
       //   baseRoute={'/'}
       //   checkPageAuth={async (_) => true}
@@ -1198,7 +1198,7 @@ ReactDOM.render(<App
   config={DefaultConfig}
   sourceData={{}}
   baseRoute={'/'}
-  customConfigCDN={undefined}
+  configDomain={null || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/dist/config`}
   onChange={(v)=>{console.log('ccms-editor', v)}}
   checkPageAuth={async (_) => true}
   loadPageURL={async (_) => '#'}

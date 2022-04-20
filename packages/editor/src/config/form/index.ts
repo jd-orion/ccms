@@ -108,7 +108,7 @@ const config: FieldConfigs[] = [
     "label": "分栏配置",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ColumnsConfig.json",
+      "url": "${configDomain}/common/ColumnsConfig.json",
       "urlParams": [
         {
           "field": "version",
@@ -118,10 +118,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -190,7 +190,7 @@ const config: FieldConfigs[] = [
     "label": "子项分栏",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ColumnsConfig.json",
+      "url": "${configDomain}/common/ColumnsConfig.json",
       "urlParams": [
         {
           "field": "version",
@@ -200,10 +200,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -287,7 +287,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/text.json",
+      "url": "${configDomain}/form/text.json",
       "urlParams": [
         {
           "field": "version",
@@ -297,10 +297,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -327,7 +327,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/longtext.json",
+      "url": "${configDomain}/form/longtext.json",
       "urlParams": [
         {
           "field": "version",
@@ -337,10 +337,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -367,7 +367,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/multiple_text.json",
+      "url": "${configDomain}/form/multiple_text.json",
       "urlParams": [
         {
           "field": "version",
@@ -377,10 +377,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -407,7 +407,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/number.json",
+      "url": "${configDomain}/form/number.json",
       "urlParams": [
         {
           "field": "version",
@@ -417,10 +417,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -447,7 +447,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/select_single.json",
+      "url": "${configDomain}/form/select_single.json",
       "urlParams": [
         {
           "field": "version",
@@ -457,10 +457,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -487,7 +487,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/select_multiple.json",
+      "url": "${configDomain}/form/select_multiple.json",
       "urlParams": [
         {
           "field": "version",
@@ -497,10 +497,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -527,7 +527,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/switch.json",
+      "url": "${configDomain}/form/switch.json",
       "urlParams": [
         {
           "field": "version",
@@ -537,10 +537,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -567,7 +567,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/datetime.json",
+      "url": "${configDomain}/form/datetime.json",
       "urlParams": [
         {
           "field": "version",
@@ -577,10 +577,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -607,7 +607,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/datetimeRange.json",
+      "url": "${configDomain}/form/datetimeRange.json",
       "urlParams": [
         {
           "field": "version",
@@ -617,10 +617,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -647,7 +647,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/tree_select.json",
+      "url": "${configDomain}/form/tree_select.json",
       "urlParams": [
         {
           "field": "version",
@@ -657,10 +657,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -687,7 +687,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/upload.json",
+      "url": "${configDomain}/form/upload.json",
       "urlParams": [
         {
           "field": "version",
@@ -697,10 +697,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -727,7 +727,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/list.json",
+      "url": "${configDomain}/form/list.json",
       "urlParams": [
         {
           "field": "version",
@@ -737,10 +737,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -767,7 +767,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/group.json",
+      "url": "${configDomain}/form/group.json",
       "urlParams": [
         {
           "field": "version",
@@ -777,10 +777,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -807,7 +807,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/tabs.json",
+      "url": "${configDomain}/form/tabs.json",
       "urlParams": [
         {
           "field": "version",
@@ -817,10 +817,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -847,7 +847,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/import_subform.json",
+      "url": "${configDomain}/form/import_subform.json",
       "urlParams": [
         {
           "field": "version",
@@ -857,10 +857,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -887,7 +887,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/custom.json",
+      "url": "${configDomain}/form/custom.json",
       "urlParams": [
         {
           "field": "version",
@@ -897,10 +897,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -927,7 +927,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/desc.json",
+      "url": "${configDomain}/form/desc.json",
       "urlParams": [
         {
           "field": "version",
@@ -937,10 +937,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -967,7 +967,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/code.json",
+      "url": "${configDomain}/form/code.json",
       "urlParams": [
         {
           "field": "version",
@@ -977,10 +977,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -1007,7 +1007,7 @@ const config: FieldConfigs[] = [
     "label": "",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/diffCode.json",
+      "url": "${configDomain}/form/diffCode.json",
       "urlParams": [
         {
           "field": "version",
@@ -1017,10 +1017,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -1047,7 +1047,7 @@ const config: FieldConfigs[] = [
     "label": "默认值",
     "type": "import_subform",
     "interface": {
-      "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
+      "url": "${configDomain}/common/ParamConfig.json",
       "urlParams": [
         {
           "field": "version",
@@ -1057,10 +1057,10 @@ const config: FieldConfigs[] = [
           }
         },
         {
-          "field": "subversion",
+          "field": "configDomain",
           "data": {
             "source": "source",
-            "field": "subversion"
+            "field": "configDomain"
           }
         }
       ],
@@ -1095,7 +1095,7 @@ const config: FieldConfigs[] = [
         "label": "展示条件",
         "type": "import_subform",
         "interface": {
-          "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ConditionConfig.json",
+          "url": "${configDomain}/common/ConditionConfig.json",
           "urlParams": [
             {
               "field": "version",
@@ -1105,10 +1105,10 @@ const config: FieldConfigs[] = [
               }
             },
             {
-              "field": "subversion",
+              "field": "configDomain",
               "data": {
                 "source": "source",
-                "field": "subversion"
+                "field": "configDomain"
               }
             }
           ],

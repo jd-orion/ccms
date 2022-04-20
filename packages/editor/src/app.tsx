@@ -79,7 +79,7 @@ const basicForm: FormConfig = {
 }
 
 
-export interface AppProps {
+export interface AppPropsInterface {
   // config: FormConfig,
   config: any,
   sourceData:any,
@@ -88,7 +88,6 @@ export interface AppProps {
   version: string,
   subversion: string,
   baseRoute: string,
-  customConfigCDN?: string,
   checkPageAuth: (pageID: any) => Promise<boolean>
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
@@ -100,6 +99,12 @@ export interface AppProps {
   onSubmit: (config: CCMSConfig) => void
   onCancel: () => void
   siderWidth?: number
+}
+export interface AppProps extends AppPropsInterface {
+  customConfigCDN?: string
+}
+export interface AppUIProps  extends AppPropsInterface {
+  configDomain?: string
 }
 
 interface PageConfig extends CCMSConfig {
@@ -114,7 +119,7 @@ export interface CCMSConsigState {
   configStringify: boolean
 }
 
-class App extends React.Component<AppProps, CCMSConsigState> {
+class App extends React.Component<AppUIProps, CCMSConsigState> {
 
   state: CCMSConsigState = {
     pageConfig: cloneDeep(this.props.config) as PageConfig, // 页面配置
@@ -454,7 +459,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                     businessSuffix: type === 'business' ? '/business' : '',
                     version: this.props.version,
                     subversion: this.props.subversion,
-                    customConfigCDN: this.props.customConfigCDN
+                    configDomain: this.props.configDomain
                   }]}
                   config={(StepConfigs[((pageConfig.steps || [])[activeTab] || {}).type] || {}) as FormConfig}
                   onChange={(data) => {

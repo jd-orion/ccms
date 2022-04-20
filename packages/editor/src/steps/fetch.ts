@@ -25,7 +25,7 @@ export const Config: FormConfig = {
       "label": "",
       "type": "import_subform",
       "interface": {
-        "url": "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/InterfaceConfig.json",
+        "url": "${configDomain}/common/InterfaceConfig.json",
         "urlParams": [
           {
             "field": "version",
@@ -35,10 +35,10 @@ export const Config: FormConfig = {
             }
           },
           {
-            "field": "subversion",
+            "field": "configDomain",
             "data": {
               "source": "source",
-              "field": "subversion"
+              "field": "configDomain"
             }
           }
         ],

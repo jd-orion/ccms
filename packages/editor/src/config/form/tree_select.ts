@@ -153,7 +153,7 @@ const config: FieldConfigs[] = [
                 label: '',
                 type: 'import_subform',
                 interface: {
-                  url: "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/form/tree_select_options.json",
+                  url: "${configDomain}/form/tree_select_options.json",
                   urlParams: [
                     {
                       field: 'version',
@@ -163,10 +163,10 @@ const config: FieldConfigs[] = [
                       },
                     },
                     {
-                      "field": "subversion",
+                      "field": "configDomain",
                       data: {
                         "source": "source",
-                        "field": "subversion"
+                        "field": "configDomain"
                       },
                     },
                   ],
@@ -195,7 +195,7 @@ const config: FieldConfigs[] = [
             label: '接口配置',
             type: 'import_subform',
             interface: {
-              url: "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/InterfaceConfig.json",
+              url: "${configDomain}/common/InterfaceConfig.json",
               urlParams: [
                 {
                   field: 'version',
@@ -205,10 +205,10 @@ const config: FieldConfigs[] = [
                   },
                 },
                 {
-                  "field": "subversion",
+                  "field": "configDomain",
                   data: {
                     "source": "source",
-                    "field": "subversion"
+                    "field": "configDomain"
                   },
                 },
               ],
@@ -235,7 +235,7 @@ const config: FieldConfigs[] = [
             label: '选项数据',
             type: 'import_subform',
             interface: {
-              url: "https://cdn.jsdelivr.net/npm/ccms-editor@${version}/dist/config/common/ParamConfig.json",
+              url: "${configDomain}/common/ParamConfig.json",
               urlParams: [
                 {
                   field: 'version',
@@ -245,10 +245,10 @@ const config: FieldConfigs[] = [
                   },
                 },
                 {
-                  "field": "subversion",
+                  "field": "configDomain",
                   data: {
                     "source": "source",
-                    "field": "subversion"
+                    "field": "configDomain"
                   },
                 },
               ],
