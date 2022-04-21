@@ -12,7 +12,7 @@ import './antd.less'; // 加载antd样式（用于样式隔离）
 import './app.less';
 import ConfigJSON from './component/ConfigJSON';
 import { StepConfigs as IStepConfigs } from 'ccms/dist/src/steps';
-import { ISelectFieldOption } from "ccms/dist/src/components/formFields/treeSelect";
+import { TreeSelectFieldOption } from "ccms/dist/src/components/formFields/treeSelect";
 
 /**
  * 页面配置
@@ -91,7 +91,7 @@ export interface AppPropsInterface {
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
-  loadPageList: () => Promise<Array<ISelectFieldOption>>
+  loadPageList: () => Promise<Array<TreeSelectFieldOption>>
   loadDomain: (name: string) => Promise<string>
   handlePageRedirect?: (path: string) => void
   onChange: (value: any) => void

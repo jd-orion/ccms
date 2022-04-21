@@ -1,14 +1,14 @@
 import React from "react";
 import { FormStep } from "ccms-antd-mini";
 import { FormConfig } from "ccms/dist/src/steps/form";
-import { ISelectFieldOption } from "ccms/dist/src/components/formFields/treeSelect";
+import { TreeSelectFieldOption } from "ccms/dist/src/components/formFields/treeSelect";
 
 interface CCMSFormProps {
   data: any
   config: FormConfig
   onChange: (data: any) => void
   loadDomain: (name: string) => Promise<string>
-  loadPageList: () => Promise<Array<ISelectFieldOption>>
+  loadPageList: () => Promise<Array<TreeSelectFieldOption>>
 }
 
 interface CCMSFormState {
