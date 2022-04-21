@@ -8,7 +8,7 @@
 CCMS-Editor通过配置化自动生成中后台（CMS）界面。
 
 
-## 🌰 示例
+### 示例
 ```jsx
 import CCMSEditor from 'ccms-editor'
 
@@ -32,7 +32,7 @@ const App = () => (
   </>
 );
 ```
-## API
+### API
 
 | 参数 | 说明 | 类型 | 默认值 | 版本 |
 | --- | --- | --- | --- | --- |
@@ -40,7 +40,7 @@ const App = () => (
 | sourceData | 数据项，参见附录二 | object | - |  |
 | baseRoute | 页面路由 | string | `/` |  |
 | customConfigCDN | 配置自定义cdn资源路径 | string | - |  |
-| checkPageAuth | 页面鉴权 | function(e) | - | - |
+| checkPageAuth | 页面鉴权 | function(e) | - | |
 | loadPageURL | 当前页面打开 | function(pageId) | - |  |
 | loadPageFrameURL | 打开新Tab页 | function(pageId) | - |  |
 | loadPageList | 加载页面列表，选中后可通过执行loadPageConfig获取页面配置项 | function() | - |  |
@@ -51,8 +51,8 @@ const App = () => (
 | onCancel | 取消 | function() | - |  |
 
 
-# 附录一
-、、、js
+#### 附录一
+```js
 {
   "steps": [
     {
@@ -131,11 +131,12 @@ const App = () => (
     }
   ]
 }
-、、、
+```
 
-# 附录二
-、、、js
+#### 附录二
+```js
 {
-  "text": "text"
+  "text": "text",
+  "radio": 2
 }
-、、、
+```
