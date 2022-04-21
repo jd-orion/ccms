@@ -1,6 +1,6 @@
 {
   "name": "ccms-editor",
-  "version": "0.0.4-beta.20",
+  "version": "0.0.7-beta.6.1",
   "description": "ccms编辑器",
   "main": "dist/index.js",
   "files": [
@@ -18,7 +18,7 @@
     "watch_config": "npm-watch run_config",
     "run_config": "node scripts/config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "link": "npm link ccms ccms-antd-mini ccms-antd ccms-drip"
+    "link": "npm link ccms ccms-antd-mini ccms-antd"
   },
   "watch": {
     "run_config": {
@@ -38,6 +38,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.3.1",
     "@types/react": "^17.0.2",
+    "antd": "^4.14.1",
     "axios": "^0.21.1",
     "copy-html-to-clipboard": "^4.0.1",
     "file-loader": "^6.2.0",
