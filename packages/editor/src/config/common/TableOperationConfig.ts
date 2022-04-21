@@ -46,8 +46,6 @@ const config: FieldConfigs[] = [
       {
         "field": "page",
         "label": "目标页面",
-        "type": "tree_select",
-        "mode": "treeSelect",
         "defaultValue": {
           "source": "static",
           "value": 0
