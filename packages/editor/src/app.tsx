@@ -1,7 +1,6 @@
 import React from 'react';
 import { Drawer, Button, Modal, message, Card, Space, Radio, Dropdown, Menu } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
-import { CCMS as CCMSDrip } from 'ccms-drip'
 import { CCMS as CCMSAntDesign } from 'ccms-antd'
 import { CCMSConfig, BasicConfig } from "ccms/dist/src/main";
 import { FormConfig } from 'ccms/dist/src/steps/form';
@@ -108,7 +107,7 @@ export interface AppUIProps  extends AppPropsInterface {
 }
 
 interface PageConfig extends CCMSConfig {
-  ui: 'antd' | 'drip'
+  ui: 'antd'
 }
 
 export interface CCMSConsigState {
@@ -234,10 +233,7 @@ class App extends React.Component<AppUIProps, CCMSConsigState> {
       onCancel
     } = this.props
 
-    let CCMS = CCMSDrip
-    if (pageConfig.ui === 'antd') {
-      CCMS = CCMSAntDesign
-    }
+    const CCMS = CCMSAntDesign
 
     return (
       <div id="ccms-config" className="ccms-config">
@@ -321,7 +317,7 @@ class App extends React.Component<AppUIProps, CCMSConsigState> {
                       size="small"
                       value={pageConfig.ui}
                       style={{ display: 'block', marginTop: 8 }}
-                      defaultValue="drip"
+                      defaultValue="antd"
                       onChange={(e) => {
                         const { pageConfig } = this.state
                         pageConfig.ui = e.target.value
@@ -330,7 +326,6 @@ class App extends React.Component<AppUIProps, CCMSConsigState> {
                         })
                       }}
                     >
-                      <Radio.Button value="drip">Drip Design</Radio.Button>
                       <Radio.Button value="antd">Ant Design</Radio.Button>
                     </Radio.Group>
                   </div>
