@@ -1,0 +1,129 @@
+[
+  {
+    "field": "",
+    "label": "数据来源",
+    "type": "group",
+    "hash": "884bd5cf47c2b3972096c0c1dbcc85d1",
+    "tips": "",
+    "fields": [
+      {
+        "field": "defaultValue",
+        "label": "",
+        "type": "path",
+        "hash": "e3e83f1fbe3cec0ef6a7fb86f9b8d37d",
+        "tips": "",
+        "fields": [
+          {
+            "field": "*",
+            "label": "",
+            "type": "import_subform",
+            "hash": "a223b27d93c2f0d92ba0ede0f143320b",
+            "tips": "",
+            "common": {
+              "key": "ParamConfig",
+              "path": "common/ParamConfig",
+              "hash": "c2ba88d2fe46c2647d3471d83f38e273"
+            }
+          }
+        ]
+      },
+      {
+        "field": "unstringify",
+        "label": "反序列化数据",
+        "type": "form",
+        "hash": "bfb956757724cb21ce82d8f21713646a",
+        "tips": "",
+        "fields": [
+          {
+            "field": "",
+            "label": "字段",
+            "type": "text",
+            "hash": "bf7cb5475b8c377c058d79f8f72d7d3c",
+            "tips": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "field": "columns",
+    "label": "分栏配置",
+    "type": "path",
+    "hash": "d734857cb330581e8bd003d04b76e734",
+    "tips": "",
+    "fields": [
+      {
+        "field": "enable",
+        "label": "分栏配置",
+        "type": "switch",
+        "hash": "78c9898b158190377b927a8e6a0438a5",
+        "tips": ""
+      },
+      {
+        "field": "*",
+        "label": "分栏配置",
+        "type": "import_subform",
+        "hash": "8c40544f5d1da55a670b1595e4489bf6",
+        "tips": "",
+        "condition": {
+          "hash": "31957c828fa933e9fa8e04675178b903",
+          "tips": "TODO"
+        },
+        "common": {
+          "key": "ColumnsConfig",
+          "path": "common/ColumnsConfig",
+          "hash": "b6c8908948e29a7674e05bc78220f336"
+        }
+      }
+    ]
+  },
+  {
+    "field": "fields",
+    "label": "展示项",
+    "type": "form",
+    "hash": "9a9bf148d52242e27ce20a91f7ac2e5d",
+    "tips": "",
+    "fields": [
+      {
+        "field": "label",
+        "label": "字段描述",
+        "type": "text",
+        "hash": "59921aaab36453ffc1a7731c772be8d1",
+        "tips": ""
+      },
+      {
+        "field": "field",
+        "label": "字段名",
+        "type": "text",
+        "hash": "850be5c1426e1d874c75a967bd85d157",
+        "tips": ""
+      },
+      {
+        "field": "*",
+        "label": "",
+        "type": "import_subform",
+        "hash": "1bf876f19e292f80d3d993bdeb699004",
+        "tips": "",
+        "common": {
+          "key": "index",
+          "path": "detail/index",
+          "hash": "744ab8d0b9da287c2a4bfc0b48fed0bc"
+        }
+      }
+    ]
+  },
+  {
+    "field": "hiddenBack",
+    "label": "是否隐藏返回按钮",
+    "type": "switch",
+    "hash": "f1a9c42f298d2684f4b66ce2734b9a50",
+    "tips": ""
+  },
+  {
+    "field": "backText",
+    "label": "返回按钮文案",
+    "type": "text",
+    "hash": "721ad52ff06cad62b7992ed6755fc6a7",
+    "tips": ""
+  }
+]

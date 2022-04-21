@@ -1,0 +1,612 @@
+[
+  {
+    "field": "title",
+    "label": "主标题",
+    "type": "group",
+    "hash": "ee2176b392671d0b082c57aae8196da5",
+    "tips": "页面主标题",
+    "fields": [
+      {
+        "field": "statement",
+        "label": "文案",
+        "type": "text",
+        "hash": "beb66bfd1d2ac7a464d93b33b0976da8",
+        "tips": "页面主标题文案"
+      },
+      {
+        "field": "params",
+        "label": "参数",
+        "type": "form",
+        "hash": "7ec49175e13c63627054b65ceb8cb51f",
+        "tips": "页面主标题参数",
+        "fields": [
+          {
+            "field": "field",
+            "label": "字段名",
+            "type": "text",
+            "hash": "621a395138c51c81858a73491928894d",
+            "tips": "参数名"
+          },
+          {
+            "field": "data",
+            "label": "数据来源",
+            "type": "path",
+            "hash": "023cd005c383d91ace38f5392b1ee978",
+            "tips": "",
+            "fields": [
+              {
+                "field": "*",
+                "label": "数据来源",
+                "type": "import_subform",
+                "hash": "ed33408e70157b208b8510d7366173c0",
+                "tips": "",
+                "common": {
+                  "key": "ParamConfig",
+                  "path": "common/ParamConfig",
+                  "hash": "c2ba88d2fe46c2647d3471d83f38e273"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "field": "subTitle",
+    "label": "副标题",
+    "type": "group",
+    "hash": "f46aebf69376b2d929b21b50f6ce03e5",
+    "tips": "页面副标题",
+    "fields": [
+      {
+        "field": "statement",
+        "label": "文案",
+        "type": "text",
+        "hash": "beb66bfd1d2ac7a464d93b33b0976da8",
+        "tips": "页面副标题文案"
+      },
+      {
+        "field": "params",
+        "label": "参数",
+        "type": "form",
+        "hash": "7ec49175e13c63627054b65ceb8cb51f",
+        "tips": "页面副标题参数",
+        "fields": [
+          {
+            "field": "field",
+            "label": "字段名",
+            "type": "text",
+            "hash": "621a395138c51c81858a73491928894d",
+            "tips": "字段名"
+          },
+          {
+            "field": "data",
+            "label": "数据来源",
+            "type": "path",
+            "hash": "023cd005c383d91ace38f5392b1ee978",
+            "tips": "",
+            "fields": [
+              {
+                "field": "*",
+                "label": "数据来源",
+                "type": "import_subform",
+                "hash": "ed33408e70157b208b8510d7366173c0",
+                "tips": "",
+                "common": {
+                  "key": "ParamConfig",
+                  "path": "common/ParamConfig",
+                  "hash": "c2ba88d2fe46c2647d3471d83f38e273"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "field": "back",
+    "label": "返回按钮",
+    "type": "group",
+    "hash": "0f6fedd3b5133aa0d7cc60d3dbe2e649",
+    "tips": "",
+    "fields": [
+      {
+        "field": "enable",
+        "label": "启用",
+        "type": "switch",
+        "hash": "473d8f1d2c5da2822bd776979ecadda3",
+        "tips": "是否展示返回按钮"
+      }
+    ]
+  },
+  {
+    "field": "breadcrumb",
+    "label": "面包屑",
+    "type": "group",
+    "hash": "adc63f4fed6f4955bc1bf7486f325c9a",
+    "tips": "",
+    "fields": [
+      {
+        "field": "enable",
+        "label": "启用",
+        "type": "switch",
+        "hash": "473d8f1d2c5da2822bd776979ecadda3",
+        "tips": "是否展示面包屑"
+      },
+      {
+        "field": "separator",
+        "label": "分隔符",
+        "type": "text",
+        "hash": "9e9adc57053a38738fdd06a2dab97bda",
+        "tips": "面包屑的分隔符",
+        "condition": {
+          "hash": "d956d1fb3e4e6ae4117aaf7d3a4aad9d",
+          "tips": ""
+        }
+      },
+      {
+        "field": "items",
+        "label": "面包屑项",
+        "type": "form",
+        "hash": "d6b39a8515b7bd98a326f06a4c900d34",
+        "tips": "面包屑中展示的内容",
+        "fields": [
+          {
+            "field": "label",
+            "label": "文案",
+            "type": "text",
+            "hash": "db8eb8337b0d2a39bfdc82d0958c747d",
+            "tips": ""
+          },
+          {
+            "field": "type",
+            "label": "样式",
+            "type": "select_single",
+            "hash": "3f59e9c2ae3870f819e4e23bb55dde87",
+            "tips": "",
+            "options": [
+              {
+                "value": "normal",
+                "label": "默认",
+                "hash": "0a2004c988fe6c76c129c64856aafc8a",
+                "tips": ""
+              },
+              {
+                "value": "bold",
+                "label": "加粗",
+                "hash": "2a69d671c79c2ded7d8929e363c35207",
+                "tips": ""
+              }
+            ]
+          },
+          {
+            "field": "action",
+            "label": "操作",
+            "type": "path",
+            "hash": "323493760a04b698b59946ebf071f6ff",
+            "tips": "点击后执行的动作",
+            "fields": [
+              {
+                "field": "*",
+                "label": "操作",
+                "type": "import_subform",
+                "hash": "75e65c485f3b1ebe2477d8191ba64612",
+                "tips": "",
+                "common": {
+                  "key": "OperationConfig",
+                  "path": "common/OperationConfig",
+                  "hash": "c422e91a7dc0b4818628bde6bdb98402"
+                }
+              }
+            ]
+          }
+        ],
+        "condition": {
+          "hash": "d956d1fb3e4e6ae4117aaf7d3a4aad9d",
+          "tips": "仅当展示面包屑时生效"
+        }
+      }
+    ]
+  },
+  {
+    "field": "mainContent",
+    "label": "主内容",
+    "type": "group",
+    "hash": "da9afe5a05d45669703acf1b665f37a4",
+    "tips": "页面头部的主内容区域",
+    "fields": [
+      {
+        "field": "enable",
+        "label": "启用",
+        "type": "switch",
+        "hash": "473d8f1d2c5da2822bd776979ecadda3",
+        "tips": "是否展示主内容区域"
+      },
+      {
+        "field": "type",
+        "label": "类型",
+        "type": "select_single",
+        "hash": "4be4672db39f44522c0db8f6bf8d8e7d",
+        "tips": "",
+        "options": [
+          {
+            "value": "plain",
+            "label": "纯文本",
+            "hash": "4e6605bfa5ffd93dd7ba6a7862a6e556",
+            "tips": ""
+          },
+          {
+            "value": "markdown",
+            "label": "Markdown格式文本",
+            "hash": "0875c35903cf9d4f26e7d67c7c7f0df4",
+            "tips": ""
+          },
+          {
+            "value": "html",
+            "label": "HTML格式文本",
+            "hash": "9b2edb7b34ffd1d3679e0266e6c4eadd",
+            "tips": ""
+          },
+          {
+            "value": "detail",
+            "label": "详情内容",
+            "hash": "574a545fef9bf002826d462e73a5b537",
+            "tips": ""
+          },
+          {
+            "value": "statistic",
+            "label": "统计内容",
+            "hash": "1f8b9d26fa7e5acb2c0111ab925c6f2c",
+            "tips": ""
+          }
+        ],
+        "condition": {
+          "hash": "d956d1fb3e4e6ae4117aaf7d3a4aad9d",
+          "tips": "仅当展示主内容区域时生效"
+        }
+      },
+      {
+        "field": "content",
+        "label": "文本内容",
+        "type": "longtext",
+        "hash": "fcbed0337b304b4b8ed17f73d05b7687",
+        "tips": "",
+        "condition": {
+          "hash": "17eec9f0a85bbeb96cce811ec498af16",
+          "tips": "仅当展示主内容区域且类型为纯文本/Markdown/HTML时生效"
+        }
+      },
+      {
+        "field": "params",
+        "label": "文本参数",
+        "type": "form",
+        "hash": "1c3e7ba01c693bad58303d647536d408",
+        "tips": "",
+        "fields": [
+          {
+            "field": "field",
+            "label": "字段名",
+            "type": "text",
+            "hash": "621a395138c51c81858a73491928894d",
+            "tips": ""
+          },
+          {
+            "field": "data",
+            "label": "数据来源",
+            "type": "path",
+            "hash": "023cd005c383d91ace38f5392b1ee978",
+            "tips": "",
+            "fields": [
+              {
+                "field": "*",
+                "label": "数据来源",
+                "type": "import_subform",
+                "hash": "ed33408e70157b208b8510d7366173c0",
+                "tips": "",
+                "common": {
+                  "key": "ParamConfig",
+                  "path": "common/ParamConfig",
+                  "hash": "c2ba88d2fe46c2647d3471d83f38e273"
+                }
+              }
+            ]
+          }
+        ],
+        "condition": {
+          "hash": "17eec9f0a85bbeb96cce811ec498af16",
+          "tips": "仅当展示主内容区域且类型为纯文本/Markdown/HTML时生效"
+        }
+      },
+      {
+        "field": "defaultValue",
+        "label": "数据来源",
+        "type": "path",
+        "hash": "31e86bcf393d0366b3c69a10e62c8715",
+        "tips": "",
+        "fields": [
+          {
+            "field": "*",
+            "label": "数据来源",
+            "type": "import_subform",
+            "hash": "ea50497f56cc32d2c4685fac64b9b06b",
+            "tips": "",
+            "condition": {
+              "hash": "802cf86d8c73355b8a3f7d3a0cc35165",
+              "tips": "仅当展示主内容区域且类型为详情时生效"
+            },
+            "common": {
+              "key": "ParamConfig",
+              "path": "common/ParamConfig",
+              "hash": "c2ba88d2fe46c2647d3471d83f38e273"
+            }
+          }
+        ]
+      },
+      {
+        "field": "fields",
+        "label": "表单项",
+        "type": "form",
+        "hash": "0e3a9e83b9cfec3be0004bb84547e0d0",
+        "tips": "",
+        "fields": [
+          {
+            "field": "label",
+            "label": "字段描述",
+            "type": "text",
+            "hash": "59921aaab36453ffc1a7731c772be8d1",
+            "tips": ""
+          },
+          {
+            "field": "field",
+            "label": "字段名",
+            "type": "text",
+            "hash": "8aa136f71687553ecfc190dbc295b422",
+            "tips": ""
+          },
+          {
+            "field": "*",
+            "label": "",
+            "type": "import_subform",
+            "hash": "1bf876f19e292f80d3d993bdeb699004",
+            "tips": "",
+            "common": {
+              "key": "index",
+              "path": "detail/index",
+              "hash": "744ab8d0b9da287c2a4bfc0b48fed0bc"
+            }
+          }
+        ],
+        "condition": {
+          "hash": "802cf86d8c73355b8a3f7d3a0cc35165",
+          "tips": "仅当展示主内容区域且类型为详情时生效"
+        }
+      },
+      {
+        "field": "statistics",
+        "label": "统计内容",
+        "type": "form",
+        "hash": "87e4491d57ebbbf21e6f4e0399905079",
+        "tips": "",
+        "fields": [
+          {
+            "field": "label",
+            "label": "标题",
+            "type": "text",
+            "hash": "73e7a14909cd38425f2688e488503b5b",
+            "tips": ""
+          },
+          {
+            "field": "type",
+            "label": "类型",
+            "type": "select_single",
+            "hash": "eb15889dca76ea1989ec582cb6ae80d1",
+            "tips": "",
+            "options": [
+              {
+                "value": "value",
+                "label": "值",
+                "hash": "1a0c2f0a727bd7ce28152558c8c45d54",
+                "tips": ""
+              },
+              {
+                "value": "enumeration",
+                "label": "映射值",
+                "hash": "08362e180ebe06399d905d04a6f6b203",
+                "tips": ""
+              }
+            ]
+          },
+          {
+            "field": "value",
+            "label": "数据来源",
+            "type": "path",
+            "hash": "228937a5aebea049141e9af9328a06d3",
+            "tips": "",
+            "fields": [
+              {
+                "field": "*",
+                "label": "数据来源",
+                "type": "import_subform",
+                "hash": "ed33408e70157b208b8510d7366173c0",
+                "tips": "",
+                "common": {
+                  "key": "ParamConfig",
+                  "path": "common/ParamConfig",
+                  "hash": "c2ba88d2fe46c2647d3471d83f38e273"
+                }
+              }
+            ]
+          },
+          {
+            "field": "options",
+            "label": "选项",
+            "type": "group",
+            "hash": "cb96c573a5c8ab0ba85a549a268bbbf5",
+            "tips": "",
+            "fields": [
+              {
+                "field": "*",
+                "label": "",
+                "type": "import_subform",
+                "hash": "48606d070b3a6591e5386166430d067a",
+                "tips": "",
+                "common": {
+                  "key": "EnumerationConfig",
+                  "path": "common/EnumerationConfig",
+                  "hash": "db24a09cd4d73a8804f77d31d355f617"
+                }
+              }
+            ],
+            "condition": {
+              "hash": "f7fb8153f91964b1e0e3fc66c5f2ea95",
+              "tips": "仅当统计数据的类型为映射值时生效"
+            }
+          }
+        ],
+        "condition": {
+          "hash": "976b3f3491cefb15579b1c542fde9b50",
+          "tips": "仅当展示主内容区域且类型为统计数据时生效"
+        }
+      }
+    ]
+  },
+  {
+    "field": "extraContent",
+    "label": "扩展内容",
+    "type": "group",
+    "hash": "a3d792fd6d1d0b18674adb74d6198014",
+    "tips": "页面头部的扩展内容区域",
+    "fields": [
+      {
+        "field": "enable",
+        "label": "启用",
+        "type": "switch",
+        "hash": "473d8f1d2c5da2822bd776979ecadda3",
+        "tips": ""
+      },
+      {
+        "field": "type",
+        "label": "类型",
+        "type": "select_single",
+        "hash": "0c1baa805862c619db19981adae36a69",
+        "tips": "是否展示扩展内容区域",
+        "options": [
+          {
+            "value": "statistic",
+            "label": "统计内容",
+            "hash": "1f8b9d26fa7e5acb2c0111ab925c6f2c",
+            "tips": ""
+          },
+          {
+            "value": "image",
+            "label": "图片内容",
+            "hash": "23c88f969718158b55ce38c41ff7de15",
+            "tips": ""
+          }
+        ],
+        "condition": {
+          "hash": "d956d1fb3e4e6ae4117aaf7d3a4aad9d",
+          "tips": "仅当展示扩展内容时生效"
+        }
+      },
+      {
+        "field": "statistics",
+        "label": "统计内容",
+        "type": "form",
+        "hash": "eaee268bca2214d523d4ebc426288000",
+        "tips": "",
+        "fields": [
+          {
+            "field": "label",
+            "label": "标题",
+            "type": "text",
+            "hash": "73e7a14909cd38425f2688e488503b5b",
+            "tips": ""
+          },
+          {
+            "field": "type",
+            "label": "类型",
+            "type": "select_single",
+            "hash": "eb15889dca76ea1989ec582cb6ae80d1",
+            "tips": "",
+            "options": [
+              {
+                "value": "value",
+                "label": "值",
+                "hash": "1a0c2f0a727bd7ce28152558c8c45d54",
+                "tips": ""
+              },
+              {
+                "value": "enumeration",
+                "label": "映射值",
+                "hash": "08362e180ebe06399d905d04a6f6b203",
+                "tips": ""
+              }
+            ]
+          },
+          {
+            "field": "value",
+            "label": "数据来源",
+            "type": "path",
+            "hash": "228937a5aebea049141e9af9328a06d3",
+            "tips": "",
+            "fields": [
+              {
+                "field": "*",
+                "label": "数据来源",
+                "type": "import_subform",
+                "hash": "ed33408e70157b208b8510d7366173c0",
+                "tips": "",
+                "common": {
+                  "key": "ParamConfig",
+                  "path": "common/ParamConfig",
+                  "hash": "c2ba88d2fe46c2647d3471d83f38e273"
+                }
+              }
+            ]
+          }
+        ],
+        "condition": {
+          "hash": "976b3f3491cefb15579b1c542fde9b50",
+          "tips": "仅当类型为统计内容时生效"
+        }
+      },
+      {
+        "field": "image",
+        "label": "图片内容",
+        "type": "group",
+        "hash": "3271fd2129d64f7fc4f191c3550991ad",
+        "tips": "",
+        "fields": [
+          {
+            "field": "src",
+            "label": "图片URL",
+            "type": "text",
+            "hash": "f83d8488a1416db57b925d896dff16e1",
+            "tips": ""
+          },
+          {
+            "field": "maxWidth",
+            "label": "最大宽度",
+            "type": "text",
+            "hash": "6cd9b6fe53f34b19769c6413d7d1f6a3",
+            "tips": ""
+          },
+          {
+            "field": "maxHeight",
+            "label": "最大高度",
+            "type": "text",
+            "hash": "c1462bbb94afc35eed4d3fd715f8517d",
+            "tips": ""
+          }
+        ],
+        "condition": {
+          "hash": "b289b92e99bf525ce7e91cd449a54366",
+          "tips": ""
+        }
+      }
+    ]
+  }
+]

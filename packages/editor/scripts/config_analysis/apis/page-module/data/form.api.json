@@ -1,0 +1,392 @@
+[
+  {
+    "field": "columns",
+    "label": "分栏配置",
+    "type": "path",
+    "hash": "bd75622002891e1098c6169cdcb7a241",
+    "tips": "",
+    "fields": [
+      {
+        "field": "enable",
+        "label": "分栏配置",
+        "type": "switch",
+        "hash": "78c9898b158190377b927a8e6a0438a5",
+        "tips": "是否启用分栏"
+      },
+      {
+        "field": "*",
+        "label": "分栏配置",
+        "type": "import_subform",
+        "hash": "02572a778b3f02b3cfdd69256c3b183e",
+        "tips": "",
+        "condition": {
+          "hash": "31957c828fa933e9fa8e04675178b903",
+          "tips": "仅当启用分栏时生效"
+        },
+        "common": {
+          "key": "ColumnsConfig",
+          "path": "common/ColumnsConfig",
+          "hash": "1a5031b5ce490e391dbd7a74addf68e7"
+        }
+      },
+      {
+        "field": "gap",
+        "label": "分栏边距",
+        "type": "number",
+        "hash": "7f936184921d64b4a5606f7d4e3492a2",
+        "tips": "",
+        "condition": {
+          "hash": "31957c828fa933e9fa8e04675178b903",
+          "tips": "仅当启用分栏时生效"
+        }
+      },
+      {
+        "field": "rowGap",
+        "label": "分栏下边距",
+        "type": "number",
+        "hash": "7c124fa9a8fddc0e1b0879ba840adac2",
+        "tips": "",
+        "condition": {
+          "hash": "31957c828fa933e9fa8e04675178b903",
+          "tips": "仅当启用分栏时生效"
+        }
+      }
+    ]
+  },
+  {
+    "field": "fields",
+    "label": "表单项",
+    "type": "form",
+    "hash": "f0f51ab21a16edb15dcc103ca378019f",
+    "tips": "",
+    "fields": [
+      {
+        "field": "label",
+        "label": "字段描述",
+        "type": "text",
+        "hash": "59921aaab36453ffc1a7731c772be8d1",
+        "tips": ""
+      },
+      {
+        "field": "field",
+        "label": "字段名",
+        "type": "text",
+        "hash": "8aa136f71687553ecfc190dbc295b422",
+        "tips": ""
+      },
+      {
+        "field": "*",
+        "label": "",
+        "type": "import_subform",
+        "hash": "0c427ecb4d61e1b4be89d4dd0609e8ce",
+        "tips": "",
+        "common": {
+          "key": "index",
+          "path": "form/index",
+          "hash": "946f804e39bb7df5fc223dc6e3d68ad8"
+        }
+      }
+    ]
+  },
+  {
+    "field": "validations",
+    "label": "全局校验",
+    "type": "form",
+    "hash": "8bdd44dd7e93cc9d7380c050d2aa05bd",
+    "tips": "",
+    "fields": [
+      {
+        "field": "condition",
+        "label": "校验条件",
+        "type": "path",
+        "hash": "1ad44e6d58549b592b8ff2b644c4038e",
+        "tips": "可输入合法的JavaScript逻辑表达式,参数部分使用'${'与'}'包裹参数名",
+        "fields": [
+          {
+            "field": "*",
+            "label": "校验条件",
+            "type": "import_subform",
+            "hash": "cf75acc2c7d60eb2010dbb88a38bc245",
+            "tips": "",
+            "common": {
+              "key": "ConditionConfig",
+              "path": "common/ConditionConfig",
+              "hash": "206a76ad6365d1906ceb93fc5c7a5500"
+            }
+          }
+        ]
+      },
+      {
+        "field": "message",
+        "label": "失败提示信息",
+        "type": "group",
+        "hash": "b6006e3f0709fa2983f830068570aba9",
+        "tips": "",
+        "fields": [
+          {
+            "field": "statement",
+            "label": "提示文案",
+            "type": "text",
+            "hash": "1b140892eab10bc0bd15381d1eb4960e",
+            "tips": ""
+          },
+          {
+            "field": "params",
+            "label": "失败提示参数",
+            "type": "form",
+            "hash": "8af8887a6ca597b6179ac1ffb55697c7",
+            "tips": "",
+            "fields": [
+              {
+                "field": "field",
+                "label": "参数",
+                "type": "text",
+                "hash": "6810efd839ecf7ad26b178fdca83a85d",
+                "tips": ""
+              },
+              {
+                "field": "data",
+                "label": "",
+                "type": "path",
+                "hash": "40def36ceb77af9b283989eb3ef2cf64",
+                "tips": "",
+                "fields": [
+                  {
+                    "field": "*",
+                    "label": "",
+                    "type": "import_subform",
+                    "hash": "a223b27d93c2f0d92ba0ede0f143320b",
+                    "tips": "",
+                    "common": {
+                      "key": "ParamConfig",
+                      "path": "common/ParamConfig",
+                      "hash": "c2ba88d2fe46c2647d3471d83f38e273"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "field": "",
+    "label": "数据来源",
+    "type": "group",
+    "hash": "884bd5cf47c2b3972096c0c1dbcc85d1",
+    "tips": "",
+    "fields": [
+      {
+        "field": "defaultValue",
+        "label": "",
+        "type": "path",
+        "hash": "e3e83f1fbe3cec0ef6a7fb86f9b8d37d",
+        "tips": "",
+        "fields": [
+          {
+            "field": "*",
+            "label": "",
+            "type": "import_subform",
+            "hash": "a223b27d93c2f0d92ba0ede0f143320b",
+            "tips": "",
+            "common": {
+              "key": "ParamConfig",
+              "path": "common/ParamConfig",
+              "hash": "c2ba88d2fe46c2647d3471d83f38e273"
+            }
+          }
+        ]
+      },
+      {
+        "field": "unstringify",
+        "label": "反序列化数据",
+        "type": "form",
+        "hash": "bfb956757724cb21ce82d8f21713646a",
+        "tips": "",
+        "fields": [
+          {
+            "field": "",
+            "label": "字段",
+            "type": "text",
+            "hash": "bf7cb5475b8c377c058d79f8f72d7d3c",
+            "tips": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "field": "stringify",
+    "label": "序列化数据",
+    "type": "form",
+    "hash": "03ccb2f927ee186df299b93fc25d2cd0",
+    "tips": "",
+    "fields": [
+      {
+        "field": "",
+        "label": "字段",
+        "type": "text",
+        "hash": "bf7cb5475b8c377c058d79f8f72d7d3c",
+        "tips": ""
+      }
+    ]
+  },
+  {
+    "field": "actions",
+    "label": "表单按钮列表",
+    "type": "form",
+    "hash": "6bb69971f782d7455220cf5c6358f0de",
+    "tips": "",
+    "fields": [
+      {
+        "field": "type",
+        "label": "按钮操作类型",
+        "type": "select_single",
+        "hash": "1c83789932f9dbd6981d9bbe9c7b7135",
+        "tips": "",
+        "options": [
+          {
+            "value": "submit",
+            "label": "提交",
+            "hash": "682dcc73bbe1e797ad77ddac315031c6",
+            "tips": ""
+          },
+          {
+            "value": "cancel",
+            "label": "取消",
+            "hash": "3c2f53502f0ee0bef313045c650b2143",
+            "tips": ""
+          },
+          {
+            "value": "ccms",
+            "label": "自定义",
+            "hash": "e5c11ba0f93ff4fa653272cbaaba979f",
+            "tips": ""
+          }
+        ]
+      },
+      {
+        "field": "label",
+        "label": "按钮文案",
+        "type": "text",
+        "hash": "11a37fdbbb096ddb40768a1a6d2414cc",
+        "tips": ""
+      },
+      {
+        "field": "mode",
+        "label": "按钮形式",
+        "type": "select_single",
+        "hash": "050977a4d43f7a563d4710f3835fc2d9",
+        "tips": "",
+        "options": [
+          {
+            "value": "normal",
+            "label": "普通按钮",
+            "hash": "213afc660aeb10fd7f980c9aafbf50be",
+            "tips": ""
+          },
+          {
+            "value": "primary",
+            "label": "主按钮",
+            "hash": "7da956ba02f8674d29dbe974294ad5cd",
+            "tips": ""
+          },
+          {
+            "value": "link",
+            "label": "链接",
+            "hash": "14bc91efadc4ed67922b6d94a41f1aba",
+            "tips": ""
+          }
+        ]
+      },
+      {
+        "field": "condition",
+        "label": "展示条件",
+        "type": "path",
+        "hash": "5a67a59a9e4e05976cfdb91135231cf6",
+        "tips": "",
+        "fields": [
+          {
+            "field": "*",
+            "label": "展示条件",
+            "type": "import_subform",
+            "hash": "b3e7bafeba61e45949009165b8840654",
+            "tips": "",
+            "common": {
+              "key": "ConditionConfig",
+              "path": "common/ConditionConfig",
+              "hash": "206a76ad6365d1906ceb93fc5c7a5500"
+            }
+          }
+        ]
+      },
+      {
+        "field": "handle",
+        "label": "",
+        "type": "path",
+        "hash": "29d49e62c69ba070c2f78f3ffc59bb2f",
+        "tips": "",
+        "fields": [
+          {
+            "field": "*",
+            "label": "",
+            "type": "import_subform",
+            "hash": "e3fd62e15ffa78ff6204ae91eb67c49f",
+            "tips": "",
+            "condition": {
+              "hash": "bf5b5d96982c8406a093f1b33970ee30",
+              "tips": "TODO"
+            },
+            "common": {
+              "key": "OperationConfig",
+              "path": "common/OperationConfig",
+              "hash": "c422e91a7dc0b4818628bde6bdb98402"
+            }
+          }
+        ]
+      },
+      {
+        "field": "callback",
+        "label": "回调",
+        "type": "group",
+        "hash": "5ef0bd465a12eefe42d8919409ad92e4",
+        "tips": "",
+        "fields": [
+          {
+            "field": "type",
+            "label": "回调操作",
+            "type": "select_single",
+            "hash": "acb371f0f743388cff6b011b8d741a5f",
+            "tips": "",
+            "options": [
+              {
+                "value": "none",
+                "label": "无操作",
+                "hash": "baa00d1ef749b4fc98c7fe4b01c059e4",
+                "tips": ""
+              },
+              {
+                "value": "submit",
+                "label": "提交",
+                "hash": "682dcc73bbe1e797ad77ddac315031c6",
+                "tips": ""
+              },
+              {
+                "value": "cancel",
+                "label": "取消",
+                "hash": "3c2f53502f0ee0bef313045c650b2143",
+                "tips": ""
+              }
+            ]
+          }
+        ],
+        "condition": {
+          "hash": "bf5b5d96982c8406a093f1b33970ee30",
+          "tips": "TODO"
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "field": "fields",
+    "label": "表单项",
+    "type": "form",
+    "hash": "38d3e710ed46152d2a5f8a35a4c3ff10",
+    "tips": "",
+    "fields": [
+      {
+        "field": "label",
+        "label": "字段描述",
+        "type": "text",
+        "hash": "59921aaab36453ffc1a7731c772be8d1",
+        "tips": ""
+      },
+      {
+        "field": "field",
+        "label": "字段名",
+        "type": "text",
+        "hash": "8aa136f71687553ecfc190dbc295b422",
+        "tips": ""
+      },
+      {
+        "field": "*",
+        "label": "",
+        "type": "import_subform",
+        "hash": "0c427ecb4d61e1b4be89d4dd0609e8ce",
+        "tips": "",
+        "common": {
+          "key": "index",
+          "path": "form/index",
+          "hash": "946f804e39bb7df5fc223dc6e3d68ad8"
+        }
+      }
+    ]
+  },
+  {
+    "field": "hiddenSubmit",
+    "label": "是否隐藏确定按钮",
+    "type": "switch",
+    "hash": "6a7e0535aa10a2582881b19f8d6d77e3",
+    "tips": ""
+  },
+  {
+    "field": "submitText",
+    "label": "确定按钮文案",
+    "type": "text",
+    "hash": "66480590954475c5022a17ace46f63f6",
+    "tips": ""
+  },
+  {
+    "field": "hiddenReset",
+    "label": "是否隐藏重置按钮",
+    "type": "switch",
+    "hash": "8f47e00c13adefad2139425d5a5e0195",
+    "tips": ""
+  },
+  {
+    "field": "resetText",
+    "label": "重置按钮文案",
+    "type": "text",
+    "hash": "1ff66c0791bba73152a89d01e334be40",
+    "tips": ""
+  }
+]

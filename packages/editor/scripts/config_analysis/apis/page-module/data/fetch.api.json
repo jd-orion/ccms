@@ -1,0 +1,23 @@
+[
+  {
+    "field": "interface",
+    "label": "接口配置",
+    "type": "path",
+    "hash": "4310e648a910b266c1a9e33d08b08d1c",
+    "tips": "接口配置",
+    "fields": [
+      {
+        "field": "*",
+        "label": "接口配置信息",
+        "type": "import_subform",
+        "hash": "ef43525a192358856bbf203241cc5a8e",
+        "tips": "接口的配置信息",
+        "common": {
+          "key": "InterfaceConfig",
+          "path": "common/InterfaceConfig",
+          "hash": "ca8c4ac32adafedb7b4174668428dba4"
+        }
+      }
+    ]
+  }
+]

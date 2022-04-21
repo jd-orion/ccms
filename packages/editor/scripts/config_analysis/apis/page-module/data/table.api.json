@@ -1,0 +1,767 @@
+[
+  {
+    "field": "field",
+    "label": "数据字段",
+    "type": "text",
+    "hash": "7b7212f4838189f670e1ec8c2e3fe750",
+    "tips": "从传入列表模块的数据中取出**数据字段**所指向的内容作为列表中所展示的数据。"
+  },
+  {
+    "field": "label",
+    "label": "表格标题",
+    "type": "text",
+    "hash": "040fe33294c07f0b5f1fa525fe3ff210",
+    "tips": "列表的标题"
+  },
+  {
+    "field": "description",
+    "label": "表格说明",
+    "type": "group",
+    "hash": "3dbb11c74160a0cdf769128848251463",
+    "tips": "列表的说明",
+    "fields": [
+      {
+        "field": "type",
+        "label": "描述类型",
+        "type": "select_single",
+        "hash": "e1dd2fe13f29d593bcbd58425f183739",
+        "tips": "列表说明的展示形式",
+        "options": [
+          {
+            "value": "text",
+            "label": "仅描述文案",
+            "hash": "8faed85f2b2f85f84e4589645f5ef8c6",
+            "tips": ""
+          },
+          {
+            "value": "tooltip",
+            "label": "文案及气泡弹层",
+            "hash": "ee62d550de50c3eba216b80e9ac960f3",
+            "tips": "鼠标悬停时，以Tooltips形式展示描述详情。"
+          },
+          {
+            "value": "modal",
+            "label": "文案及详情弹窗",
+            "hash": "72c11c5bc82499da916755a07f6c5ed5",
+            "tips": "鼠标点击后，以弹窗形式展示描述详情。"
+          }
+        ]
+      },
+      {
+        "field": "label",
+        "label": "描述内容",
+        "type": "text",
+        "hash": "0ab0f7ecaa233800e417fdcb0f8e1b90",
+        "tips": "列表说明的文案部分."
+      },
+      {
+        "field": "mode",
+        "label": "详情类型",
+        "type": "select_single",
+        "hash": "8b17cdcff108ea6e82d5cd056c60ee50",
+        "tips": "列表说明的详情部分的展示形式.",
+        "options": [
+          {
+            "value": "plain",
+            "label": "纯文本",
+            "hash": "a69de837839061da0b844dadf432d818",
+            "tips": ""
+          },
+          {
+            "value": "markdown",
+            "label": "Markdown",
+            "hash": "8732859fc6e3699a0e7e1b4f452ac1c1",
+            "tips": ""
+          },
+          {
+            "value": "html",
+            "label": "HTML",
+            "hash": "9b5354f4ce42a7c7a06382b9d777f868",
+            "tips": ""
+          }
+        ],
+        "condition": {
+          "hash": "daab8954c224163a54a91f8f929b4b92",
+          "tips": "仅当表格描述信息的**类型**为**文案及气泡弹层**或**文案及详情弹窗**时生效."
+        }
+      },
+      {
+        "field": "content",
+        "label": "详情内容",
+        "type": "text",
+        "hash": "932c3f433fc9b200a210510c7ccf3195",
+        "tips": "列表说明的详情部分的内容.",
+        "condition": {
+          "hash": "daab8954c224163a54a91f8f929b4b92",
+          "tips": "仅当表格描述信息的**类型**为**文案及气泡弹层**或**文案及详情弹窗**时生效."
+        }
+      }
+    ]
+  },
+  {
+    "field": "primary",
+    "label": "主键字段",
+    "type": "text",
+    "hash": "cc97afde242b02bac064076ebcefcbc5",
+    "tips": "列表数据的主键，用于唯一地确定数据中的每一条记录。"
+  },
+  {
+    "field": "columns",
+    "label": "表格字段",
+    "type": "form",
+    "hash": "0d27e51f8e3e315c2e59453c8001f126",
+    "tips": "列表的列",
+    "fields": [
+      {
+        "field": "label",
+        "label": "列描述",
+        "type": "text",
+        "hash": "31f4ad5db9189c4fa2d54716b17ed2cf",
+        "tips": "列的说明文案"
+      },
+      {
+        "field": "field",
+        "label": "列字段",
+        "type": "text",
+        "hash": "275dd9b9a31f5ecc3844bca8b32b26e1",
+        "tips": "列的数据来源字段"
+      },
+      {
+        "field": "type",
+        "label": "列类型",
+        "type": "select_single",
+        "hash": "41def59f961d06bcd2e03cddc129ca16",
+        "tips": "列的展示形式",
+        "options": [
+          {
+            "value": "text",
+            "label": "文本",
+            "hash": "b6650bc263e88f54e915ab09f502662c",
+            "tips": ""
+          },
+          {
+            "value": "multirowText",
+            "label": "多行文本",
+            "hash": "6590d48f48ba2e76aa35bd412eb21c34",
+            "tips": ""
+          },
+          {
+            "value": "number",
+            "label": "数值",
+            "hash": "4188134f604b946828039847ca9c2bde",
+            "tips": ""
+          },
+          {
+            "value": "datetime",
+            "label": "日期时间",
+            "hash": "7f70806a0c7453023f19a2e4783d2495",
+            "tips": ""
+          },
+          {
+            "value": "datetimeRange",
+            "label": "日期时间范围",
+            "hash": "99c732e4165953d0222e8ade0c9ec0eb",
+            "tips": ""
+          },
+          {
+            "value": "Aenum",
+            "label": "选项",
+            "hash": "309b6cea1fd6339f943c28a239c67701",
+            "tips": "枚举值类型"
+          },
+          {
+            "value": "image",
+            "label": "图片",
+            "hash": "b570e76e9a6f9e5a2600b7096aa04743",
+            "tips": ""
+          }
+        ]
+      },
+      {
+        "field": "align",
+        "label": "列对齐方式",
+        "type": "select_single",
+        "hash": "230af10ed23a7901c2fbef44a664d0c7",
+        "tips": "列的对齐方式",
+        "options": [
+          {
+            "value": "left",
+            "label": "左对齐",
+            "hash": "bbfda34ba305d0b043eb733770d4d998",
+            "tips": ""
+          },
+          {
+            "value": "center",
+            "label": "居中",
+            "hash": "ac218c540497309c59239848c704fd7e",
+            "tips": ""
+          },
+          {
+            "value": "right",
+            "label": "右对齐",
+            "hash": "f7e3ef8bff23904fdc806470a8851896",
+            "tips": ""
+          }
+        ]
+      },
+      {
+        "field": "*",
+        "label": "列配置项（时间日期类型）",
+        "type": "import_subform",
+        "hash": "d8a28374555c4a09b69bd34efaacbea3",
+        "tips": "列的其他配置项",
+        "condition": {
+          "hash": "672f1c8a4888ef91e22e8184a3b86971",
+          "tips": ""
+        },
+        "common": {
+          "key": "datetime",
+          "path": "column/datetime",
+          "hash": "da3175ca26264a0eb78d31cf25142123"
+        }
+      },
+      {
+        "field": "*",
+        "label": "列配置项（时间日期范围类型）",
+        "type": "import_subform",
+        "hash": "629d3f7bb41912a176e490a1e53427e8",
+        "tips": "列的其他配置项",
+        "condition": {
+          "hash": "c31df34d87fc33d3dc6b558ef8aaaaa6",
+          "tips": ""
+        },
+        "common": {
+          "key": "datetimeRange",
+          "path": "column/datetimeRange",
+          "hash": "9364207a5c6a6ed1115fe6296f4f33a0"
+        }
+      },
+      {
+        "field": "*",
+        "label": "列配置项（选项类型）",
+        "type": "import_subform",
+        "hash": "14edce9bf2cef7afb03c24595f01881f",
+        "tips": "列的其他配置项",
+        "condition": {
+          "hash": "391ceb00383618150dc4a829ad364ca6",
+          "tips": ""
+        },
+        "common": {
+          "key": "enum",
+          "path": "column/enum",
+          "hash": "16eba8934c3fefe23df4c4bed82135c6"
+        }
+      },
+      {
+        "field": "*",
+        "label": "列配置项（图片类型）",
+        "type": "import_subform",
+        "hash": "29d6af61e667aaeffba27899c95d020c",
+        "tips": "列的其他配置项",
+        "condition": {
+          "hash": "61a68c4ac10c4c5dd22850b46c669baf",
+          "tips": ""
+        },
+        "common": {
+          "key": "image",
+          "path": "column/image",
+          "hash": "17756e8472d5942d9c57c977a39d208f"
+        }
+      }
+    ]
+  },
+  {
+    "field": "pagination",
+    "label": "分页",
+    "type": "group",
+    "hash": "dbbeed063c03bba0a2372247c776909c",
+    "tips": "列表的分页模块配置",
+    "fields": [
+      {
+        "field": "mode",
+        "label": "模式",
+        "type": "select_single",
+        "hash": "5c8abef36e0a1a6addfedcd7f8ef12c3",
+        "tips": "分页模块的展示形式",
+        "options": [
+          {
+            "value": "none",
+            "label": "无分页",
+            "hash": "aa6f5eb8bade04b440177768e782c6d9",
+            "tips": ""
+          },
+          {
+            "value": "server",
+            "label": "服务端分页",
+            "hash": "560e60ff0d322d583c9b8ba6d63f2b12",
+            "tips": "列表模块所获取的数据为**当前页**数据，用户切换分页时重新获取数据。"
+          }
+        ]
+      },
+      {
+        "field": "current",
+        "label": "当前页码入参",
+        "type": "text",
+        "hash": "abcd9e1ec3e0debf78f59069b2274fd0",
+        "tips": "分页模块中，用户切换分页时，请求数据所携带的当前页码信息，将以此为字段名发送。",
+        "condition": {
+          "hash": "b2273d6de3164bb468c8a69f4bf65bae",
+          "tips": "仅当**分页模式**为*服务端分页*时生效。"
+        }
+      },
+      {
+        "field": "pageSize",
+        "label": "每页条数入参",
+        "type": "text",
+        "hash": "8d8aaf121d3c20618c56a6cadb8f73c2",
+        "tips": "分页模块中，用户切换分页时，请求数据所携带的每页条数信息，将以此为字段名发送。",
+        "condition": {
+          "hash": "b2273d6de3164bb468c8a69f4bf65bae",
+          "tips": "仅当**分页模式**为*服务端分页*时生效。"
+        }
+      },
+      {
+        "field": "total",
+        "label": "总条数出参",
+        "type": "text",
+        "hash": "82e832eba2a55bbdce31b584447bf877",
+        "tips": "分页模块中，展示分页模块时，将以此为字段名从列表数据中获取总记录数。",
+        "condition": {
+          "hash": "b2273d6de3164bb468c8a69f4bf65bae",
+          "tips": "仅当**分页模式**为*服务端分页*时生效。"
+        }
+      }
+    ]
+  },
+  {
+    "field": "operations",
+    "label": "操作按钮",
+    "type": "path",
+    "hash": "e57b59960f844f81d38a13939fad58ee",
+    "tips": "操作按钮配置",
+    "fields": [
+      {
+        "field": "leftTableOperations",
+        "label": "页面级按钮(左侧)",
+        "type": "form",
+        "hash": "c54b2c97b386625791dc9fdd966b873c",
+        "tips": "",
+        "fields": [
+          {
+            "field": "label",
+            "label": "描述",
+            "type": "text",
+            "hash": "4789a1dbb8dd8c04dc6492fe73644434",
+            "tips": "操作按钮的文案"
+          },
+          {
+            "field": "type",
+            "label": "类型",
+            "type": "select_single",
+            "hash": "7d1fa08f8cc10c2537cf8296e09ffd96",
+            "tips": "操作按钮的类型",
+            "options": [
+              {
+                "value": "button",
+                "label": "按钮",
+                "hash": "abedbf0c08ef1195973df1c461d2398b",
+                "tips": "普通的操作按钮"
+              },
+              {
+                "value": "group",
+                "label": "按钮组",
+                "hash": "28d00eaff5e87cb9182cc1319c6a467e",
+                "tips": "由多个操作按钮组成的按钮组"
+              },
+              {
+                "value": "dropdown",
+                "label": "下拉按钮",
+                "hash": "524acf0a826fa5706aa1bfbad49e72b2",
+                "tips": "展示为操作按钮,鼠标悬停后展示下拉按钮"
+              }
+            ]
+          },
+          {
+            "field": "level",
+            "label": "按钮级别",
+            "type": "select_single",
+            "hash": "16c908d333a4f9e96f7ebd2c1f7c46d5",
+            "tips": "操作按钮的级别",
+            "options": [
+              {
+                "value": "normal",
+                "label": "默认",
+                "hash": "e4abeeb8ad1b42bb47760a78900fe91e",
+                "tips": ""
+              },
+              {
+                "value": "primary",
+                "label": "主按钮",
+                "hash": "7da956ba02f8674d29dbe974294ad5cd",
+                "tips": ""
+              },
+              {
+                "value": "danger",
+                "label": "危险按钮",
+                "hash": "62acbb97cbc2fc526749e7fd118c59b4",
+                "tips": ""
+              }
+            ],
+            "condition": {
+              "hash": "e245b60d298eda787d1fdd2d3322f825",
+              "tips": "仅当操作按钮的**类型**为**按钮**或**下拉按钮**时生效"
+            }
+          },
+          {
+            "field": "*",
+            "label": "操作按钮配置",
+            "type": "import_subform",
+            "hash": "17d891b1d7e7171ffd4d5df5007a944d",
+            "tips": "操作按钮的其他配置",
+            "condition": {
+              "hash": "e245b60d298eda787d1fdd2d3322f825",
+              "tips": "仅当操作按钮的**类型**为**按钮**或**下拉按钮**时生效"
+            },
+            "common": {
+              "key": "TableOperationConfig",
+              "path": "common/TableOperationConfig",
+              "hash": "940f59d4581afcf9cfdc34bffc6f2e79"
+            }
+          },
+          {
+            "field": "operations",
+            "label": "子按钮",
+            "type": "form",
+            "hash": "a0b7dcab6e3ebde266e7ea5b608d2dc0",
+            "tips": "组成按钮组的子按钮",
+            "fields": [
+              {
+                "field": "label",
+                "label": "描述",
+                "type": "text",
+                "hash": "4789a1dbb8dd8c04dc6492fe73644434",
+                "tips": "子按钮的文案"
+              },
+              {
+                "field": "level",
+                "label": "按钮级别",
+                "type": "select_single",
+                "hash": "24ffe31543470a15699b34326109d3c1",
+                "tips": "子按钮的级别",
+                "options": [
+                  {
+                    "value": "normal",
+                    "label": "默认",
+                    "hash": "e4abeeb8ad1b42bb47760a78900fe91e",
+                    "tips": ""
+                  },
+                  {
+                    "value": "primary",
+                    "label": "主按钮",
+                    "hash": "7da956ba02f8674d29dbe974294ad5cd",
+                    "tips": ""
+                  },
+                  {
+                    "value": "danger",
+                    "label": "危险按钮",
+                    "hash": "62acbb97cbc2fc526749e7fd118c59b4",
+                    "tips": ""
+                  }
+                ]
+              },
+              {
+                "field": "*",
+                "label": "子操作按钮配置",
+                "type": "import_subform",
+                "hash": "b2b2997fd14b669d62d4849044a60fba",
+                "tips": "子操作按钮的其他配置",
+                "common": {
+                  "key": "TableOperationConfig",
+                  "path": "common/TableOperationConfig",
+                  "hash": "940f59d4581afcf9cfdc34bffc6f2e79"
+                }
+              }
+            ],
+            "condition": {
+              "hash": "633656dc690e7010701c5c683bf6bf41",
+              "tips": "仅当操作按钮的**类型**为**按钮组**或**下拉按钮**时生效"
+            }
+          }
+        ]
+      },
+      {
+        "field": "tableOperations",
+        "label": "页面级按钮(右侧)",
+        "type": "form",
+        "hash": "7dac5a9d7bfbf0b7d0c7fc90fb4ac117",
+        "tips": "",
+        "fields": [
+          {
+            "field": "label",
+            "label": "描述",
+            "type": "text",
+            "hash": "4789a1dbb8dd8c04dc6492fe73644434",
+            "tips": "操作按钮的文案"
+          },
+          {
+            "field": "type",
+            "label": "类型",
+            "type": "select_single",
+            "hash": "7d1fa08f8cc10c2537cf8296e09ffd96",
+            "tips": "操作按钮的类型",
+            "options": [
+              {
+                "value": "button",
+                "label": "按钮",
+                "hash": "abedbf0c08ef1195973df1c461d2398b",
+                "tips": "普通的操作按钮"
+              },
+              {
+                "value": "group",
+                "label": "按钮组",
+                "hash": "28d00eaff5e87cb9182cc1319c6a467e",
+                "tips": "由多个操作按钮组成的按钮组"
+              },
+              {
+                "value": "dropdown",
+                "label": "下拉按钮",
+                "hash": "524acf0a826fa5706aa1bfbad49e72b2",
+                "tips": "展示为操作按钮,鼠标悬停后展示下拉按钮"
+              }
+            ]
+          },
+          {
+            "field": "level",
+            "label": "按钮级别",
+            "type": "select_single",
+            "hash": "16c908d333a4f9e96f7ebd2c1f7c46d5",
+            "tips": "操作按钮的级别",
+            "options": [
+              {
+                "value": "normal",
+                "label": "默认",
+                "hash": "e4abeeb8ad1b42bb47760a78900fe91e",
+                "tips": ""
+              },
+              {
+                "value": "primary",
+                "label": "主按钮",
+                "hash": "7da956ba02f8674d29dbe974294ad5cd",
+                "tips": ""
+              },
+              {
+                "value": "danger",
+                "label": "危险按钮",
+                "hash": "62acbb97cbc2fc526749e7fd118c59b4",
+                "tips": ""
+              }
+            ],
+            "condition": {
+              "hash": "e245b60d298eda787d1fdd2d3322f825",
+              "tips": "仅当操作按钮的**类型**为**按钮**或**下拉按钮**时生效"
+            }
+          },
+          {
+            "field": "*",
+            "label": "操作按钮配置",
+            "type": "import_subform",
+            "hash": "a6bbd052c55cd12e4e027be807cc0732",
+            "tips": "操作按钮的其他配置",
+            "condition": {
+              "hash": "5c2e174c7ca42c1455eacf0dbd99f6be",
+              "tips": "仅当操作按钮的类型为**按钮组**或**下拉按钮**时生效"
+            },
+            "common": {
+              "key": "TableOperationConfig",
+              "path": "common/TableOperationConfig",
+              "hash": "940f59d4581afcf9cfdc34bffc6f2e79"
+            }
+          },
+          {
+            "field": "operations",
+            "label": "子按钮",
+            "type": "form",
+            "hash": "a88379bbeca02b2b3bf73c86281c4eec",
+            "tips": "组成按钮组的子按钮",
+            "fields": [
+              {
+                "field": "label",
+                "label": "描述",
+                "type": "text",
+                "hash": "4789a1dbb8dd8c04dc6492fe73644434",
+                "tips": "子按钮的文案"
+              },
+              {
+                "field": "level",
+                "label": "按钮级别",
+                "type": "select_single",
+                "hash": "16c908d333a4f9e96f7ebd2c1f7c46d5",
+                "tips": "子按钮的级别",
+                "options": [
+                  {
+                    "value": "normal",
+                    "label": "默认",
+                    "hash": "e4abeeb8ad1b42bb47760a78900fe91e",
+                    "tips": ""
+                  },
+                  {
+                    "value": "primary",
+                    "label": "主按钮",
+                    "hash": "7da956ba02f8674d29dbe974294ad5cd",
+                    "tips": ""
+                  },
+                  {
+                    "value": "danger",
+                    "label": "危险按钮",
+                    "hash": "62acbb97cbc2fc526749e7fd118c59b4",
+                    "tips": ""
+                  }
+                ],
+                "condition": {
+                  "hash": "e245b60d298eda787d1fdd2d3322f825",
+                  "tips": "仅当操作按钮的类型为**按钮**或**下拉按钮**时生效"
+                }
+              },
+              {
+                "field": "*",
+                "label": "子操作按钮配置",
+                "type": "import_subform",
+                "hash": "b2b2997fd14b669d62d4849044a60fba",
+                "tips": "子操作按钮的其他配置",
+                "common": {
+                  "key": "TableOperationConfig",
+                  "path": "common/TableOperationConfig",
+                  "hash": "940f59d4581afcf9cfdc34bffc6f2e79"
+                }
+              }
+            ],
+            "condition": {
+              "hash": "633656dc690e7010701c5c683bf6bf41",
+              "tips": "仅当操作按钮的类型为**按钮组**或**下拉按钮**时生效"
+            }
+          }
+        ]
+      },
+      {
+        "field": "rowOperations",
+        "label": "记录操作按钮",
+        "type": "form",
+        "hash": "b2fcd08989eaebfbd532e4ce3b288df3",
+        "tips": "",
+        "fields": [
+          {
+            "field": "label",
+            "label": "描述",
+            "type": "text",
+            "hash": "4789a1dbb8dd8c04dc6492fe73644434",
+            "tips": "操作按钮的文案"
+          },
+          {
+            "field": "type",
+            "label": "类型",
+            "type": "select_single",
+            "hash": "e30a163b5d76b4b10ff4bdb78ffc5e62",
+            "tips": "操作按钮的类型",
+            "options": [
+              {
+                "value": "button",
+                "label": "按钮",
+                "hash": "abedbf0c08ef1195973df1c461d2398b",
+                "tips": "普通的操作按钮"
+              },
+              {
+                "value": "dropdown",
+                "label": "下拉按钮",
+                "hash": "524acf0a826fa5706aa1bfbad49e72b2",
+                "tips": "展示为操作按钮,鼠标悬停后展示下拉按钮"
+              }
+            ]
+          },
+          {
+            "field": "*",
+            "label": "操作按钮配置",
+            "type": "import_subform",
+            "hash": "a6bbd052c55cd12e4e027be807cc0732",
+            "tips": "操作按钮的其他配置",
+            "condition": {
+              "hash": "5c2e174c7ca42c1455eacf0dbd99f6be",
+              "tips": "仅当操作按钮的类型为**按钮**或**下拉按钮**时生效"
+            },
+            "common": {
+              "key": "TableOperationConfig",
+              "path": "common/TableOperationConfig",
+              "hash": "940f59d4581afcf9cfdc34bffc6f2e79"
+            }
+          },
+          {
+            "field": "operations",
+            "label": "子按钮",
+            "type": "form",
+            "hash": "2a96a32ed36c31b4eeaba10f75951dc3",
+            "tips": "组成按钮组的子按钮",
+            "fields": [
+              {
+                "field": "label",
+                "label": "描述",
+                "type": "text",
+                "hash": "4789a1dbb8dd8c04dc6492fe73644434",
+                "tips": "子按钮的文案"
+              },
+              {
+                "field": "level",
+                "label": "按钮级别",
+                "type": "select_single",
+                "hash": "24ffe31543470a15699b34326109d3c1",
+                "tips": "子按钮的级别",
+                "options": [
+                  {
+                    "value": "normal",
+                    "label": "默认",
+                    "hash": "e4abeeb8ad1b42bb47760a78900fe91e",
+                    "tips": ""
+                  },
+                  {
+                    "value": "primary",
+                    "label": "主按钮",
+                    "hash": "7da956ba02f8674d29dbe974294ad5cd",
+                    "tips": ""
+                  },
+                  {
+                    "value": "danger",
+                    "label": "危险按钮",
+                    "hash": "62acbb97cbc2fc526749e7fd118c59b4",
+                    "tips": ""
+                  }
+                ]
+              },
+              {
+                "field": "*",
+                "label": "子操作按钮配置",
+                "type": "import_subform",
+                "hash": "b2b2997fd14b669d62d4849044a60fba",
+                "tips": "子操作按钮的其他配置",
+                "common": {
+                  "key": "TableOperationConfig",
+                  "path": "common/TableOperationConfig",
+                  "hash": "940f59d4581afcf9cfdc34bffc6f2e79"
+                }
+              }
+            ],
+            "condition": {
+              "hash": "ceee5fc2d10775222527fefa4a8f94e9",
+              "tips": "仅当操作按钮的类型为**按钮组**或**下拉按钮**时生效"
+            }
+          }
+        ]
+      },
+      {
+        "field": "multirowOperations",
+        "label": "多选操作按钮",
+        "type": "form",
+        "hash": "9506cfb31754c4b29b61d5d7fbefe7ab",
+        "tips": "",
+        "fields": []
+      }
+    ]
+  }
+]

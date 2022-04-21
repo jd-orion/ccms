@@ -46,6 +46,8 @@ const config: FieldConfigs[] = [
       {
         "field": "page",
         "label": "目标页面",
+        "type": "tree_select",
+        "mode": "treeSelect",
         "defaultValue": {
           "source": "static",
           "value": 0
@@ -200,7 +202,7 @@ const config: FieldConfigs[] = [
         }
       },
       {
-        "field": "titleText", 
+        "field": "titleText",
         "label": "确认文案",
         "type": "text",
         "condition": {

@@ -537,14 +537,12 @@ export const Template: FormConfig = {
     {
       "type": "submit",
       "label": "提交",
-      "mode": "primary",
-    "submitValidate": false
+      "mode": "primary"
     },
     {
       "type": "cancel",
       "label": "取消",
-      "mode": "normal",
-      "submitValidate": false
+      "mode": "normal"
     }
-  ],
+  ]
 }

@@ -22,6 +22,10 @@ const config: FieldConfigs[] = [
               value: 'table',
               label: '表格',
             },
+            {
+              value: 'treeSelect',
+              label: '选择框',
+            }
           ],
         },
       },
@@ -132,7 +136,7 @@ const config: FieldConfigs[] = [
                   label: '接口下发',
                 },
                 {
-                  value: 'automatic',
+                  value: 'data',
                   label: '已有数据',
                 },
               ],
@@ -258,7 +262,7 @@ const config: FieldConfigs[] = [
               },
             },
             condition: {
-              template: "${from} === 'automatic'",
+              template: "${from} === 'data'",
               params: [
                 {
                   field: 'from',
@@ -285,7 +289,7 @@ const config: FieldConfigs[] = [
               ],
             },
             condition: {
-              template: "${from} === 'interface' || ${from} === 'automatic'",
+              template: "${from} === 'interface' || ${from} === 'data'",
               params: [
                 {
                   field: 'from',
@@ -303,7 +307,7 @@ const config: FieldConfigs[] = [
             type: 'text',
             condition: {
               template:
-                "(${from} === 'automatic' || ${from} === 'interface') && ${type} === 'list'",
+                "(${from} === 'data' || ${from} === 'interface') && ${type} === 'list'",
               params: [
                 {
                   field: 'from',
@@ -328,7 +332,7 @@ const config: FieldConfigs[] = [
             type: 'text',
             condition: {
               template:
-                "(${from} === 'automatic' || ${from} === 'interface') && ${type} === 'list'",
+                "(${from} === 'data' || ${from} === 'interface') && ${type} === 'list'",
               params: [
                 {
                   field: 'from',
@@ -353,7 +357,7 @@ const config: FieldConfigs[] = [
             type: 'text',
             condition: {
               template:
-                "(${from} === 'automatic' || ${from} === 'interface') && ${type} === 'list'",
+                "(${from} === 'data' || ${from} === 'interface') && ${type} === 'list'",
               params: [
                 {
                   field: 'from',

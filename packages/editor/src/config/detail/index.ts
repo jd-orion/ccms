@@ -39,8 +39,16 @@ const config: FieldConfigs[] = [
           "label": "颜色详情"
         },
         {
+          "value": "image",
+          "label": "图片"
+        },
+        {
           "value": "custom",
           "label": "自定义组件"
+        },
+        {
+          "value": "table",
+          "label": "表格"
         }
       ]
     }
@@ -74,6 +82,46 @@ const config: FieldConfigs[] = [
     },
     "condition": {
       "template": "${type} === 'import_subform'",
+      "params": [
+        {
+          "field": "type",
+          "data": {
+            "source": "record",
+            "field": "type"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "field": "",
+    "label": "",
+    "type": "import_subform",
+    "interface": {
+      "url": "${configDomain}/detail/image.json",
+      "urlParams": [
+        {
+          "field": "version",
+          "data": {
+            "source": "source",
+            "field": "version"
+          }
+        },
+        {
+          "field": "configDomain",
+          "data": {
+            "source": "source",
+            "field": "configDomain"
+          }
+        }
+      ],
+      "method": 'GET',
+      "cache": {
+        "global": "CCMS_CONFIG_detail_image"
+      }
+    },
+    "condition": {
+      "template": "${type} === 'image'",
       "params": [
         {
           "field": "type",
@@ -135,7 +183,6 @@ const config: FieldConfigs[] = [
       ]
     }
   },
-  // 详情信息说明
   {
     "field": "description",
     "label": "详情信息",
@@ -253,6 +300,10 @@ const config: FieldConfigs[] = [
               }
             }
           ]
+        },
+        "defaultValue": {
+          "source": "static",
+          "value": "plain"
         },
         "options": {
           "from": "manual",
@@ -651,6 +702,46 @@ const config: FieldConfigs[] = [
     },
     "condition": {
       "template": "${type} === 'custom'",
+      "params": [
+        {
+          "field": "type",
+          "data": {
+            "source": "record",
+            "field": "type"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "field": "",
+    "label": "",
+    "type": "import_subform",
+    "interface": {
+      "url": "${configDomain}/detail/table.json",
+      "urlParams": [
+        {
+          "field": "version",
+          "data": {
+            "source": "source",
+            "field": "version"
+          }
+        },
+        {
+          "field": "configDomain",
+          "data": {
+            "source": "source",
+            "field": "configDomain"
+          }
+        }
+      ],
+      "method": 'GET',
+      "cache": {
+        "global": "CCMS_CONFIG_detail_table"
+      }
+    },
+    "condition": {
+      "template": "${type} === 'table'",
       "params": [
         {
           "field": "type",

@@ -125,6 +125,10 @@ export const Config: FormConfig = {
               }
             ]
           },
+          "defaultValue": {
+            "source": "static",
+            "value": "plain"
+          },
           "options": {
             "from": "manual",
             "data": [
@@ -334,6 +338,15 @@ export const Config: FormConfig = {
               }
             ]
           }
+        },
+        {
+          "field": "style.customStyle.width",
+          "label": "列宽",
+          "type": "text",
+          "defaultValue": {
+            "source": "static",
+            "value": ""
+          },
         },
         {
           "field": "",
@@ -773,6 +786,69 @@ export const Config: FormConfig = {
           }
         },
         {
+          "field": "modalWidthMode",
+          "label": "弹窗宽度限制方式",
+          "type": "select_single",
+          "mode": "button",
+          "defaultValue": {
+            "source": "static",
+            "value": "none"
+          },
+          "options": {
+            "from": "manual",
+            "data": [
+              {
+                "value": "none",
+                "label": "不限制"
+              },
+              {
+                "value": "percentage",
+                "label": "百分比"
+              },
+              {
+                "value": "pixel",
+                "label": "像素值"
+              }
+            ]
+          },
+          "condition": {
+            "template": "${target} === 'current'",
+            "params": [
+              {
+                "field": "target",
+                "data": {
+                  "source": "record",
+                  "field": "handle.target"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "field": "modalWidthValue",
+          "label": "弹窗宽度限制值",
+          "type": "text",
+          "condition": {
+            "template": "${target} === 'current' && ${modalWidthMode} !== 'none'",
+            "params": [
+              {
+                "field": "target",
+                "data": {
+                  "source": "record",
+                  "field": "handle.target"
+                }
+              },
+              {
+                "field": "modalWidthMode",
+                "data": {
+                  "source": "record",
+                  "field": "modalWidthMode"
+                }
+              }
+            ]
+          }
+        },
+        {
           "field": "operations",
           "label": "子按钮",
           "type": "form",
@@ -836,6 +912,69 @@ export const Config: FormConfig = {
                 "cache": {
                   "global": "CCMS_CONFIG_common_TableOperationConfig"
                 }
+              }
+            },
+            {
+              "field": "modalWidthMode",
+              "label": "弹窗宽度限制方式",
+              "type": "select_single",
+              "mode": "button",
+              "defaultValue": {
+                "source": "static",
+                "value": "none"
+              },
+              "options": {
+                "from": "manual",
+                "data": [
+                  {
+                    "value": "none",
+                    "label": "不限制"
+                  },
+                  {
+                    "value": "percentage",
+                    "label": "百分比"
+                  },
+                  {
+                    "value": "pixel",
+                    "label": "像素值"
+                  }
+                ]
+              },
+              "condition": {
+                "template": "${target} === 'current'",
+                "params": [
+                  {
+                    "field": "target",
+                    "data": {
+                      "source": "record",
+                      "field": "handle.target"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "field": "modalWidthValue",
+              "label": "弹窗宽度限制值",
+              "type": "text",
+              "condition": {
+                "template": "${target} === 'current' && ${modalWidthMode} !== 'none'",
+                "params": [
+                  {
+                    "field": "target",
+                    "data": {
+                      "source": "record",
+                      "field": "handle.target"
+                    }
+                  },
+                  {
+                    "field": "modalWidthMode",
+                    "data": {
+                      "source": "record",
+                      "field": "modalWidthMode"
+                    }
+                  }
+                ]
               }
             }
           ],
@@ -968,6 +1107,69 @@ export const Config: FormConfig = {
           }
         },
         {
+          "field": "modalWidthMode",
+          "label": "弹窗宽度限制方式",
+          "type": "select_single",
+          "mode": "button",
+          "defaultValue": {
+            "source": "static",
+            "value": "none"
+          },
+          "options": {
+            "from": "manual",
+            "data": [
+              {
+                "value": "none",
+                "label": "不限制"
+              },
+              {
+                "value": "percentage",
+                "label": "百分比"
+              },
+              {
+                "value": "pixel",
+                "label": "像素值"
+              }
+            ]
+          },
+          "condition": {
+            "template": "${target} === 'current'",
+            "params": [
+              {
+                "field": "target",
+                "data": {
+                  "source": "record",
+                  "field": "handle.target"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "field": "modalWidthValue",
+          "label": "弹窗宽度限制值",
+          "type": "text",
+          "condition": {
+            "template": "${target} === 'current' && ${modalWidthMode} !== 'none'",
+            "params": [
+              {
+                "field": "target",
+                "data": {
+                  "source": "record",
+                  "field": "handle.target"
+                }
+              },
+              {
+                "field": "modalWidthMode",
+                "data": {
+                  "source": "record",
+                  "field": "modalWidthMode"
+                }
+              }
+            ]
+          }
+        },
+        {
           "field": "operations",
           "label": "子按钮",
           "type": "form",
@@ -1044,7 +1246,70 @@ export const Config: FormConfig = {
                   "global": "CCMS_CONFIG_common_TableOperationConfig"
                 }
               }
-            }
+            },
+            {
+              "field": "modalWidthMode",
+              "label": "弹窗宽度限制方式",
+              "type": "select_single",
+              "mode": "button",
+              "defaultValue": {
+                "source": "static",
+                "value": "none"
+              },
+              "options": {
+                "from": "manual",
+                "data": [
+                  {
+                    "value": "none",
+                    "label": "不限制"
+                  },
+                  {
+                    "value": "percentage",
+                    "label": "百分比"
+                  },
+                  {
+                    "value": "pixel",
+                    "label": "像素值"
+                  }
+                ]
+              },
+              "condition": {
+                "template": "${target} === 'current'",
+                "params": [
+                  {
+                    "field": "target",
+                    "data": {
+                      "source": "record",
+                      "field": "handle.target"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "field": "modalWidthValue",
+              "label": "弹窗宽度限制值",
+              "type": "text",
+              "condition": {
+                "template": "${target} === 'current' && ${modalWidthMode} !== 'none'",
+                "params": [
+                  {
+                    "field": "target",
+                    "data": {
+                      "source": "record",
+                      "field": "handle.target"
+                    }
+                  },
+                  {
+                    "field": "modalWidthMode",
+                    "data": {
+                      "source": "record",
+                      "field": "modalWidthMode"
+                    }
+                  }
+                ]
+              }
+            },
           ],
           "condition": {
             "template": "${type} === 'group' || ${type} === 'dropdown'",
@@ -1136,6 +1401,69 @@ export const Config: FormConfig = {
           }
         },
         {
+          "field": "modalWidthMode",
+          "label": "弹窗宽度限制方式",
+          "type": "select_single",
+          "mode": "button",
+          "defaultValue": {
+            "source": "static",
+            "value": "none"
+          },
+          "options": {
+            "from": "manual",
+            "data": [
+              {
+                "value": "none",
+                "label": "不限制"
+              },
+              {
+                "value": "percentage",
+                "label": "百分比"
+              },
+              {
+                "value": "pixel",
+                "label": "像素值"
+              }
+            ]
+          },
+          "condition": {
+            "template": "${target} === 'current'",
+            "params": [
+              {
+                "field": "target",
+                "data": {
+                  "source": "record",
+                  "field": "handle.target"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "field": "modalWidthValue",
+          "label": "弹窗宽度限制值",
+          "type": "text",
+          "condition": {
+            "template": "${target} === 'current' && ${modalWidthMode} !== 'none'",
+            "params": [
+              {
+                "field": "target",
+                "data": {
+                  "source": "record",
+                  "field": "handle.target"
+                }
+              },
+              {
+                "field": "modalWidthMode",
+                "data": {
+                  "source": "record",
+                  "field": "modalWidthMode"
+                }
+              }
+            ]
+          }
+        },
+        {
           "field": "operations",
           "label": "子按钮",
           "type": "form",
@@ -1200,7 +1528,70 @@ export const Config: FormConfig = {
                   "global": "CCMS_CONFIG_common_TableOperationConfig"
                 }
               }
-            }
+            },
+            {
+              "field": "modalWidthMode",
+              "label": "弹窗宽度限制方式",
+              "type": "select_single",
+              "mode": "button",
+              "defaultValue": {
+                "source": "static",
+                "value": "none"
+              },
+              "options": {
+                "from": "manual",
+                "data": [
+                  {
+                    "value": "none",
+                    "label": "不限制"
+                  },
+                  {
+                    "value": "percentage",
+                    "label": "百分比"
+                  },
+                  {
+                    "value": "pixel",
+                    "label": "像素值"
+                  }
+                ]
+              },
+              "condition": {
+                "template": "${target} === 'current'",
+                "params": [
+                  {
+                    "field": "target",
+                    "data": {
+                      "source": "record",
+                      "field": "handle.target"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "field": "modalWidthValue",
+              "label": "弹窗宽度限制值",
+              "type": "text",
+              "condition": {
+                "template": "${target} === 'current' && ${modalWidthMode} !== 'none'",
+                "params": [
+                  {
+                    "field": "target",
+                    "data": {
+                      "source": "record",
+                      "field": "handle.target"
+                    }
+                  },
+                  {
+                    "field": "modalWidthMode",
+                    "data": {
+                      "source": "record",
+                      "field": "modalWidthMode"
+                    }
+                  }
+                ]
+              }
+            },
           ],
           "condition": {
             "template": "${type} === 'dropdown'",
@@ -1245,11 +1636,8 @@ export const Template: TableConfig = {
     {
       "label": 'ID',
       "field": 'id',
-      "type": 'text',
-      "align": "left",
-      "linkUrl": false
+      "type": 'text'
     }
   ],
-  "primary": 'id',
-  rowOperationsPosition: 'left'
+  "primary": 'id'
 }

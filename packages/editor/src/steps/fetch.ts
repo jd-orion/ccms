@@ -1,10 +1,3 @@
-/*
- * @Author: zjt
- * @Date: 2022-02-22 16:21:54
- * @LastEditTime: 2022-02-24 10:22:09
- * @LastEditors: zjt
- * @Description: Do not edit
- */
 import { FetchConfig } from "ccms/dist/src/steps/fetch";
 import { FormConfig } from "ccms/dist/src/steps/form";
 
