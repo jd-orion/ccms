@@ -105,7 +105,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/column/text.json",
+          "url": "${configDomain}/column/text.json",
           "urlParams": [
             {
               "field": "version",
@@ -115,10 +115,10 @@ const config: FieldConfigs[] = [
               }
             },
             {
-              "field": "subversion",
+              "field": "configDomain",
               "data": {
                 "source": "source",
-                "field": "subversion"
+                "field": "configDomain"
               }
             }
           ],
@@ -145,7 +145,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/column/datetime.json",
+          "url": "${configDomain}/column/datetime.json",
           "urlParams": [
             {
               "field": "version",
@@ -155,10 +155,10 @@ const config: FieldConfigs[] = [
               }
             },
             {
-              "field": "subversion",
+              "field": "configDomain",
               "data": {
                 "source": "source",
-                "field": "subversion"
+                "field": "configDomain"
               }
             }
           ],
@@ -185,7 +185,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/column/datetimeRange.json",
+          "url": "${configDomain}/column/datetimeRange.json",
           "urlParams": [
             {
               "field": "version",
@@ -195,10 +195,10 @@ const config: FieldConfigs[] = [
               }
             },
             {
-              "field": "subversion",
+              "field": "configDomain",
               "data": {
                 "source": "source",
-                "field": "subversion"
+                "field": "configDomain"
               }
             }
           ],
@@ -225,7 +225,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/column/enum.json",
+          "url": "${configDomain}/column/enum.json",
           "urlParams": [
             {
               "field": "version",
@@ -235,10 +235,10 @@ const config: FieldConfigs[] = [
               }
             },
             {
-              "field": "subversion",
+              "field": "configDomain",
               "data": {
                 "source": "source",
-                "field": "subversion"
+                "field": "configDomain"
               }
             }
           ],
@@ -265,7 +265,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/column/image.json",
+          "url": "${configDomain}/column/image.json",
           "urlParams": [
             {
               "field": "version",
@@ -275,10 +275,10 @@ const config: FieldConfigs[] = [
               }
             },
             {
-              "field": "subversion",
+              "field": "configDomain",
               "data": {
                 "source": "source",
-                "field": "subversion"
+                "field": "configDomain"
               }
             }
           ],
@@ -423,7 +423,7 @@ const config: FieldConfigs[] = [
         "label": "",
         "type": "import_subform",
         "interface": {
-          "url": "/ccms/config/${version}/${subversion}/common/TableOperationConfig.json",
+          "url": "${configDomain}/common/TableOperationConfig.json",
           "urlParams": [
             {
               "field": "version",
@@ -433,10 +433,10 @@ const config: FieldConfigs[] = [
               }
             },
             {
-              "field": "subversion",
+              "field": "configDomain",
               "data": {
                 "source": "source",
-                "field": "subversion"
+                "field": "configDomain"
               }
             }
           ],
@@ -501,7 +501,7 @@ const config: FieldConfigs[] = [
             "label": "",
             "type": "import_subform",
             "interface": {
-              "url": "/ccms/config/${version}/${subversion}/common/TableOperationConfig.json",
+              "url": "${configDomain}/common/TableOperationConfig.json",
               "urlParams": [
                 {
                   "field": "version",
@@ -511,10 +511,10 @@ const config: FieldConfigs[] = [
                   }
                 },
                 {
-                  "field": "subversion",
+                  "field": "configDomain",
                   "data": {
                     "source": "source",
-                    "field": "subversion"
+                    "field": "configDomain"
                   }
                 }
               ],
