@@ -1,29 +1,28 @@
+const path = require('path');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 
-const dependencies = {
-  'react': '17',
-  'react-dom': '17',
-  'antd': '4',
-  '@drip/drip-design': ['drip', '4']
-}
-
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = merge(common, {
-  externals: (context, request, callback)=>{
-    if(Object.keys(dependencies).includes(request)){
-      if (Array.isArray(dependencies[request])) {
-        callback(null, `root window["orion:common:${dependencies[request][0]}:${dependencies[request][1]}"]`)
-      } else {
-        callback(null, `root window["orion:common:${request}:${dependencies[request]}"]`)
-      }
-    } else {
-        callback();
-    }
+  entry: path.join(__dirname, './src/index.tsx'),
+  output: {
+    filename: 'index.js',
+    path: path.join(__dirname, './dist'),
+    libraryTarget: "umd",
   },
-  // devtool: 'cheap-module-source-map',
-  // plugins: [
-  //   new BundleAnalyzerPlugin()
-  // ]
+  externals: {
+    'react': {
+      commonjs: 'react',
+      commonjs2: 'react',
+      amd: 'react',
+      root: 'React',
+    },
+    'react-dom': {
+      commonjs: 'react-dom',
+      commonjs2: 'react-dom',
+      amd: 'react-dom',
+      root: 'ReactDOM',
+    },
+    'qiankun': 'qiankun'
+  }
 })

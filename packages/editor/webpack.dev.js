@@ -1,3 +1,4 @@
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
@@ -6,6 +7,15 @@ module.exports = merge(common, {
   mode: 'development',
   cache: {
     type: 'filesystem'
+  },
+  entry: path.join(__dirname, './src/indexDev.tsx'),
+  output: {
+    filename: 'index.js',
+    path: path.join(__dirname, './dist'),
+    libraryTarget: "umd",
+  },
+  externals: {
+    'qiankun': 'qiankun'
   },
   plugins: [
     new HtmlWebpackPlugin({

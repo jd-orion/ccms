@@ -1,6 +1,6 @@
 {
   "name": "ccms-editor",
-  "version": "0.0.6",
+  "version": "0.0.8-beta.2",
   "description": "ccms编辑器",
   "main": "dist/index.js",
   "files": [
@@ -9,12 +9,12 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "dev_bak": "webpack serve --config ./webpack.dev.js",
+    "build": "webpack --config ./webpack.prod.js --mode production && node scripts/config.js",
     "build:r": "npm run clear && npm run build:rollup && npm run build:babel",
     "build:rollup": "rollup -c",
     "build:babel": "babel src -d lib -s -x '.ts,.tsx'",
-    "clear": "rm -rf dist && rm -rf lib",
-    "build": "webpack --config ./webpack.common.js --mode production && node scripts/config.js",
     "build:father": "npm run clear && father build",
+    "clear": "rm -rf dist && rm -rf lib",
     "watch_config": "npm-watch run_config",
     "run_config": "node scripts/config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
