@@ -284,7 +284,7 @@ export class Display<C extends FieldConfig, E, T, S = {}> extends React.Componen
 
 export class FieldError {
   message: string
-  constructor (message: string) {
+  constructor(message: string) {
     this.message = message
   }
 }

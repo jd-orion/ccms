@@ -134,8 +134,8 @@ export const getChainPath = (...arg: any[]) => {
  * @param find  目标字符串
  * @returns  返回目标字符串出现在来源字符串中所有索引
  */
-function indexes (source: string, find: string) {
-  const result = []
+function indexes(source: string, find: string) {
+  const result: number[] = []
   for (let i = 0; i < source.length; ++i) {
     if (source.substring(i, i + find.length) === find) {
       result.push(i)

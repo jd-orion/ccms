@@ -27,6 +27,7 @@ import CodeField, { CodeFieldConfig } from './code'
 import DiffCodeField, { DiffCodeFieldConfig } from './diffCode'
 
 import TextDisplay from './text/display'
+import FormDisplay from './form/display'
 import RadioDisplay from './radio/display'
 import ColorDisplay from './color/display'
 import UploadDisplay from './upload/display'
@@ -36,8 +37,12 @@ import DatetimeDisplay from './datetime/display'
 import DatetimeRangeDisplay from './datetimeRange/display'
 import SelectSingleDisplay from './select/single/display'
 import SelectMultipleDisplay from './select/multiple/display'
+import ImportSubformDisplay from './importSubform/display'
+import GroupDisplay from './group/display'
 import SwitchDisplay from './switch/display'
+import TabsDisplay from './tabs/display'
 import MultipleTextDisplay from './multipleText/display'
+import HiddenDisplay from './hidden/display'
 
 export interface HiddenFieldConfig extends FieldConfig {
     type: 'hidden' | 'none'
@@ -132,14 +137,19 @@ export default {
 export const display = {
   text: TextDisplay,
   longtext: LongtextDisplay,
+  form: FormDisplay,
   radio: RadioDisplay,
   color: ColorDisplay,
   upload: UploadDisplay,
+  import_subform: ImportSubformDisplay,
+  group: GroupDisplay,
   number: NumberDisplay,
   datetime: DatetimeDisplay,
   datetimeRange: DatetimeRangeDisplay,
   select_single: SelectSingleDisplay,
   select_multiple: SelectMultipleDisplay,
   switch: SwitchDisplay,
-  multiple_text: MultipleTextDisplay
+  tabs: TabsDisplay,
+  multiple_text: MultipleTextDisplay,
+  hidden: HiddenDisplay
 }

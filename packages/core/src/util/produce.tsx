@@ -1,7 +1,6 @@
 import produce, { setAutoFreeze } from 'immer'
 import lodash from 'lodash'
-import { listItemMove } from '../util/value'
-
+import { listItemMove } from './value'
 
 /**
  * setAutoFreeze
@@ -21,7 +20,8 @@ setAutoFreeze(false)
 export function set(current: any, path?: string, value?: any) {
   const target = produce<any>(current, (draft: any) => {
     if (path) {
-      if (arguments.length === 2) { // 移除对象路径的属性 参数改动时同步修改这块
+      if (arguments.length === 2) {
+        // 移除对象路径的属性 参数改动时同步修改这块
         lodash.unset(draft, path)
       } else {
         return lodash.set(draft, path, value)
@@ -38,11 +38,12 @@ export function set(current: any, path?: string, value?: any) {
  * @param value
  * @returns
  */
-export const push = (current: any, path: string = '', value?: any) => {
+export const push = (current: any, path = '', value?: any) => {
   const target = produce<any>(current, (draft: any) => {
     const list = lodash.get(draft, path)
-    if (!Array.isArray(list)) { // 如果指定路径下不是数组类型
-      var tempArr = []
+    if (!Array.isArray(list)) {
+      // 如果指定路径下不是数组类型
+      const tempArr: any[] = []
       tempArr.push(value)
       lodash.set(draft, path, tempArr)
     } else {
@@ -60,7 +61,7 @@ export const push = (current: any, path: string = '', value?: any) => {
  * @param count
  * @returns
  */
-export const splice = (current: any, path: string = '', index: number, count: number) => {
+export const splice = (current: any, path = '', index: number, count: number) => {
   const target = produce<any>(current, (draft: any) => {
     const list = lodash.get(draft, path, [])
     list.splice(index, count)
@@ -76,7 +77,7 @@ export const splice = (current: any, path: string = '', index: number, count: nu
  * @param sortType
  * @returns
  */
-export const sort = (current: any, path: string = '', index: number, sortType: 'up' | 'down') => {
+export const sort = (current: any, path = '', index: number, sortType: 'up' | 'down') => {
   const target = produce<any>(current, (draft: any) => {
     const list = lodash.get(draft, path, [])
     listItemMove(list, index, sortType)
@@ -98,14 +99,13 @@ const merge = (a: any, b: any): any => {
     if (lodash.isObject(b)) {
       if (lodash.isArray(a)) {
         return merge(a, b).filter((i: any) => i !== undefined)
-      } else {
-        return merge(a, b)
       }
+      return merge(a, b)
     }
   })
 }
 
-export const setValue = (obj: any, path: string = '', value: any) => {
+export const setValue = (obj: any, path = '', value: any) => {
   const target = produce<any>(obj, (draft: any) => {
     if (path === '') {
       if (Object.prototype.toString.call(value) === '[object Object]') {
@@ -115,7 +115,10 @@ export const setValue = (obj: any, path: string = '', value: any) => {
       }
     } else {
       const source = lodash.get(draft, path)
-      if (Object.prototype.toString.call(value) === '[object Object]' && Object.prototype.toString.call(source) === '[object Object]') {
+      if (
+        Object.prototype.toString.call(value) === '[object Object]' &&
+        Object.prototype.toString.call(source) === '[object Object]'
+      ) {
         lodash.set(draft, path, merge(source, value))
       } else {
         lodash.set(draft, path, value)

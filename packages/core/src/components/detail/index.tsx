@@ -13,28 +13,28 @@ import TableField, { TableFieldConfig } from './table'
  * 详情步骤内详情项配置文件格式定义 - 枚举
  */
 export type DetailFieldConfigs =
-    TextFieldConfig |
-    EnumDetailConfig |
-    StatementDetailConfig |
-    ImageDetailConfig |
-    GroupFieldConfig |
-    ImportSubformFieldConfig |
-    InfoDetailConfig |
-    ColorDetailConfig |
-    TableFieldConfig |
-    CustomDetailConfig
+  TextFieldConfig |
+  EnumDetailConfig |
+  StatementDetailConfig |
+  ImageDetailConfig |
+  GroupFieldConfig |
+  ImportSubformFieldConfig |
+  InfoDetailConfig |
+  ColorDetailConfig |
+  TableFieldConfig |
+  CustomDetailConfig
 
 export type componentType =
-    'text' |
-    'group' |
-    'detail_enum' |
-    'statement' |
-    'image' |
-    'import_subform' |
-    'detail_info' |
-    'detail_color' |
-    'table' |
-    'custom'
+  'text' |
+  'group' |
+  'detail_enum' |
+  'statement' |
+  'image' |
+  'import_subform' |
+  'detail_info' |
+  'detail_color' |
+  'table' |
+  'custom'
 
 export default {
   group: GroupField,
