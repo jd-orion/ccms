@@ -23,24 +23,44 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["react", "babel", "jest", "react-hooks", "@typescript-eslint"],
+  "plugins": [
+    "react",
+    "babel",
+    "jest",
+    "react-hooks",
+    "@typescript-eslint"
+  ],
   "settings": {
     "react": {
       "version": "16.13.1"
     },
-    "polyfills": ["Promise"]
+    "polyfills": [
+      "Promise"
+    ]
   },
   "rules": {
     "react/jsx-props-no-spreading": 0,
     "no-use-before-define": "off",
     "react/display-name": 0,
     "import/extensions": 0,
-    "comma-dangle": ["error", "never"],
-    "space-before-function-paren": [0, "always"],
+    "import/no-cycle": 1,
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "space-before-function-paren": [
+      0,
+      "always"
+    ],
     "react/jsx-filename-extension": [
       2,
       {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       }
     ]
   }
