@@ -19,7 +19,7 @@ import 'antd/dist/antd.css'
         sourceData={props.sourceData}
         baseRoute={props.baseRoute}
         configDomain={props.customConfigCDN || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/dist/config`}
-        onChange={(v)=>{console.log('ccms-editor=0.0.5', v)}}
+        onChange={(val)=>{console.log('ccms-editor', val)}}
         checkPageAuth={(pageId) => props.checkPageAuth(pageId)}
         loadPageURL={async (pageId) => props.loadPageURL(pageId)}
         loadPageFrameURL={async (pageId) => props.loadPageFrameURL(pageId)}

@@ -31,7 +31,7 @@ export default class CCMSForm extends React.Component<CCMSFormProps, CCMSFormSta
             form?.stepPush()
           }
         }}
-        step={0}
+        step={this.props.data[0]}
         data={this.props.data}
         config={this.props.config}
         onChange={async (data) => this.props.onChange(data)}
