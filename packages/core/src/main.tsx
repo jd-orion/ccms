@@ -3,6 +3,7 @@ import marked from 'marked'
 import Step, { StepProps } from './steps/common'
 import StepComponents, { StepConfigs } from './steps'
 import { RichStringConfig } from './interface'
+
 /**
  * 页面配置文件格式定义
  * - basic: 页面基本配置
@@ -45,6 +46,7 @@ export interface CCMSProps  {
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  loadPageList: () => Promise<Array<PageListItem>>
   loadDomain: (domain: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
   callback: (success: boolean) => void
@@ -62,6 +64,20 @@ export interface CCMSState {
   realStep: number
   viewStep: number[]
   data: any[]
+}
+
+/**
+ * 页面列表项
+ * - key: 此项必须设置（其值在整个树范围内唯一）
+ * - value: 默认根据此属性值进行筛选（其值在整个树范围内唯一）
+ * - title: 树节点显示的内容
+ * - children: 子节点
+ */
+ export interface PageListItem {
+  key: string | number
+  value: string | number
+  title: string
+  children?: Array<PageListItem>
 }
 
 /**
@@ -233,6 +249,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
       loadPageURL,
       loadPageFrameURL,
       loadPageConfig,
+      loadPageList,
       loadDomain,
       handlePageRedirect
     } = this.props
@@ -275,6 +292,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
                 loadPageURL,
                 loadPageFrameURL,
                 loadPageConfig,
+                loadPageList,
                 loadDomain,
                 handlePageRedirect,
                 handleFormValue

@@ -342,6 +342,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                         onValueListSort={async (path, index, sortType, validation, options) => this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)}
                         baseRoute={this.props.baseRoute}
                         loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                        loadPageList={async () => await this.props.loadPageList()}
                         containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
                         onReportFields={async (field: string) => await this.handleReportFields(field)}
                       />

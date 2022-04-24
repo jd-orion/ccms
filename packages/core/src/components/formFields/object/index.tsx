@@ -483,6 +483,7 @@ export default class ObjectField<S> extends Field<ObjectFieldConfig, IObjectFiel
                                       onValueListSort={async (path, _index, sortType, validation, options) => this.handleValueListSort(key, formFieldIndex, path, _index, sortType, validation, options)}
                                       baseRoute={this.props.baseRoute}
                                       loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                                      loadPageList={async () => await this.props.loadPageList()}
                                       containerPath={getChainPath(this.props.containerPath, this.props.config.field, key)}
                                       onReportFields={async (field: string) => await this.handleReportFields(field)}
                                     />

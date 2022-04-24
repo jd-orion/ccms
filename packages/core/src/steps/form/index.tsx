@@ -625,6 +625,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
             loadPageURL={this.props.loadPageURL}
             loadPageFrameURL={this.props.loadPageFrameURL}
             loadPageConfig={this.props.loadPageConfig}
+            loadPageList={this.props.loadPageList}
             baseRoute={this.props.baseRoute}
             loadDomain={this.props.loadDomain}
             handlePageRedirect={this.props.handlePageRedirect}
@@ -738,6 +739,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
                     onValueListSort={async (path, index, sortType, validation, options) => await this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)}
                     baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                    loadPageList={async () => await this.props.loadPageList()}
                     containerPath={''}
                   />
                 )

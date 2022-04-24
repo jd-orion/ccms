@@ -506,6 +506,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
                     onValueListSort={async (path, index, sortType, validation, options) => await this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)}
                     baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                    loadPageList={async () => await this.props.loadPageList()}
                     containerPath={''}
                   />
               )

@@ -100,6 +100,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
                 baseRoute={this.props.baseRoute}
                 loadDomain={this.props.loadDomain}
                 containerPath={getChainPath(this.props.containerPath, '')}
+                loadPageList={this.props.loadPageList}
               />
               : (
                   type === 'number'
@@ -121,6 +122,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
                       baseRoute={this.props.baseRoute}
                       loadDomain={this.props.loadDomain}
                       containerPath={getChainPath(this.props.containerPath, '')}
+                      loadPageList={this.props.loadPageList}
                     />
                     : <this.BooleanField
                       ref={() => {}}
@@ -140,6 +142,7 @@ export default class AnyField extends Field<AnyFieldConfig, IAnyField, null | st
                       baseRoute={this.props.baseRoute}
                       loadDomain={this.props.loadDomain}
                       containerPath={getChainPath(this.props.containerPath, '')}
+                      loadPageList={this.props.loadPageList}
                     />)
         })}
       </React.Fragment>

@@ -3,7 +3,7 @@ import { ColumnsConfig, ParamConfig } from '../../interface'
 
 import { DetailFieldConfigs as getFieldConfigs } from './'
 import ParamHelper from '../../util/param'
-import { CCMSConfig } from '../../main'
+import { CCMSConfig, PageListItem } from '../../main'
 
 /**
  * 详情页表单项基类配置文件格式定义
@@ -93,6 +93,7 @@ export interface DetailFieldProps<C extends DetailFieldConfig, T> {
   baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  loadPageList: () => Promise<Array<PageListItem>>
   handlePageRedirect: (path: string) => void
   checkPageAuth: (pageID: any) => Promise<boolean>
   onUnmount: (reload?: boolean, data?: any) => Promise<void>

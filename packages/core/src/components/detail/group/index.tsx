@@ -204,6 +204,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
                   loadPageURL={this.props.loadPageURL}
                   loadPageFrameURL={this.props.loadPageFrameURL}
                   loadPageConfig={this.props.loadPageConfig}
+                  loadPageList={this.props.loadPageList}
                   handlePageRedirect={this.props.handlePageRedirect}
                   onUnmount={this.props.onUnmount}
                   key={detailFieldIndex}

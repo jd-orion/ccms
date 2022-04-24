@@ -695,6 +695,7 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
                     loadPageURL={this.props.loadPageURL}
                     loadPageFrameURL={this.props.loadPageFrameURL}
                     loadPageConfig={this.props.loadPageConfig}
+                    loadPageList={this.props.loadPageList}
                     config={operationConfig}
                     sourceData={operationData}
                     baseRoute={this.props.baseRoute}
@@ -737,6 +738,7 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
                 loadPageURL={this.props.loadPageURL as (pageID: any) => Promise<string>}
                 loadPageFrameURL={this.props.loadPageFrameURL as (pageID: any) => Promise<string>}
                 loadPageConfig={this.props.loadPageConfig as (pageID: any) => Promise<CCMSConfig>}
+                loadPageList={this.props.loadPageList}
                 loadDomain={this.props.loadDomain}
                 handlePageRedirect={this.props.handlePageRedirect}
                 onMount={() => {

@@ -234,6 +234,7 @@ export default class HeaderStep extends Step<HeaderConfig> {
         loadPageURL={this.props.loadPageURL}
         loadPageFrameURL={this.props.loadPageFrameURL}
         loadPageConfig={this.props.loadPageConfig}
+        loadPageList={this.props.loadPageList}
         loadDomain={this.props.loadDomain}
         handlePageRedirect={this.props.handlePageRedirect}
       />
@@ -306,6 +307,7 @@ export default class HeaderStep extends Step<HeaderConfig> {
             loadPageURL={this.props.loadPageURL}
             loadPageFrameURL={this.props.loadPageFrameURL}
             loadPageConfig={this.props.loadPageConfig}
+            loadPageList={this.props.loadPageList}
             baseRoute={this.props.baseRoute}
             loadDomain={this.props.loadDomain}
             handlePageRedirect={this.props.handlePageRedirect}

@@ -521,6 +521,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                                     containerPath={getChainPath(this.props.containerPath, this.props.config.field, index)}
                                     onReportFields={async (field: string) => await this.handleReportFields(field)}
+                                    loadPageList={async () => await this.props.loadPageList()}
                                   />
                                 )
                               })

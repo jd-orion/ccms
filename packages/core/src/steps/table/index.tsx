@@ -892,6 +892,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                     loadPageURL={this.props.loadPageURL}
                     loadPageFrameURL={this.props.loadPageFrameURL}
                     loadPageConfig={this.props.loadPageConfig}
+                    loadPageList={this.props.loadPageList}
                     loadDomain={this.props.loadDomain}
                     handlePageRedirect={this.props.handlePageRedirect}
                     onMount={() => {
@@ -931,6 +932,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 loadPageURL={this.props.loadPageURL}
                 loadPageFrameURL={this.props.loadPageFrameURL}
                 loadPageConfig={this.props.loadPageConfig}
+                loadPageList={this.props.loadPageList}
                 loadDomain={this.props.loadDomain}
                 handlePageRedirect={this.props.handlePageRedirect}
                 onMount={() => {

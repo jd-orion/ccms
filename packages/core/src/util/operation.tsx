@@ -1,9 +1,8 @@
 import React from 'react'
 import queryString from 'query-string'
-// import { set } from "lodash";
 import { set } from '../util/produce'
 import { ParamConfig } from '../interface'
-import { CCMSConfig, CCMSProps } from '../main'
+import { CCMSConfig, CCMSProps, PageListItem } from '../main'
 import { getParam } from './value'
 
 export type OperationConfig = CCMSOperationConfig
@@ -57,6 +56,7 @@ interface OperationHelperProps {
   loadPageURL: (pageID: any) => Promise<string>,
   loadPageFrameURL: (pageID: any) => Promise<string>,
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>,
+  loadPageList: () => Promise<Array<PageListItem>>,
   baseRoute: string,
   loadDomain: (domain: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
@@ -97,6 +97,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
       loadPageURL,
       loadPageFrameURL,
       loadPageConfig,
+      loadPageList,
       handlePageRedirect
     } = this.props
     return async () => {
@@ -152,6 +153,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
                 loadPageURL: this.props.loadPageURL,
                 loadPageFrameURL: this.props.loadPageFrameURL,
                 loadPageConfig: this.props.loadPageConfig,
+                loadPageList: this.props.loadPageList,
                 loadDomain: this.props.loadDomain,
                 handlePageRedirect: this.props.handlePageRedirect,
                 callback: (success) => {
@@ -180,6 +182,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
               loadPageURL: this.props.loadPageURL,
               loadPageFrameURL: this.props.loadPageFrameURL,
               loadPageConfig: this.props.loadPageConfig,
+              loadPageList: this.props.loadPageList,
               loadDomain: this.props.loadDomain,
               handlePageRedirect: this.props.handlePageRedirect,
               callback: (success) => {

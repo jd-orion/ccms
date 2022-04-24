@@ -64,9 +64,10 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
           onValueListSplice: this.props.onValueListSplice,
           base: this.props.baseRoute,
           loadDomain: this.props.loadDomain,
+          loadPageList: this.props.loadPageList,
           bindValidate: this.bindValidate,
           bindGet: this.bindGet
-        });
+        })
       }
     }
   }
@@ -93,6 +94,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
           onValueListSplice: this.props.onValueListSplice,
           base: this.props.baseRoute,
           loadDomain: this.props.loadDomain,
+          loadPageList: this.props.loadPageList,
           bindValidate: this.bindValidate,
           bindGet: this.bindGet
         }

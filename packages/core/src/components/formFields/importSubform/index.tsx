@@ -571,6 +571,7 @@ export default class ImportSubformField
                       }
                       baseRoute={this.props.baseRoute}
                       loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                      loadPageList={async () => await this.props.loadPageList()}
                       containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
                       onReportFields={async (field: string) => await this.handleReportFields(field)}
                     />

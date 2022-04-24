@@ -1,5 +1,5 @@
 import React from 'react'
-import { CCMSConfig } from '../main'
+import { CCMSConfig, PageListItem } from '../main'
 
 /**
  * 页面流转步骤基类配置定义
@@ -30,6 +30,7 @@ export interface StepProps<C extends StepConfig> {
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  loadPageList: () => Promise<Array<PageListItem>>
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void

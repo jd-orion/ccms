@@ -6,6 +6,7 @@ import ParamHelper from '../../util/param'
 import { updateCommonPrefixItem } from '../../util/value'
 import { ConditionConfig } from '../../util/condition'
 import { StatementConfig } from '../../util/statement'
+import { PageListItem } from '../../main'
 import { isEqual, get } from 'lodash'
 
 /**
@@ -99,6 +100,7 @@ export interface FieldProps<C extends FieldConfig, T> {
   onReportFields?: (field: string) => Promise<void> // 向父组件上报依赖字段  1.3.0新增
   step: { [field: string]: any } // 传递formValue
   loadDomain: (domain: string) => Promise<string>
+  loadPageList: () => Promise<Array<PageListItem>>
 }
 
 /**
@@ -190,10 +192,7 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
   }
 
   shouldComponentUpdate (nextProps: FieldProps<C, T>, nextState: S) {
-    // console.log('nextProps', nextProps, this.props, nextProps.value == this.props.value);
-
     const dependentFieldsArr = this.dependentFields
-    // console.log('dependentFieldsArr',dependentFieldsArr);
     let dependentIsChange = false
     if (dependentFieldsArr && dependentFieldsArr.length) {
       for (let i = dependentFieldsArr.length; i >= 0; i--) {
@@ -212,7 +211,6 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
      * record也不比较，需要比较的话就在dependentFieldsArr取出record绝对路径
      * */
     if (!dependentIsChange && isEqual(this.state, nextState) && nextProps.value === this.props.value && this.props.config === nextProps.config) {
-      // console.log('no update' );
       return false
     }
     return true
