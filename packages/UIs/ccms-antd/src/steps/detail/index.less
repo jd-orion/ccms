@@ -1,39 +1,38 @@
 .ccms-antd-mini-detail-row {
-  display      : flex;
-  box-orient   : horizontal;
+  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  box-orient: horizontal;
   box-direction: normal;
-  flex-flow    : row wrap;
-  position     : relative;
 
   .detail-col {
-    margin-bottom   : 15px;
-    // display      : flex;
-    flex-direction  : row;
-    position        : relative;
-    min-height      : 1px;
+    position: relative;
     flex: 0 0 100%;
+    // display      : flex;
+    flex-direction: row;
     max-width: 100%;
+    min-height: 1px;
+    margin-bottom: 15px;
   }
 
   .detail-group-content {
+    display: flex;
     flex-direction: row;
-    display       : flex;
   }
 
   .ant-collapse-header-text {
     font-weight: bold;
-    font-size  : 16px;
+    font-size: 16px;
   }
 
   .ccms-antd-mini-detail-group {
-
     .detail-group-title {
-      font-weight  : bold;
-      font-size    : 16px;
       margin-bottom: 20px;
-      padding      : 16px 0;
+      padding: 16px 0;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
       border-bottom: 1px solid #f1f1f1;
-      white-space: nowrap
     }
   }
 }

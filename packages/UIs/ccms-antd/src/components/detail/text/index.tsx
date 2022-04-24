@@ -10,7 +10,7 @@ export default class TextFieldComponent extends DetailTextField {
       value
     } = props
     return (
-      <div>{value}</div>
+      <>{value}</>
     )
   }
 }

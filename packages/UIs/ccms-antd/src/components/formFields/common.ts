@@ -57,6 +57,8 @@ export function computedGapStyle(columns: any, type: string) {
 
   if (type === 'row') {
     Object.assign(setStyle, {
+      flexFlow: 'row wrap',
+      display: 'flex',
       rowGap: `${rowgap}px`,
       marginLeft: `-${gap}px`,
       marginRight: `-${gap}px`

@@ -1,22 +1,21 @@
 import React from 'react'
-import { DetailImportSubformField } from 'ccms'
-import { IImportSubformField } from 'ccms/dist/src/components/detail/importSubform'
-import { Display } from 'ccms/dist/src/components/formFields/common'
-import { IDetailItem } from 'ccms/dist/src/steps/detail'
+import { GroupDisplay } from 'ccms'
+import { IGroupField, GroupFieldConfig } from 'ccms/dist/src/components/formFields/group'
+import { IFormItem } from 'ccms/dist/src/steps/form'
 import { Form } from 'antd'
-import { display as getALLComponents } from '../../formFields'
-import InterfaceHelper from '../../../util/interface'
+import { display as getALLComponents } from '..'
 import styles from './index.less'
-import { formItemLayout, computedItemStyle, computedGapStyle } from '../../formFields/common'
+import { formItemLayout, computedItemStyle, computedGapStyle } from '../common'
 
-export default class ImportSubformField extends DetailImportSubformField {
-  getALLComponents = (type: any): typeof Display => getALLComponents[type]
+export const PropsType = (props: GroupFieldConfig) => {}
 
-  interfaceHelper = new InterfaceHelper()
+export default class GroupDisplayComponent extends GroupDisplay {
+  getALLComponents = (type: any) => getALLComponents[type]
 
-  renderComponent = (props: IImportSubformField) => {
+  renderComponent = (props: IGroupField) => {
     const { columns, children } = props
     const gap = computedGapStyle(columns, 'row')
+
     return (
       <div
         style={{
@@ -29,13 +28,9 @@ export default class ImportSubformField extends DetailImportSubformField {
     )
   }
 
-  /**
-   * 表单项组件 - UI渲染方法
-   * 各UI库需重写该方法
-   * @param props
-   */
-  renderItemComponent = (props: IDetailItem) => {
-    const { key, label, columns, layout, visitable, fieldType, children } = props
+  renderItemComponent = (props: IFormItem) => {
+    const { key, columns, layout, label, visitable, fieldType, children } = props
+
     const colStyle = computedItemStyle(columns, layout, visitable)
     const itemStyle = visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }
     if (columns?.type === 'width' && columns?.value && columns.wrap) {
@@ -51,8 +46,8 @@ export default class ImportSubformField extends DetailImportSubformField {
         <Form.Item
           key={key}
           label={label}
-          className={styles[`ccms-antd-mini-detail-${fieldType}`]}
           // {...formItemLayout(layout, fieldType, label)}
+          className={styles[`ccms-antd-mini-form-${fieldType}`]}
           style={itemStyle}
         >
           {children}

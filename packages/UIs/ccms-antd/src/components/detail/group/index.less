@@ -1,30 +1,41 @@
 .ccms-antd-mini-detail-group-row {
-  position     : relative;
-  display      : flex;
-  box-orient   : horizontal;
+  position: relative;
+  display: flex;
+  box-orient: horizontal;
   box-direction: normal;
-  flex-flow    : row wrap;
-  width        : 100%;
+  flex-flow: row wrap;
+  width: 100%;
 
   .detail-group-col {
-    flex-direction: row;
-    // display: flex;
-    margin-bottom : 15px;
-    flex-direction: row;
-    position      : relative;
-    max-width     : 100%;
+    position: relative;
     flex: 0 0 100%;
-    min-height    : 1px;
+    flex-direction: row;
+    max-width: 100%;
+    min-height: 1px;
+    // display: flex;
+    margin-bottom: 15px;
+    flex-direction: row;
+    position: relative;
+    max-width: 100%;
+    flex: 0 0 100%;
+    min-height: 1px;
   }
 
   .detail-group-content {
-    &>:global(.ant-form-item){
+    &> :global(.ant-form-item) {
       margin-bottom: 0 !important;
     }
+
+    display: flex;
     flex-direction: row;
-    display       : flex;
-    .ccms-antd-mini-detail-gruop-title{
+
+    .ccms-antd-mini-detail-gruop-title {
       white-space: nowrap;
     }
+  }
+
+  &>.detail-group-children {
+    display: flex;
+    word-break: break-all;
   }
 }

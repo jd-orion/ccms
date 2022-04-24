@@ -10,7 +10,7 @@ export default class StatementDetailComponent extends DetailStatementField {
       content
     } = props
     return (
-      <div>{content}</div>
+      <>{content}</>
     )
   }
 }

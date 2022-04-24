@@ -13,11 +13,11 @@ export default {
   text: TextField,
   group: GroupField,
   statement: StatementDetail,
+  image: ImageDetail,
   detail_enum: EnumDetailComponent,
   import_subform: ImportSubformField,
   custom: CustomFieldComponent,
   table: TableFieldComponent,
   detail_info: InfoDetail,
-  detail_color: ColorDetail,
-  image: ImageDetail
+  detail_color: ColorDetail
 }

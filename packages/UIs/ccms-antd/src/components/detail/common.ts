@@ -1,3 +1,4 @@
+
 import { FormItemProps } from "antd";
 
 export function formItemLayout(layout: 'horizontal' | 'vertical' | 'inline', fieldType: string, label: string | undefined) {
@@ -61,10 +62,12 @@ export function computedItemStyle(columns: any, layout: string) {
 export function computedGapStyle(columns: any, type: string) {
   const setStyle = {}
 
-  const gap = (Number(columns?.gap || columns?.rowGap) || 0)/2
+  const gap = (Number(columns?.gap || columns?.rowGap) || 0) / 2
 
   if (type === 'row') {
     Object.assign(setStyle, {
+      flexFlow: 'row wrap',
+      display: 'flex',
       rowGap: `${gap}px`,
       marginLeft: `-${gap / 2}px`,
       marginRight: `-${gap / 2}px`
