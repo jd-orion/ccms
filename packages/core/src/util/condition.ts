@@ -85,7 +85,7 @@ export default function ConditionHelper(
 
 const evil = (fn) => {
   const Fn = Function // 一个变量指向Function，防止有些前端编译工具报错
-  return new Fn(`return ${fn}`)()()
+  return new Fn(`return ${fn}`)()
 }
 
 // 执行条件语句，返回结果
