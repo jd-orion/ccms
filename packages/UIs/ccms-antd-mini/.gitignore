@@ -3,3 +3,4 @@ node_modules
 .docz
 dist
 lib
+package-lock.json

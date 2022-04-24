@@ -1,12 +1,19 @@
 {
+  "exclude": [
+    "node_modules",
+    "dist",
+    "scripts",
+    "rollup.config.js"
+  ],
   "compilerOptions": {
-    "target": "es6",
-    "module": "esnext",
-    "jsx": "react",
+    "target": "ES6",
+    "module": "ESNext",
     "sourceMap": true,
-    "outDir": "./lib/",
-    "strict": true,
+    "outDir": "./dist/src",
     "esModuleInterop": true,
+    "declaration": true,
+    "jsx": "react",
+    "strict": true,
     "lib": [
       "dom",
       "dom.iterable",
@@ -20,7 +27,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "types": [
