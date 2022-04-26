@@ -15,7 +15,6 @@ module.exports = merge(common, {
     libraryTarget: "umd",
   },
   externals: {
-    'qiankun': 'qiankun'
   },
   plugins: [
     new HtmlWebpackPlugin({

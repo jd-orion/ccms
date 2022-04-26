@@ -22,7 +22,6 @@ module.exports = merge(common, {
       commonjs2: 'react-dom',
       amd: 'react-dom',
       root: 'ReactDOM',
-    },
-    'qiankun': 'qiankun'
+    }
   }
 })
