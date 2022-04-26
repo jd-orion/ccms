@@ -1,60 +1,54 @@
 import { CCMSConfig } from 'ccms/dist/src/main';
 
 
-
-
-
-
-
-
 const DefaultConfig = {
   "steps": [
-    {
-      "type": "header"
-    },
+    {"type": "header"},
     {
       "type": "form",
-      "columns": {},
       "fields": [
         {
-          "label": "a",
-          "field": "a",
+          "label": "文本框",
+          "field": "text",
+          "type": "text"
+        },
+        {
+          "label": "单项框",
+          "field": "radio",
           "type": "select_single",
           "mode": "radio",
           "options": {
             "from": "manual",
             "data": [
               {
-                "label": "a",
-                "value": true
+                "label": "选项1",
+                "value": 1
               },
               {
-                "label": "a",
-                "value": "2"
+                "label": "选项2",
+                "value": 2
               }
             ]
-          }
+          },
+          "required": true
         }
       ],
       "actions": [
         {
           "type": "submit",
           "label": "提交",
-          "mode": "primary",
-          "submitValidate": false
+          "mode": "primary"
         },
         {
           "type": "cancel",
           "label": "取消",
-          "mode": "normal",
-          "submitValidate": false
+          "mode": "normal"
         }
       ],
-      "applicationName": "example",
-      "businessSuffix": "",
-      "version": "0.0.4-beta.20",
-      "subversion": "0",
-      "configDomain": "https://cdn.jsdelivr.net/npm/ccms-editor@0.0.4-beta.20/dist/config"
+      "defaultValue": {
+        "source": "data",
+        "field": ""
+      }
     },
     {
       "type": "fetch",
@@ -84,7 +78,7 @@ const DefaultConfig = {
       },
       "nextStep": false
     }
-  ],
-  "ui": "antd"
+  ]
 }
+
 export default DefaultConfig;

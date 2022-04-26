@@ -2,13 +2,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { FormConfig } from 'ccms/dist/src/steps/form'
-import App, { AppProps } from './app'
+import App, { AppExternalProps } from './app'
 import DefaultConfig from './DefaultConfig'
 import appInfo from '../package.json'
 import 'antd/dist/antd.css'
 
 
- function CCMSEditor (props: AppProps) {
+ function CCMSEditor (props: AppExternalProps) {
     return (
       <App
         applicationName="example"

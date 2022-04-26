@@ -99,10 +99,10 @@ export interface AppPropsInterface {
   onCancel: () => void
   siderWidth?: number
 }
-export interface AppProps extends AppPropsInterface {
+export interface AppExternalProps extends AppPropsInterface {
   customConfigCDN?: string
 }
-export interface AppUIProps  extends AppPropsInterface {
+export interface AppProps  extends AppPropsInterface {
   configDomain?: string
 }
 
@@ -118,12 +118,12 @@ export interface CCMSConsigState {
   configStringify: boolean
 }
 
-class App extends React.Component<AppUIProps, CCMSConsigState> {
+class App extends React.Component<AppProps, CCMSConsigState> {
 
   state: CCMSConsigState = {
     pageConfig: cloneDeep(this.props.config) as PageConfig, // 页面配置
     activeTab: -1, // 活跃tab
-    pageTemplate: 'normal-table', // 页面类型
+    pageTemplate: 'normal-form', // 页面类型
     ready: true,  // 是否展示，用于刷新
     configStringify: false
   }
@@ -264,7 +264,7 @@ class App extends React.Component<AppUIProps, CCMSConsigState> {
 
         {/* 配置化步骤内容 */}
         <Drawer
-          width={320}
+          width={350}
           mask={false}
           placement="right"
           closable={false}
