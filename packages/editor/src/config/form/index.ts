@@ -251,7 +251,7 @@ const config: FieldConfigs[] = [
             "field": "data",
             "type": "import_subform",
             "interface": {
-              "url": "https://storage.jd.com/swm-plus/beta-floor-fields/config/common/ParamConfig.json?v=211222",
+              "url": "${configDomain}/common/ParamConfig.json",
               "urlParams": [
                 {
                   "field": "version",
@@ -261,10 +261,10 @@ const config: FieldConfigs[] = [
                   }
                 },
                 {
-                  "field": "subversion",
+                  "field": "configDomain",
                   "data": {
                     "source": "source",
-                    "field": "subversion"
+                    "field": "configDomain"
                   }
                 }
               ],
