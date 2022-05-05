@@ -305,6 +305,7 @@ const render = () => {
     loadPageConfig={async (pageId: any) => handlePageConfig(pageId)}
     loadPageList={async () => handlePageList()}
     loadDomain={async () => ''}
+    handlePageRedirect={() => {}}
     onSubmit={(config) => console.log(JSON.stringify(config, undefined, 2))}
     onCancel={() => {}}
   />, document.getElementById('root'))

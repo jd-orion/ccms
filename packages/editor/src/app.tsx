@@ -93,7 +93,7 @@ export interface AppPropsInterface {
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<TreeSelectFieldOption>>
   loadDomain: (name: string) => Promise<string>
-  handlePageRedirect?: (path: string) => void
+  handlePageRedirect?: (path: string, replaceHistory: boolean) => void
   onChange: (value: any) => void
   onSubmit: (config: CCMSConfig) => void
   onCancel: () => void
@@ -264,7 +264,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 
         {/* 配置化步骤内容 */}
         <Drawer
-          width={350}
+          width={320}
           mask={false}
           placement="right"
           closable={false}

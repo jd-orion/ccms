@@ -43,6 +43,7 @@ import 'antd/dist/antd.css'
             ]
         })}}
         loadPageList={props.loadPageList}
+        handlePageRedirect={props.handlePageRedirect}
         loadDomain={props.loadDomain}
         onSubmit={props.onSubmit}
         onCancel={props.onCancel}

@@ -25,6 +25,7 @@ const App = () => (
       loadPageFrameURL={async (_:any) => '#'}
       loadPageList={async () => '#'}
       loadPageConfig={async (pageId: any) => '#'}
+      handlePageRedirect= {(path: string, replaceHistory: boolean) => '#'}
       loadDomain={async () => ''}
       onSubmit={(config: any) => console.log(JSON.stringify(config, undefined, 2))}
       onCancel={() => {}}
@@ -41,8 +42,9 @@ const App = () => (
 | baseRoute | 页面路由 | string | `/` |  |
 | customConfigCDN | 配置自定义cdn资源路径 | string | - |  |
 | checkPageAuth | 页面鉴权 | function(e) | - | |
-| loadPageURL | 当前页面打开 | function(pageId) | - |  |
-| loadPageFrameURL | 打开新Tab页 | function(pageId) | - |  |
+| loadPageURL | 获取用于当前页面打开的url | function(pageId) | - |  |
+| loadPageFrameURL | 获取用于新Tab页打开的url | function(pageId) | - |  |
+| handlePageRedirect | 用于路由跳转方法（非浏览器跳转） | function(path, replaceHistory) | - |  |
 | loadPageList | 加载页面列表，选中后可通过执行loadPageConfig获取页面配置项 | function() | - |  |
 | loadPageConfig | 加载指定页面配置项 | function(pageId) | - |  |
 | loadDomain | 获取域名 | function() | - |  |
@@ -55,6 +57,7 @@ const App = () => (
 ```js
 {
   "steps": [
+    { "type": "header"},
     {
       "type": "form",
       "fields": [
