@@ -1,0 +1,8 @@
+node_modules
+.doc
+.docz
+.DS_Store
+dist
+lib
+coverage
+package-lock.json

@@ -1,0 +1,134 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/UIs/*"
+  ],
+  "scripts": {
+    "lerna": "lerna bootstrap",
+    "list": "lerna ll",
+    "publish": "lerna publish",
+    "clean": "lerna clean",
+    "change": "lerna changed",
+    "link": "npm run link:core && npm run link:editor",
+    "relink": "lerna link",
+    "build": "lerna run --stream --sort build",
+    "link:editor": "lerna add ccms-antd packages/editor && lerna add ccms-antd-mini packages/editor",
+    "link:core": "lerna add ccms --scope=ccms-*",
+    "build:core": "cd packages/core && npm run build",
+    "build:ccms-antd": "cd packages/UIs/ccms-antd && npm run build",
+    "build:ccms-antd-mini": "cd packages/UIs/ccms-antd-mini && npm run build",
+    "build:editor": "cd packages/editor && npm run build",
+    "publish:core": "cd packages/core && npm publish",
+    "publish:ccms-antd": "cd packages/UIs/ccms-antd && npm publish",
+    "publish:ccms-antd-mini": "cd packages/UIs/ccms-antd-mini && npm publish",
+    "publish:editor": "cd packages/editor && npm publish",
+    "publishBeta:editor": "cd packages/editor && npm publish --tag=beta",
+    "dev:editor": "cd packages/editor && npm run dev",
+    "dev": "npm-watch dev:editor",
+    "watch": "npm-watch",
+    "commit": "git-cz",
+    "lint": "npm run lint:code && npm run lint:style && npm run prettier",
+    "lint:code": "eslint --fix **/*.{js,ts,jsx,tsx}",
+    "lint:style": "stylelint --fix **/*.less",
+    "prettier": "prettier -c --write **/*.{json,html,md}"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint --env HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{css,less}": [
+      "stylelint --fix --custom-syntax postcss-less",
+      "git add"
+    ],
+    "*.{json,html,md}": [
+      "prettier --write",
+      "git add -f"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^9.0.1",
+    "@commitlint/config-conventional": "^9.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "@typescript-eslint/parser": "^5.10.1",
+    "commitizen": "^4.2.4",
+    "commitlint-config-cz": "^0.13.2",
+    "cz-customizable": "^6.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-compat": "^4.0.1",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jest": "^26.0.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "husky": "^4.2.5",
+    "lerna": "^4.0.0",
+    "lint-staged": "^10.2.11",
+    "npm-watch": "^0.11.0",
+    "postcss": "^8.4.5",
+    "postcss-less": "^6.0.0",
+    "prettier": "^2.5.1",
+    "react": "^16.14.0",
+    "stylelint": "^14.4.0",
+    "stylelint-config-rational-order": "^0.1.2",
+    "stylelint-config-standard": "^25.0.0",
+    "stylelint-order": "^5.0.0",
+    "jest": "^27.4.7",
+    "typescript": "^4.6.3"
+  },
+  "watch": {
+    "dev:editor": {
+      "patterns": [
+        "packages/core/dist"
+      ],
+      "extensions": "js",
+      "quiet": false,
+      "delay": 2500
+    },
+    "build:core": {
+      "patterns": [
+        "packages/core/src"
+      ],
+      "extensions": "ts,tsx",
+      "quiet": false,
+      "delay": 2500,
+      "runOnChangeOnly": true
+    },
+    "build:ccms-antd": {
+      "patterns": [
+        "packages/UIs/ccms-antd/src"
+      ],
+      "extensions": "ts,tsx,less",
+      "quiet": false,
+      "delay": 2500,
+      "runOnChangeOnly": true
+    },
+    "build:ccms-antd-mini": {
+      "patterns": [
+        "packages/UIs/ccms-antd-mini/src"
+      ],
+      "extensions": "ts,tsx,less",
+      "quiet": false,
+      "delay": 2500,
+      "runOnChangeOnly": true
+    }
+  },
+  "dependencies": {}
+}

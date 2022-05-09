@@ -1,0 +1,12 @@
+{
+  "packages": [
+    "packages/**"
+  ],
+  "version": "independent",
+  "command": {
+    "bootstrap": {
+      "hoist": false
+    }
+  },
+  "useWorkspaces": true
+}
