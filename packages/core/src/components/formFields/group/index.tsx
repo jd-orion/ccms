@@ -301,6 +301,7 @@ export default class GroupField extends Field<GroupFieldConfig, IGroupField, any
                 const renderData = {
                   key: formFieldIndex,
                   label: formFieldConfig.label,
+                  subLabel: this.handleSubLabelContent(formFieldConfig),
                   columns: config.columns?.enable
                     ? {
                         type: formFieldConfig.columns?.type || config.childColumns?.type || 'span',

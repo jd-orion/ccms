@@ -45,6 +45,7 @@ export interface IFormFieldItem {
 export interface IFormFieldItemField {
   index: number
   label: string
+  subLabel?: React.ReactNode
   required: boolean
   status: 'normal' | 'error' | 'loading'
   description?: string
@@ -488,6 +489,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                               this.renderItemFieldComponent({
                                 index: fieldIndex,
                                 label: formFieldConfig.label,
+                                subLabel: this.handleSubLabelContent(formFieldConfig),
                                 status,
                                 message: ((this.state.formDataList[index] || [])[fieldIndex] || {}).message || '',
                                 extra: StatementHelper(formFieldConfig.extra, { record: itemValue, data: this.props.data, step: this.props.step, extraContainerPath: getChainPath(this.props.config.field, index) }, this),

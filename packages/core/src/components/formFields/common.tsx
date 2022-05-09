@@ -1,11 +1,12 @@
 import React from 'react'
+import marked from 'marked'
 import { ColumnsConfig, ParamConfig } from '../../interface'
 
 import { FieldConfigs as getFieldConfigs } from './'
 import ParamHelper from '../../util/param'
 import { updateCommonPrefixItem } from '../../util/value'
 import { ConditionConfig } from '../../util/condition'
-import { StatementConfig } from '../../util/statement'
+import StatementHelper, { StatementConfig} from '../../util/statement'
 import { PageListItem } from '../../main'
 import { isEqual, get } from 'lodash'
 
@@ -37,6 +38,11 @@ export interface FieldConfig {
   disabled?: boolean
   display?: 'none'
   defaultValue?: ParamConfig,
+  subLabelConfig?: {
+    enable: boolean
+    mode: 'plain' | 'markdown' | 'html'
+    content: StatementConfig
+  }
   condition?: ConditionConfig
   extra?: StatementConfig
   columns?: ColumnsConfig
@@ -173,6 +179,27 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
   }
 
   didMount: () => Promise<void> = async () => { }
+
+  /**
+   * 根据mode不同，处理subLabel内容
+   * @param config 子项config
+   * @returns 
+   */
+  
+  handleSubLabelContent (config) {
+    if (config?.subLabelConfig?.enable) {
+      const content  = StatementHelper({ statement: config.subLabelConfig?.content?.statement || '', params: config.subLabelConfig?.content?.params || [] }, { data: this.props.data, step: this.props.step }).replace(/(^\s*)|(\s*$)/g, '')
+      const mode = config.subLabelConfig?.mode
+      switch (mode) {
+        case 'markdown':
+          return <div dangerouslySetInnerHTML={{ __html: marked(content) }}></div>
+        case 'html': 
+          return <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: content }}></div>
+      }
+      return <div style={{ whiteSpace: 'pre-wrap' }}>{content}</div>
+    }
+    return undefined
+  }
 
   /**
    * 上报param依赖字段名称

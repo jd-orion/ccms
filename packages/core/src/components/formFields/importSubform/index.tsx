@@ -510,6 +510,7 @@ export default class ImportSubformField
                 const renderData = {
                   key: formFieldIndex,
                   label: formFieldConfig.label,
+                  subLabel: this.handleSubLabelContent(formFieldConfig),
                   status,
                   columns: config.columns?.enable
                     ? {

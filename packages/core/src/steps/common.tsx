@@ -1,5 +1,7 @@
 import React from 'react'
+import marked from 'marked'
 import { CCMSConfig, PageListItem } from '../main'
+import StatementHelper from '../util/statement'
 
 /**
  * 页面流转步骤基类配置定义
@@ -45,6 +47,28 @@ export default class Step<C extends StepConfig, S = {}> extends React.Component<
     config: {
     }
   };
+
+
+/**
+ * 步骤 根据mode不同，处理subLabel内容\
+ * @param config 子项config
+ * @returns 
+ */
+
+  handleSubLabelContent (config) {
+    if (config?.subLabelConfig?.enable) {
+      const content  = StatementHelper({ statement: config.subLabelConfig?.content?.statement || '', params: config.subLabelConfig?.content?.params || [] }, { data: this.props.data, step: this.props.step }).replace(/(^\s*)|(\s*$)/g, '')
+      const mode = config.subLabelConfig?.mode
+      switch (mode) {
+        case 'markdown':
+          return <div dangerouslySetInnerHTML={{ __html: marked(content) }}></div>
+        case 'html': 
+          return <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: content }}></div>
+      }
+      return <div style={{ whiteSpace: 'pre-wrap' }} >{content}</div>
+    }
+    return undefined
+  }
 
   stepPush = () => {
     this.props.onMount()

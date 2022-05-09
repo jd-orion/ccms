@@ -43,6 +43,7 @@ export interface ITabsFieldItem {
 export interface ITabsFieldItemField {
   index: number
   label: string
+  subLabel?: React.ReactNode
   required: boolean
   status: 'normal' | 'error' | 'loading'
   description?: string
@@ -367,6 +368,7 @@ export default class TabsField<S> extends Field<TabsFieldConfig, ITabsField, { [
                                 {this.renderItemFieldComponent({
                                   index: formFieldIndex,
                                   label: formFieldConfig.label,
+                                  subLabel: this.handleSubLabelContent(formFieldConfig),
                                   status,
                                   message: ((this.state.formDataList[index] || [])[formFieldIndex] || {}).message || '',
                                   required: getBoolean(formFieldConfig.required),

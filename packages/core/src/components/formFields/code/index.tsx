@@ -8,6 +8,10 @@ import { getBoolean } from '../../../util/value'
  * - height: 代码编辑器高度
  * - theme: 编辑器主题风格
  * - fullScreen: 是否支持全屏
+ * - maxLength: 最大字符长度
+ * - minLength: 最小字符长度
+ * - cjkLength: 中文占字符数
+ * - regExp: 正则校验配置
  */
 export interface CodeFieldConfig extends FieldConfig {
   type: 'code'
@@ -15,6 +19,10 @@ export interface CodeFieldConfig extends FieldConfig {
   height: number
   theme: 'white' | 'black'
   fullScreen: boolean
+  maxLength?: number
+  minLength?: number
+  cjkLength?: number
+  regExp?: { expression: string, message?: string }
 }
 
 export interface ICodeField {
@@ -61,7 +69,11 @@ export default class CodeField extends Field<CodeFieldConfig, ICodeField, string
     const {
       config: {
         label,
-        required
+        required,
+        maxLength,
+        minLength,
+        cjkLength,
+        regExp
       }
     } = this.props
 
@@ -71,6 +83,43 @@ export default class CodeField extends Field<CodeFieldConfig, ICodeField, string
       if (value === '' || value === undefined || value === null || String(value).trim() === '') {
         errors.push(new FieldError(`输入${label}`))
         return errors
+      }
+    }
+    if (maxLength !== undefined) {
+      let valueMaxLength = value
+      if (cjkLength !== undefined) {
+        let valueMaxCJKLength = ''
+        for (let valueMaxCJKIndex = 0; valueMaxCJKIndex < cjkLength; valueMaxCJKIndex++) {
+          valueMaxCJKLength += '*'
+        }
+        valueMaxLength = valueMaxLength.replace(/[\u4e00-\u9fa5]/g, valueMaxCJKLength)
+      }
+      if (valueMaxLength && maxLength >= 0 && valueMaxLength.length > maxLength) {
+        errors.push(new FieldError(`最长可输入${maxLength}个字符。`))
+      }
+    }
+
+    if (minLength !== undefined) {
+      let valueMinLength = value
+      if (cjkLength !== undefined) {
+        let valueMinCJKLength = ''
+        for (let valueMinCJKIndex = 0; valueMinCJKIndex < cjkLength; valueMinCJKIndex++) {
+          valueMinCJKLength += '*'
+        }
+        valueMinLength = valueMinLength.replace(/[\u4e00-\u9fa5]/g, valueMinCJKLength)
+      }
+      if (valueMinLength && minLength >= 0 && valueMinLength.length < minLength) {
+        errors.push(new FieldError(`最短需输入${minLength}个字符。`))
+      }
+    }
+
+    if (regExp !== undefined) {
+      if (!(new RegExp(regExp.expression)).test(value)) {
+        if (regExp.message) {
+          errors.push(new FieldError(regExp.message))
+        } else {
+          errors.push(new FieldError('格式错误'))
+        }
       }
     }
 

@@ -154,6 +154,7 @@ export interface IButtonProps {
 export interface IFormItem {
   key: string | number,
   label: string,
+  subLabel?: React.ReactNode
   status: 'normal' | 'error' | 'loading'
   required: boolean
   description?: string
@@ -699,6 +700,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
               const renderData = {
                 key: formFieldIndex,
                 label: formFieldConfig.label,
+                subLabel: this.handleSubLabelContent(formFieldConfig),
                 columns: columns?.enable
                   ? {
                       type: formFieldConfig.columns?.type || columns?.type || 'span',
