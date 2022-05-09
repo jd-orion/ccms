@@ -5,6 +5,7 @@ import { ITabsField, ITabsFieldItem, ITabsFieldItemField } from 'ccms/dist/src/c
 import getALLComponents from '../'
 import { Field } from 'ccms/dist/src/components/formFields/common'
 import { formItemLayout } from '../common'
+import commonStyles from '../common.less'
 
 export default class TabsFieldComponent extends TabsField<{}> {
   // 各表单项对应的类型所使用的UI组件的类
@@ -13,6 +14,7 @@ export default class TabsFieldComponent extends TabsField<{}> {
   renderItemFieldComponent = (props: ITabsFieldItemField) => {
     const {
       label,
+      subLabel,
       status,
       message,
       extra,
@@ -30,7 +32,9 @@ export default class TabsFieldComponent extends TabsField<{}> {
         validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
         help={ message === '' ? null : message}
         {...formItemLayout(layout, fieldType, label)}
+        // className={ layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null }
       >
+        {subLabel || null}
         {children}
       </Form.Item>
     )

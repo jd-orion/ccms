@@ -57,7 +57,8 @@ export default class FormStepComponent extends FormStep {
       <Form
         {...formItemLayout}
         // layout={layout}
-        layout="vertical" // 和drip同步 改为竖排
+        layout="horizontal" 
+        // layout="vertical" // 和drip同步 改为竖排
         className={newstyles['content']}
       >
         <div
@@ -99,6 +100,7 @@ export default class FormStepComponent extends FormStep {
       layout,
       columns,
       label,
+      subLabel,
       status,
       message,
       extra,
@@ -136,7 +138,9 @@ export default class FormStepComponent extends FormStep {
               help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
               style={itemStyle}
               className={styles[`ccms-antd-mini-form-${fieldType}`]}
+              // className={ [styles[`ccms-antd-mini-form-${fieldType}`], layout === 'horizontal' && subLabel ? styles['ccms-antd-label-vertical-flex-start']: null].join(' ') } // 预留layout配置项启用时所需label css代码
             >
+              {subLabel || null}
               {children}
             </Form.Item>}
       </div>

@@ -5,6 +5,7 @@ import { IFormItem } from "ccms/dist/src/steps/form";
 import { Form } from "antd"
 import { FormItemProps } from "antd/lib/form";
 import getALLComponents from '../'
+import commonStyles from '../common.less'
 import styles from './index.less'
 import { computedItemStyle, computedGapStyle } from "../common";
 import InterfaceHelper from "../../../util/interface";
@@ -41,6 +42,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
       layout,
       columns,
       label,
+      subLabel,
       visitable,
       status,
       message,
@@ -75,8 +77,10 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
           validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
           help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
           className={styles[`ccms-antd-mini-form-${fieldType}`]}
+          // className={ [styles[`ccms-antd-mini-form-${fieldType}`], layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null].join(' ') }
           style={itemStyle}
         >
+          {subLabel || null}
           {children}
         </Form.Item>
       </div>

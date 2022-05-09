@@ -4,6 +4,7 @@ import { IGroupField, GroupFieldConfig } from "ccms/dist/src/components/formFiel
 import { IFormItem } from "ccms/dist/src/steps/form";
 import { Form } from "antd"
 import getALLComponents from '../'
+import commonStyles from '../common.less'
 import styles from './index.less'
 import { formItemLayout, computedItemStyle, computedGapStyle } from "../common";
 
@@ -37,6 +38,7 @@ export default class GroupFieldComponent extends GroupField {
       layout,
       columns,
       label,
+      subLabel,
       visitable,
       status,
       message,
@@ -72,8 +74,10 @@ export default class GroupFieldComponent extends GroupField {
           validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
           help={fieldType === 'import_subform' || fieldType === 'group' || message === '' ? null : message}
           className={styles[`ccms-antd-mini-form-${fieldType}`]}
+          // className={ [styles[`ccms-antd-mini-form-${fieldType}`], layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null].join(' ') }
           style={itemStyle}
         >
+          {subLabel || null}
           {children}
         </Form.Item>
       </div>

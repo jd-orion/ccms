@@ -5,6 +5,7 @@ import { PlusOutlined, MinusCircleOutlined, ArrowUpOutlined, ArrowDownOutlined, 
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
 import getALLComponents from '../'
 import { formItemLayout } from '../common'
+import commonStyles from '../common.less'
 
 export default class FormFieldComponent extends FormField {
   getALLComponents = (type: any) => getALLComponents[type]
@@ -14,6 +15,7 @@ export default class FormFieldComponent extends FormField {
   renderItemFieldComponent = (props: IFormFieldItemField) => {
     const {
       label,
+      subLabel,
       status,
       message,
       extra,
@@ -30,7 +32,9 @@ export default class FormFieldComponent extends FormField {
         validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
         help={ message === '' ? null : message}
         {...formItemLayout(layout, fieldType, label)}
+        // className={ layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null }
       >
+        {subLabel || null}
         {children}
       </Form.Item>
     )
