@@ -2,7 +2,7 @@ import React from 'react';
 import { Drawer, Button, Modal, message, Card, Space, Radio, Dropdown, Menu } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import { CCMS as CCMSAntDesign } from 'ccms-antd'
-import { CCMSConfig, BasicConfig } from "ccms/dist/src/main";
+import { CCMSConfig, BasicConfig, PageListItem } from "ccms/dist/src/main";
 import { FormConfig } from 'ccms/dist/src/steps/form';
 import { cloneDeep } from "lodash";
 import { PageTemplate, PageTemplates, StepConfigs, StepTemplates } from './steps'
@@ -91,7 +91,7 @@ export interface AppPropsInterface {
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
-  loadPageList: () => Promise<Array<TreeSelectFieldOption>>
+  loadPageList: () => Promise<Array<PageListItem>>
   loadDomain: (name: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
   onChange: (value: any) => void

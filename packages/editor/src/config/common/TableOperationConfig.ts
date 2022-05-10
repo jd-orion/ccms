@@ -162,7 +162,7 @@ const config: FieldConfigs[] = [
         "type": "switch"
       },
       {
-        "field": "cancelCallback",
+        "field": "closeCallback",
         "label": "关闭回调刷新",
         "type": "switch",
         "condition": {

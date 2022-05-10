@@ -226,7 +226,127 @@ const config: FieldConfigs[] = [
     }
   },
   {
-    "label": "提示文案",
+    "label": "字段描述拓展",
+    "field": "subLabelConfig",
+    "type": "group",
+    "fields": [
+      {
+        "label": "开启",
+        "field": "enable",
+        "type": "switch"
+      },
+      {
+        "field": "mode",
+        "label": "拓展类型",
+        "type": "select_single",
+        "mode": "button",
+        "condition": {
+          "template": "${enable} === true",
+          "params": [
+            {
+              "field": "enable",
+              "data": {
+                "source": "record",
+                "field": "enable"
+              }
+            }
+          ]
+        },
+        "defaultValue": {
+          "source": "static",
+          "value": "plain"
+        },
+        "options": {
+          "from": "manual",
+          "data": [
+            {
+              "value": "plain",
+              "label": "纯文本"
+            },
+            {
+              "value": "markdown",
+              "label": "Markdown"
+            },
+            {
+              "value": "html",
+              "label": "HTML"
+            },
+          ]
+        }
+      },
+      {
+        "label": "提示文案（顶部）",
+        "field": "content",
+        "type": "group",
+        "fields": [
+          {
+            "label": "文案",
+            "field": "statement",
+            "type": "longtext"
+          },
+          {
+            "label": "参数",
+            "field": "params",
+            "type": "form",
+            "primaryField": "field",
+            "fields": [
+              {
+                "label": "字段名",
+                "field": "field",
+                "type": "text"
+              },
+              {
+                "label": "数据来源",
+                "field": "data",
+                "type": "import_subform",
+                "interface": {
+                  "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                  "urlParams": [
+                    {
+                      "field": "version",
+                      "data": {
+                        "source": "source",
+                        "field": "version"
+                      }
+                    },
+                    {
+                      "field": "subversion",
+                      "data": {
+                        "source": "source",
+                        "field": "subversion"
+                      }
+                    }
+                  ],
+                  "method": 'GET',
+                  "cache": {
+                    "global": "CCMS_CONFIG_common_ParamConfig"
+                  }
+                }
+              }
+            ],
+            "canInsert": true,
+            "canRemove": true,
+            "canCollapse": true,
+            "canSort": true
+          }
+        ],
+        "condition": {
+          "template": "${enable} === true",
+          "params": [
+            {
+              "field": "enable",
+              "data": {
+                "source": "record",
+                "field": "enable"
+              }
+            }
+          ]
+        }
+      },
+    ]
+  },
+  {
+    "label": "提示文案（底部）",
     "field": "extra",
     "type": "group",
     "fields": [
