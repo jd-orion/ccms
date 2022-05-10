@@ -1,6 +1,6 @@
-# CCMS Third Party Dependencies
+# CCCMS-Editor Third Party Dependencies
 
-CCMS depends on third party libraries to implement some
+CCMS-Editor depends on third party libraries to implement some
 functionality. This document describes which libraries are depended
 upon, and how. It is maintained by and for humans, and so while it is a
 best effort attempt to describe the server’s dependencies, it is subject
@@ -62,19 +62,18 @@ to change as libraries are added or removed.
 | [react-dom]                               | MIT        | 16.13.1     |
 | [react-test-renderer]                     | MIT        | 16.13.1     |
 | [react-scripts]                           | MIT        | 4.0.1       |
-| [immer]                                   | MIT        | 9.0.7       |
-| [qiankun]                                 | MIT        | 2.5.1       |
-| [commitizen]                              | MIT        | 4.2.4       |
-| [commitlint-config-cz]                    | MIT        | 0.13.2      |
-| [cz-customizable]                         | MIT        | 6.3.0       |
 | [@rollup/plugin-babel]                    | MIT        | 5.3.0       |
 | [@rollup/plugin-commonjs]                 | MIT        | 21.0.1      |
 | [@rollup/plugin-json]                     | MIT        | 4.1.0       |
 | [@rollup/plugin-node-resolve]             | MIT        | 13.1.3      |
 | [rollup]                                  | MIT        | 2.66.0      |
 | [rollup-plugin-eslint]                    | MIT        | 7.0.0       |
+| [rollup-plugin-postcss]                   | MIT        | 4.0.2       |
 | [rollup-plugin-terser]                    | MIT        | 7.0.2       |
 | [rollup-plugin-typescript2]               | MIT        | 0.31.1      |
+| [immer]                                   | MIT        | 9.0.7       |
+| [@monaco-editor/react]                    | MIT        | 4.3.1       |
+| [qiankun]                                 | MIT        | 2.5.1       |
 
 [TypeScript]:https://github.com/microsoft/TypeScript
 [babel]:https://github.com/babel/babel
@@ -131,16 +130,15 @@ to change as libraries are added or removed.
 [react-dom]:https://github.com/facebook/react
 [react-test-renderer]:https://github.com/facebook/react
 [react-scripts]:https://github.com/facebook/create-react-app
-[immer]:https://github.com/immerjs/immer
-[qiankun]:https://github.com/umijs/qiankun
-[commitizen]:https://github.com/commitizen/cz-cli
-[commitlint-config-cz]:https://github.com/whizark/commitlint-config-cz
-[cz-customizable]:https://github.com/leoforfree/cz-customizable
 [@rollup/plugin-babel]:https://github.com/rollup/plugins
 [@rollup/plugin-commonjs]:https://github.com/rollup/plugins
 [@rollup/plugin-json]:https://github.com/rollup/plugins
 [@rollup/plugin-node-resolve]:https://github.com/rollup/plugins
 [rollup]:https://github.com/rollup/rollup
 [rollup-plugin-eslint]:https://github.com/TrySound/rollup-plugin-eslint
+[rollup-plugin-postcss]: https://github.com/egoist/rollup-plugin-postcss
 [rollup-plugin-terser]:https://github.com/terser/terser
 [rollup-plugin-typescript2]:https://github.com/ezolenko/rollup-plugin-typescript2
+[immer]:https://github.com/immerjs/immer
+[@monaco-editor/react]:https://github.com/suren-atoyan/monaco-react
+[qiankun]:https://github.com/umijs/qiankun

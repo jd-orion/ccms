@@ -1,6 +1,6 @@
-# CCMS Third Party Dependencies
+# CCMS-antd-mini Third Party Dependencies
 
-CCMS depends on third party libraries to implement some
+CCMS-antd-mini depends on third party libraries to implement some
 functionality. This document describes which libraries are depended
 upon, and how. It is maintained by and for humans, and so while it is a
 best effort attempt to describe the server’s dependencies, it is subject
@@ -62,8 +62,6 @@ to change as libraries are added or removed.
 | [react-dom]                               | MIT        | 16.13.1     |
 | [react-test-renderer]                     | MIT        | 16.13.1     |
 | [react-scripts]                           | MIT        | 4.0.1       |
-| [immer]                                   | MIT        | 9.0.7       |
-| [qiankun]                                 | MIT        | 2.5.1       |
 | [commitizen]                              | MIT        | 4.2.4       |
 | [commitlint-config-cz]                    | MIT        | 0.13.2      |
 | [cz-customizable]                         | MIT        | 6.3.0       |
@@ -131,8 +129,6 @@ to change as libraries are added or removed.
 [react-dom]:https://github.com/facebook/react
 [react-test-renderer]:https://github.com/facebook/react
 [react-scripts]:https://github.com/facebook/create-react-app
-[immer]:https://github.com/immerjs/immer
-[qiankun]:https://github.com/umijs/qiankun
 [commitizen]:https://github.com/commitizen/cz-cli
 [commitlint-config-cz]:https://github.com/whizark/commitlint-config-cz
 [cz-customizable]:https://github.com/leoforfree/cz-customizable
@@ -142,5 +138,6 @@ to change as libraries are added or removed.
 [@rollup/plugin-node-resolve]:https://github.com/rollup/plugins
 [rollup]:https://github.com/rollup/rollup
 [rollup-plugin-eslint]:https://github.com/TrySound/rollup-plugin-eslint
+[rollup-plugin-postcss]: https://github.com/egoist/rollup-plugin-postcss
 [rollup-plugin-terser]:https://github.com/terser/terser
 [rollup-plugin-typescript2]:https://github.com/ezolenko/rollup-plugin-typescript2

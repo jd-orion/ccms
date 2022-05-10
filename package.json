@@ -1,9 +1,5 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "packages/UIs/*"
-  ],
   "scripts": {
     "lerna": "lerna bootstrap",
     "list": "lerna ll",

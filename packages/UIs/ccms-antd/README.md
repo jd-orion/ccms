@@ -9,7 +9,6 @@
 <h1 align="center">CCMS</h1>
 
 
-
 ![](https://img.shields.io/badge/license-MIT-blue)
 
 ## 🌏 关于CCMS
@@ -33,29 +32,27 @@ CCMS将内容管理系统前端页面抽象为在若干API进行流转的系统�
 
 ## ⚙️ 使用
 ```
-npm install ccms-antd
+npm install ccms ccms-antd
 ```
-
 ## 🌰 示例
-```
+```javascript
 import { CCMS } from 'ccms-antd';
 
 const App = () => (
   <>
     <CCMS
+      config={config}
+      sourceData={data}
+      baseRoute={'/'}
       checkPageAuth={async () => true}
       loadPageURL={async (id) => `/url?id=${id}&type=page`}
       loadPageFrameURL={async (id) => `/url?id=${id}&type=open`}
+      loadPageList={async () => '#'}
       loadPageConfig={async (page) => newConfig }
-      sourceData={{}}
-      callback={() => {
-        if (window.history.length > 1) {
-          window.history.back()
-        } else {
-          window.close()
-        }
-      }}
-      config={config}
+      loadDomain={async () => ''}
+      handlePageRedirect={() => {xxx}}
+      callback={() => {xxx}}
+      onMount={() => {xxx}}
     />
   </>
 );
@@ -66,6 +63,112 @@ const App = () => (
 
 [Api文档]:https://oriondoc.jd.com/
 
+| 参数               | 说明                                                       | 类型                   | 默认值 | 版本 |
+| ------------------ | ---------------------------------------------------------- | ---------------------- | ------ | ---- |
+| config             | 配置项，参见附录一                                         | object                 | -      |      |
+| sourceData         | 数据项，参见附录二                                         | object                 | -      |      |
+| baseRoute          | 页面路由                                                   | string                 | `/`    |      |
+| checkPageAuth      | 页面鉴权                                                   | function(e)            | -      |      |
+| loadPageURL        | 获取页面的url(用于当前页面打开)                            | function(pageId)       | -      |      |
+| loadPageFrameURL   | 获取页面的url(用于新Tab页打开)                             | function(pageId)       | -      |      |
+| loadPageList       | 加载页面列表，选中后可通过执行loadPageConfig获取页面配置项 | function()             | -      |      |
+| loadPageConfig     | 加载指定页面配置项                                         | function(pageId)       | -      |      |
+| loadDomain         | 获取域名                                                   | function()             | -      |      |
+| handlePageRedirect | 页面跳转(replace/push)                                     | function(url, replace) | -      |      |
+| callback           | 回调函数(关闭或提交)                                       | function()             | -      |      |
+| onMount            | 初始化结束，展示界面                                       | function(val)          | -      |      |
+
+
+#### 附录一
+```js
+{
+  "steps": [
+    { "type": "header"},
+    {
+      "type": "form",
+      "fields": [
+        {
+          "label": "文本框",
+          "field": "text",
+          "type": "text"
+        },
+        {
+          "label": "单项框",
+          "field": "radio",
+          "type": "select_single",
+          "mode": "radio",
+          "options": {
+            "from": "manual",
+            "data": [
+              {
+                "label": "选项1",
+                "value": 1
+              },
+              {
+                "label": "选项2",
+                "value": 2
+              }
+            ]
+          },
+          "required": true
+        }
+      ],
+      "actions": [
+        {
+          "type": "submit",
+          "label": "提交",
+          "mode": "primary"
+        },
+        {
+          "type": "cancel",
+          "label": "取消",
+          "mode": "normal"
+        }
+      ],
+      "defaultValue": {
+        "source": "data",
+        "field": ""
+      }
+    },
+    {
+      "type": "fetch",
+      "interface": {
+        "url": "",
+        "method": "GET",
+        "withCredentials": true,
+        "condition": {
+          "enable": false,
+          "field": "code",
+          "value": 1000,
+          "success": {
+            "type": "modal",
+            "content": {
+              "type": "static",
+              "content": "成功"
+            }
+          },
+          "fail": {
+            "type": "modal",
+            "content": {
+              "type": "field",
+              "field": "msg"
+            }
+          }
+        }
+      },
+      "nextStep": false
+    }
+  ]
+}
+```
+
+#### 附录二
+```js
+{
+  "text": "text",
+  "radio": 2
+}
+```
 ## 🧑‍🤝‍🧑 参与共建 配置化内容管理系统 UI库（ant design版）
 
 ### 初始化工程
@@ -84,16 +187,4 @@ sudo npm link
 
 ```sh
 npm run build
-```
-
-### 生成文档
-
-```sh
-npm run docs
-```
-
-### 单元测试
-
-```sh
-npm run test
 ```
