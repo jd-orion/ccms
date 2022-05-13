@@ -42,13 +42,14 @@ export interface FormConfig extends StepConfig {
    * 表单组件配置文件格式定义
    * 参照其它组件定义
    */
-  fields?: FieldConfigs[],
-  defaultValue?: ParamConfig,
+  fields?: FieldConfigs[]
+  defaultValue?: ParamConfig
   validations?: Array<{
     condition?: ConditionConfig
     message?: StatementConfig
   }>
   actions: Array<ActionConfig> | []
+  rightTopActions: Array<ActionConfig> | []
   stringify?: string[] // 序列化字段
   unstringify?: string[] // 反序列化字段
   hiddenSubmit?: boolean // 是否隐藏提交按钮 TODO 待删除
@@ -76,9 +77,9 @@ export interface FormConfig extends StepConfig {
  * - * - * - cancel: 取消表单
  */
 export interface ActionConfig {
-  type: 'submit' | 'cancel' | 'ccms',
-  label: string,
-  mode: 'normal' | 'primary' | 'link',
+  type: 'submit' | 'cancel' | 'ccms'
+  label: string
+  mode: 'normal' | 'primary' | 'link'
   submitValidate: boolean
   condition?: ConditionConfig
   handle?: OperationConfig
@@ -116,6 +117,7 @@ export interface IForm {
   layout: 'horizontal' | 'vertical' | 'inline'
   columns?: ColumnsConfig
   actions?: React.ReactNode[]
+  rightTopActions?: React.ReactNode[]
   children: React.ReactNode[]
   onSubmit?: () => Promise<any>
   onCancel?: () => Promise<any>
@@ -152,8 +154,8 @@ export interface IButtonProps {
  * - children:    表单项内容
  */
 export interface IFormItem {
-  key: string | number,
-  label: string,
+  key: string | number
+  label: string
   subLabel?: React.ReactNode
   status: 'normal' | 'error' | 'loading'
   required: boolean
@@ -174,32 +176,39 @@ export interface IFormItem {
 interface FormState {
   ready: boolean
   formValue: { [field: string]: any }
-  formData: { status: 'normal' | 'error' | 'loading', message?: string, name: string }[]
+  formData: { status: 'normal' | 'error' | 'loading'; message?: string; name: string }[]
 }
 
 /**
  * 表单步骤组件
  */
-export default class FormStep extends Step<FormConfig, FormState> { // ts对class的声明文件报错，临时解决
+export default class FormStep extends Step<FormConfig, FormState> {
+  // ts对class的声明文件报错，临时解决
   // 各表单项对应的类型所使用的UI组件的类
   getALLComponents = (type: any): typeof Field => getALLComponents[type]
+
   OperationHelper = OperationHelper
 
   // 各表单项所使用的UI组件的实例
-  formFields: Array<Field<FieldConfigs, {}, any> | null> = []
+  formFields: Array<Field<FieldConfigs, Record<string, unknown>, any> | null> = []
+
   formFieldsMounted: Array<boolean> = []
+
   dependentFields_: string[] = []
 
   formValue: { [field: string]: any } = {}
-  formData: { status: 'normal' | 'error' | 'loading', message?: string, name: string }[] = []
-  canSubmit: boolean = false
+
+  formData: { status: 'normal' | 'error' | 'loading'; message?: string; name: string }[] = []
+
+  canSubmit = false
+
   submitData: object = {}
 
   /**
    * 初始化表单的值
    * @param props
    */
-  constructor (props: StepProps<FormConfig>) {
+  constructor(props: StepProps<FormConfig>) {
     super(props)
     this.state = {
       ready: false,
@@ -214,9 +223,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
   stepPush = async () => {
     // 处理表单步骤配置文件的默认值
     const {
-      config: {
-        fields: formFieldsConfig = []
-      },
+      config: { fields: formFieldsConfig = [] },
       data,
       step,
       onMount
@@ -239,7 +246,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
         }
       }
 
-      for (const formFieldIndex in formFieldsConfig) {
+      for (let formFieldIndex = 0; formFieldIndex < formFieldsConfig.length; formFieldIndex++) {
         const formFieldConfig = formFieldsConfig[formFieldIndex]
         const value = getValue(formDefault, formFieldConfig.field)
 
@@ -269,7 +276,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
       if (formField) {
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
         let value = getValue(this.formValue, formFieldConfig.field)
-        if ((formFieldConfig.defaultValue) && value === undefined) {
+        if (formFieldConfig.defaultValue && value === undefined) {
           value = await formField.reset()
         }
         value = await formField.set(value)
@@ -280,7 +287,11 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
           if (validation === true) {
             this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'normal', name: formFieldConfig.label })
           } else {
-            this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
+            this.formData = set(this.formData, `[${formFieldIndex}]`, {
+              status: 'error',
+              message: validation[0].message,
+              name: formFieldConfig.label
+            })
           }
         }
         await formField.didMount()
@@ -301,9 +312,20 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
     this.submitData = {}
     if (this.props.config.validations) {
       for (const validation of this.props.config.validations) {
-        if (!ConditionHelper(validation.condition, { record: this.state.formValue, data: this.props.data, step: this.formValue })) {
+        if (
+          !ConditionHelper(validation.condition, {
+            record: this.state.formValue,
+            data: this.props.data,
+            step: this.formValue
+          })
+        ) {
           this.canSubmit = false
-          const message = StatementHelper(validation.message, { record: this.state.formValue, data: this.props.data, step: this.formValue }) || '未填写失败文案或失败文案配置异常'
+          const message =
+            StatementHelper(validation.message, {
+              record: this.state.formValue,
+              data: this.props.data,
+              step: this.formValue
+            }) || '未填写失败文案或失败文案配置异常'
           this.renderModalComponent({ message })
           return
         }
@@ -311,7 +333,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
       if (!this.canSubmit) return
     }
 
-    for (const formFieldIndex in (this.props.config.fields || [])) {
+    for (const formFieldIndex in this.props.config.fields || []) {
       if (this.formFields[formFieldIndex]) {
         const formField = this.formFields[formFieldIndex]
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
@@ -320,7 +342,11 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
           const validation = await formField.validate(value)
           if (validation !== true) {
             console.warn('表单项中存在问题', value, formFieldConfig)
-            this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
+            this.formData = set(this.formData, `[${formFieldIndex}]`, {
+              status: 'error',
+              message: validation[0].message,
+              name: formFieldConfig.label
+            })
             this.canSubmit = false
           }
           this.submitData = setValue(this.submitData, formFieldConfig.field, value)
@@ -357,9 +383,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
    * 处理表单返回事件
    */
   handleCancel = async () => {
-    const {
-      onUnmount
-    } = this.props
+    const { onUnmount } = this.props
 
     onUnmount()
   }
@@ -379,7 +403,11 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
       if (validation === true) {
         this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'normal', name: formFieldConfig.label })
       } else {
-        this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
+        this.formData = set(this.formData, `[${formFieldIndex}]`, {
+          status: 'error',
+          message: validation[0].message,
+          name: formFieldConfig.label
+        })
       }
 
       await this.setState({
@@ -392,10 +420,21 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
     }
   }
 
-  handleValueSet = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
+  handleValueSet = async (
+    formFieldIndex: number,
+    path: string,
+    value: any,
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
+      const fullPath =
+        options && options.noPathCombination
+          ? path
+          : formFieldConfig.field === '' || path === ''
+          ? `${formFieldConfig.field}${path}`
+          : `${formFieldConfig.field}.${path}`
 
       this.formValue = set(this.formValue, fullPath, value)
       this.setState(({ formValue }) => ({
@@ -409,7 +448,11 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
       if (validation === true) {
         this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'normal', name: formFieldConfig.label })
       } else {
-        this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
+        this.formData = set(this.formData, `[${formFieldIndex}]`, {
+          status: 'error',
+          message: validation[0].message,
+          name: formFieldConfig.label
+        })
       }
 
       console.log('form set data', this.formData)
@@ -420,10 +463,20 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
     }
   }
 
-  handleValueUnset = async (formFieldIndex: number, path: string, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
+  handleValueUnset = async (
+    formFieldIndex: number,
+    path: string,
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
+      const fullPath =
+        options && options.noPathCombination
+          ? path
+          : formFieldConfig.field === '' || path === ''
+          ? `${formFieldConfig.field}${path}`
+          : `${formFieldConfig.field}.${path}`
 
       // unset(this.formValue, fullPath)
       this.formValue = set(this.formValue, fullPath)
@@ -437,7 +490,11 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
       if (validation === true) {
         this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'normal', name: formFieldConfig.label })
       } else {
-        this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
+        this.formData = set(this.formData, `[${formFieldIndex}]`, {
+          status: 'error',
+          message: validation[0].message,
+          name: formFieldConfig.label
+        })
       }
 
       await this.setState({
@@ -446,10 +503,21 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
     }
   }
 
-  handleValueListAppend = async (formFieldIndex: number, path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
+  handleValueListAppend = async (
+    formFieldIndex: number,
+    path: string,
+    value: any,
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
+      const fullPath =
+        options && options.noPathCombination
+          ? path
+          : formFieldConfig.field === '' || path === ''
+          ? `${formFieldConfig.field}${path}`
+          : `${formFieldConfig.field}.${path}`
 
       this.formValue = push(this.formValue, fullPath, value) // 向this.formValue的fullPath下的值添加value
       this.setState({
@@ -462,7 +530,11 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
       if (validation === true) {
         this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'normal', name: formFieldConfig.label })
       } else {
-        this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
+        this.formData = set(this.formData, `[${formFieldIndex}]`, {
+          status: 'error',
+          message: validation[0].message,
+          name: formFieldConfig.label
+        })
       }
 
       await this.setState({
@@ -471,10 +543,22 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
     }
   }
 
-  handleValueListSplice = async (formFieldIndex: number, path: string, index: number, count: number, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
+  handleValueListSplice = async (
+    formFieldIndex: number,
+    path: string,
+    index: number,
+    count: number,
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
+      const fullPath =
+        options && options.noPathCombination
+          ? path
+          : formFieldConfig.field === '' || path === ''
+          ? `${formFieldConfig.field}${path}`
+          : `${formFieldConfig.field}.${path}`
 
       this.formValue = splice(this.formValue, fullPath, index, count)
       this.setState({
@@ -487,7 +571,11 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
       if (validation === true) {
         this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'normal', name: formFieldConfig.label })
       } else {
-        this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
+        this.formData = set(this.formData, `[${formFieldIndex}]`, {
+          status: 'error',
+          message: validation[0].message,
+          name: formFieldConfig.label
+        })
       }
 
       await this.setState({
@@ -496,10 +584,22 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
     }
   }
 
-  handleValueListSort = async (formFieldIndex: number, path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[], options?: { noPathCombination?: boolean }) => {
+  handleValueListSort = async (
+    formFieldIndex: number,
+    path: string,
+    index: number,
+    sortType: 'up' | 'down',
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
+      const fullPath =
+        options && options.noPathCombination
+          ? path
+          : formFieldConfig.field === '' || path === ''
+          ? `${formFieldConfig.field}${path}`
+          : `${formFieldConfig.field}.${path}`
 
       this.formValue = sort(this.formValue, fullPath, index, sortType)
       this.setState({
@@ -512,7 +612,11 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
       if (validation === true) {
         this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'normal', name: formFieldConfig.label })
       } else {
-        this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'error', message: validation[0].message, name: formFieldConfig.label })
+        this.formData = set(this.formData, `[${formFieldIndex}]`, {
+          status: 'error',
+          message: validation[0].message,
+          name: formFieldConfig.label
+        })
       }
 
       await this.setState({
@@ -529,7 +633,11 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
     if (success) {
       const callbackType = action.callback?.type
       if (callbackType) {
-        if (callbackType === 'submit') { this.handleSubmit() } else if (callbackType === 'cancel') { this.handleCancel() }
+        if (callbackType === 'submit') {
+          this.handleSubmit()
+        } else if (callbackType === 'cancel') {
+          this.handleCancel()
+        }
       }
     }
   }
@@ -540,9 +648,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
    * @param props
    */
   renderComponent = (props: IForm) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Form组件。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现Form组件。</>
   }
 
   /**
@@ -550,9 +656,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
    * @param props
    */
   renderButtonComponent = (props: IButtonProps) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现FormButton组件。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现FormButton组件。</>
   }
 
   /**
@@ -561,9 +665,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
    * @param props
    */
   renderItemComponent = (props: IFormItem) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现FormItem组件。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现FormItem组件。</>
   }
 
   /**
@@ -577,26 +679,7 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
     })
   }
 
-  render () {
-    const {
-      data,
-      config: {
-        columns,
-        // layout = 'horizontal',
-        // fields = []
-        actions
-      }
-    } = this.props
-
-    const layout = this.props.config?.layout || 'horizontal'
-    const fields = this.props.config?.fields || []
-
-    const {
-      ready,
-      formValue,
-      formData
-    } = this.state
-
+  getActios = (actions: Array<ActionConfig> | [], formValue: { [field: string]: any }, data: any[]) => {
     let actions_
     if (Object.prototype.toString.call(actions) === '[object Array]') {
       actions_ = []
@@ -605,62 +688,94 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
           continue
         }
         if (actions[index].type === 'submit') {
-          actions_.push(this.renderButtonComponent({
-            label: actions[index].label || '',
-            mode: actions[index].mode,
-            onClick: () => this.handleSubmit()
-          }))
+          actions_.push(
+            this.renderButtonComponent({
+              label: actions[index].label || '',
+              mode: actions[index].mode,
+              onClick: () => this.handleSubmit()
+            })
+          )
         } else if (actions[index].type === 'cancel') {
-          actions_.push(this.renderButtonComponent({
-            label: actions[index].label || '',
-            mode: actions[index].mode,
-            onClick: () => this.handleCancel()
-          }))
+          actions_.push(
+            this.renderButtonComponent({
+              label: actions[index].label || '',
+              mode: actions[index].mode,
+              onClick: () => this.handleCancel()
+            })
+          )
         } else {
-          const submitValidate = actions[index].submitValidate
-          const OperationHelperWrapper = <this.OperationHelper
-            key={index}
-            config={actions[index].handle}
-            datas={{ record: formValue, data: this.props.data, step: this.props.step }}
-            checkPageAuth={this.props.checkPageAuth}
-            loadPageURL={this.props.loadPageURL}
-            loadPageFrameURL={this.props.loadPageFrameURL}
-            loadPageConfig={this.props.loadPageConfig}
-            loadPageList={this.props.loadPageList}
-            baseRoute={this.props.baseRoute}
-            loadDomain={this.props.loadDomain}
-            handlePageRedirect={this.props.handlePageRedirect}
-            callback={async (success) => { await this.handleCallback(actions[index], success) }}
-          >
-            {(onClick) => (
-              this.renderButtonComponent({
-                label: actions[index].label || '',
-                mode: actions[index].mode,
-                onClick: submitValidate
-                  ? async () => {
-                    await this.handleValidations()
-                    console.info('表单参数信息', this.submitData, this.state.formValue, this.formData)
-                    if (this.canSubmit) {
-                      onClick()
-                    }
-                  }
-                  : onClick
-              })
-            )}
-          </this.OperationHelper>
+          const { submitValidate } = actions[index]
+          const OperationHelperWrapper = (
+            <this.OperationHelper
+              key={index}
+              config={actions[index].handle}
+              datas={{ record: formValue, data: this.props.data, step: this.props.step }}
+              checkPageAuth={this.props.checkPageAuth}
+              loadPageURL={this.props.loadPageURL}
+              loadPageFrameURL={this.props.loadPageFrameURL}
+              loadPageConfig={this.props.loadPageConfig}
+              loadPageList={this.props.loadPageList}
+              baseRoute={this.props.baseRoute}
+              loadDomain={this.props.loadDomain}
+              handlePageRedirect={this.props.handlePageRedirect}
+              callback={async (success) => {
+                await this.handleCallback(actions[index], success)
+              }}
+            >
+              {(onClick) =>
+                this.renderButtonComponent({
+                  label: actions[index].label || '',
+                  mode: actions[index].mode,
+                  onClick: submitValidate
+                    ? async () => {
+                        await this.handleValidations()
+                        console.info('表单参数信息', this.submitData, this.state.formValue, this.formData)
+                        if (this.canSubmit) {
+                          onClick()
+                        }
+                      }
+                    : onClick
+                })
+              }
+            </this.OperationHelper>
+          )
           actions_.push(OperationHelperWrapper)
         }
       }
     }
+    return actions_
+  }
+
+  render() {
+    const {
+      data,
+      config: {
+        columns,
+        // layout = 'horizontal',
+        // fields = []
+        actions,
+        rightTopActions
+      }
+    } = this.props
+
+    const layout = this.props.config?.layout || 'horizontal'
+    const fields = this.props.config?.fields || []
+
+    const { ready, formValue, formData } = this.state
+
+    const actions_ = this.getActios(actions, formValue, data)
+
+    const rightTopActions_ = this.getActios(rightTopActions, formValue, data)
 
     if (ready) {
       return (
-        <React.Fragment>
+        <>
           {/* 渲染表单 */}
           {this.renderComponent({
             layout,
             columns: columns?.enable ? columns : undefined,
             actions: actions_,
+            rightTopActions: rightTopActions_,
             onSubmit: this.props.config.hiddenSubmit ? undefined : async () => this.handleSubmit(), // TODO 待删除
             onCancel: this.props.config.hiddenCancel ? undefined : async () => this.handleCancel(), // TODO 待删除
             submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ''), // TODO 待删除
@@ -671,8 +786,8 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
                 this.formFields && (this.formFields[formFieldIndex] = null)
                 return null
               }
-              let hidden: boolean = true
-              let display: boolean = true
+              let hidden = true
+              let display = true
 
               if (formFieldConfig.type === 'hidden') {
                 hidden = true
@@ -686,7 +801,10 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
 
               // 隐藏项同时打标录入数据并清空填写项
               if (!hidden) {
-                this.formData = set(this.formData, `[${formFieldIndex}]`, { status: 'normal', name: formFieldConfig.label })
+                this.formData = set(this.formData, `[${formFieldIndex}]`, {
+                  status: 'normal',
+                  name: formFieldConfig.label
+                })
               }
 
               const FormField = this.getALLComponents(formFieldConfig.type) || Field
@@ -733,31 +851,38 @@ export default class FormStep extends Step<FormConfig, FormState> { // ts对clas
                     data={data}
                     step={formValue}
                     config={formFieldConfig}
-                    onChange={async (value: any) => { await this.handleChange(formFieldIndex, value) }}
-                    onValueSet={async (path, value, validation, options) => await this.handleValueSet(formFieldIndex, path, value, validation, options)}
-                    onValueUnset={async (path, validation, options) => await this.handleValueUnset(formFieldIndex, path, validation, options)}
-                    onValueListAppend={async (path, value, validation, options) => await this.handleValueListAppend(formFieldIndex, path, value, validation, options)}
-                    onValueListSplice={async (path, index, count, validation, options) => await this.handleValueListSplice(formFieldIndex, path, index, count, validation, options)}
-                    onValueListSort={async (path, index, sortType, validation, options) => await this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)}
+                    onChange={async (value: any) => {
+                      await this.handleChange(formFieldIndex, value)
+                    }}
+                    onValueSet={async (path, value, validation, options) =>
+                      await this.handleValueSet(formFieldIndex, path, value, validation, options)
+                    }
+                    onValueUnset={async (path, validation, options) =>
+                      await this.handleValueUnset(formFieldIndex, path, validation, options)
+                    }
+                    onValueListAppend={async (path, value, validation, options) =>
+                      await this.handleValueListAppend(formFieldIndex, path, value, validation, options)
+                    }
+                    onValueListSplice={async (path, index, count, validation, options) =>
+                      await this.handleValueListSplice(formFieldIndex, path, index, count, validation, options)
+                    }
+                    onValueListSort={async (path, index, sortType, validation, options) =>
+                      await this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)
+                    }
                     baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
                     loadPageList={async () => await this.props.loadPageList()}
-                    containerPath={''}
+                    containerPath=""
                   />
                 )
               }
               // 渲染表单项容器
-              return (
-                hidden
-                  ? this.renderItemComponent(renderData)
-                  : <React.Fragment key={formFieldIndex}></React.Fragment>
-              )
+              return hidden ? this.renderItemComponent(renderData) : <React.Fragment key={formFieldIndex} />
             })
           })}
-        </React.Fragment>
+        </>
       )
-    } else {
-      return <></>
     }
+    return <></>
   }
 }
