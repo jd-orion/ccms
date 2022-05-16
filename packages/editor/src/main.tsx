@@ -38,7 +38,8 @@ import 'antd/dist/antd.css'
                     type: 'text'
                   }
                 ],
-                "actions": []
+                "actions": [],
+                "rightTopActions": []
               }
             ]
         })}}

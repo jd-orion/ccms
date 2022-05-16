@@ -45,6 +45,7 @@ const DefaultConfig = {
           "mode": "normal"
         }
       ],
+      "rightTopActions": [],
       "defaultValue": {
         "source": "data",
         "field": ""

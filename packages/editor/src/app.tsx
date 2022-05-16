@@ -74,18 +74,19 @@ const basicForm: FormConfig = {
       ]
     }
   ],
-  actions: []
+  actions: [],
+  rightTopActions: []
 }
 
 
 export interface AppPropsInterface {
   // config: FormConfig,
   config: any,
-  sourceData:any,
-  applicationName: string,
-  type: 'application' | 'business',
-  version: string,
-  subversion: string,
+  sourceData?:any,
+  applicationName?: string,
+  type?: 'application' | 'business',
+  version?: string,
+  subversion?: string,
   baseRoute: string,
   checkPageAuth: (pageID: any) => Promise<boolean>
   loadPageURL: (pageID: any) => Promise<string>
@@ -264,7 +265,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 
         {/* 配置化步骤内容 */}
         <Drawer
-          width={320}
+          width={350}
           mask={false}
           placement="right"
           closable={false}
@@ -468,6 +469,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                   }}
                   loadDomain={this.props.loadDomain}
                   loadPageList={loadPageList}
+                  baseRoute={this.props.baseRoute}
                 />
               </>
             )}

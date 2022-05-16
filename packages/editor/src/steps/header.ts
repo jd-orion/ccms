@@ -827,7 +827,8 @@ export const Config: FormConfig = {
     "source": "data",
     "field": ""
   },
-  "actions": []
+  "actions": [],
+  "rightTopActions": []
 }
 
 export const Template: HeaderConfig = {
