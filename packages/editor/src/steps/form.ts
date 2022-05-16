@@ -735,7 +735,7 @@ export const Config: FormConfig = {
 }
 
 export const Template: FormConfig = {
-  "type": 'form',
+  "type": "form",
   "actions": [
     {
       "type": "submit",
