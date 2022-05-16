@@ -8,17 +8,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: ['babel-loader'],
-        include: [path.join(__dirname, './src')],
-        exclude: /node_modules/
-      },
-      {
         test: /\.(j|t)sx?$/,
         include: [path.join(__dirname, './src')],
         use: [
           {
-            loader: 'babel-loader'
+            loader: 'ts-loader'
           }
         ],
         exclude: /node_modules/
