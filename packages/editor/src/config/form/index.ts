@@ -300,7 +300,7 @@ const config: FieldConfigs[] = [
                 "field": "data",
                 "type": "import_subform",
                 "interface": {
-                  "url": "/ccms/config/${version}/${subversion}/common/ParamConfig.json",
+                  "url": "${configDomain}/common/ParamConfig.json",
                   "urlParams": [
                     {
                       "field": "version",
@@ -310,10 +310,10 @@ const config: FieldConfigs[] = [
                       }
                     },
                     {
-                      "field": "subversion",
+                      "field": "configDomain",
                       "data": {
                         "source": "source",
-                        "field": "subversion"
+                        "field": "configDomain"
                       }
                     }
                   ],
