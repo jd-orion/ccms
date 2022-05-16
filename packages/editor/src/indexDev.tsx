@@ -86,6 +86,7 @@ const demoPageConfigs = {
             "submitValidate": false
           }
         ],
+        "rightTopActions": [],
         "applicationName": "example",
         "businessSuffix": "",
         "version": "1.0.0",
@@ -155,6 +156,7 @@ const demoPageConfigs = {
             "submitValidate": false
           }
         ],
+        "rightTopActions": [],
         "applicationName": "example",
         "businessSuffix": "",
         "version": "1.0.0",
@@ -234,6 +236,7 @@ const demoPageConfigs = {
             "mode": "normal"
           }
         ],
+        "rightTopActions": [],
         "defaultValue": {
           "source": "data",
           "field": ""

@@ -1624,7 +1624,8 @@ export const Config: FormConfig = {
     "source": "data",
     "field": ""
   },
-  "actions": []
+  "actions": [],
+  "rightTopActions": []
 }
 
 export const Template: TableConfig = {
@@ -1636,8 +1637,11 @@ export const Template: TableConfig = {
     {
       "label": 'ID',
       "field": 'id',
-      "type": 'text'
+      "type": 'text',
+      "linkUrl": false, 
+      "align": "left"
     }
   ],
-  "primary": 'id'
+  "primary": 'id',
+  "rowOperationsPosition": "left"
 }
