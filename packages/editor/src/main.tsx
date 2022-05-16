@@ -11,15 +11,15 @@ import 'antd/dist/antd.css'
  function CCMSEditor (props: AppExternalProps) {
     return (
       <App
-        applicationName="example"
-        type="application"
+        applicationName={props.applicationName || "example"}
+        type={props.type || "application"}
         version={appInfo.version}
-        subversion="0"
+        subversion={props.subversion || "0"}
         config={props.config || DefaultConfig}
         sourceData={props.sourceData}
         baseRoute={props.baseRoute}
         configDomain={props.customConfigCDN || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/dist/config`}
-        onChange={(val)=>{console.log('ccms-editor', val)}}
+        onChange={(val)=>{props.onChange(val)}}
         checkPageAuth={(pageId) => props.checkPageAuth(pageId)}
         loadPageURL={async (pageId) => props.loadPageURL(pageId)}
         loadPageFrameURL={async (pageId) => props.loadPageFrameURL(pageId)}

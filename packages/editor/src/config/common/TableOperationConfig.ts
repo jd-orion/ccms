@@ -46,10 +46,6 @@ const config: FieldConfigs[] = [
       {
         "field": "page",
         "label": "目标页面",
-        "defaultValue": {
-          "source": "static",
-          "value": 0
-        },
         "type": "custom",
         "entry": "https://storage.360buyimg.com/swm-plus/loadpagelist/index.html"
       },

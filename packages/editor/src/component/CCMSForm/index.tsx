@@ -7,7 +7,8 @@ interface CCMSFormProps {
   config: FormConfig
   onChange: (data: any) => void
   loadDomain: (name: string) => Promise<string>
-  loadPageList: () => Promise<Array<PageListItem>>
+  loadPageList: () => Promise<Array<PageListItem>>,
+  baseRoute: string
 }
 
 interface CCMSFormState {
@@ -41,9 +42,9 @@ export default class CCMSForm extends React.Component<CCMSFormProps, CCMSFormSta
         loadPageURL={async () => ''}
         loadPageFrameURL={async () => ''}
         loadPageConfig={async () => ({})}
-        loadPageList={async () => [{key: '', value: '', title: ''}]}
+        loadPageList={this.props.loadPageList}
         loadDomain={this.props.loadDomain}
-        baseRoute="/"
+        baseRoute={this.props.baseRoute}
       />
     )
   }
