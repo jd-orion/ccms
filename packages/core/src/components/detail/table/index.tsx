@@ -1,18 +1,15 @@
 import React from 'react'
 import queryString from 'query-string'
+import { cloneDeep, get, set } from 'lodash'
 import { getParam, getParamText, getValue } from '../../../util/value'
-import { getBoolean } from '../../../util/value'
-import { DetailField, DetailFieldConfig, DetailFieldError, IDetailField } from '../common'
+import { DetailField, DetailFieldConfig, IDetailField, DetailFieldProps } from '../common'
 import getALLComponents, { ColumnConfigs } from '../../tableColumns'
 import CCMS, { CCMSConfig } from '../../../main'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 import ConditionHelper, { ConditionConfig } from '../../../util/condition'
 import { ParamConfig } from '../../../interface'
-import { DetailFieldProps } from '../common'
-import { cloneDeep, get, set } from 'lodash'
 import ColumnStyleComponent from './common/columnStyle'
 import Column from '../../tableColumns/common'
-
 
 export interface TableFieldConfig extends DetailFieldConfig {
   type: 'table'
@@ -28,7 +25,6 @@ export interface TableFieldConfig extends DetailFieldConfig {
     total?: string
   }
 }
-
 
 /**
  * 表格步骤-菜单配置
@@ -74,7 +70,7 @@ export interface TableCCMSOperationConfig {
   target: 'current' | 'page' | 'open' | 'handle'
   targetURL: string
   data: { [key: string]: ParamConfig }
-  params?: { field: string, data: ParamConfig }[]
+  params?: { field: string; data: ParamConfig }[]
   callback?: boolean
   debug?: boolean
 }
@@ -83,7 +79,7 @@ export interface TableLinkOperationConfig {
   type: 'link'
   target: '_blank' | '_self'
   targetURL: string
-  params?: { field: string, data: ParamConfig }[]
+  params?: { field: string; data: ParamConfig }[]
   callback?: boolean
   debug?: boolean
 }
@@ -96,7 +92,7 @@ interface TableOperationCheckConfig {
 interface TableOperationConfirmConfig {
   enable: true
   titleText: string
-  titleParams?: Array<{ field: string, data: ParamConfig }>
+  titleParams?: Array<{ field: string; data: ParamConfig }>
   okText: string
   cancelText: string
 }
@@ -238,17 +234,24 @@ export interface ITableField {
   }
 }
 
-export default class TableField extends DetailField<TableFieldConfig, ITableField, string, TableState> implements IDetailField<string> {
+export default class TableField
+  extends DetailField<TableFieldConfig, ITableField, string, TableState>
+  implements IDetailField<string>
+{
   CCMS = CCMS
+
   getALLComponents = (type: any): typeof Column => getALLComponents[type]
+
   interfaceHelper = new InterfaceHelper()
+
   /**
    * 页面权限获取状态
    * fulfilled ｜pending
    */
   pageAuth: { [page: string]: boolean } = {}
+
   /* 服务端分页情况下页码溢出标识：页码溢出时退回重新请求，此标识符用于防止死循环判断 */
-  pageOverflow: boolean = false
+  pageOverflow = false
 
   constructor(props: DetailFieldProps<TableFieldConfig, any>) {
     super(props)
@@ -274,10 +277,7 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
    * @returns
    */
   handleRowOperation = async (operation: TableOperationConfig, record: { [field: string]: any }) => {
-    const {
-      data,
-      step
-    } = this.props
+    const { data, step } = this.props
     if (operation.check && operation.check.enable) {
       const checkResult = await this.interfaceHelper.request(
         operation.check.interface,
@@ -291,7 +291,9 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
     }
 
     if (operation.confirm && operation.confirm.enable) {
-      const title = operation.confirm.titleParams ? (await getParamText(operation.confirm.titleText, operation.confirm.titleParams, { record, data, step })) : operation.confirm.titleText
+      const title = operation.confirm.titleParams
+        ? await getParamText(operation.confirm.titleText, operation.confirm.titleParams, { record, data, step })
+        : operation.confirm.titleText
       const showConfirm = () => {
         return new Promise((resolve, reject) => {
           if (operation.confirm && operation.confirm.enable) {
@@ -299,8 +301,12 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
               title,
               okText: operation.confirm.okText,
               cancelText: operation.confirm.cancelText,
-              onOk: () => { resolve(true) },
-              onCancel: () => { reject(new Error('用户取消')) }
+              onOk: () => {
+                resolve(true)
+              },
+              onCancel: () => {
+                reject(new Error('用户取消'))
+              }
             })
           }
         })
@@ -330,7 +336,7 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
       }
       if (operation.handle.target === 'current' || operation.handle.target === 'handle') {
         const operationConfig = await this.props.loadPageConfig(operation.handle.page)
-        let obj = {
+        const obj = {
           operation: {
             enable: true,
             target: operation.handle.target,
@@ -346,7 +352,8 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
         const sourceURL = this.props.loadPageURL ? await this.props.loadPageURL(operation.handle.page) : ''
         const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
         const targetURL = operation.handle.targetURL || ''
-        const targetKey = queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
+        const targetKey =
+          queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
         if (this.props.handlePageRedirect) {
           this.props.handlePageRedirect(`${targetURL}${targetKey}`)
         } else {
@@ -356,7 +363,8 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
         const sourceURL = this.props.loadPageFrameURL ? await this.props.loadPageFrameURL(operation.handle.page) : ''
         const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
         const targetURL = operation.handle.targetURL || ''
-        const targetKey = queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
+        const targetKey =
+          queryString.stringifyUrl({ url, query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
         window.open(`${targetURL}${targetKey}`)
       }
     }
@@ -374,9 +382,10 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
           console.log('CCMS debug: operation - operation.handle.type === link', params)
         }
 
-        const targetURL = operation.handle.targetURL
+        const { targetURL } = operation.handle
         const { query } = queryString.parseUrl(targetURL, { arrayFormat: 'bracket' })
-        const targetKey = queryString.stringifyUrl({ url: '', query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
+        const targetKey =
+          queryString.stringifyUrl({ url: '', query: { ...query, ...params } }, { arrayFormat: 'bracket' }) || ''
         const jumpUrl = `${targetURL}${targetKey}`
         if (operation.handle.target === '_blank') {
           window.open(jumpUrl)
@@ -412,14 +421,14 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
     if (!this.pageAuth[page]) {
       this.pageAuth[page] = true
 
-      this.props.checkPageAuth && this.props.checkPageAuth(page).then((auth) => {
-        const pageAuth = cloneDeep(this.state.pageAuth)
-        pageAuth[page] = auth
-        this.setState({ pageAuth })
-      })
+      this.props.checkPageAuth &&
+        this.props.checkPageAuth(page).then((auth) => {
+          const pageAuth = cloneDeep(this.state.pageAuth)
+          pageAuth[page] = auth
+          this.setState({ pageAuth })
+        })
     }
   }
-
 
   /**
    * 渲染 表格
@@ -427,47 +436,36 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
    * @returns
    */
   renderComponent = (props: ITableField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Table组件。
-      <div style={{ display: 'none' }}>
-      </div>
-    </React.Fragment>
+    return (
+      <>
+        您当前使用的UI版本没有实现Table组件。
+        <div style={{ display: 'none' }} />
+      </>
+    )
   }
 
   renderRowOperationComponent = (props: ITableDetailRowOperation) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Table组件的OperationButton部分。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现Table组件的OperationButton部分。</>
   }
 
   renderRowOperationButtonComponent = (props: ITableDetailRowOperationButton) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Table组件的OperationButton部分。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现Table组件的OperationButton部分。</>
   }
 
   renderRowOperationGroupComponent = (props: ITableDetailRowOperationGroup) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Table组件的OperationGroup部分。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现Table组件的OperationGroup部分。</>
   }
 
   renderRowOperationGroupItemComponent = (props: ITableDetailRowOperationGroupItem) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Table组件的OperationGroupItem部分。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现Table组件的OperationGroupItem部分。</>
   }
 
   renderRowOperationDropdownComponent = (props: ITableDetailRowOperationGroup) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Table组件的OperationDropdown部分。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现Table组件的OperationDropdown部分。</>
   }
 
   renderRowOperationDropdownItemComponent = (props: ITableDetailRowOperationGroupItem) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Table组件的OperationDropdownItem部分。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现Table组件的OperationDropdownItem部分。</>
   }
 
   renderOperationModal = (props: ITableDetailOperationModal) => {
@@ -487,7 +485,6 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
     document.body.appendChild(mask)
   }
 
-
   render = () => {
     const {
       config: {
@@ -497,7 +494,7 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
         primary,
         tableColumns,
         operations,
-        pagination,
+        pagination
         // description
       },
       data,
@@ -519,66 +516,89 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
       pageAuth
     } = this.state
 
-    let getDate = value && Array.isArray(value) ? value : []
+    const getDate = value && Array.isArray(value) ? value : []
     const props: ITableField = {
       title: label,
       primary,
       data: getDate,
-      tableColumns: (tableColumns || []).filter((column) => column.field !== undefined && column.field !== '').map((column, index) => {
-        const field = column.field.split('.')[0]
-        return {
-          field,
-          label: column.label,
-          align: column.align,
-          render: (value: any, record: { [field: string]: any }) => {
-            if (value && Object.prototype.toString.call(value) === '[object Object]') {
-              value = getValue(value, column.field.replace(field, '').slice(1))
-            }
+      tableColumns: (tableColumns || [])
+        .filter((column) => column.field !== undefined && column.field !== '')
+        .map((column, index) => {
+          const field = column.field.split('.')[0]
+          return {
+            field,
+            label: column.label,
+            align: column.align,
+            render: (value: any, record: { [field: string]: any }) => {
+              let tempValue = value
+              if (tempValue && Object.prototype.toString.call(tempValue) === '[object Object]') {
+                tempValue = getValue(tempValue, column.field.replace(field, '').slice(1))
+              }
 
-            const Column = this.getALLComponents(column.type)
-            if (Column) {
-              const addfix = ['multirowText'].some((val) => val !== column.field)
-              return <ColumnStyleComponent key={index} style={column.style} addfix={addfix} >
-                <Column
-                  ref={() => { }}
-                  record={record}
-                  value={value}
-                  data={data}
-                  step={step}
-                  config={column}
-                  table={this}
-                  baseRoute={this.props.baseRoute}
-                  loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
-                />
-              </ColumnStyleComponent>
+              const Column = this.getALLComponents(column.type)
+              if (Column) {
+                const addfix = ['multirowText'].some((val) => val !== column.field)
+                return (
+                  <ColumnStyleComponent key={index} style={column.style} addfix={addfix}>
+                    <Column
+                      ref={() => {}}
+                      record={record}
+                      value={tempValue}
+                      data={data}
+                      step={step}
+                      config={column}
+                      table={this}
+                      baseRoute={this.props.baseRoute}
+                      onUnmount={this.props.onUnmount}
+                      checkPageAuth={this.props.checkPageAuth}
+                      loadPageURL={this.props.loadPageURL}
+                      loadPageFrameURL={this.props.loadPageFrameURL}
+                      loadPageConfig={this.props.loadPageConfig}
+                      loadPageList={this.props.loadPageList}
+                      loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                    />
+                  </ColumnStyleComponent>
+                )
+              }
             }
           }
-        }
-      })
+        })
     }
     if (pagination && pagination.mode === 'server') {
-      const paginationCurrent = Number((pagination.current === undefined || pagination.current === '') ? step : get(step, pagination.current, 1))
-      const paginationPageSize = Number((pagination.pageSize === undefined || pagination.pageSize === '') ? step : get(step, pagination.pageSize, 10))
-      const paginationTotal = Number((pagination.total === undefined || pagination.total === '') ? step : get(step, pagination.total, 0))
+      const paginationCurrent = Number(
+        pagination.current === undefined || pagination.current === '' ? step : get(step, pagination.current, 1)
+      )
+      const paginationPageSize = Number(
+        pagination.pageSize === undefined || pagination.pageSize === '' ? step : get(step, pagination.pageSize, 10)
+      )
+      const paginationTotal = Number(
+        pagination.total === undefined || pagination.total === '' ? step : get(step, pagination.total, 0)
+      )
 
       props.pagination = {
         current: Number.isNaN(paginationCurrent) ? 1 : paginationCurrent,
         pageSize: Number.isNaN(paginationPageSize) ? 10 : paginationPageSize,
         total: Number.isNaN(paginationTotal) ? 0 : paginationTotal,
         onChange: (page, pageSize) => {
-          this.props.onUnmount && this.props.onUnmount(true, {
-            [pagination.current || '']: page,
-            [pagination.pageSize || '']: pageSize
-          })
+          this.props.onUnmount &&
+            this.props.onUnmount(true, {
+              [pagination.current || '']: page,
+              [pagination.pageSize || '']: pageSize
+            })
         }
       }
 
-      if (!this.pageOverflow && props.pagination.current > 1 && (props.pagination.current - 1) * props.pagination.pageSize >= props.pagination.total) {
+      if (
+        !this.pageOverflow &&
+        props.pagination.current > 1 &&
+        (props.pagination.current - 1) * props.pagination.pageSize >= props.pagination.total
+      ) {
         this.pageOverflow = true
-        this.props.onUnmount && this.props.onUnmount(true, {
-          [pagination.current || '']: 1,
-          [pagination.pageSize || '']: props.pagination.pageSize
-        })
+        this.props.onUnmount &&
+          this.props.onUnmount(true, {
+            [pagination.current || '']: 1,
+            [pagination.pageSize || '']: props.pagination.pageSize
+          })
       }
     }
 
@@ -606,13 +626,16 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
                       {hidden
                         ? null
                         : this.renderRowOperationButtonComponent({
-                          label: operation.label,
-                          level: operation.level || 'normal',
-                          onClick: async () => { await this.handleRowOperation(operation, record) }
-                        })}
+                            label: operation.label,
+                            level: operation.level || 'normal',
+                            onClick: async () => {
+                              await this.handleRowOperation(operation, record)
+                            }
+                          })}
                     </React.Fragment>
                   )
-                } else if (operation.type === 'group') {
+                }
+                if (operation.type === 'group') {
                   return (
                     <React.Fragment key={index}>
                       {this.renderRowOperationGroupComponent({
@@ -631,15 +654,18 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
                           return hidden
                             ? null
                             : this.renderRowOperationGroupItemComponent({
-                              label: operation.label,
-                              level: operation.level || 'normal',
-                              onClick: async () => { await this.handleRowOperation(operation, record) }
-                            })
+                                label: operation.label,
+                                level: operation.level || 'normal',
+                                onClick: async () => {
+                                  await this.handleRowOperation(operation, record)
+                                }
+                              })
                         })
                       })}
                     </React.Fragment>
                   )
-                } else if (operation.type === 'dropdown') {
+                }
+                if (operation.type === 'dropdown') {
                   return (
                     <React.Fragment key={index}>
                       {this.renderRowOperationDropdownComponent({
@@ -658,108 +684,105 @@ export default class TableField extends DetailField<TableFieldConfig, ITableFiel
                           return hidden
                             ? null
                             : this.renderRowOperationDropdownItemComponent({
-                              label: operation.label,
-                              level: operation.level || 'normal',
-                              onClick: async () => { await this.handleRowOperation(operation, record) }
-                            })
+                                label: operation.label,
+                                level: operation.level || 'normal',
+                                onClick: async () => {
+                                  await this.handleRowOperation(operation, record)
+                                }
+                              })
                         })
                       })}
                     </React.Fragment>
                   )
-                } else {
-                  return <React.Fragment></React.Fragment>
                 }
+                return <></>
               })
             })
-          } else {
-            return <React.Fragment></React.Fragment>
           }
+          return <></>
         }
       })
     }
 
-    const CCMS = this.CCMS
+    const { CCMS } = this
     return (
-      <React.Fragment>
+      <>
         {this.renderComponent(props)}
-        {operationEnable && (
-          operationTarget === 'current'
-            ? (
-              this.renderOperationModal({
-                title: operationTitle,
-                width: '500',
-                visible: operationVisible,
-                children: (
-                  <CCMS
-                    checkPageAuth={this.props.checkPageAuth}
-                    loadPageURL={this.props.loadPageURL}
-                    loadPageFrameURL={this.props.loadPageFrameURL}
-                    loadPageConfig={this.props.loadPageConfig}
-                    loadPageList={this.props.loadPageList}
-                    config={operationConfig}
-                    sourceData={operationData}
-                    baseRoute={this.props.baseRoute}
-                    loadDomain={this.props.loadDomain}
-                    handlePageRedirect={this.props.handlePageRedirect}
-                    onMount={() => {
-                      const { operation } = this.state
-                      operation.visible = true
-                      this.setState({ operation })
-                    }}
-                    callback={() => {
-                      const { operation } = this.state
-                      operation.enable = false
-                      operation.visible = false
-                      this.setState({ operation })
+        {operationEnable &&
+          (operationTarget === 'current' ? (
+            this.renderOperationModal({
+              title: operationTitle,
+              width: '500',
+              visible: operationVisible,
+              children: (
+                <CCMS
+                  checkPageAuth={this.props.checkPageAuth}
+                  loadPageURL={this.props.loadPageURL}
+                  loadPageFrameURL={this.props.loadPageFrameURL}
+                  loadPageConfig={this.props.loadPageConfig}
+                  loadPageList={this.props.loadPageList}
+                  config={operationConfig}
+                  sourceData={operationData}
+                  baseRoute={this.props.baseRoute}
+                  loadDomain={this.props.loadDomain}
+                  handlePageRedirect={this.props.handlePageRedirect}
+                  onMount={() => {
+                    const { operation } = this.state
+                    operation.visible = true
+                    this.setState({ operation })
+                  }}
+                  callback={() => {
+                    const { operation } = this.state
+                    operation.enable = false
+                    operation.visible = false
+                    this.setState({ operation })
 
-                      if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
-                        onUnmount && onUnmount(true)
-                      }
-                    }}
-                  />
-                ),
-                onClose: () => {
-                  const { operation } = this.state
-                  operation.enable = false
-                  operation.visible = false
-                  if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
-                    onUnmount && onUnmount(true)
-                  }
-                  this.setState({ operation })
+                    if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
+                      onUnmount && onUnmount(true)
+                    }
+                  }}
+                />
+              ),
+              onClose: () => {
+                const { operation } = this.state
+                operation.enable = false
+                operation.visible = false
+                if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
+                  onUnmount && onUnmount(true)
                 }
-              })
-            )
-            : (
-              <CCMS
-                config={operationConfig}
-                sourceData={operationData}
-                baseRoute={this.props.baseRoute}
-                checkPageAuth={this.props.checkPageAuth as ((pageID: any) => Promise<boolean>)}
-                loadPageURL={this.props.loadPageURL as (pageID: any) => Promise<string>}
-                loadPageFrameURL={this.props.loadPageFrameURL as (pageID: any) => Promise<string>}
-                loadPageConfig={this.props.loadPageConfig as (pageID: any) => Promise<CCMSConfig>}
-                loadPageList={this.props.loadPageList}
-                loadDomain={this.props.loadDomain}
-                handlePageRedirect={this.props.handlePageRedirect}
-                onMount={() => {
-                  const { operation } = this.state
-                  operation.visible = true
-                  this.setState({ operation })
-                }}
-                callback={() => {
-                  const { operation } = this.state
-                  operation.enable = false
-                  operation.visible = false
-                  this.setState({ operation })
+                this.setState({ operation })
+              }
+            })
+          ) : (
+            <CCMS
+              config={operationConfig}
+              sourceData={operationData}
+              baseRoute={this.props.baseRoute}
+              checkPageAuth={this.props.checkPageAuth as (pageID: any) => Promise<boolean>}
+              loadPageURL={this.props.loadPageURL as (pageID: any) => Promise<string>}
+              loadPageFrameURL={this.props.loadPageFrameURL as (pageID: any) => Promise<string>}
+              loadPageConfig={this.props.loadPageConfig as (pageID: any) => Promise<CCMSConfig>}
+              loadPageList={this.props.loadPageList}
+              loadDomain={this.props.loadDomain}
+              handlePageRedirect={this.props.handlePageRedirect}
+              onMount={() => {
+                const { operation } = this.state
+                operation.visible = true
+                this.setState({ operation })
+              }}
+              callback={() => {
+                const { operation } = this.state
+                operation.enable = false
+                operation.visible = false
+                this.setState({ operation })
 
-                  if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
-                    onUnmount && onUnmount(true)
-                  }
-                }}
-              />
-            )
-        )}
-      </React.Fragment >
+                if ((operationCallback && operationCallback === true) || Boolean(operationCallback)) {
+                  onUnmount && onUnmount(true)
+                }
+              }}
+            />
+          ))}
+      </>
     )
   }
 }

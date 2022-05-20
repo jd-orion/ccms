@@ -7,6 +7,7 @@ import MultirowColumn from './multirowText'
 import EnumColumn from './enum'
 import ImageColumn from './image'
 import CustomColumn from './custom'
+import OperationColumn from './operation'
 
 export default {
   text: TextColumns,
@@ -17,5 +18,6 @@ export default {
   multirowText: MultirowColumn,
   Aenum: EnumColumn,
   image: ImageColumn,
-  custom: CustomColumn
+  custom: CustomColumn,
+  operation: OperationColumn
 }

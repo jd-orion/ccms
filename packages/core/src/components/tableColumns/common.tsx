@@ -1,11 +1,12 @@
 import React from 'react'
 import { componentType } from '.'
+import { CCMSConfig, PageListItem } from '../../main'
 
 export interface ColumnConfig extends componentType {
   field: string
-  label: string,
-  align: 'left' | 'center' | 'right',
-  defaultValue?: string,
+  label: string
+  align: 'left' | 'center' | 'right'
+  defaultValue?: string
   style?: {
     color?: string
     fontSize?: number
@@ -27,19 +28,28 @@ export interface ColumnProps<T, V = any> {
   ref: (instance: Column<T, any> | null) => void
   record: { [field: string]: any }
   value: V
-  data: any[],
-  step: { [field: string]: any },
-  config: T,
+  data: any[]
+  step: { [field: string]: any }
+  config: T
   // 挂载引用
   table?: React.ReactNode
   baseRoute: string
+  onUnmount: (reload?: boolean, data?: any) => Promise<void>
+  checkPageAuth: (pageID: any) => Promise<boolean>
+  loadPageURL: (pageID: any) => Promise<string>
+  loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  handlePageRedirect?: (path: string, replaceHistory: boolean) => void
+  loadPageFrameURL: (pageID: any) => Promise<string>
+  loadPageList: () => Promise<Array<PageListItem>>
   loadDomain: (domain: string) => Promise<string>
 }
 
-interface ColumnState {
-}
+interface ColumnState {}
 
-export default class Column<T, E, V = any> extends React.Component<ColumnProps<T, V>, ColumnState> implements IColumn<V> {
+export default class Column<T, E, V = any>
+  extends React.Component<ColumnProps<T, V>, ColumnState>
+  implements IColumn<V>
+{
   constructor(props: ColumnProps<T>) {
     super(props)
     this.state = {}
@@ -54,12 +64,10 @@ export default class Column<T, E, V = any> extends React.Component<ColumnProps<T
   }
 
   renderComponent = (props: E) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现Column组件。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现Column组件。</>
   }
 
-  render = () => {
-    return (<></>)
+  render() {
+    return <></>
   }
 }
