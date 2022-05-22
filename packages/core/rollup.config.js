@@ -3,7 +3,6 @@ import ts from 'rollup-plugin-typescript2'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import { babel } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
-// import { eslint } from 'rollup-plugin-eslint'
 import json from '@rollup/plugin-json'
 import { terser } from 'rollup-plugin-terser'
 
@@ -17,10 +16,6 @@ export default {
   ],
   plugins: [
     json(),
-    // eslint({
-    //     throwOnError: true,
-    //     exclude: ['node_modules/**', 'es/**', 'dist/**']
-    // }),
     ts({
       tsconfig: path.resolve(__dirname, 'tsconfig.json')
     }),
@@ -28,7 +23,6 @@ export default {
       babelHelpers: 'runtime',
       exclude: 'node_modules/**'
     }),
-
     commonjs(),
     nodeResolve({
       extensions: ['.js', '.ts', '.tsx']
