@@ -1,4 +1,3 @@
-
 import TextColumn, { TextColumnConfig } from './text'
 import EnumColumn, { EnumColumnConfig } from './enum'
 import NumberColumn, { NumberColumnConfig } from './number'
@@ -8,9 +7,11 @@ import DatetimeRangeColumn, { DatetimeRangeColumnConfig } from './datetimeRange'
 import MultirowColumn, { MultirowColumnConfig } from './multirowText'
 import ImageColumn, { ImageColumnConfig } from './image'
 import CustomColumn, { CustomColumnConfig } from './custom'
+import OperatoinColumn, { OperationColumnConfig } from './operation'
 
 export interface componentType {
-    type: 'text'
+  type:
+    | 'text'
     | 'number'
     | 'numberRange'
     | 'datetime'
@@ -19,17 +20,21 @@ export interface componentType {
     | 'multirowText'
     | 'image'
     | 'custom'
+    | 'operation'
 }
 
-export type ColumnConfigs = TextColumnConfig
-    | MultirowColumnConfig
-    | DatetimeColumnConfig
-    | DatetimeRangeColumnConfig
-    | EnumColumnConfig
-    | NumberColumnConfig
-    | NumberRangeColumnConfig
-    | ImageColumnConfig
-    | CustomColumnConfig
+export type ColumnConfigs =
+  | TextColumnConfig
+  | MultirowColumnConfig
+  | DatetimeColumnConfig
+  | DatetimeRangeColumnConfig
+  | EnumColumnConfig
+  | NumberColumnConfig
+  | NumberRangeColumnConfig
+  | ImageColumnConfig
+  | CustomColumnConfig
+  | CustomColumnConfig
+  | OperationColumnConfig
 
 export default {
   text: TextColumn,
@@ -40,5 +45,6 @@ export default {
   number: NumberColumn,
   numberRange: NumberRangeColumn,
   image: ImageColumn,
-  custom: CustomColumn
+  custom: CustomColumn,
+  operation: OperatoinColumn
 }

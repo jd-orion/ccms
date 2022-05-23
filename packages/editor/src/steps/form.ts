@@ -39,7 +39,7 @@ export const Config: FormConfig = {
             }
           }
         ],
-        "method": 'GET',
+        "method": "GET",
         "cache": {
           "global": "CCMS_CONFIG_common_ColumnsConfig"
         }
@@ -141,12 +141,12 @@ export const Config: FormConfig = {
                 }
               }
             ],
-            "method": 'GET',
+            "method": "GET",
             "cache": {
               "global": "CCMS_CONFIG_form"
             }
           }
-        },
+        }
       ],
       "initialValues": {
         "label": "",
@@ -181,7 +181,7 @@ export const Config: FormConfig = {
                 }
               }
             ],
-            "method": 'GET',
+            "method": "GET",
             "cache": {
               "global": "CCMS_CONFIG_common_ConditionConfig"
             }
@@ -230,7 +230,7 @@ export const Config: FormConfig = {
                         }
                       }
                     ],
-                    "method": 'GET',
+                    "method": "GET",
                     "cache": {
                       "global": "CCMS_CONFIG_common_ParamConfig"
                     }
@@ -277,7 +277,7 @@ export const Config: FormConfig = {
                 }
               }
             ],
-            "method": 'GET',
+            "method": "GET",
             "cache": {
               "global": "CCMS_CONFIG_common_ParamConfig"
             }
@@ -300,7 +300,7 @@ export const Config: FormConfig = {
           "canSort": true,
           "canCollapse": true,
           "initialValues": ""
-        },
+        }
       ]
     },
     {
@@ -429,7 +429,7 @@ export const Config: FormConfig = {
                 }
               }
             ],
-            "method": 'GET',
+            "method": "GET",
             "cache": {
               "global": "CCMS_CONFIG_common_ConditionConfig"
             }
@@ -457,7 +457,7 @@ export const Config: FormConfig = {
                 }
               }
             ],
-            "method": 'GET',
+            "method": "GET",
             "cache": {
               "global": "CCMS_CONFIG_common_OperationConfig"
             }
@@ -631,7 +631,7 @@ export const Config: FormConfig = {
                 }
               }
             ],
-            "method": 'GET',
+            "method": "GET",
             "cache": {
               "global": "CCMS_CONFIG_common_ConditionConfig"
             }
@@ -659,7 +659,7 @@ export const Config: FormConfig = {
                 }
               }
             ],
-            "method": 'GET',
+            "method": "GET",
             "cache": {
               "global": "CCMS_CONFIG_common_OperationConfig"
             }

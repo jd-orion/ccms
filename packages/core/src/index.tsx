@@ -58,6 +58,7 @@ export { default as MultirowTextColumn } from './components/tableColumns/multiro
 export { default as DatetimeRangeColumn } from './components/tableColumns/datetimeRange'
 export { default as ImageColumn } from './components/tableColumns/image'
 export { default as CustomColumn } from './components/tableColumns/custom'
+export { default as OperationColumn } from './components/tableColumns/operation'
 
 export { default as FetchStep } from './steps/fetch'
 export { default as DetailStep } from './steps/detail'
