@@ -1,7 +1,7 @@
 import { CCMSConfig } from 'ccms/dist/src/main';
 
 
-const DefaultConfig = {
+const DefaultConfig: CCMSConfig = {
   "steps": [
     {"type": "header"},
     {
@@ -37,12 +37,14 @@ const DefaultConfig = {
         {
           "type": "submit",
           "label": "提交",
-          "mode": "primary"
+          "mode": "primary",
+          "submitValidate": false
         },
         {
           "type": "cancel",
           "label": "取消",
-          "mode": "normal"
+          "mode": "normal",
+          "submitValidate": false
         }
       ],
       "rightTopActions": [],

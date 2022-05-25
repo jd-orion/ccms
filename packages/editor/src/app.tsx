@@ -80,9 +80,8 @@ const basicForm: FormConfig = {
 
 
 export interface AppPropsInterface {
-  // config: FormConfig,
-  config: any,
-  sourceData?:any,
+  config: CCMSConfig,
+  sourceData: { [field:string]: unknown },
   applicationName?: string,
   type?: 'application' | 'business',
   version?: string,
