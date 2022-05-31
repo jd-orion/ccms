@@ -1,0 +1,51 @@
+name: 报告问题
+description: 向CCMS项目报告问题
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您向CCMS项目报告问题，在开 issue 前，可以先搜索一下以往的旧 issue - 你遇到的问题可能已经有人提了，也可能已经在最新版本中被修正。注意：如果你发现一个已经关闭的旧 issue 在最新版本中仍然存在，请不要在旧 issue 下面留言，而应该用下面的表单开一个新的 issue。
+  - type: dropdown
+    id: package
+    attributes:
+      label: 所在包
+      description: 您发现问题的包（package）。可以帮助我们快速定位负责人，以跟进问题。
+      options:
+        - 核心库（core）
+        - UI库 - AntDesign版（UIs/ccms-antd）
+        - UI库 - AntDesign Mini版（UIs/ccms-antd-mini）
+        - 编辑器（Editor）
+        - 我不清楚
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 请详细描述问题是如何发生的。如：操作步骤、配置文件、代码或重现链接等。
+    validations:
+      required: true
+  - type: textarea
+    id: expect
+    attributes:
+      label: 期望结果
+    validations:
+      required: false
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: 运行环境
+      value: |
+        版本：
+        系统：
+        浏览器：
+    validations:
+      required: true
