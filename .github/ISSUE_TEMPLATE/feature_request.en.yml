@@ -19,7 +19,8 @@ body:
         - Editor
         - I don't know
     validations:
-      required: true  - type: dropdown
+      required: true
+  - type: dropdown
     id: from
     attributes:
       label: From
