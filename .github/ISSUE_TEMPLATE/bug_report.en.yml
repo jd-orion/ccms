@@ -1,0 +1,51 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Also try to search for your issue - it may have already been answered or even fixed in the development branch. However, if you find that an old, closed issue still persists in the latest version, you should open a new issue using the form below instead of commenting on the old issue.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Package you find Bug.
+      options:
+        - core
+        - UIs/ccms-antd
+        - UIs/ccms-antd-mini
+        - Editor
+        - I don't know
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Clear and concise reproduction instructions.
+    validations:
+      required: true
+  - type: textarea
+    id: expect
+    attributes:
+      label: What is expected?
+    validations:
+      required: false
+  - type: textarea
+    id: actual
+    attributes:
+      label: What is actually happening?
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      value: |
+        Version: 
+        System: 
+        Browser: 
+    validations:
+      required: true
