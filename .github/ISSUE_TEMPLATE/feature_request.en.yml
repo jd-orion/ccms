@@ -1,0 +1,46 @@
+name: Feature request
+description: Suggest an idea for this project.
+title: "[Feature Request]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggest an idea for this project! Also try to search for your issue - it may have already been answered or even fixed in the development branch. However, if you find that an old, closed issue still persists in the latest version, you should open a new issue using the form below instead of commenting on the old issue.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Package you find Bug.
+      options:
+        - core
+        - UIs/ccms-antd
+        - UIs/ccms-antd-mini
+        - Editor
+        - I don't know
+    validations:
+      required: true  - type: dropdown
+    id: from
+    attributes:
+      label: From
+      description: Which role does this feature suggest from?
+      options:
+        - User of CMS page
+        - Builder of CMS page
+        - Developer of CMS page
+        - Developer of custom component
+      multiple: true
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What problem does this feature solve?
+    validations:
+      required: true
+  - type: textarea
+    id: how
+    attributes:
+      label: What does the proposed API look like?
+    validations:
+      required: false
