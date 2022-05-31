@@ -1,0 +1,49 @@
+name: 功能要求
+description: 为CCMS项目提出新功能建议
+title: "[Feature Request]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您为CCMS项目提出新功能建议，在开 issue 前，可以先搜索一下以往的旧 issue - 你遇到的问题可能已经有人提了，也可能已经在最新版本中被修正。注意：如果你发现一个已经关闭的旧 issue 在最新版本中仍然存在，请不要在旧 issue 下面留言，而应该用下面的表单开一个新的 issue。
+  - type: dropdown
+    id: package
+    attributes:
+      label: 所在包
+      description: 您提出功能建议的包（package）。可以帮助我们快速定位负责人，以跟进问题。
+      options:
+        - 核心库（core）
+        - UI库 - AntDesign版（UIs/ccms-antd）
+        - UI库 - AntDesign Mini版（UIs/ccms-antd-mini）
+        - 编辑器（Editor）
+        - 我不清楚
+    validations:
+      required: true
+  - type: dropdown
+    id: from
+    attributes:
+      label: 功能来源
+      description: 这个功能是由哪种用户角色提出的？
+      options:
+        - 页面使用者
+        - 页面实施人员
+        - 页面开发者
+        - 自定义组件开发者
+      multiple: true
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: 这个功能可以解决什么问题？
+      description: 请尽可能的说明这个功能的使用场景，并从页面实施人员/页面使用者的角度描述该功能是如果产生的。
+    validations:
+      required: true
+  - type: textarea
+    id: how
+    attributes:
+      label: 您期望该功能如何实现？
+      description: 您可以从页面交互或API角度简单描述您期望的实现方式。
+    validations:
+      required: false
