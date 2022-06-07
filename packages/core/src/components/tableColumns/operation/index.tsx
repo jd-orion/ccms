@@ -99,7 +99,7 @@ export default class OperationColumn extends Column<OperationColumnConfig, IOper
    * 处理按钮列表按钮项回调
    * @param action 按钮项配置
    */
-  handleCallback = async (action: ActionConfig, success: boolean) => {}
+  handleCallback = async (action: ActionConfig, success: boolean) => { }
 
   render = () => {
     const {
@@ -117,10 +117,10 @@ export default class OperationColumn extends Column<OperationColumnConfig, IOper
       for (let index = 0, len = actions.length; index < len; index++) {
         let hidden = false
         if (actions[index].handle && actions[index].handle.type === 'ccms') {
-          hidden = actions[index].handle.page === undefined || !pageAuth[actions[index].handle.page.toString()]
           if (actions[index].handle.page !== undefined) {
             this.checkPageAuth(actions[index].handle.page.toString())
           }
+          hidden = actions[index].handle.page === undefined || !pageAuth[actions[index].handle.page.toString()]
           if (hidden) continue
         }
         const OperationHelperWrapper = (
