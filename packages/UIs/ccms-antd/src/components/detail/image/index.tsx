@@ -1,6 +1,6 @@
 import React from 'react'
 import { DetailImageField } from 'ccms'
-import { IImageDetail, ImageDetailConfig } from 'ccms/dist/src/components/detail/image'
+import { IImageDetail, IImageItemDetail, ImageDetailConfig } from 'ccms/dist/src/components/detail/image'
 import { EyeOutlined } from '@ant-design/icons'
 import { Space, Tooltip } from 'antd'
 import styles from './index.less'
@@ -27,6 +27,38 @@ export default class ImageDetailComponent extends DetailImageField {
             </Space>
           </div>
         )}
+      </div>
+    ) : (
+      <> </>
+    )
+  }
+
+  renderItemComponent = (props: IImageItemDetail) => {
+    const { value, width, height, preview, urlKey } = props
+    return value ? (
+      <div className={styles['ccms-antd-detail-image-item']}>
+        {value.map((image) => {
+          const imageurl = urlKey && image[urlKey] ? image[urlKey] : image
+          return imageurl ? (
+            <div key={Math.random()} className={styles['ccms-antd-detail-image']}>
+              <img className={styles.image} height={height} width={width} src={imageurl} alt={imageurl} />
+              {preview && (
+                <div className={styles.mask}>
+                  <Space>
+                    <Tooltip getPopupContainer={(ele) => ele.parentElement || document.body} overlay="查看">
+                      <EyeOutlined
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          window.open(imageurl)
+                        }}
+                      />
+                    </Tooltip>
+                  </Space>
+                </div>
+              )}
+            </div>
+          ) : null
+        })}
       </div>
     ) : (
       <> </>
