@@ -31,7 +31,6 @@ export interface IImageItemDetail {
   height?: string | number
   width?: string | number
   preview?: boolean
-  urlKey?: string
 }
 
 export default class ImageDetail
