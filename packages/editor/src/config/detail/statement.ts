@@ -2,13 +2,13 @@ import { FieldConfigs } from 'ccms/dist/src/components/formFields'
 
 const config: FieldConfigs[] = [
   {
-    field: 'statement.statement',
-    label: '参数拼接',
+    field: 'statement',
+    label: '入口',
     type: 'text'
   },
   {
     label: '参数',
-    field: 'statement.params',
+    field: 'params',
     type: 'form',
     primaryField: 'field',
     fields: [

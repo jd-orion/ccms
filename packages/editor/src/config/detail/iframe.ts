@@ -2,17 +2,7 @@ import { FieldConfigs } from 'ccms/dist/src/components/formFields'
 
 const config: FieldConfigs[] = [
   {
-    field: 'width',
-    type: 'number',
-    label: '宽度'
-  },
-  {
-    field: 'height',
-    type: 'number',
-    label: '高度'
-  },
-  {
-    field: '',
+    field: 'url',
     label: '',
     type: 'import_subform',
     interface: {
@@ -37,19 +27,17 @@ const config: FieldConfigs[] = [
       cache: {
         global: 'CCMS_CONFIG_detail_statement'
       }
-    },
-    condition: {
-      template: "${type} === 'iframe'",
-      params: [
-        {
-          field: 'type',
-          data: {
-            source: 'record',
-            field: 'type'
-          }
-        }
-      ]
     }
+  },
+  {
+    field: 'width',
+    type: 'number',
+    label: '宽度'
+  },
+  {
+    field: 'height',
+    type: 'number',
+    label: '高度'
   }
 ]
 

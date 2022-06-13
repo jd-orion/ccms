@@ -38,10 +38,9 @@ export default class ImageDetailComponent extends DetailImageField {
     return value ? (
       <div className={styles['ccms-antd-detail-image-item']}>
         {value.map((image) => {
-          const imageurl = urlKey && image[urlKey] ? image[urlKey] : image
-          return imageurl ? (
+          return image ? (
             <div key={Math.random()} className={styles['ccms-antd-detail-image']}>
-              <img className={styles.image} height={height} width={width} src={imageurl} alt={imageurl} />
+              <img className={styles.image} height={height} width={width} src={image} alt={image} />
               {preview && (
                 <div className={styles.mask}>
                   <Space>
@@ -49,7 +48,7 @@ export default class ImageDetailComponent extends DetailImageField {
                       <EyeOutlined
                         onClick={(e) => {
                           e.stopPropagation()
-                          window.open(imageurl)
+                          window.open(image)
                         }}
                       />
                     </Tooltip>

@@ -12,11 +12,11 @@ export interface IframeDetailConfig extends DetailFieldConfig {
   type: 'iframe'
   height?: string | number
   width?: string | number
-  statement: StatementConfig
+  url: StatementConfig
 }
 
 export interface IIframeDetail {
-  value?: string
+  url?: string
   height?: string | number
   width?: string | number
 }
@@ -42,18 +42,16 @@ export default class IframeDetail
 
   render = () => {
     const {
+      value,
       config: { height, width }
     } = this.props
     const props: IIframeDetail = {
       height,
-      width,
-      value: this.getValue().toString()
+      width
     }
-
-    if (this.props.config.statement) {
-      props.value = StatementHelper(this.props.config.statement, { data: this.props.data, step: this.props.step })
+    if (this.props.config.url) {
+      props.url = StatementHelper(this.props.config.url, { data: this.props.data, step: this.props.step })
     }
-
     return <>{this.renderComponent(props)}</>
   }
 }
