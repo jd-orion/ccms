@@ -34,7 +34,7 @@ export default class ImageDetailComponent extends DetailImageField {
   }
 
   renderItemComponent = (props: IImageItemDetail) => {
-    const { value, width, height, preview, urlKey } = props
+    const { value, width, height, preview } = props
     return value ? (
       <div className={styles['ccms-antd-detail-image-item']}>
         {value.map((image) => {
