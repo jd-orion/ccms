@@ -7,10 +7,12 @@ import { DetailField, DetailFieldConfig, IDetailField } from '../common'
  * - height:  图片高度
  * - width:   图片宽度
  * - preview: 点击预览
- * - urlKey: 数据为对象数组时设置指定key
+ * - imageType: 图片类型 single 单图 multiple 多图
+ * - urlKey: 数据为对象数组时设置指定key imageType为multiple时配置
  */
 export interface ImageDetailConfig extends DetailFieldConfig {
   type: 'image'
+  imageType: 'single' | 'multiple'
   height?: string | number
   width?: string | number
   preview?: boolean
@@ -25,11 +27,10 @@ export interface IImageDetail {
 }
 
 export interface IImageItemDetail {
-  value?: Array<string | object>
+  value?: Array<string>
   height?: string | number
   width?: string | number
   preview?: boolean
-  urlKey?: string
 }
 
 export default class ImageDetail
@@ -62,14 +63,21 @@ export default class ImageDetail
     const value = this.getValue()
 
     if (Array.isArray(value)) {
+      const imglist: string[] = []
+      if (urlKey) {
+        value.forEach((val) => {
+          if (val[urlKey]) {
+            imglist.push(val[urlKey])
+          }
+        })
+      }
       return (
         <>
           {this.renderItemComponent({
             height,
             width,
             preview,
-            value,
-            urlKey
+            value: imglist
           })}
         </>
       )

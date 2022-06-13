@@ -666,7 +666,7 @@ const config: FieldConfigs[] = [
     }
   },
   {
-    field: '',
+    field: 'statement',
     label: '',
     type: 'import_subform',
     interface: {
