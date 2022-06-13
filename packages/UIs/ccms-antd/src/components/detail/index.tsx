@@ -8,6 +8,7 @@ import ImageDetail from './image'
 import ColorDetail from './detailColor'
 import CustomFieldComponent from './custom'
 import TableFieldComponent from './table'
+import IframeFieldComponent from './iframe'
 
 export default {
   text: TextField,
@@ -19,5 +20,6 @@ export default {
   custom: CustomFieldComponent,
   table: TableFieldComponent,
   detail_info: InfoDetail,
-  detail_color: ColorDetail
+  detail_color: ColorDetail,
+  iframe: IframeFieldComponent
 }

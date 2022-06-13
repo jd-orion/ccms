@@ -1,31 +1,61 @@
-/*
- * @Author: your name
- * @Date: 2022-04-15 19:01:16
- * @LastEditTime: 2022-04-15 20:16:03
- * @LastEditors: Please set LastEditors
- * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AEpre
- * @FilePath: /oconsole-web-ccms-config/src/config/detail/image.ts
- */
-
-import { FieldConfigs } from "ccms/dist/src/components/formFields";
+import { FieldConfigs } from 'ccms/dist/src/components/formFields'
 
 const config: FieldConfigs[] = [
   {
-    "field": "width",
-    "type": "number",
-    "label": "图片宽度"
+    label: '图片数量',
+    field: 'imageType',
+    type: 'select_single',
+    mode: 'button',
+    options: {
+      from: 'manual',
+      data: [
+        {
+          label: '单图',
+          value: 'single'
+        },
+        {
+          label: '多图',
+          value: 'multiple'
+        }
+      ]
+    },
+    defaultValue: {
+      source: 'static',
+      value: 'single'
+    }
   },
   {
-    "field": "height",
-    "type": "number",
-    "label": "图片高度"
+    field: 'urlKey',
+    type: 'text',
+    label: '对象字段名',
+    condition: {
+      template: "${imageType} === 'multiple'",
+      params: [
+        {
+          field: 'imageType',
+          data: {
+            source: 'record',
+            field: 'imageType'
+          }
+        }
+      ]
+    }
   },
-  // 待启用
-  // {
-  //   "field": "preview",
-  //   "type": "switch",
-  //   "label": "预览图片"
-  // }
+  {
+    field: 'width',
+    type: 'number',
+    label: '图片宽度'
+  },
+  {
+    field: 'height',
+    type: 'number',
+    label: '图片高度'
+  },
+  {
+    field: 'preview',
+    type: 'switch',
+    label: '图片预览'
+  }
 ]
 
 export default config
