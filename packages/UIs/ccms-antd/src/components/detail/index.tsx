@@ -9,6 +9,7 @@ import ColorDetail from './detailColor'
 import CustomFieldComponent from './custom'
 import TableFieldComponent from './table'
 import IframeFieldComponent from './iframe'
+import LinkFieldComponent from './link'
 
 export default {
   text: TextField,
@@ -21,5 +22,6 @@ export default {
   table: TableFieldComponent,
   detail_info: InfoDetail,
   detail_color: ColorDetail,
-  iframe: IframeFieldComponent
+  iframe: IframeFieldComponent,
+  link: LinkFieldComponent
 }

@@ -8,7 +8,8 @@ import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
 import InfoDetail, { InfoDetailConfig } from './detailInfo'
 import ColorDetail, { ColorDetailConfig } from './detailColor'
 import TableField, { TableFieldConfig } from './table'
-import IframeField, { IframeDetailConfig } from './iframe'
+import FrameField, { IframeDetailConfig } from './iframe'
+import LinkField, { LinkDetailConfig } from './link'
 
 /**
  * 详情步骤内详情项配置文件格式定义 - 枚举
@@ -25,6 +26,7 @@ export type DetailFieldConfigs =
   | TableFieldConfig
   | CustomDetailConfig
   | IframeDetailConfig
+  | LinkDetailConfig
 
 export type componentType =
   | 'text'
@@ -38,6 +40,7 @@ export type componentType =
   | 'table'
   | 'custom'
   | 'iframe'
+  | 'link'
 
 export default {
   group: GroupField,
@@ -50,5 +53,6 @@ export default {
   detail_color: ColorDetail,
   table: TableField,
   custom: CustomDetail,
-  iframe: IframeField
+  iframe: FrameField,
+  link: LinkField
 }
