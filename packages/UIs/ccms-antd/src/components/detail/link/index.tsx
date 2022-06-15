@@ -1,8 +1,8 @@
 import React from 'react'
-import { DetailLinkField } from 'ccms'
+import { DetailLink } from 'ccms'
 import { ILinkDetail } from 'ccms/dist/src/components/detail/link'
 
-export default class LinkFieldComponent extends DetailLinkField {
+export default class LinkDetailComponent extends DetailLink {
   renderComponent = (props: ILinkDetail) => {
     const { url, name } = props
     return url && name ? (
