@@ -8,6 +8,11 @@ const config: FieldConfigs[] = [
     "type": "hidden",
   },
   {
+    "field": "width",
+    "label": "表格宽度",
+    "type": "number"
+  },
+  {
     "field": "primary",
     "label": "主键字段",
     "type": "text"
