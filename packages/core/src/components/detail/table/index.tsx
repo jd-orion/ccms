@@ -14,6 +14,7 @@ import Column from '../../tableColumns/common'
 export interface TableFieldConfig extends DetailFieldConfig {
   type: 'table'
   primary: string
+  width?: number
   tableColumns: ColumnConfigs[]
   operations?: {
     rowOperations?: Array<TableOperationsType>
@@ -216,6 +217,7 @@ interface TableState {
 export interface ITableField {
   title: string | null
   primary: string
+  width?: number
   data: { [field: string]: any }[]
   tableColumns: ITableColumn[]
   pagination?: {
@@ -488,9 +490,8 @@ export default class TableField
   render = () => {
     const {
       config: {
-        field,
         label,
-        // width,
+        width,
         primary,
         tableColumns,
         operations,
@@ -519,6 +520,7 @@ export default class TableField
     const getDate = value && Array.isArray(value) ? value : []
     const props: ITableField = {
       title: label,
+      width: width || 0,
       primary,
       data: getDate,
       tableColumns: (tableColumns || [])
@@ -541,7 +543,7 @@ export default class TableField
                 return (
                   <ColumnStyleComponent key={index} style={column.style} addfix={addfix}>
                     <Column
-                      ref={() => {}}
+                      ref={() => { }}
                       record={record}
                       value={tempValue}
                       data={data}
@@ -695,11 +697,11 @@ export default class TableField
                     </React.Fragment>
                   )
                 }
-                return <></>
+                return <> </>
               })
             })
           }
-          return <></>
+          return <> </>
         }
       })
     }
