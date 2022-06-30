@@ -49,7 +49,7 @@ const config: FieldConfigs[] = [
     }
   },
   {
-    field: '',
+    field: 'handle',
     label: '',
     type: 'import_subform',
     interface: {
