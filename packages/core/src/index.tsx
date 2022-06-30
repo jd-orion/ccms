@@ -71,7 +71,9 @@ export { default as DetailImportSubformField } from './components/detail/importS
 export { default as DetailInfoField } from './components/detail/detailInfo'
 export { default as DetailColorField } from './components/detail/detailColor'
 export { default as DetailTableField } from './components/detail/table'
-export { default as DetailIframeField } from './components/detail/iframe'
+export { default as DetailIframe } from './components/detail/iframe'
+export { default as DetailLink } from './components/detail/link'
+export { default as DetailOperation } from './components/detail/operation'
 export { default as CustomDetail } from './components/detail/custom'
 
 export { default as HeaderStep } from './steps/header'

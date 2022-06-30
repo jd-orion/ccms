@@ -2,13 +2,18 @@ import { FieldConfigs } from 'ccms/dist/src/components/formFields'
 
 const config: FieldConfigs[] = [
   {
-    field: 'statement',
-    label: '模板字符串',
+    field: 'name',
+    type: 'text',
+    label: '链接名称'
+  },
+  {
+    label: '链接地址',
+    field: 'url.statement',
     type: 'text'
   },
   {
     label: '参数',
-    field: 'params',
+    field: 'url.params',
     type: 'form',
     primaryField: 'field',
     fields: [

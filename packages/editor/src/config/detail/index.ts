@@ -15,6 +15,14 @@ const config: FieldConfigs[] = [
           label: '短文本'
         },
         {
+          value: 'link',
+          label: '链接'
+        },
+        {
+          value: 'operation',
+          label: '操作'
+        },
+        {
           value: 'group',
           label: '群组'
         },
@@ -272,6 +280,105 @@ const config: FieldConfigs[] = [
     ],
     condition: {
       template: "${type} === 'image'",
+      params: [
+        {
+          field: 'type',
+          data: {
+            source: 'record',
+            field: 'type'
+          }
+        }
+      ]
+    }
+  },
+  {
+    field: '',
+    label: '链接特定参数',
+    type: 'group',
+    fields: [
+      {
+        field: '',
+        label: '',
+        type: 'import_subform',
+        interface: {
+          url: '${configDomain}/detail/link.json',
+          urlParams: [
+            {
+              field: 'version',
+              data: {
+                source: 'source',
+                field: 'version'
+              }
+            },
+            {
+              field: 'configDomain',
+              data: {
+                source: 'source',
+                field: 'configDomain'
+              }
+            }
+          ],
+          method: 'GET',
+          cache: {
+            global: 'CCMS_CONFIG_detail_link'
+          }
+        }
+      }
+    ],
+    condition: {
+      template: "${type} === 'link'",
+      params: [
+        {
+          field: 'type',
+          data: {
+            source: 'record',
+            field: 'type'
+          }
+        }
+      ]
+    }
+  },
+  {
+    field: 'actions',
+    label: '操作特定参数',
+    primaryField: 'actions',
+    type: 'form',
+    canInsert: true,
+    canRemove: true,
+    canSort: true,
+    canCollapse: true,
+    fields: [
+      {
+        field: '',
+        label: '',
+        type: 'import_subform',
+        interface: {
+          url: '${configDomain}/detail/operation.json',
+          urlParams: [
+            {
+              field: 'version',
+              data: {
+                source: 'source',
+                field: 'version'
+              }
+            },
+            {
+              field: 'configDomain',
+              data: {
+                source: 'source',
+                field: 'configDomain'
+              }
+            }
+          ],
+          method: 'GET',
+          cache: {
+            global: 'CCMS_CONFIG_detail_operation'
+          }
+        }
+      }
+    ],
+    condition: {
+      template: "${type} === 'operation'",
       params: [
         {
           field: 'type',
