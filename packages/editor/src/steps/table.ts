@@ -1372,7 +1372,7 @@ export const Config: FormConfig = {
     },
     {
       field: 'operations.rowOperations',
-      label: '记录操作按钮2',
+      label: '记录操作按钮',
       type: 'form',
       primaryField: 'label',
       canInsert: true,
