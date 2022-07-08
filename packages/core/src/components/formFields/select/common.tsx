@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { ReactNode } from 'react'
 import EnumerationHelper, { EnumerationOptionsConfig, InterfaceEnumerationOptionsKVConfig, InterfaceEnumerationOptionsListConfig } from '../../../util/enumeration'
 import InterfaceHelper from '../../../util/interface'
@@ -40,7 +41,7 @@ export default class SelectField<C extends SelectFieldConfig, E, T> extends Fiel
       EnumerationHelper.options(
         config,
         (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }, this),
-        { record: this.props.record, data: this.props.data, step: this.props.step }
+        { record: this.props.record, data: _.cloneDeep(this.props.data), step: this.props.step }
       ).then((options) => {
         if (JSON.stringify(this.state.options) !== JSON.stringify(options)) {
           this.setState({
@@ -72,7 +73,7 @@ export class SelectDisplay<C extends SelectFieldConfig, E, T> extends Display<C,
     if (config) {
       EnumerationHelper.options(
         config,
-        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }),
+        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: _.cloneDeep(this.props.data), step: this.props.step }, { loadDomain: this.props.loadDomain }),
         { record: this.props.record, data: this.props.data, step: this.props.step }
       ).then((options) => {
         if (JSON.stringify(this.state.options) !== JSON.stringify(options)) {
