@@ -643,24 +643,27 @@ export default class TableField
                     <React.Fragment key={index}>
                       {this.renderRowOperationGroupComponent({
                         label: operation.label,
-                        children: (operation.operations || []).map((operation) => {
-                          if (!ConditionHelper(operation.condition, { record, data, step })) {
+                        children: (operation.operations || []).map((operationGroup) => {
+                          if (!ConditionHelper(operationGroup.condition, { record, data, step })) {
                             return null
                           }
 
                           let hidden = false
-                          if (operation.handle && operation.handle.type === 'ccms') {
-                            hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
-                            operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
+                          if (operationGroup.handle && operationGroup.handle.type === 'ccms') {
+                            hidden =
+                              operationGroup.handle.page === undefined ||
+                              !pageAuth[operationGroup.handle.page.toString()]
+                            operationGroup.handle.page !== undefined &&
+                              this.checkPageAuth(operationGroup.handle.page.toString())
                           }
 
                           return hidden
                             ? null
                             : this.renderRowOperationGroupItemComponent({
-                                label: operation.label,
-                                level: operation.level || 'normal',
+                                label: operationGroup.label,
+                                level: operationGroup.level || 'normal',
                                 onClick: async () => {
-                                  await this.handleRowOperation(operation, record)
+                                  await this.handleRowOperation(operationGroup, record)
                                 }
                               })
                         })
@@ -676,24 +679,27 @@ export default class TableField
                     <React.Fragment key={index}>
                       {this.renderRowOperationDropdownComponent({
                         label: operation.label,
-                        children: (operation.operations || []).map((operation) => {
+                        children: (operation.operations || []).map((operationDropdown) => {
                           if (!ConditionHelper(operation.condition, { record, data, step })) {
                             return null
                           }
 
                           let hidden = false
-                          if (operation.handle && operation.handle.type === 'ccms') {
-                            hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
-                            operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
+                          if (operationDropdown.handle && operationDropdown.handle.type === 'ccms') {
+                            hidden =
+                              operationDropdown.handle.page === undefined ||
+                              !pageAuth[operationDropdown.handle.page.toString()]
+                            operationDropdown.handle.page !== undefined &&
+                              this.checkPageAuth(operationDropdown.handle.page.toString())
                           }
 
                           return hidden
                             ? null
                             : this.renderRowOperationDropdownItemComponent({
-                                label: operation.label,
-                                level: operation.level || 'normal',
+                                label: operationDropdown.label,
+                                level: operationDropdown.level || 'normal',
                                 onClick: async () => {
-                                  await this.handleRowOperation(operation, record)
+                                  await this.handleRowOperation(operationDropdown, record)
                                 }
                               })
                         })
