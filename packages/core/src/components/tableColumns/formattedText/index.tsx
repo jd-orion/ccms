@@ -3,11 +3,9 @@ import StatementHelper, { StatementConfig } from '../../../util/statement'
 import Column, { ColumnConfig } from '../common'
 
 /**
- * 表格文本配置项
- * - type: 文本类型
- * - linkUrl: 可跳转文本超链接，临时方案，后续优化。
- * - showLines: 显示行数多行省略
- * - showMore: 查看更多 showLines 大于1时显示
+ * 表格格式文本配置项
+ * - type: 格式文本类型
+ * - statement: 自定义文案内容
  */
 export interface FormattedTextColumnConfig extends ColumnConfig {
   type: 'formatted_text'
