@@ -50,6 +50,7 @@ export interface TableOperationDropdownConfig {
   label?: string
   level?: 'normal' | 'primary' | 'danger'
   operations: Array<TableOperationConfig>
+  condition?: ConditionConfig
 }
 
 /**
@@ -543,7 +544,7 @@ export default class TableField
                 return (
                   <ColumnStyleComponent key={index} style={column.style} addfix={addfix}>
                     <Column
-                      ref={() => { }}
+                      ref={() => {}}
                       record={record}
                       value={tempValue}
                       data={data}
@@ -668,6 +669,9 @@ export default class TableField
                   )
                 }
                 if (operation.type === 'dropdown') {
+                  if (!ConditionHelper(operation.condition, { record, data, step })) {
+                    return null
+                  }
                   return (
                     <React.Fragment key={index}>
                       {this.renderRowOperationDropdownComponent({
