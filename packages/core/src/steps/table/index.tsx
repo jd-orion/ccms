@@ -844,23 +844,23 @@ export default class TableStep extends Step<TableConfig, TableState> {
                     <React.Fragment key={index}>
                       {this.renderRowOperationDropdownComponent({
                         label: operation.label,
-                        children: (operation.operations || []).map((operation) => {
-                          if (!ConditionHelper(operation.condition, { record, data, step })) {
+                        children: (operation.operations || []).map((operationGroupDropdown) => {
+                          if (!ConditionHelper(operationGroupDropdown.condition, { record, data, step })) {
                             return null
                           } 
 
                           let hidden = false
-                          if (operation.handle && operation.handle.type === 'ccms') {
-                            hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
-                            operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
+                          if (operationGroupDropdown.handle && operationGroupDropdown.handle.type === 'ccms') {
+                            hidden = operationGroupDropdown.handle.page === undefined || !pageAuth[operationGroupDropdown.handle.page.toString()]
+                            operationGroupDropdown.handle.page !== undefined && this.checkPageAuth(operationGroupDropdown.handle.page.toString())
                           }
                           return hidden
                             ? null
                             : this.renderRowOperationDropdownItemComponent({
-                                label: operation.label,
-                                level: operation.level || 'normal',
+                                label: operationGroupDropdown.label,
+                                level: operationGroupDropdown.level || 'normal',
                                 onClick: async () => {
-                                  await this.handleRowOperation(operation, record)
+                                  await this.handleRowOperation(operationGroupDropdown, record)
                                 }
                               })
                         })
