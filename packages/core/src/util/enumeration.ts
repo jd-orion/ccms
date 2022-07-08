@@ -52,7 +52,7 @@ export default class EnumerationHelper {
     config: EnumerationOptionsConfig,
     interfaceRequire: (config: InterfaceConfig, source: any) => Promise<any>,
     datas: { record?: object, data: object[], step: { [field: string]: any } }
-  ): Promise<{ value: unknown, label: string }[]> {
+  ): Promise<{ value: any, label: string }[]> {
     if (config) {
       if (config.from === 'manual') {
         if (config.data) {
