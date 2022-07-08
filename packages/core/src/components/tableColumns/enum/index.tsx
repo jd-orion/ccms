@@ -1,11 +1,13 @@
 import React from 'react'
+import EnumerationHelper, { EnumerationOptionsConfig } from '../../../util/enumeration'
+import InterfaceHelper from '../../../util/interface'
 import Column, { ColumnConfig } from '../common'
 
 export interface EnumColumnConfig extends ColumnConfig {
   type: 'Aenum'
   valueType?: 'string' | 'number' | 'boolean'
   multiple: boolean | ArrayMultipleConfig | SplitMultipleConfig
-  options: ManualOptionsConfig
+  options: EnumerationOptionsConfig
 }
 
 interface ArrayMultipleConfig {
@@ -17,23 +19,18 @@ interface SplitMultipleConfig {
   split: string
 }
 
-interface ManualOptionsConfig {
-  from: 'manual'
-  data: {
-    key: string | number | boolean
-    label: string
-    [extra: string]: any
-  }[],
-  getKey?: string
-  getValue?: string
-}
-
 
 export interface IEnumColumn {
   value: string | string[]
 }
 
-export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn> {
+interface EnumColumnState {
+  value: string | string[]
+}
+
+export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, any, EnumColumnState> {
+  interfaceHelper = new InterfaceHelper()
+
   renderComponent = (props: IEnumColumn) => {
     return <React.Fragment>
       您当前使用的UI版本没有实现EnumColumn组件。
@@ -61,38 +58,48 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn> {
         theValue = theValue?.split(',')
       }
     }
-    if (options && options.from === 'manual') {
-      const getKey = options.getKey || 'value'
-      if (options.data) {
+
+    if (options) {
+      EnumerationHelper.options(
+        options,
+        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }),
+        { record: this.props.record, data: this.props.data, step: this.props.step }
+      ).then((options) => {
         if (multiple === undefined || multiple === false) {
-          const option = options.data.find((option) => option.key === value)
-          return option ? option.label : value.toString()
+          const option = options.find((option) => option.value === value)
+          const label = option ? option.label : value.toString()
+          if (label !== this.state.value) {
+            this.setState({ value: label })
+          }
         } else if (multiple === true || multiple.type) {
           if (Array.isArray(theValue)) {
-            return theValue.map((item) => {
-              const option = options.data.find((option) => {
-                return option[getKey] === Number(item)
+            const label = theValue.map((item) => {
+              const option = options.find((option) => {
+                return option.value === item
               })
               return option ? option.label : item.toString()
             }).join(',')
+            if (JSON.stringify(label) !== JSON.stringify(this.state.value)) {
+              this.setState({
+                value: label
+              })
+            }
           } else {
-            return '-'
+            if ('-' !== this.state.value) {
+              this.setState({ value: '-' })
+            }
           }
         }
-      } else {
-        return value
-      }
-    } else {
-      return value
+      })
     }
   }
 
   render = () => {
-    const value = this.getValue()
+    this.getValue()
 
     return (
       <React.Fragment>
-        {this.renderComponent({ value })}
+        {this.renderComponent({ value: this.state.value })}
       </React.Fragment>
     )
   }
