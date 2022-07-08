@@ -8,6 +8,7 @@ import MultirowColumn, { MultirowColumnConfig } from './multirowText'
 import ImageColumn, { ImageColumnConfig } from './image'
 import CustomColumn, { CustomColumnConfig } from './custom'
 import OperatoinColumn, { OperationColumnConfig } from './operation'
+import FormattedTextColumn, { FormattedTextColumnConfig } from './formattedText'
 
 export interface componentType {
   type:
@@ -21,6 +22,7 @@ export interface componentType {
     | 'image'
     | 'custom'
     | 'operation'
+    | 'formatted_text'
 }
 
 export type ColumnConfigs =
@@ -35,6 +37,7 @@ export type ColumnConfigs =
   | CustomColumnConfig
   | CustomColumnConfig
   | OperationColumnConfig
+  | FormattedTextColumnConfig
 
 export default {
   text: TextColumn,
@@ -46,5 +49,6 @@ export default {
   numberRange: NumberRangeColumn,
   image: ImageColumn,
   custom: CustomColumn,
-  operation: OperatoinColumn
+  operation: OperatoinColumn,
+  formatted_text: FormattedTextColumn
 }
