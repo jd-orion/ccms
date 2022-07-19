@@ -1489,6 +1489,53 @@ export const Config: FormConfig = {
           }
         },
         {
+          field: '',
+          label: '',
+          type: 'group',
+          fields: [
+            {
+              field: 'condition',
+              label: '展示条件',
+              type: 'import_subform',
+              interface: {
+                url: '${configDomain}/common/ConditionConfig.json',
+                urlParams: [
+                  {
+                    field: 'version',
+                    data: {
+                      source: 'source',
+                      field: 'version'
+                    }
+                  },
+                  {
+                    field: 'configDomain',
+                    data: {
+                      source: 'source',
+                      field: 'configDomain'
+                    }
+                  }
+                ],
+                method: 'GET',
+                cache: {
+                  global: 'CCMS_CONFIG_common_ConditionConfig'
+                }
+              },
+              condition: {
+                template: "${type} === 'dropdown'",
+                params: [
+                  {
+                    field: 'type',
+                    data: {
+                      source: 'record',
+                      field: 'type'
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
           field: 'modalWidthMode',
           label: '弹窗宽度限制方式',
           type: 'select_single',
