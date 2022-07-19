@@ -465,7 +465,7 @@ const config: FieldConfigs[] = [
       },
       {
         field: 'condition',
-        label: '',
+        label: '展示条件2',
         type: 'import_subform',
         interface: {
           url: '${configDomain}/common/ConditionConfig.json',
