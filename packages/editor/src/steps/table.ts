@@ -284,6 +284,10 @@ export const Config: FormConfig = {
                 label: '多行文本'
               },
               {
+                value: 'formatted_text',
+                label: '格式文本'
+              },
+              {
                 value: 'number',
                 label: '数值'
               },
@@ -381,6 +385,46 @@ export const Config: FormConfig = {
           },
           condition: {
             template: "${type} === 'text'",
+            params: [
+              {
+                field: 'type',
+                data: {
+                  source: 'record',
+                  field: 'type'
+                }
+              }
+            ]
+          }
+        },
+        {
+          field: '',
+          label: '',
+          type: 'import_subform',
+          interface: {
+            url: '${configDomain}/column/formattedText.json',
+            urlParams: [
+              {
+                field: 'version',
+                data: {
+                  source: 'source',
+                  field: 'version'
+                }
+              },
+              {
+                field: 'configDomain',
+                data: {
+                  source: 'source',
+                  field: 'configDomain'
+                }
+              }
+            ],
+            method: 'GET',
+            cache: {
+              global: 'CCMS_CONFIG_column_formatted_text'
+            }
+          },
+          condition: {
+            template: "${type} === 'formatted_text'",
             params: [
               {
                 field: 'type',

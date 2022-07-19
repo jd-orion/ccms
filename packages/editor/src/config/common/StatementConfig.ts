@@ -2,8 +2,8 @@ import { FieldConfigs } from 'ccms/dist/src/components/formFields'
 
 const config: FieldConfigs[] = [
   {
+    label: '文案',
     field: 'statement',
-    label: '模板字符串',
     type: 'text'
   },
   {

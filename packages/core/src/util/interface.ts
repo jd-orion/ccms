@@ -50,6 +50,7 @@ export interface IRenderFailModal {
 }
 
 export default class InterfaceHelper {
+  public static cacheResolve: { [key: string]: ((value: any) => void)[] } = {}
   public static cache: { [key: string]: any } = {}
 
   private _config: InterfaceConfig = {}
@@ -198,7 +199,12 @@ export default class InterfaceHelper {
         isEqual(this._data, data)
       ) {
         return this._response
+      } else if (config.cache && config.cache.global && Object.keys(InterfaceHelper.cacheResolve).includes(config.cache.global) && InterfaceHelper.cacheResolve[config.cache.global].length > 0) {
+        InterfaceHelper.cacheResolve[config.cache.global].push(resolve)
       } else {
+        if (config.cache && config.cache.global) {
+          InterfaceHelper.cacheResolve[config.cache.global] = [ resolve ]
+        }
         this._config = config
         this._url = url
         this._params = params
@@ -263,21 +269,42 @@ export default class InterfaceHelper {
               if (config.cache && config.cache.global) {
                 InterfaceHelper.cache[config.cache.global] = content
               }
-              resolve(content)
+              if (config.cache && config.cache.global) {
+                while(InterfaceHelper.cacheResolve[config.cache.global].length) {
+                  const _resolve = InterfaceHelper.cacheResolve[config.cache.global].shift()
+                  _resolve && _resolve(content)
+                }
+              } else {
+                resolve(content)
+              }
             } else {
               const content = getValue(response, config.response.root || '')
               this._response = content
               if (config.cache && config.cache.global) {
                 InterfaceHelper.cache[config.cache.global] = content
               }
-              resolve(content)
+              if (config.cache && config.cache.global) {
+                while(InterfaceHelper.cacheResolve[config.cache.global].length) {
+                  const _resolve = InterfaceHelper.cacheResolve[config.cache.global].shift()
+                  _resolve && _resolve(content)
+                }
+              } else {
+                resolve(content)
+              }
             }
           } else {
             this._response = response
             if (config.cache && config.cache.global) {
               InterfaceHelper.cache[config.cache.global] = response
             }
-            resolve(response)
+            if (config.cache && config.cache.global) {
+              while(InterfaceHelper.cacheResolve[config.cache.global].length) {
+                const _resolve = InterfaceHelper.cacheResolve[config.cache.global].shift()
+                _resolve && _resolve(response)
+              }
+            } else {
+              resolve(response)
+            }
           }
         } catch (e: any) {
           await this.renderFailModal({

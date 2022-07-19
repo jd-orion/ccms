@@ -8,6 +8,7 @@ import EnumColumn from './enum'
 import ImageColumn from './image'
 import CustomColumn from './custom'
 import OperationColumn from './operation'
+import FormattedTextColumn from './formattedText'
 
 export default {
   text: TextColumns,
@@ -19,5 +20,6 @@ export default {
   Aenum: EnumColumn,
   image: ImageColumn,
   custom: CustomColumn,
-  operation: OperationColumn
+  operation: OperationColumn,
+  formatted_text: FormattedTextColumn
 }

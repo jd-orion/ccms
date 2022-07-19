@@ -46,13 +46,13 @@ export interface ColumnProps<T, V = any> {
 
 interface ColumnState {}
 
-export default class Column<T, E, V = any>
-  extends React.Component<ColumnProps<T, V>, ColumnState>
+export default class Column<T, E, V = any, S = {}>
+  extends React.Component<ColumnProps<T, V>, ColumnState & S>
   implements IColumn<V>
 {
   constructor(props: ColumnProps<T>) {
     super(props)
-    this.state = {}
+    this.state = {} as (ColumnState & S)
   }
 
   static defaultProps = {

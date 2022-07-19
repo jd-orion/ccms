@@ -129,7 +129,8 @@ class App extends React.Component<AppProps, CCMSConsigState> {
   }
 
   componentDidMount() {
-    const steps = this.state.pageConfig.steps || []
+    const { pageConfig } = this.state
+    const steps = pageConfig.steps || []
 
     for (const [ pageTemplate, stepTemplates ] of Object.entries(PageTemplates)) {
       if (stepTemplates.length === steps.length) {
@@ -147,6 +148,13 @@ class App extends React.Component<AppProps, CCMSConsigState> {
           break
         }
       }
+    }
+
+    if (!pageConfig.ui) {
+      pageConfig.ui = 'antd'
+      this.setState({
+        pageConfig
+      })
     }
   }
 
