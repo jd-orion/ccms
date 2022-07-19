@@ -464,44 +464,51 @@ const config: FieldConfigs[] = [
         }
       },
       {
-        field: 'condition',
-        label: '展示条件2',
-        type: 'import_subform',
-        interface: {
-          url: '${configDomain}/common/ConditionConfig.json',
-          urlParams: [
-            {
-              field: 'version',
-              data: {
-                source: 'source',
-                field: 'version'
+        field: '',
+        label: '',
+        type: 'group',
+        fields: [
+          {
+            field: 'condition',
+            label: '展示条件',
+            type: 'import_subform',
+            interface: {
+              url: '${configDomain}/common/ConditionConfig.json',
+              urlParams: [
+                {
+                  field: 'version',
+                  data: {
+                    source: 'source',
+                    field: 'version'
+                  }
+                },
+                {
+                  field: 'configDomain',
+                  data: {
+                    source: 'source',
+                    field: 'configDomain'
+                  }
+                }
+              ],
+              method: 'GET',
+              cache: {
+                global: 'CCMS_CONFIG_common_ConditionConfig'
               }
             },
-            {
-              field: 'configDomain',
-              data: {
-                source: 'source',
-                field: 'configDomain'
-              }
+            condition: {
+              template: "${type} === 'dropdown'",
+              params: [
+                {
+                  field: 'type',
+                  data: {
+                    source: 'record',
+                    field: 'type'
+                  }
+                }
+              ]
             }
-          ],
-          method: 'GET',
-          cache: {
-            global: 'CCMS_CONFIG_common_ConditionConfig'
           }
-        },
-        condition: {
-          template: "${type} === 'dropdown'",
-          params: [
-            {
-              field: 'type',
-              data: {
-                source: 'record',
-                field: 'type'
-              }
-            }
-          ]
-        }
+        ]
       },
       {
         field: 'operations',
