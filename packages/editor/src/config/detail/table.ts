@@ -464,11 +464,11 @@ const config: FieldConfigs[] = [
         }
       },
       {
-        field: '',
+        field: 'condition',
         label: '',
         type: 'import_subform',
         interface: {
-          url: '${configDomain}/common/PullbuttonConfig.json',
+          url: '${configDomain}/common/ConditionConfig.json',
           urlParams: [
             {
               field: 'version',
@@ -487,7 +487,7 @@ const config: FieldConfigs[] = [
           ],
           method: 'GET',
           cache: {
-            global: 'CCMS_CONFIG_common_PullbuttonConfig'
+            global: 'CCMS_CONFIG_common_ConditionConfig'
           }
         },
         condition: {
