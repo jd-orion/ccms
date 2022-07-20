@@ -58,8 +58,7 @@ export default class EnumerationHelper {
         if (config.data) {
           return config.data.map((option) => {
             return {
-              // TODO: 兼容老版本的表格参数设置为key
-              value: option.value || option.key,
+              value: option.value,
               label: option.label
             }
           })

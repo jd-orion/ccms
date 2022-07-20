@@ -19,7 +19,6 @@ interface SplitMultipleConfig {
   split: string
 }
 
-
 export interface IEnumColumn {
   value: string | string[]
 }
@@ -66,7 +65,8 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, an
         { record: this.props.record, data: this.props.data, step: this.props.step }
       ).then((options) => {
         if (multiple === undefined || multiple === false) {
-          const option = options.find((option) => option.value === value)
+           // TODO: 兼容1.3.0以下老版本的表格option值为key
+          const option = options.find((option: any) => option.value === value || option.key === value)
           const label = option ? option.label : value.toString()
           if (label !== this.state.value) {
             this.setState({ value: label })
@@ -74,8 +74,8 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, an
         } else if (multiple === true || multiple.type) {
           if (Array.isArray(theValue)) {
             const label = theValue.map((item) => {
-              const option = options.find((option) => {
-                return option.value === item
+              const option = options.find((option: any) => {
+                return option.value === item || option.key === item
               })
               return option ? option.label : item.toString()
             }).join(',')
