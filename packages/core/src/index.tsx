@@ -28,6 +28,7 @@ export { default as MultipleTextField } from './components/formFields/multipleTe
 export { default as CustomField } from './components/formFields/custom'
 export { default as CodeField } from './components/formFields/code'
 export { default as DiffCodeField } from './components/formFields/diffCode'
+export { default as TableField } from './components/formFields/table'
 
 export { default as TextDisplay } from './components/formFields/text/display'
 export { default as FormDisplay } from './components/formFields/form/display'
