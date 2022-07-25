@@ -19,7 +19,6 @@ interface SplitMultipleConfig {
   split: string
 }
 
-
 export interface IEnumColumn {
   value: string | string[]
 }
@@ -32,26 +31,22 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, an
   interfaceHelper = new InterfaceHelper()
 
   renderComponent = (props: IEnumColumn) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现EnumColumn组件。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现EnumColumn组件。</>
   }
 
   getValue = () => {
     const {
       value,
-      config: {
-        multiple,
-        options,
-        defaultValue
-      }
+      config: { multiple, options, defaultValue }
     } = this.props
 
     if (value === '' || value === undefined) return defaultValue
 
     let theValue = value
-    if (Object.prototype.toString.call(theValue) !== "[object Array]") {
-      if (typeof theValue !== 'string') { theValue = theValue?.toString() }
+    if (Object.prototype.toString.call(theValue) !== '[object Array]') {
+      if (typeof theValue !== 'string') {
+        theValue = theValue?.toString()
+      }
       if (multiple && typeof multiple !== 'boolean' && multiple.type === 'split' && multiple.split) {
         theValue = theValue?.split(multiple.split)
       } else {
@@ -62,32 +57,39 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, an
     if (options) {
       EnumerationHelper.options(
         options,
-        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }),
+        (config, source) =>
+          this.interfaceHelper.request(
+            config,
+            source,
+            { record: this.props.record, data: this.props.data, step: this.props.step },
+            { loadDomain: this.props.loadDomain }
+          ),
         { record: this.props.record, data: this.props.data, step: this.props.step }
       ).then((options) => {
         if (multiple === undefined || multiple === false) {
-          const option = options.find((option) => option.value === value)
+          // TODO: 兼容1.3.0以下老版本的表格option值为key
+          const option = options.find((option: any) => option.value === value || option.key === value)
           const label = option ? option.label : value.toString()
           if (label !== this.state.value) {
             this.setState({ value: label })
           }
         } else if (multiple === true || multiple.type) {
           if (Array.isArray(theValue)) {
-            const label = theValue.map((item) => {
-              const option = options.find((option) => {
-                return option.value === item
+            const label = theValue
+              .map((item) => {
+                const option = options.find((option: any) => {
+                  return option.value === item || option.key === item
+                })
+                return option ? option.label : item.toString()
               })
-              return option ? option.label : item.toString()
-            }).join(',')
+              .join(',')
             if (JSON.stringify(label) !== JSON.stringify(this.state.value)) {
               this.setState({
                 value: label
               })
             }
-          } else {
-            if ('-' !== this.state.value) {
-              this.setState({ value: '-' })
-            }
+          } else if (this.state.value !== '-') {
+            this.setState({ value: '-' })
           }
         }
       })
@@ -97,10 +99,6 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, an
   render = () => {
     this.getValue()
 
-    return (
-      <React.Fragment>
-        {this.renderComponent({ value: this.state.value })}
-      </React.Fragment>
-    )
+    return <>{this.renderComponent({ value: this.state.value })}</>
   }
 }
