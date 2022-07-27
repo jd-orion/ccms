@@ -8,7 +8,7 @@ import ParamHelper from '../../util/param'
 import { updateCommonPrefixItem } from '../../util/value'
 import { ConditionConfig } from '../../util/condition'
 import StatementHelper, { StatementConfig } from '../../util/statement'
-import { PageListItem } from '../../main'
+import { CCMSConfig, PageListItem } from '../../main'
 
 /**
  * 表单项基类配置文件格式定义
@@ -127,12 +127,16 @@ export interface FieldProps<C extends FieldConfig, T> {
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => Promise<void>
+  checkPageAuth: (pageID: any) => Promise<boolean>
+  loadPageURL: (pageID: any) => Promise<string>
+  loadPageFrameURL: (pageID: any) => Promise<string>
+  loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  loadPageList: () => Promise<Array<PageListItem>>
   baseRoute: string
+  loadDomain: (domain: string) => Promise<string>
   containerPath: string // 容器组件所在路径以字段拼接展示  1.3.0新增
   onReportFields?: (field: string) => Promise<void> // 向父组件上报依赖字段  1.3.0新增
   step: { [field: string]: unknown } // 传递formValue
-  loadDomain: (domain: string) => Promise<string>
-  loadPageList: () => Promise<Array<PageListItem>>
 }
 
 /**
