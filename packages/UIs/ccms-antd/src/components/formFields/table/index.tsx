@@ -5,11 +5,17 @@ import { Button, Table } from 'antd'
 import { display } from '..'
 import CCMS from '../../../main'
 import styles from './index.less'
+import OperationsHelperComponent from '../../../util/operations'
+import OperationHelper from '../../../util/operation'
 
 export default class TableFieldComponent extends TableField {
   CCMS = CCMS
 
   display = (type: string) => display[type]
+
+  OperationsHelper = OperationsHelperComponent
+
+  OperationHelper = OperationHelper
 
   renderComponent = (props: ITableField) => {
     const { width, primary, tableColumns, data } = props

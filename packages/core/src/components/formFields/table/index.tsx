@@ -2,12 +2,29 @@ import React from 'react'
 import { set } from 'lodash'
 import { Display, Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from '../common'
 import getALLComponents, { display } from '..'
+import OperationsHelper, { OperationsConfig } from '../../../util/operations'
+import OperationHelper from '../../../util/operation'
 
 export interface TableFieldConfig extends FieldConfig {
   type: 'table'
   primary: string
   width?: number
   tableColumns: FieldConfigs[]
+  operations?: {
+    tableOperations?: {
+      topLeft?: OperationsConfig
+      topRight?: OperationsConfig
+      bottomLeft?: OperationsConfig
+      bottomRight?: OperationsConfig
+    }
+    multirowOperations?: {
+      topLeft?: OperationsConfig
+      topRight?: OperationsConfig
+      bottomLeft?: OperationsConfig
+      bottomRight?: OperationsConfig
+    }
+    rowOperations?: OperationsConfig
+  }
 }
 
 /**
@@ -52,6 +69,10 @@ export default class TableField
   getALLComponents = (type: string): typeof Field => getALLComponents[type]
 
   display = (type: string): typeof Display => display[type]
+
+  OperationsHelper = OperationsHelper
+
+  OperationHelper = OperationHelper
 
   formFieldsList: Array<Array<Field<FieldConfigs, unknown, unknown> | null>> = []
 
@@ -201,59 +222,114 @@ export default class TableField
 
   render = () => {
     const {
-      config: { label, width, primary, tableColumns },
+      config,
       data,
-      step
+      step,
+      checkPageAuth,
+      loadPageURL,
+      loadPageFrameURL,
+      loadPageConfig,
+      loadPageList,
+      baseRoute,
+      loadDomain
     } = this.props
 
-    const props: ITableField = {
-      title: label,
-      width: width || 0,
-      primary,
-      data: this.props.value,
-      tableColumns: (tableColumns || [])
-        .filter((column) => column.field !== undefined && column.field !== '')
-        .map((column, fieldIndex) => {
-          const field = column.field.split('.')[0]
-          return {
-            field,
-            label: column.label,
-            align: 'left',
-            render: (value: unknown, record: { [field: string]: unknown }, index) => {
-              const Column = this.display(column.type)
-              if (Column) {
-                return (
-                  <Column
-                    ref={() => {
-                      /* TODO */
-                    }}
-                    value={value}
-                    record={record}
-                    data={data}
-                    step={step}
-                    config={column}
-                    onValueSet={async (path, setValue, options) =>
-                      this.handleValueSet(index, fieldIndex, path, setValue, true, options)
-                    }
-                    onValueUnset={async (path, options) =>
-                      this.handleValueUnset(index, fieldIndex, path, true, options)
-                    }
-                    onValueListAppend={async (path, appendValue, options) =>
-                      this.handleValueListAppend(index, fieldIndex, path, appendValue, true, options)
-                    }
-                    onValueListSplice={async (path, _index, count, options) =>
-                      this.handleValueListSplice(index, fieldIndex, path, _index, count, true, options)
-                    }
-                    baseRoute={this.props.baseRoute}
-                    loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                  />
-                )
-              }
+    const tableColumns: ITableColumn[] = (config.tableColumns || [])
+      .filter((column) => column.field !== undefined && column.field !== '')
+      .map((column, fieldIndex) => {
+        const field = column.field.split('.')[0]
+        return {
+          field,
+          label: column.label,
+          align: 'left',
+          render: (value: unknown, record: { [field: string]: unknown }, index) => {
+            const Column = this.display(column.type)
+            if (Column) {
+              return (
+                <Column
+                  ref={() => {
+                    /* TODO */
+                  }}
+                  value={value}
+                  record={record}
+                  data={data}
+                  step={step}
+                  config={column}
+                  onValueSet={async (path, setValue, options) =>
+                    this.handleValueSet(index, fieldIndex, path, setValue, true, options)
+                  }
+                  onValueUnset={async (path, options) => this.handleValueUnset(index, fieldIndex, path, true, options)}
+                  onValueListAppend={async (path, appendValue, options) =>
+                    this.handleValueListAppend(index, fieldIndex, path, appendValue, true, options)
+                  }
+                  onValueListSplice={async (path, _index, count, options) =>
+                    this.handleValueListSplice(index, fieldIndex, path, _index, count, true, options)
+                  }
+                  baseRoute={this.props.baseRoute}
+                  loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                />
+              )
             }
           }
-        })
+        }
+      })
+
+    if (config.operations && config.operations.rowOperations && config.operations.rowOperations.length > 0) {
+      tableColumns.push({
+        field: 'ccms-form-table-rowOperation',
+        label: '操作',
+        align: 'left',
+        render: (_, record: { [field: string]: unknown }) => {
+          return (
+            <this.OperationsHelper
+              config={config.operations?.rowOperations || []}
+              onClick={(config, datas) => {
+                return function (children) {
+                  return (
+                    <this.OperationHelper
+                      config={config}
+                      datas={datas}
+                      checkPageAuth={checkPageAuth}
+                      loadPageURL={loadPageURL}
+                      loadPageFrameURL={loadPageFrameURL}
+                      loadPageConfig={loadPageConfig}
+                      loadPageList={loadPageList}
+                      baseRoute={baseRoute}
+                      loadDomain={loadDomain}
+                    >
+                      {children}
+                    </this.OperationHelper>
+                  )
+                }
+              }}
+              datas={{
+                data: this.props.data,
+                step: this.props.step,
+                record
+              }}
+              checkPageAuth={checkPageAuth}
+              loadPageURL={loadPageURL}
+              loadPageFrameURL={loadPageFrameURL}
+              loadPageConfig={loadPageConfig}
+              loadPageList={loadPageList}
+              baseRoute={baseRoute}
+              loadDomain={loadDomain}
+            />
+          )
+        }
+      })
     }
 
-    return <>{this.renderComponent(props)}</>
+    return (
+      <>
+        {this.renderComponent({
+          title: config.label,
+          width: config.width || 0,
+          primary: config.primary,
+          data: this.props.value,
+          tableColumns
+        })}
+      </>
+    )
   }
 }

@@ -81,5 +81,5 @@ export { default as CustomDetail } from './components/detail/custom'
 export { default as HeaderStep } from './steps/header'
 
 export { default as InterfaceHelper } from './util/interface'
-
 export { default as OperationHelper } from './util/operation'
+export { default as OperationsHelper } from './util/operations'

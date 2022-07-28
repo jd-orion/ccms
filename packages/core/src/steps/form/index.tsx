@@ -849,7 +849,6 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 fieldType: formFieldConfig.type,
                 children: (
                   <FormField
-                    // eslint-disable-next-line react/no-array-index-key
                     key={formFieldIndex}
                     ref={(formField: Field<FieldConfigs, unknown, unknown> | null) => {
                       if (formField !== null) {
@@ -894,7 +893,6 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 )
               }
               // 渲染表单项容器
-              // eslint-disable-next-line react/no-array-index-key
               return hidden ? this.renderItemComponent(renderData) : <React.Fragment key={formFieldIndex} />
             })
           })}
