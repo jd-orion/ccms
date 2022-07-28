@@ -168,7 +168,7 @@ export default class FormField
 
     for (let index = 0; index < this.formFieldsList.length; index++) {
       if (this.formFieldsList[index]) {
-        let item: unknown = {}
+        let item: { [key: string]: unknown } = {}
 
         if (Array.isArray(this.props.config.fields)) {
           for (let formFieldIndex = 0; formFieldIndex < this.props.config.fields.length; formFieldIndex++) {
@@ -177,7 +177,7 @@ export default class FormField
               !ConditionHelper(
                 formFieldConfig.condition,
                 {
-                  record: this.props.value[index],
+                  record: this.props.value[index] as object,
                   data: this.props.data,
                   step: this.props.step,
                   extraContainerPath: getChainPath(this.props.config.field, index)
@@ -511,7 +511,7 @@ export default class FormField
                           !ConditionHelper(
                             formFieldConfig.condition,
                             {
-                              record: itemValue,
+                              record: itemValue as object,
                               data: this.props.data,
                               step: this.props.step,
                               extraContainerPath: getChainPath(this.props.config.field, index)
@@ -553,7 +553,7 @@ export default class FormField
                               extra: StatementHelper(
                                 formFieldConfig.extra,
                                 {
-                                  record: itemValue,
+                                  record: itemValue as object,
                                   data: this.props.data,
                                   step: this.props.step,
                                   extraContainerPath: getChainPath(this.props.config.field, index)

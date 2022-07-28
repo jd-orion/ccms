@@ -86,7 +86,7 @@ export default class ObjectField<S>
           if (
             !ConditionHelper(
               formFieldConfig.condition,
-              { record: this.props.value[key], data: this.props.data, step: this.props.step },
+              { record: this.props.value[key] as object, data: this.props.data, step: this.props.step },
               this
             )
           ) {
@@ -570,7 +570,7 @@ export default class ObjectField<S>
                                   formLayout={this.props.formLayout}
                                   form={this.props.form}
                                   value={getValue(value[key], formFieldConfig.field)}
-                                  record={value[key]}
+                                  record={value[key] as { [key: string]: unknown }}
                                   data={this.props.data}
                                   step={this.props.step}
                                   config={formFieldConfig}

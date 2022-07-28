@@ -234,6 +234,8 @@ export default class TableField
       loadDomain
     } = this.props
 
+    const { OperationsHelper, OperationHelper } = this
+
     const tableColumns: ITableColumn[] = (config.tableColumns || [])
       .filter((column) => column.field !== undefined && column.field !== '')
       .map((column, fieldIndex) => {
@@ -281,12 +283,12 @@ export default class TableField
         align: 'left',
         render: (_, record: { [field: string]: unknown }) => {
           return (
-            <this.OperationsHelper
+            <OperationsHelper
               config={config.operations?.rowOperations || []}
               onClick={(config, datas) => {
                 return function (children) {
                   return (
-                    <this.OperationHelper
+                    <OperationHelper
                       config={config}
                       datas={datas}
                       checkPageAuth={checkPageAuth}
@@ -298,7 +300,7 @@ export default class TableField
                       loadDomain={loadDomain}
                     >
                       {children}
-                    </this.OperationHelper>
+                    </OperationHelper>
                   )
                 }
               }}
