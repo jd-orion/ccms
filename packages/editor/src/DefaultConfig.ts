@@ -2,108 +2,14 @@ import { CCMSConfig } from 'ccms/dist/src/main'
 
 const DefaultConfig: CCMSConfig = {
   steps: [
-    {
-      type: 'fetch',
-      interface: {
-        url: 'http://japi.jd.com/mock/491/ccms/CCMS/demo/list',
-        method: 'GET',
-        withCredentials: true,
-        condition: {
-          enable: false,
-          field: 'code',
-          value: 0,
-          success: {
-            type: 'none'
-          },
-          fail: {
-            type: 'modal',
-            content: {
-              type: 'field',
-              field: 'msg'
-            }
-          }
-        }
-      }
-    },
     { type: 'header' },
     {
       type: 'form',
       fields: [
         {
-          label: '子表格',
-          field: 'data',
-          type: 'table',
-          primary: 'id',
-          tableColumns: [
-            {
-              label: 'ID',
-              field: 'id',
-              type: 'text'
-            },
-            {
-              label: '状态',
-              field: 'status',
-              type: 'select_single',
-              options: {
-                from: 'manual',
-                data: [
-                  {
-                    label: 'A',
-                    value: 0
-                  },
-                  {
-                    label: 'B',
-                    value: 1
-                  }
-                ]
-              }
-            }
-          ],
-          operations: {
-            rowOperations: [
-              {
-                type: 'group',
-                mode: 'link',
-                operations: [
-                  {
-                    label: 'A',
-                    level: 'primary',
-                    handle: {
-                      type: 'ccms',
-                      mode: 'popup',
-                      page: 621,
-                      label: 'a',
-                      data: {}
-                    }
-                  },
-                  {
-                    label: 'B',
-                    level: 'danger',
-                    handle: {
-                      type: 'ccms',
-                      mode: 'popup',
-                      page: 621,
-                      label: 'a',
-                      data: {}
-                    }
-                  }
-                ]
-              },
-              {
-                type: 'node',
-                mode: 'link',
-                label: 'C',
-                level: 'normal',
-                handle: {
-                  type: 'ccms',
-                  mode: 'popup',
-                  page: 621,
-                  label: 'a',
-                  data: {}
-                }
-              }
-            ]
-          }
+          label: '文本框',
+          field: 'text',
+          type: 'text'
         },
         {
           label: '单项框',
@@ -142,8 +48,7 @@ const DefaultConfig: CCMSConfig = {
       ],
       rightTopActions: [],
       defaultValue: {
-        source: 'step',
-        step: 1,
+        source: 'data',
         field: ''
       }
     },
