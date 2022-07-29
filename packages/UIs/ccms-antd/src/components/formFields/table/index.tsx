@@ -1,12 +1,13 @@
 import React from 'react'
 import { TableField } from 'ccms'
 import { ITableField, ITableColumn } from 'ccms/dist/src/components/formFields/table'
-import { Button, Table } from 'antd'
+import { Table } from 'antd'
 import { display } from '..'
 import CCMS from '../../../main'
 import styles from './index.less'
 import OperationsHelperComponent from '../../../util/operations'
 import OperationHelper from '../../../util/operation'
+import TableFieldForm from './common/form'
 
 export default class TableFieldComponent extends TableField {
   CCMS = CCMS
@@ -17,13 +18,33 @@ export default class TableFieldComponent extends TableField {
 
   OperationHelper = OperationHelper
 
+  TableFieldForm = TableFieldForm
+
   renderComponent = (props: ITableField) => {
-    const { width, primary, tableColumns, data } = props
+    const { width, primary, tableColumns, tableOperations, data } = props
     return (
       <div className={styles['ccms-antd-table']} style={{ ...(width && { maxWidth: width }) }}>
         <Table
-          title={() => <Button>添加记录</Button>}
-          footer={() => <Button>添加记录</Button>}
+          title={
+            tableOperations && (tableOperations.topLeft || tableOperations.topRight)
+              ? () => (
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div>{tableOperations.topLeft}</div>
+                    <div>{tableOperations.topRight}</div>
+                  </div>
+                )
+              : undefined
+          }
+          footer={
+            tableOperations && (tableOperations.bottomLeft || tableOperations.bottomRight)
+              ? () => (
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div>{tableOperations.bottomLeft}</div>
+                    <div>{tableOperations.bottomRight}</div>
+                  </div>
+                )
+              : undefined
+          }
           rowKey={primary}
           columns={tableColumns.map((column: ITableColumn, columnIndex: number) => ({
             key: columnIndex,

@@ -85,6 +85,7 @@
     "max-classes-per-file": 0,
     "react/no-unused-prop-types": 0,
     "react/no-unused-class-component-methods": 0,
-    "react/require-default-props": 0
+    "react/require-default-props": 0,
+    "class-methods-use-this": 0
   }
 }
