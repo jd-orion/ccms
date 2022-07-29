@@ -1,14 +1,14 @@
 import React from 'react'
 import marked from 'marked'
+import { isEqual, get } from 'lodash'
 import { ColumnsConfig, ParamConfig } from '../../interface'
 
-import { FieldConfigs as getFieldConfigs } from './'
+import { FieldConfigs as getFieldConfigs } from '.'
 import ParamHelper from '../../util/param'
 import { updateCommonPrefixItem } from '../../util/value'
 import { ConditionConfig } from '../../util/condition'
-import StatementHelper, { StatementConfig} from '../../util/statement'
-import { PageListItem } from '../../main'
-import { isEqual, get } from 'lodash'
+import StatementHelper, { StatementConfig } from '../../util/statement'
+import { CCMSConfig, PageListItem } from '../../main'
 
 /**
  * 表单项基类配置文件格式定义
@@ -37,7 +37,7 @@ export interface FieldConfig {
   readonly?: boolean
   disabled?: boolean
   display?: 'none'
-  defaultValue?: ParamConfig,
+  defaultValue?: ParamConfig
   subLabelConfig?: {
     enable: boolean
     mode: 'plain' | 'markdown' | 'html'
@@ -63,10 +63,10 @@ export type FieldConfigs = getFieldConfigs
  */
 export interface IField<T> {
   reset: () => Promise<T>
-  set: (value: T) => Promise<void>
+  set: (value: T) => Promise<unknown>
   get: () => Promise<T>
   validate: (value: T) => Promise<true | FieldError[]>
-  fieldFormat: () => Promise<{}>
+  fieldFormat: () => Promise<unknown>
 }
 
 /**
@@ -81,43 +81,73 @@ export interface IField<T> {
  */
 export interface FieldProps<C extends FieldConfig, T> {
   // 挂载事件
-  ref: (instance: Field<C, {}, any> | null) => void
+  ref: (instance: Field<C, unknown, unknown> | null) => void
   // 挂载引用
   form: React.ReactNode
   formLayout: 'horizontal' | 'vertical' | 'inline'
-  value: T,
-  record: { [field: string]: any },
-  data: any[],
+  value: T
+  record: { [field: string]: unknown }
+  data: object[]
   config: C
   // TODO 待删除
   onChange: (value: T) => Promise<void>
   // 事件：设置值  noPathCombination：为true时不做路径拼接
-  onValueSet: (path: string, value: T, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
+  onValueSet: (
+    path: string,
+    value: unknown,
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => Promise<void>
   // 事件：置空值
-  onValueUnset: (path: string, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
+  onValueUnset: (
+    path: string,
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => Promise<void>
   // 事件：修改值 - 列表 - 追加
-  onValueListAppend: (path: string, value: any, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
+  onValueListAppend: (
+    path: string,
+    value: unknown,
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => Promise<void>
   // 事件：修改值 - 列表 - 删除
-  onValueListSplice: (path: string, index: number, count: number, validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
+  onValueListSplice: (
+    path: string,
+    index: number,
+    count: number,
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => Promise<void>
   // 事件：修改值 - 列表 - 修改顺序
-  onValueListSort: (path: string, index: number, sortType: 'up' | 'down', validation: true | FieldError[], options?: { noPathCombination?: boolean }) => Promise<void>
-  baseRoute: string,
-  containerPath: string, // 容器组件所在路径以字段拼接展示  1.3.0新增
-  onReportFields?: (field: string) => Promise<void> // 向父组件上报依赖字段  1.3.0新增
-  step: { [field: string]: any } // 传递formValue
-  loadDomain: (domain: string) => Promise<string>
+  onValueListSort: (
+    path: string,
+    index: number,
+    sortType: 'up' | 'down',
+    validation: true | FieldError[],
+    options?: { noPathCombination?: boolean }
+  ) => Promise<void>
+  checkPageAuth: (pageID: any) => Promise<boolean>
+  loadPageURL: (pageID: any) => Promise<string>
+  loadPageFrameURL: (pageID: any) => Promise<string>
+  loadPageConfig: (pageID: any) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
+  baseRoute: string
+  loadDomain: (domain: string) => Promise<string>
+  containerPath: string // 容器组件所在路径以字段拼接展示  1.3.0新增
+  onReportFields?: (field: string) => Promise<void> // 向父组件上报依赖字段  1.3.0新增
+  step: { [field: string]: unknown } // 传递formValue
 }
 
 /**
  * 表单项配置接口获取数据需要的入参
-* - url: 请求地址
-* - method: 请求类型
-* - withCredentials?: 跨域是否提供凭据信息
-* - response: 返回值
-* - format?: 格式化返回值
-* - responseArrayKey?: format === 'array' 时配置 key 值
-* - responseArrayValue?: format === 'array' 时配置 value 值
+ * - url: 请求地址
+ * - method: 请求类型
+ * - withCredentials?: 跨域是否提供凭据信息
+ * - response: 返回值
+ * - format?: 格式化返回值
+ * - responseArrayKey?: format === 'array' 时配置 key 值
+ * - responseArrayValue?: format === 'array' 时配置 value 值
  */
 export interface FieldInterface {
   interface?: {
@@ -138,93 +168,20 @@ export interface FieldInterface {
  * - T: 表单项的值类型
  * - S: 表单项的扩展状态
  */
-export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<FieldProps<C, T>, S> implements IField<T> {
+export class Field<C extends FieldConfig, E, T, S = unknown>
+  extends React.Component<FieldProps<C, T>, S>
+  implements IField<T>
+{
   dependentFields: string[] = [] // 组件param依赖字段存放数组  1.3.0新增
-  static defaultProps = {
-    config: {}
-  };
 
-  /**
-   * 获取默认值
-   */
-  defaultValue : () => Promise<any> = async () => {
-    const {
-      config
-    } = this.props
-    if (config.defaultValue !== undefined) {
-      return ParamHelper(config.defaultValue, { record: this.props.record, data: this.props.data, step: this.props.step }, this)
-    }
-
-    return undefined
-  }
-
-  reset: () => Promise<T> = async () => {
-    return this.defaultValue()
-  };
-
-  set: (value: any) => Promise<any> = async (value) => {
-    return value
-  };
-
-  get: () => Promise<T> = async () => {
-    return this.props.value
-  }
-
-  validate: (value: T) => Promise<true | FieldError[]> = async () => {
-    return true
-  };
-
-  fieldFormat: () => Promise<{}> = async () => {
-    return {}
-  }
-
-  didMount: () => Promise<void> = async () => { }
-
-  /**
-   * 根据mode不同，处理subLabel内容
-   * @param config 子项config
-   * @returns 
-   */
-  
-  handleSubLabelContent (config) {
-    if (config?.subLabelConfig?.enable) {
-      const content  = StatementHelper({ statement: config.subLabelConfig?.content?.statement || '', params: config.subLabelConfig?.content?.params || [] }, { data: this.props.data, step: this.props.step }).replace(/(^\s*)|(\s*$)/g, '')
-      const mode = config.subLabelConfig?.mode
-      switch (mode) {
-        case 'markdown':
-          return <div dangerouslySetInnerHTML={{ __html: marked(content) }}></div>
-        case 'html': 
-          return <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: content }}></div>
-      }
-      return <div style={{ whiteSpace: 'pre-wrap' }}>{content}</div>
-    }
-    return undefined
-  }
-
-  /**
-   * 上报param依赖字段名称
-   * @param field
-   */
-  handleReportFields: (field: string) => void = async (field) => {
-    const update: string[] | boolean = updateCommonPrefixItem(this.dependentFields, field)
-    if (typeof update === 'boolean') return
-    this.dependentFields = update
-    this.props.onReportFields && await this.props.onReportFields(field)
-  }
-
-  renderComponent = (props: E) => {
-    return <React.Fragment>
-      当前UI库未实现该表单类型
-    </React.Fragment>
-  }
-
-  shouldComponentUpdate (nextProps: FieldProps<C, T>, nextState: S) {
+  shouldComponentUpdate(nextProps: FieldProps<C, T>, nextState: S) {
+    const { value, config, step } = this.props
     const dependentFieldsArr = this.dependentFields
     let dependentIsChange = false
     if (dependentFieldsArr && dependentFieldsArr.length) {
       for (let i = dependentFieldsArr.length; i >= 0; i--) {
         const nextDependentField = get(nextProps.step, dependentFieldsArr[i])
-        const currentDependentField = get(this.props.step, dependentFieldsArr[i])
+        const currentDependentField = get(step, dependentFieldsArr[i])
 
         if ((nextDependentField || currentDependentField) && nextDependentField !== currentDependentField) {
           dependentIsChange = true
@@ -237,44 +194,55 @@ export class Field<C extends FieldConfig, E, T, S = {}> extends React.Component<
      * data提交前不变, 去掉这项的比较
      * record也不比较，需要比较的话就在dependentFieldsArr取出record绝对路径
      * */
-    if (!dependentIsChange && isEqual(this.state, nextState) && nextProps.value === this.props.value && this.props.config === nextProps.config) {
+    if (
+      !dependentIsChange &&
+      isEqual(this.state, nextState) &&
+      nextProps.value === value &&
+      config === nextProps.config
+    ) {
       return false
     }
     return true
   }
 
-  render = () => {
-    return (<React.Fragment>
-      当前UI库未实现该表单类型
-    </React.Fragment>)
+  /**
+   * 根据mode不同，处理subLabel内容
+   * @param config 子项config
+   * @returns
+   */
+
+  handleSubLabelContent(config) {
+    const { data, step } = this.props
+    if (config?.subLabelConfig?.enable) {
+      const content = StatementHelper(
+        {
+          statement: config.subLabelConfig?.content?.statement || '',
+          params: config.subLabelConfig?.content?.params || []
+        },
+        { data, step }
+      ).replace(/(^\s*)|(\s*$)/g, '')
+      const mode = config.subLabelConfig?.mode
+      switch (mode) {
+        case 'markdown':
+          // eslint-disable-next-line
+          return <div dangerouslySetInnerHTML={{ __html: marked(content) }}></div>
+        case 'html':
+          // eslint-disable-next-line
+          return <div style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{ __html: content }}></div>
+        default:
+          return <div style={{ whiteSpace: 'pre-wrap' }}>{content}</div>
+      }
+    }
+    return undefined
   }
-}
 
-export interface DisplayProps<C extends FieldConfig, T> {
-  value: T,
-  record: { [field: string]: any },
-  data: any[],
-  step: { [field: string]: any }
-  config: C,
-  // 事件：设置值
-  onValueSet: (path: string, value: T, options?: { noPathCombination?: boolean }) => Promise<void>
-  // 事件：置空值
-  onValueUnset: (path: string, options?: { noPathCombination?: boolean }) => Promise<void>
-  // 事件：修改值 - 列表 - 追加
-  onValueListAppend: (path: string, value: any, options?: { noPathCombination?: boolean }) => Promise<void>
-  // 事件：修改值 - 列表 - 删除
-  onValueListSplice: (path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => Promise<void>
-  baseRoute: string,
-  loadDomain: (domain: string) => Promise<string>
-}
-
-export class Display<C extends FieldConfig, E, T, S = {}> extends React.Component<DisplayProps<C, T>, S> {
-  defaultValue = async () => {
-    const {
-      config
-    } = this.props
+  /**
+   * 获取默认值
+   */
+  defaultValue: () => Promise<T> = async () => {
+    const { config, record, data, step } = this.props
     if (config.defaultValue !== undefined) {
-      return ParamHelper(config.defaultValue, { record: this.props.record, data: this.props.data, step: this.props.step })
+      return ParamHelper(config.defaultValue, { record, data, step }, this)
     }
 
     return undefined
@@ -282,33 +250,116 @@ export class Display<C extends FieldConfig, E, T, S = {}> extends React.Componen
 
   reset: () => Promise<T> = async () => {
     return this.defaultValue()
-  };
+  }
 
-  set: (value: any) => Promise<any> = async (value) => {
+  set: (value: T) => Promise<unknown> = async (value) => {
     return value
-  };
+  }
 
   get: () => Promise<T> = async () => {
-    return this.props.value
+    const { value } = this.props
+    return value
   }
 
-  renderComponent = (props: E) => {
-    return <React.Fragment>
-      当前UI库未实现该表单类型
-    </React.Fragment>
+  validate: (value: T) => Promise<true | FieldError[]> = async () => {
+    return true
   }
 
-  didMount: () => Promise<void> = async () => { }
+  fieldFormat: () => Promise<unknown> = async () => {
+    return {}
+  }
 
-  render = () => {
-    return (<React.Fragment>
-      当前UI库未实现该表单类型
-    </React.Fragment>)
+  didMount: () => Promise<void> = async () => {
+    /* ... */
+  }
+
+  /**
+   * 上报param依赖字段名称
+   * @param field
+   */
+  handleReportFields: (field: string) => void = async (field) => {
+    const { onReportFields } = this.props
+    const update: string[] | boolean = updateCommonPrefixItem(this.dependentFields, field)
+    if (typeof update === 'boolean') return
+    this.dependentFields = update
+    onReportFields && (await onReportFields(field))
+  }
+
+  renderComponent: (props: E) => JSX.Element = () => {
+    return <>当前UI库未实现该表单类型</>
+  }
+
+  render() {
+    return <>当前UI库未实现该表单类型</>
+  }
+}
+
+export interface DisplayProps<C extends FieldConfig, T> {
+  value: T
+  record: { [field: string]: unknown }
+  data: object[]
+  step: { [field: string]: unknown }
+  config: C
+  // 事件：设置值
+  onValueSet: (path: string, value: T, options?: { noPathCombination?: boolean }) => Promise<void>
+  // 事件：置空值
+  onValueUnset: (path: string, options?: { noPathCombination?: boolean }) => Promise<void>
+  // 事件：修改值 - 列表 - 追加
+  onValueListAppend: (path: string, value: unknown, options?: { noPathCombination?: boolean }) => Promise<void>
+  // 事件：修改值 - 列表 - 删除
+  onValueListSplice: (
+    path: string,
+    index: number,
+    count: number,
+    options?: { noPathCombination?: boolean }
+  ) => Promise<void>
+  baseRoute: string
+  loadDomain: (domain: string) => Promise<string>
+}
+
+export abstract class Display<C extends FieldConfig, E, T, S = unknown> extends React.Component<DisplayProps<C, T>, S> {
+  defaultValue = async () => {
+    const { config, record, data, step } = this.props
+    if (config.defaultValue !== undefined) {
+      return ParamHelper(config.defaultValue, {
+        record,
+        data,
+        step
+      })
+    }
+
+    return undefined
+  }
+
+  reset: () => Promise<T> = async () => {
+    return this.defaultValue()
+  }
+
+  set: (value: T) => Promise<unknown> = async (value) => {
+    return value
+  }
+
+  get: () => Promise<T> = async () => {
+    const { value } = this.props
+    return value
+  }
+
+  renderComponent: (props: E) => JSX.Element = () => {
+    return <>当前UI库未实现该表单类型</>
+  }
+
+  didMount: () => Promise<void> = async () => {
+    /* ... */
+  }
+
+  render() {
+    return <>当前UI库未实现该表单类型</>
   }
 }
 
 export class FieldError {
   message: string
+
   constructor(message: string) {
     this.message = message
   }

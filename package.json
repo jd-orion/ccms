@@ -25,8 +25,9 @@
     "watch": "npm-watch",
     "commit": "git-cz",
     "lint": "npm run lint:code && npm run lint:style && npm run prettier",
-    "lint:code": "eslint --fix **/*.{js,ts,jsx,tsx}",
-    "lint:style": "stylelint --fix **/*.less",
+    "lint:help": "eslint --help",
+    "lint:code": "eslint **/*.{ts,tsx}",
+    "lint:style": "stylelint **/*.less",
     "prettier": "prettier -c --write **/*.{json,html,md}"
   },
   "husky": {
