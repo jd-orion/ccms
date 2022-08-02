@@ -66,6 +66,209 @@ const config: FieldConfigs[] = [
     type: 'group',
     fields: [
       {
+        field: 'tableOperations',
+        label: '表格级操作',
+        type: 'group',
+        fields: [
+          {
+            field: 'topLeft',
+            label: '顶部左侧',
+            type: 'form',
+            primaryField: 'label',
+            canInsert: true,
+            canRemove: true,
+            canSort: true,
+            canCollapse: true,
+            fields: [
+              {
+                field: '_operation_config',
+                label: '',
+                type: 'hidden',
+                defaultValue: {
+                  source: 'static',
+                  value: '/form/tableTableOperation'
+                }
+              },
+              {
+                field: '',
+                label: '',
+                type: 'import_subform',
+                interface: {
+                  url: '${configDomain}/common/OperationsConfig.json',
+                  urlParams: [
+                    {
+                      field: 'version',
+                      data: {
+                        source: 'source',
+                        field: 'version'
+                      }
+                    },
+                    {
+                      field: 'configDomain',
+                      data: {
+                        source: 'source',
+                        field: 'configDomain'
+                      }
+                    }
+                  ],
+                  method: 'GET',
+                  cache: {
+                    global: 'CCMS_CONFIG_common_OperationsConfig'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            field: 'topRight',
+            label: '顶部右侧',
+            type: 'form',
+            primaryField: 'label',
+            canInsert: true,
+            canRemove: true,
+            canSort: true,
+            canCollapse: true,
+            fields: [
+              {
+                field: '_operation_config',
+                label: '',
+                type: 'hidden',
+                defaultValue: {
+                  source: 'static',
+                  value: '/form/tableTableOperation'
+                }
+              },
+              {
+                field: '',
+                label: '',
+                type: 'import_subform',
+                interface: {
+                  url: '${configDomain}/common/OperationsConfig.json',
+                  urlParams: [
+                    {
+                      field: 'version',
+                      data: {
+                        source: 'source',
+                        field: 'version'
+                      }
+                    },
+                    {
+                      field: 'configDomain',
+                      data: {
+                        source: 'source',
+                        field: 'configDomain'
+                      }
+                    }
+                  ],
+                  method: 'GET',
+                  cache: {
+                    global: 'CCMS_CONFIG_common_OperationsConfig'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            field: 'bottomLeft',
+            label: '底部左侧',
+            type: 'form',
+            primaryField: 'label',
+            canInsert: true,
+            canRemove: true,
+            canSort: true,
+            canCollapse: true,
+            fields: [
+              {
+                field: '_operation_config',
+                label: '',
+                type: 'hidden',
+                defaultValue: {
+                  source: 'static',
+                  value: '/form/tableTableOperation'
+                }
+              },
+              {
+                field: '',
+                label: '',
+                type: 'import_subform',
+                interface: {
+                  url: '${configDomain}/common/OperationsConfig.json',
+                  urlParams: [
+                    {
+                      field: 'version',
+                      data: {
+                        source: 'source',
+                        field: 'version'
+                      }
+                    },
+                    {
+                      field: 'configDomain',
+                      data: {
+                        source: 'source',
+                        field: 'configDomain'
+                      }
+                    }
+                  ],
+                  method: 'GET',
+                  cache: {
+                    global: 'CCMS_CONFIG_common_OperationsConfig'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            field: 'bottomRight',
+            label: '底部右侧',
+            type: 'form',
+            primaryField: 'label',
+            canInsert: true,
+            canRemove: true,
+            canSort: true,
+            canCollapse: true,
+            fields: [
+              {
+                field: '_operation_config',
+                label: '',
+                type: 'hidden',
+                defaultValue: {
+                  source: 'static',
+                  value: '/form/tableTableOperation'
+                }
+              },
+              {
+                field: '',
+                label: '',
+                type: 'import_subform',
+                interface: {
+                  url: '${configDomain}/common/OperationsConfig.json',
+                  urlParams: [
+                    {
+                      field: 'version',
+                      data: {
+                        source: 'source',
+                        field: 'version'
+                      }
+                    },
+                    {
+                      field: 'configDomain',
+                      data: {
+                        source: 'source',
+                        field: 'configDomain'
+                      }
+                    }
+                  ],
+                  method: 'GET',
+                  cache: {
+                    global: 'CCMS_CONFIG_common_OperationsConfig'
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
         field: 'rowOperations',
         label: '记录内操作',
         type: 'form',
@@ -77,11 +280,11 @@ const config: FieldConfigs[] = [
         fields: [
           {
             field: '_operation_config',
-            label: '_operation_config',
-            type: 'text',
+            label: '',
+            type: 'hidden',
             defaultValue: {
               source: 'static',
-              value: '/common/OperationConfig'
+              value: '/form/tableRowOperation'
             }
           },
           {

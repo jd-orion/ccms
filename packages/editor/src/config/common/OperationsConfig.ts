@@ -44,8 +44,107 @@ const config: FieldConfigs[] = [
     }
   },
   {
+    field: '',
+    label: '',
+    type: 'import_subform',
+    interface: {
+      url: '${configDomain}/common/OperationsOperationConfig.json',
+      urlParams: [
+        {
+          field: 'version',
+          data: {
+            source: 'source',
+            field: 'version'
+          }
+        },
+        {
+          field: 'configDomain',
+          data: {
+            source: 'source',
+            field: 'configDomain'
+          }
+        }
+      ],
+      method: 'GET',
+      cache: {
+        global: 'CCMS_CONFIG_common_OperationsOperationConfig'
+      }
+    },
+    condition: {
+      debug: true,
+      template: '${type} === "node"',
+      params: [
+        {
+          field: 'type',
+          data: {
+            source: 'record',
+            field: 'type'
+          }
+        }
+      ]
+    }
+  },
+  {
+    field: 'operation',
+    label: '主操作项',
+    type: 'group',
+    fields: [
+      {
+        field: '_operation_config',
+        label: '',
+        type: 'hidden',
+        defaultValue: {
+          source: 'relative',
+          relative: 1,
+          field: '_operation_config'
+        }
+      },
+      {
+        field: '',
+        label: '',
+        type: 'import_subform',
+        interface: {
+          url: '${configDomain}/common/OperationsOperationConfig.json',
+          urlParams: [
+            {
+              field: 'version',
+              data: {
+                source: 'source',
+                field: 'version'
+              }
+            },
+            {
+              field: 'configDomain',
+              data: {
+                source: 'source',
+                field: 'configDomain'
+              }
+            }
+          ],
+          method: 'GET',
+          cache: {
+            global: 'CCMS_CONFIG_common_OperationsOperationConfig'
+          }
+        }
+      }
+    ],
+    condition: {
+      debug: true,
+      template: '${type} === "dropdown"',
+      params: [
+        {
+          field: 'type',
+          data: {
+            source: 'record',
+            field: 'type'
+          }
+        }
+      ]
+    }
+  },
+  {
     field: 'operations',
-    label: '操作子项',
+    label: '子操作项',
     type: 'form',
     primaryField: 'label',
     canInsert: true,
@@ -55,8 +154,8 @@ const config: FieldConfigs[] = [
     fields: [
       {
         field: '_operation_config',
-        label: '_operation_config',
-        type: 'text',
+        label: '',
+        type: 'hidden',
         defaultValue: {
           source: 'relative',
           relative: 2,
@@ -91,7 +190,19 @@ const config: FieldConfigs[] = [
           }
         }
       }
-    ]
+    ],
+    condition: {
+      template: '${type} === "group" || ${type} === "dropdown"',
+      params: [
+        {
+          field: 'type',
+          data: {
+            source: 'record',
+            field: 'type'
+          }
+        }
+      ]
+    }
   },
   {
     field: 'condition',

@@ -316,47 +316,49 @@ export default class TableField
               config={config.operations?.rowOperations || []}
               onClick={(operationConfig, datas) => {
                 return function operationRender(children) {
-                  if (operationConfig.type === 'ccms') {
-                    return (
-                      <CurrentOperationHelper
-                        config={operationConfig}
-                        datas={datas}
-                        checkPageAuth={checkPageAuth}
-                        loadPageURL={loadPageURL}
-                        loadPageFrameURL={loadPageFrameURL}
-                        loadPageConfig={loadPageConfig}
-                        loadPageList={loadPageList}
-                        baseRoute={baseRoute}
-                        loadDomain={loadDomain}
-                      >
-                        {children}
-                      </CurrentOperationHelper>
-                    )
-                  }
-                  if (operationConfig.type === 'form-table-update') {
-                    return (
-                      <CurrentTableFieldForm
-                        form={form}
-                        formLayout={formLayout}
-                        config={operationConfig}
-                        data={record}
-                        datas={datas}
-                        onSubmit={(value) => onValueSet(`[${index}]`, value, true)}
-                        checkPageAuth={checkPageAuth}
-                        loadPageURL={loadPageURL}
-                        loadPageFrameURL={loadPageFrameURL}
-                        loadPageConfig={loadPageConfig}
-                        loadPageList={loadPageList}
-                        baseRoute={baseRoute}
-                        loadDomain={loadDomain}
-                        containerPath={getChainPath(containerPath, config.field, index)}
-                      >
-                        {children}
-                      </CurrentTableFieldForm>
-                    )
-                  }
-                  if (operationConfig.type === 'form-table-remove') {
-                    return children(() => onValueListSplice('', index, 1, true))
+                  if (operationConfig) {
+                    if (operationConfig.type === 'ccms') {
+                      return (
+                        <CurrentOperationHelper
+                          config={operationConfig}
+                          datas={datas}
+                          checkPageAuth={checkPageAuth}
+                          loadPageURL={loadPageURL}
+                          loadPageFrameURL={loadPageFrameURL}
+                          loadPageConfig={loadPageConfig}
+                          loadPageList={loadPageList}
+                          baseRoute={baseRoute}
+                          loadDomain={loadDomain}
+                        >
+                          {children}
+                        </CurrentOperationHelper>
+                      )
+                    }
+                    if (operationConfig.type === 'form-table-update') {
+                      return (
+                        <CurrentTableFieldForm
+                          form={form}
+                          formLayout={formLayout}
+                          config={operationConfig}
+                          data={record}
+                          datas={datas}
+                          onSubmit={(value) => onValueSet(`[${index}]`, value, true)}
+                          checkPageAuth={checkPageAuth}
+                          loadPageURL={loadPageURL}
+                          loadPageFrameURL={loadPageFrameURL}
+                          loadPageConfig={loadPageConfig}
+                          loadPageList={loadPageList}
+                          baseRoute={baseRoute}
+                          loadDomain={loadDomain}
+                          containerPath={getChainPath(containerPath, config.field, index)}
+                        >
+                          {children}
+                        </CurrentTableFieldForm>
+                      )
+                    }
+                    if (operationConfig.type === 'form-table-remove') {
+                      return children(() => onValueListSplice('', index, 1, true))
+                    }
                   }
                   return <></>
                 }
@@ -397,44 +399,46 @@ export default class TableField
               config={config.operations.tableOperations[position]}
               onClick={(operationConfig, datas) => {
                 return function operationRender(children) {
-                  if (operationConfig.type === 'ccms') {
-                    return (
-                      <CurrentOperationHelper
-                        config={operationConfig}
-                        datas={datas}
-                        checkPageAuth={checkPageAuth}
-                        loadPageURL={loadPageURL}
-                        loadPageFrameURL={loadPageFrameURL}
-                        loadPageConfig={loadPageConfig}
-                        loadPageList={loadPageList}
-                        baseRoute={baseRoute}
-                        loadDomain={loadDomain}
-                      >
-                        {children}
-                      </CurrentOperationHelper>
-                    )
-                  }
-                  if (operationConfig.type === 'form-table-create') {
-                    return (
-                      <CurrentTableFieldForm
-                        form={form}
-                        formLayout={formLayout}
-                        config={operationConfig}
-                        data={{}}
-                        datas={datas}
-                        onSubmit={(value) => onValueListAppend(``, value, true)}
-                        checkPageAuth={checkPageAuth}
-                        loadPageURL={loadPageURL}
-                        loadPageFrameURL={loadPageFrameURL}
-                        loadPageConfig={loadPageConfig}
-                        loadPageList={loadPageList}
-                        baseRoute={baseRoute}
-                        loadDomain={loadDomain}
-                        containerPath={getChainPath(containerPath, config.field, data.length)}
-                      >
-                        {children}
-                      </CurrentTableFieldForm>
-                    )
+                  if (operationConfig) {
+                    if (operationConfig.type === 'ccms') {
+                      return (
+                        <CurrentOperationHelper
+                          config={operationConfig}
+                          datas={datas}
+                          checkPageAuth={checkPageAuth}
+                          loadPageURL={loadPageURL}
+                          loadPageFrameURL={loadPageFrameURL}
+                          loadPageConfig={loadPageConfig}
+                          loadPageList={loadPageList}
+                          baseRoute={baseRoute}
+                          loadDomain={loadDomain}
+                        >
+                          {children}
+                        </CurrentOperationHelper>
+                      )
+                    }
+                    if (operationConfig.type === 'form-table-create') {
+                      return (
+                        <CurrentTableFieldForm
+                          form={form}
+                          formLayout={formLayout}
+                          config={operationConfig}
+                          data={{}}
+                          datas={datas}
+                          onSubmit={(value) => onValueListAppend(``, value, true)}
+                          checkPageAuth={checkPageAuth}
+                          loadPageURL={loadPageURL}
+                          loadPageFrameURL={loadPageFrameURL}
+                          loadPageConfig={loadPageConfig}
+                          loadPageList={loadPageList}
+                          baseRoute={baseRoute}
+                          loadDomain={loadDomain}
+                          containerPath={getChainPath(containerPath, config.field, data.length)}
+                        >
+                          {children}
+                        </CurrentTableFieldForm>
+                      )
+                    }
                   }
                   return <></>
                 }
