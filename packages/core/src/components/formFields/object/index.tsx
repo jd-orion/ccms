@@ -86,7 +86,12 @@ export default class ObjectField<S>
           if (
             !ConditionHelper(
               formFieldConfig.condition,
-              { record: this.props.value[key] as object, data: this.props.data, step: this.props.step },
+              {
+                record: this.props.value[key] as object,
+                data: this.props.data,
+                step: this.props.step,
+                containerPath: this.props.containerPath
+              },
               this
             )
           ) {
@@ -498,7 +503,12 @@ export default class ObjectField<S>
                           if (
                             !ConditionHelper(
                               formFieldConfig.condition,
-                              { record: this.props.record, data: this.props.data, step: this.props.step },
+                              {
+                                record: this.props.record,
+                                data: this.props.data,
+                                step: this.props.step,
+                                containerPath: this.props.containerPath
+                              },
                               this
                             )
                           ) {
@@ -546,7 +556,8 @@ export default class ObjectField<S>
                               extra: StatementHelper(formFieldConfig.extra, {
                                 record: this.props.record,
                                 data: this.props.data,
-                                step: this.props.step
+                                step: this.props.step,
+                                containerPath: this.props.containerPath
                               }),
                               required: getBoolean(formFieldConfig.required),
                               layout: this.props.formLayout,

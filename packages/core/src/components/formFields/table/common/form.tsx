@@ -21,6 +21,7 @@ export interface TableFieldFormProps {
     step: {
       [field: string]: unknown
     }
+    containerPath: string
   }
   checkPageAuth: (pageID: unknown) => Promise<boolean>
   loadPageURL: (pageID: unknown) => Promise<string>

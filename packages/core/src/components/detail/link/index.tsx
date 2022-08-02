@@ -23,7 +23,7 @@ export default class LinkDetail
   extends DetailField<LinkDetailConfig, ILinkDetail, string>
   implements IDetailField<string>
 {
-  renderComponent = (props: ILinkDetail) => {
+  renderComponent: (props: ILinkDetail) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现ILink组件。</>
   }
 
@@ -46,7 +46,11 @@ export default class LinkDetail
       name: name || ''
     }
     if (url) {
-      props.url = StatementHelper(url, { data: this.props.data, step: this.props.step })
+      props.url = StatementHelper(url, {
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: this.props.containerPath
+      })
       props.name = name || props.url || ''
     }
     return <>{this.renderComponent(props)}</>

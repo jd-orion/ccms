@@ -5,6 +5,7 @@ import getALLComponents, { display } from '..'
 import OperationsHelper, { OperationsConfig } from '../../../util/operations'
 import OperationHelper, { OperationConfig } from '../../../util/operation'
 import TableFieldForm from './common/form'
+import { getChainPath } from '../../../util/value'
 
 export interface TableFieldConfig extends FieldConfig {
   type: 'table'
@@ -296,6 +297,7 @@ export default class TableField
                   }
                   baseRoute={this.props.baseRoute}
                   loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                  containerPath={getChainPath(this.props.containerPath, config.field, index)}
                 />
               )
             }
@@ -347,7 +349,7 @@ export default class TableField
                         loadPageList={loadPageList}
                         baseRoute={baseRoute}
                         loadDomain={loadDomain}
-                        containerPath={containerPath}
+                        containerPath={getChainPath(containerPath, config.field, index)}
                       >
                         {children}
                       </CurrentTableFieldForm>
@@ -362,6 +364,7 @@ export default class TableField
               datas={{
                 data: this.props.data,
                 step: this.props.step,
+                containerPath: this.props.containerPath,
                 record
               }}
               checkPageAuth={checkPageAuth}
@@ -427,7 +430,7 @@ export default class TableField
                         loadPageList={loadPageList}
                         baseRoute={baseRoute}
                         loadDomain={loadDomain}
-                        containerPath={containerPath}
+                        containerPath={getChainPath(containerPath, config.field, data.length)}
                       >
                         {children}
                       </CurrentTableFieldForm>
@@ -439,6 +442,7 @@ export default class TableField
               datas={{
                 data: this.props.data,
                 step: this.props.step,
+                containerPath: this.props.containerPath,
                 record: {}
               }}
               checkPageAuth={checkPageAuth}

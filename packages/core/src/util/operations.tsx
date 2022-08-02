@@ -83,9 +83,9 @@ type OperationsHelperProps<Operation = OperationConfig> = {
   config: OperationsConfig<Operation>
   onClick: (
     config: Operation,
-    datas: { record?: object; data: object[]; step: { [field: string]: unknown } }
+    datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
   ) => (children: (onClick: () => void) => JSX.Element) => JSX.Element
-  datas: { record?: object; data: object[]; step: { [field: string]: unknown } }
+  datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
   checkPageAuth: (pageID: unknown) => Promise<boolean>
   loadPageURL: (pageID: unknown) => Promise<string>
   loadPageFrameURL: (pageID: unknown) => Promise<string>

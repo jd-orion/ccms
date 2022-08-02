@@ -1,6 +1,6 @@
-import Step, { StepConfig, StepProps } from '../common'
-import InterfaceHelper, { InterfaceConfig } from '../../util/interface'
 import { merge } from 'lodash'
+import Step, { StepConfig } from '../common'
+import InterfaceHelper, { InterfaceConfig } from '../../util/interface'
 
 export interface FetchConfig extends StepConfig {
   type: 'fetch'
@@ -8,49 +8,46 @@ export interface FetchConfig extends StepConfig {
   nextStep?: boolean | string
 }
 
-interface FetchState {
-
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface FetchState {}
 
 export default class FetchStep extends Step<FetchConfig, FetchState> {
-  popData: any
+  popData: object = {}
+
   interfaceHelper = new InterfaceHelper()
+
   stepPush = async () => {
     this.stepMount()
   }
-  
-  stepPop = async (reload: boolean = false, data?: any) => {
+
+  stepPop: (reload?: boolean, data?: unknown) => void = async (reload = false, data = {}) => {
     if (reload) {
-      this.popData = data
+      this.popData = data as object
       this.stepMount()
     } else {
       this.props.onUnmount()
     }
   }
 
-  stepMount = async (init_data?: any) => {
-    const {
-      config,
-      onUnmount,
-      onSubmit
-    } = this.props
+  stepMount = async (initData?: object) => {
+    const { config, onUnmount, onSubmit } = this.props
 
-    
     if (config.interface) {
       try {
-        const content = await this.interfaceHelper.request(
+        const content = (await this.interfaceHelper.request(
           merge(config.interface, { cache: { disabled: true } }),
-          {...(this.popData || {}), ...(init_data || {}), ...(this.props.step || {})},
+          { ...(this.popData || {}), ...(initData || {}), ...(this.props.step || {}) },
           {
             data: this.props.data,
-            step: this.props.step
+            step: this.props.step,
+            containerPath: ''
           },
           {
             loadDomain: this.props.loadDomain,
-            extra_data: {...(this.popData || {}), ...(init_data || {})}
+            extraData: { ...(this.popData || {}), ...(initData || {}) }
           }
-        )
-        onSubmit({ ...(this.popData || {}), ...(init_data || {}), ...content })
+        )) as object
+        onSubmit({ ...(this.popData || {}), ...(initData || {}), ...content })
       } catch (e) {
         onUnmount(true)
       }

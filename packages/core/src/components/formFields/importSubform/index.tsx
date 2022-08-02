@@ -102,6 +102,7 @@ export default class ImportSubformField
               record: this.props.value,
               data: this.props.data,
               step: this.props.step,
+              containerPath: this.props.containerPath,
               extraContainerPath: this.props.config.field
             },
             this
@@ -410,12 +411,17 @@ export default class ImportSubformField
         .request(
           interfaceConfig,
           {},
-          { record: this.props.record, data: this.props.data, step: this.props.step },
+          {
+            record: this.props.record,
+            data: this.props.data,
+            step: this.props.step,
+            containerPath: this.props.containerPath
+          },
           { loadDomain: this.props.loadDomain },
           this
         )
-        .then((data: FieldConfigs[] | string) => {
-          const dataToUnstringfy = this.handleDataToUnstringfy(data)
+        .then((data) => {
+          const dataToUnstringfy = this.handleDataToUnstringfy(data as FieldConfigs[] | string)
           if (this.props.config.withConfig?.enable && this.props.config.withConfig?.configField)
             this.props.onValueSet(this.props.config.withConfig.configField, data, true)
           if (!isEqual(dataToUnstringfy, this.state.fields)) {
@@ -436,7 +442,7 @@ export default class ImportSubformField
   }
 
   render = () => {
-    const { config, formLayout, value, data, step } = this.props
+    const { config, formLayout, value, data, step, containerPath } = this.props
 
     const { fields } = this.state
 
@@ -456,7 +462,7 @@ export default class ImportSubformField
                 if (
                   !ConditionHelper(
                     formFieldConfig.condition,
-                    { record: value, data, step, extraContainerPath: this.props.config.field },
+                    { record: value, data, step, containerPath, extraContainerPath: this.props.config.field },
                     this
                   )
                 ) {
@@ -508,6 +514,7 @@ export default class ImportSubformField
                       record: this.props.value,
                       data: this.props.data,
                       step: this.props.step,
+                      containerPath: this.props.containerPath,
                       extraContainerPath: this.props.config.field
                     },
                     this

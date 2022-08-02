@@ -121,6 +121,7 @@ export default class GroupField
               record: this.props.value,
               data: this.props.data,
               step: this.props.step,
+              containerPath: this.props.containerPath,
               extraContainerPath: this.props.config.field
             },
             this
@@ -332,6 +333,7 @@ export default class GroupField
                       record: value,
                       data: this.props.data,
                       step: this.props.step,
+                      containerPath: this.props.containerPath,
                       extraContainerPath: this.props.config.field
                     },
                     this
@@ -386,6 +388,7 @@ export default class GroupField
                       record: this.props.value,
                       data: this.props.data,
                       step: this.props.step,
+                      containerPath: this.props.containerPath,
                       extraContainerPath: this.props.config.field
                     },
                     this

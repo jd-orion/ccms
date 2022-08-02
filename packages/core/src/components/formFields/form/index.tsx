@@ -180,6 +180,7 @@ export default class FormField
                   record: this.props.value[index] as object,
                   data: this.props.data,
                   step: this.props.step,
+                  containerPath: this.props.containerPath,
                   extraContainerPath: getChainPath(this.props.config.field, index)
                 },
                 this
@@ -514,6 +515,7 @@ export default class FormField
                               record: itemValue as object,
                               data: this.props.data,
                               step: this.props.step,
+                              containerPath: this.props.containerPath,
                               extraContainerPath: getChainPath(this.props.config.field, index)
                             },
                             this
@@ -556,6 +558,7 @@ export default class FormField
                                   record: itemValue as object,
                                   data: this.props.data,
                                   step: this.props.step,
+                                  containerPath: this.props.containerPath,
                                   extraContainerPath: getChainPath(this.props.config.field, index)
                                 },
                                 this
