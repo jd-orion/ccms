@@ -12,28 +12,28 @@ export type OperationsConfig<Operation = OperationConfig> = (
 )[]
 
 type OperationConfigRoot = {
-  mode: 'button' | 'link'
+  mode?: 'button' | 'link'
   condition?: ConditionConfig
 }
 
 type OperationConfigLeaf<Operation = OperationConfig> = {
-  label: string
-  level: 'normal' | 'primary' | 'danger'
+  label?: string
+  level?: 'normal' | 'primary' | 'danger'
   check?: { enable: false } | OperationCheckConfig
   confirm?: { enable: false } | OperationConfirmConfig
-  handle: Operation
+  handle?: Operation
   condition?: ConditionConfig
 }
 
 type OperationConfigGroup<Operation = OperationConfig> = OperationConfigRoot & {
   type: 'group'
-  operations: OperationConfigLeaf<Operation>[]
+  operations?: OperationConfigLeaf<Operation>[]
 }
 
 type OperationConfigDropdown<Operation = OperationConfig> = OperationConfigRoot & {
   type: 'dropdown'
-  operation: OperationConfigLeaf<Operation>
-  operations: OperationConfigLeaf<Operation>[]
+  operation?: OperationConfigLeaf<Operation>
+  operations?: OperationConfigLeaf<Operation>[]
 }
 
 type OperationConfigNode<Operation = OperationConfig> = OperationConfigRoot &
@@ -82,10 +82,10 @@ export type IOperationNode = IOperationRoot & IOperationLeaf
 type OperationsHelperProps<Operation = OperationConfig> = {
   config: OperationsConfig<Operation>
   onClick: (
-    config: Operation,
-    datas: { record?: object; data: object[]; step: { [field: string]: unknown } }
+    config: Operation | undefined,
+    datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
   ) => (children: (onClick: () => void) => JSX.Element) => JSX.Element
-  datas: { record?: object; data: object[]; step: { [field: string]: unknown } }
+  datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
   checkPageAuth: (pageID: unknown) => Promise<boolean>
   loadPageURL: (pageID: unknown) => Promise<string>
   loadPageFrameURL: (pageID: unknown) => Promise<string>
@@ -120,14 +120,14 @@ export default class OperationsHelper<Operation = OperationConfig> extends React
 
     const renderOperationConfigGroup = (operation: OperationConfigGroup<Operation>) => {
       return this.renderOperationGroupComponent({
-        mode: operation.mode,
-        operations: operation.operations
+        mode: operation.mode || 'button',
+        operations: (operation.operations || [])
           .filter(
             (currentOperation) => !(currentOperation.condition && !ConditionHelper(currentOperation.condition, datas))
           )
           .map((currentOperation) => ({
-            label: currentOperation.label,
-            level: currentOperation.level,
+            label: currentOperation.label || '',
+            level: currentOperation.level || 'normal',
             onClick: onClick(currentOperation.handle, datas)
           }))
       })
@@ -135,19 +135,19 @@ export default class OperationsHelper<Operation = OperationConfig> extends React
 
     const renderOperationConfigDropdown = (operation: OperationConfigDropdown<Operation>) => {
       return this.renderOperationDropdownComponent({
-        mode: operation.mode,
+        mode: operation.mode || 'button',
         operation: {
-          label: operation.operation.label,
-          level: operation.operation.level,
-          onClick: onClick(operation.operation.handle, datas)
+          label: operation.operation?.label || '',
+          level: operation.operation?.level || 'normal',
+          onClick: onClick(operation.operation?.handle, datas)
         },
-        operations: operation.operations
+        operations: (operation.operations || [])
           .filter(
             (currentOperation) => !(currentOperation.condition && !ConditionHelper(currentOperation.condition, datas))
           )
           .map((currentOperation) => ({
-            label: currentOperation.label,
-            level: currentOperation.level,
+            label: currentOperation.label || '',
+            level: currentOperation.level || 'normal',
             onClick: onClick(currentOperation.handle, datas)
           }))
       })
@@ -155,15 +155,15 @@ export default class OperationsHelper<Operation = OperationConfig> extends React
 
     const renderOperationConfigNode = (operation: OperationConfigNode<Operation>) => {
       return this.renderOperationNodeComponent({
-        mode: operation.mode,
-        label: operation.label,
-        level: operation.level,
+        mode: operation.mode || 'button',
+        label: operation.label || '',
+        level: operation.level || 'normal',
         onClick: onClick(operation.handle, datas)
       })
     }
 
     return this.renderOperationComponent({
-      operations: config
+      operations: (config || [])
         .filter((operation) => !(operation.condition && !ConditionHelper(operation.condition, datas)))
         .map((operation) => {
           if (operation.type === 'group') {

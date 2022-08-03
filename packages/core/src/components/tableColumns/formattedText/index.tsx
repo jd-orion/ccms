@@ -26,7 +26,12 @@ export default class FormattedTextColumn extends Column<FormattedTextColumnConfi
       config: { statement }
     } = this.props
 
-    return StatementHelper(statement, { record: this.props.record, data: this.props.data, step: this.props.step })
+    return StatementHelper(statement, {
+      record: this.props.record,
+      data: this.props.data,
+      step: this.props.step,
+      containerPath: ''
+    })
   }
 
   render = () => {

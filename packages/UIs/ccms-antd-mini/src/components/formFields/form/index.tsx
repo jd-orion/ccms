@@ -4,25 +4,18 @@ import { Form, Button, Collapse, Space } from 'antd'
 import { PlusOutlined, DeleteOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
 import { FormItemProps } from 'antd/lib/form'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
-import getALLComponents from '../'
+import getALLComponents from '..'
 import styles from './index.less'
 
 export default class FormFieldComponent extends FormField {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type: string) => getALLComponents[type]
 
-  remove: () => Promise<void> = async () => { }
+  remove: () => Promise<void> = async () => {
+    /* 无逻辑 */
+  }
 
   renderItemFieldComponent = (props: IFormFieldItemField) => {
-    const {
-      label,
-      status,
-      message,
-      extra,
-      required,
-      fieldType,
-      children,
-      layout = 'horizontal'
-    } = props
+    const { label, visitable, status, message, extra, required, fieldType, children, layout = 'horizontal' } = props
 
     const formItemLayout: FormItemProps = {}
     if (layout === 'horizontal') {
@@ -34,15 +27,25 @@ export default class FormFieldComponent extends FormField {
       formItemLayout.labelCol = { span: 24 }
       formItemLayout.wrapperCol = { span: 24 }
     }
+
+    let validateStatus: '' | 'error' | 'validating' | 'success' | 'warning' | undefined
+    if (status === 'normal') {
+      validateStatus = undefined
+    } else if (status === 'error') {
+      validateStatus = 'error'
+    } else {
+      validateStatus = 'validating'
+    }
     return (
       <Form.Item
         extra={extra ? extra.trim() : ''}
         required={required}
         label={label}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+        validateStatus={validateStatus}
         help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
         {...formItemLayout}
         className={styles[`ccms-antd-mini-form-${fieldType}`]}
+        style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
       >
         {children}
       </Form.Item>
@@ -50,24 +53,17 @@ export default class FormFieldComponent extends FormField {
   }
 
   renderItemComponent = (props: IFormFieldItem) => {
-    const {
-      index,
-      isLastIndex,
-      title,
-      onRemove,
-      onSort,
-      children
-    } = props
+    const { index, isLastIndex, title, onRemove, onSort, children } = props
 
     return (
       <Collapse.Panel
         header={title}
         key={index}
         forceRender={false}
-        extra={(
+        extra={
           <Space>
-            {onSort
-              ? <React.Fragment>
+            {onSort ? (
+              <>
                 <ArrowUpOutlined
                   onClick={(e) => {
                     e.stopPropagation()
@@ -88,15 +84,18 @@ export default class FormFieldComponent extends FormField {
                     cursor: isLastIndex ? 'not-allowed' : 'pointer'
                   }}
                 />
-              </React.Fragment>
-              : null}
-            {onRemove
-              ? <DeleteOutlined onClick={(e) => {
-                e.stopPropagation()
-                onRemove()
-              }} />
-              : null}
-        </Space>)}
+              </>
+            ) : null}
+            {onRemove ? (
+              <DeleteOutlined
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRemove()
+                }}
+              />
+            ) : null}
+          </Space>
+        }
       >
         {children}
       </Collapse.Panel>
@@ -104,28 +103,28 @@ export default class FormFieldComponent extends FormField {
   }
 
   renderComponent = (props: IFormField) => {
-    const {
-      insertText,
-      onInsert,
-      children
-    } = props
+    const { insertText, onInsert, children } = props
 
     return (
-      <React.Fragment>
-        {onInsert
-          ? <div className={styles['ccms-antd-mini-formField-form-before-button']}>
-            <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
+      <>
+        {onInsert ? (
+          <div className={styles['ccms-antd-mini-formField-form-before-button']}>
+            <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>
+              {insertText}
+            </Button>
           </div>
-          : null}
-        <Collapse accordion={true} bordered={false} className={styles['ccms-antd-mini-formField-form']}>
+        ) : null}
+        <Collapse accordion bordered={false} className={styles['ccms-antd-mini-formField-form']}>
           {children}
         </Collapse>
-        {children.length > 0 && onInsert
-          ? <div className={styles['ccms-antd-mini-formField-form-after-button']}>
-              <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
+        {children.length > 0 && onInsert ? (
+          <div className={styles['ccms-antd-mini-formField-form-after-button']}>
+            <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>
+              {insertText}
+            </Button>
           </div>
-          : null}
-      </React.Fragment>
+        ) : null}
+      </>
     )
   }
 }

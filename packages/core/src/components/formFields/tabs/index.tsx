@@ -104,6 +104,7 @@ export default class TabsField<S>
               record: getValue(this.props.value, tab.field),
               data: this.props.data,
               step: this.props.step,
+              containerPath: this.props.containerPath,
               extraContainerPath: getChainPath(this.props.config.field, tab.field)
             },
             this
@@ -467,6 +468,7 @@ export default class TabsField<S>
                                 record: getValue(value, tab.field),
                                 data: this.props.data,
                                 step: this.props.step,
+                                containerPath: this.props.containerPath,
                                 extraContainerPath: getChainPath(this.props.config.field, tab.field)
                               },
                               this
@@ -527,6 +529,7 @@ export default class TabsField<S>
                                       record: getValue(value, tab.field),
                                       data: this.props.data,
                                       step: this.props.step,
+                                      containerPath: this.props.containerPath,
                                       extraContainerPath: getChainPath(this.props.config.field, tab.field)
                                     },
                                     this

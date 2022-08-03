@@ -5,6 +5,7 @@ import getALLComponents, { display } from '..'
 import OperationsHelper, { OperationsConfig } from '../../../util/operations'
 import OperationHelper, { OperationConfig } from '../../../util/operation'
 import TableFieldForm from './common/form'
+import { getChainPath } from '../../../util/value'
 
 export interface TableFieldConfig extends FieldConfig {
   type: 'table'
@@ -296,6 +297,7 @@ export default class TableField
                   }
                   baseRoute={this.props.baseRoute}
                   loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                  containerPath={getChainPath(this.props.containerPath, config.field, index)}
                 />
               )
             }
@@ -314,47 +316,49 @@ export default class TableField
               config={config.operations?.rowOperations || []}
               onClick={(operationConfig, datas) => {
                 return function operationRender(children) {
-                  if (operationConfig.type === 'ccms') {
-                    return (
-                      <CurrentOperationHelper
-                        config={operationConfig}
-                        datas={datas}
-                        checkPageAuth={checkPageAuth}
-                        loadPageURL={loadPageURL}
-                        loadPageFrameURL={loadPageFrameURL}
-                        loadPageConfig={loadPageConfig}
-                        loadPageList={loadPageList}
-                        baseRoute={baseRoute}
-                        loadDomain={loadDomain}
-                      >
-                        {children}
-                      </CurrentOperationHelper>
-                    )
-                  }
-                  if (operationConfig.type === 'form-table-update') {
-                    return (
-                      <CurrentTableFieldForm
-                        form={form}
-                        formLayout={formLayout}
-                        config={operationConfig}
-                        data={record}
-                        datas={datas}
-                        onSubmit={(value) => onValueSet(`[${index}]`, value, true)}
-                        checkPageAuth={checkPageAuth}
-                        loadPageURL={loadPageURL}
-                        loadPageFrameURL={loadPageFrameURL}
-                        loadPageConfig={loadPageConfig}
-                        loadPageList={loadPageList}
-                        baseRoute={baseRoute}
-                        loadDomain={loadDomain}
-                        containerPath={containerPath}
-                      >
-                        {children}
-                      </CurrentTableFieldForm>
-                    )
-                  }
-                  if (operationConfig.type === 'form-table-remove') {
-                    return children(() => onValueListSplice('', index, 1, true))
+                  if (operationConfig) {
+                    if (operationConfig.type === 'ccms') {
+                      return (
+                        <CurrentOperationHelper
+                          config={operationConfig}
+                          datas={datas}
+                          checkPageAuth={checkPageAuth}
+                          loadPageURL={loadPageURL}
+                          loadPageFrameURL={loadPageFrameURL}
+                          loadPageConfig={loadPageConfig}
+                          loadPageList={loadPageList}
+                          baseRoute={baseRoute}
+                          loadDomain={loadDomain}
+                        >
+                          {children}
+                        </CurrentOperationHelper>
+                      )
+                    }
+                    if (operationConfig.type === 'form-table-update') {
+                      return (
+                        <CurrentTableFieldForm
+                          form={form}
+                          formLayout={formLayout}
+                          config={operationConfig}
+                          data={record}
+                          datas={datas}
+                          onSubmit={(value) => onValueSet(`[${index}]`, value, true)}
+                          checkPageAuth={checkPageAuth}
+                          loadPageURL={loadPageURL}
+                          loadPageFrameURL={loadPageFrameURL}
+                          loadPageConfig={loadPageConfig}
+                          loadPageList={loadPageList}
+                          baseRoute={baseRoute}
+                          loadDomain={loadDomain}
+                          containerPath={getChainPath(containerPath, config.field, index)}
+                        >
+                          {children}
+                        </CurrentTableFieldForm>
+                      )
+                    }
+                    if (operationConfig.type === 'form-table-remove') {
+                      return children(() => onValueListSplice('', index, 1, true))
+                    }
                   }
                   return <></>
                 }
@@ -362,6 +366,7 @@ export default class TableField
               datas={{
                 data: this.props.data,
                 step: this.props.step,
+                containerPath: this.props.containerPath,
                 record
               }}
               checkPageAuth={checkPageAuth}
@@ -394,44 +399,46 @@ export default class TableField
               config={config.operations.tableOperations[position]}
               onClick={(operationConfig, datas) => {
                 return function operationRender(children) {
-                  if (operationConfig.type === 'ccms') {
-                    return (
-                      <CurrentOperationHelper
-                        config={operationConfig}
-                        datas={datas}
-                        checkPageAuth={checkPageAuth}
-                        loadPageURL={loadPageURL}
-                        loadPageFrameURL={loadPageFrameURL}
-                        loadPageConfig={loadPageConfig}
-                        loadPageList={loadPageList}
-                        baseRoute={baseRoute}
-                        loadDomain={loadDomain}
-                      >
-                        {children}
-                      </CurrentOperationHelper>
-                    )
-                  }
-                  if (operationConfig.type === 'form-table-create') {
-                    return (
-                      <CurrentTableFieldForm
-                        form={form}
-                        formLayout={formLayout}
-                        config={operationConfig}
-                        data={{}}
-                        datas={datas}
-                        onSubmit={(value) => onValueListAppend(``, value, true)}
-                        checkPageAuth={checkPageAuth}
-                        loadPageURL={loadPageURL}
-                        loadPageFrameURL={loadPageFrameURL}
-                        loadPageConfig={loadPageConfig}
-                        loadPageList={loadPageList}
-                        baseRoute={baseRoute}
-                        loadDomain={loadDomain}
-                        containerPath={containerPath}
-                      >
-                        {children}
-                      </CurrentTableFieldForm>
-                    )
+                  if (operationConfig) {
+                    if (operationConfig.type === 'ccms') {
+                      return (
+                        <CurrentOperationHelper
+                          config={operationConfig}
+                          datas={datas}
+                          checkPageAuth={checkPageAuth}
+                          loadPageURL={loadPageURL}
+                          loadPageFrameURL={loadPageFrameURL}
+                          loadPageConfig={loadPageConfig}
+                          loadPageList={loadPageList}
+                          baseRoute={baseRoute}
+                          loadDomain={loadDomain}
+                        >
+                          {children}
+                        </CurrentOperationHelper>
+                      )
+                    }
+                    if (operationConfig.type === 'form-table-create') {
+                      return (
+                        <CurrentTableFieldForm
+                          form={form}
+                          formLayout={formLayout}
+                          config={operationConfig}
+                          data={{}}
+                          datas={datas}
+                          onSubmit={(value) => onValueListAppend(``, value, true)}
+                          checkPageAuth={checkPageAuth}
+                          loadPageURL={loadPageURL}
+                          loadPageFrameURL={loadPageFrameURL}
+                          loadPageConfig={loadPageConfig}
+                          loadPageList={loadPageList}
+                          baseRoute={baseRoute}
+                          loadDomain={loadDomain}
+                          containerPath={getChainPath(containerPath, config.field, data.length)}
+                        >
+                          {children}
+                        </CurrentTableFieldForm>
+                      )
+                    }
                   }
                   return <></>
                 }
@@ -439,6 +446,7 @@ export default class TableField
               datas={{
                 data: this.props.data,
                 step: this.props.step,
+                containerPath: this.props.containerPath,
                 record: {}
               }}
               checkPageAuth={checkPageAuth}

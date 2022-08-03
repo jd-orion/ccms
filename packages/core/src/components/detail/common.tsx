@@ -1,7 +1,7 @@
 import React from 'react'
 import { ColumnsConfig, ParamConfig } from '../../interface'
 
-import { DetailFieldConfigs as getFieldConfigs } from './'
+import { DetailFieldConfigs as getFieldConfigs } from '.'
 import ParamHelper from '../../util/param'
 import { CCMSConfig, PageListItem } from '../../main'
 
@@ -26,7 +26,7 @@ export interface DetailFieldConfig {
   columns?: ColumnsConfig
   childColumns?: ColumnsConfig
   display?: 'none'
-  defaultValue?: ParamConfig,
+  defaultValue?: ParamConfig
   condition?: DetailFieldConditionConfig
   layout?: 'horizontal' | 'vertical'
   styles?: object
@@ -56,7 +56,7 @@ export interface IDetailField<T> {
   set: (value: T) => Promise<void>
   get: () => Promise<T>
   validate: (value: T) => Promise<true | DetailFieldError[]>
-  fieldFormat: () => Promise<{}>
+  fieldFormat: () => Promise<unknown>
 }
 
 /**
@@ -71,45 +71,51 @@ export interface IDetailField<T> {
  */
 export interface DetailFieldProps<C extends DetailFieldConfig, T> {
   // 挂载事件
-  ref: (instance: DetailField<C, {}, any> | null) => void
+  ref: (instance: DetailField<C, unknown, unknown> | null) => void
   formLayout: 'horizontal' | 'vertical'
-  value: T,
-  record: { [field: string]: any },
-  data: any[],
-  step: { [field: string]: any } // formValue挂载
+  value: T
+  record: { [field: string]: unknown }
+  data: object[]
+  step: { [field: string]: unknown } // formValue挂载
   config: C
   // 挂载引用
   detail?: React.ReactNode
   // TODO 待删除
   onChange: (value: T) => Promise<void>
   // 事件：设置值
-  onValueSet: (path: string, value: T, options?: { noPathCombination?: boolean }) => Promise<void>
+  onValueSet: (path: string, value: unknown, options?: { noPathCombination?: boolean }) => Promise<void>
   // // 事件：置空值
   onValueUnset: (path: string, options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 追加
-  onValueListAppend: (path: string, value: any, options?: { noPathCombination?: boolean }) => Promise<void>
+  onValueListAppend: (path: string, value: unknown, options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 删除
-  onValueListSplice: (path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => Promise<void>
-  baseRoute: string,
+  onValueListSplice: (
+    path: string,
+    index: number,
+    count: number,
+    options?: { noPathCombination?: boolean }
+  ) => Promise<void>
+  baseRoute: string
   loadDomain: (domain: string) => Promise<string>
-  loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  loadPageConfig: (pageID: unknown) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
   handlePageRedirect: (path: string) => void
-  checkPageAuth: (pageID: any) => Promise<boolean>
-  onUnmount: (reload?: boolean, data?: any) => Promise<void>
-  loadPageURL: (pageID: any) => Promise<string>
-  loadPageFrameURL: (pageID: any) => Promise<string>
+  checkPageAuth: (pageID: unknown) => Promise<boolean>
+  onUnmount: (reload?: boolean, data?: unknown) => Promise<void>
+  loadPageURL: (pageID: unknown) => Promise<string>
+  loadPageFrameURL: (pageID: unknown) => Promise<string>
+  containerPath: string
 }
 
 /**
  * 详情页配置接口获取数据需要的入参
-* - url: 请求地址
-* - method: 请求类型
-* - withCredentials?: 跨域是否提供凭据信息
-* - response: 返回值
-* - format?: 格式化返回值
-* - responseArrayKey?: format === 'array' 时配置 key 值
-* - responseArrayValue?: format === 'array' 时配置 value 值
+ * - url: 请求地址
+ * - method: 请求类型
+ * - withCredentials?: 跨域是否提供凭据信息
+ * - response: 返回值
+ * - format?: 格式化返回值
+ * - responseArrayKey?: format === 'array' 时配置 key 值
+ * - responseArrayValue?: format === 'array' 时配置 value 值
  */
 export interface DetailFieldInterface {
   interface?: {
@@ -130,66 +136,66 @@ export interface DetailFieldInterface {
  * - T: 表单项的值类型
  * - S: 表单项的扩展状态
  */
-export class DetailField<C extends DetailFieldConfig, E, T, S = {}> extends React.Component<DetailFieldProps<C, T>, S> implements IDetailField<T> {
-  static defaultProps = {
-    config: {}
-  };
-
+export class DetailField<C extends DetailFieldConfig, E, T, S = unknown>
+  extends React.Component<DetailFieldProps<C, T>, S>
+  implements IDetailField<T>
+{
   /**
    * 获取默认值
    */
   defaultValue = async () => {
-    const {
-      config
-    } = this.props
+    const { config, record, data, step, containerPath } = this.props
 
     if (typeof config.defaultValue === 'string') {
       return config.defaultValue
     }
     if (config.defaultValue !== undefined) {
-      return ParamHelper(config.defaultValue, { record: this.props.record, data: this.props.data, step: this.props.step })
+      return ParamHelper(config.defaultValue, {
+        record,
+        data,
+        step,
+        containerPath
+      })
     }
     return undefined
   }
 
   set: (value: T) => Promise<void> = async (value) => {
-    const {
-      onChange
-    } = this.props
+    const { onChange } = this.props
     if (onChange) {
       onChange(value)
     }
-  };
+  }
 
   get: () => Promise<T> = async () => {
-    return this.props.value
+    const { value } = this.props
+    return value
   }
 
   validate: (value: T) => Promise<true | DetailFieldError[]> = async () => {
     return true
-  };
+  }
 
-  fieldFormat: () => Promise<{}> = async () => {
+  fieldFormat: () => Promise<unknown> = async () => {
     return {}
   }
 
-  didMount: () => Promise<void> = async () => { }
-
-  renderComponent = (props: E) => {
-    return <React.Fragment>
-      当前UI库未实现该展示类型
-    </React.Fragment>
+  didMount: () => Promise<void> = async () => {
+    /* 无逻辑 */
   }
 
-  render = () => {
-    return (<React.Fragment>
-      当前UI库未实现该展示类型
-    </React.Fragment>)
+  renderComponent: (props: E) => JSX.Element = () => {
+    return <>当前UI库未实现该展示类型</>
+  }
+
+  render() {
+    return <>当前UI库未实现该展示类型</>
   }
 }
 
 export class DetailFieldError {
   message: string
+
   constructor(message: string) {
     this.message = message
   }

@@ -127,10 +127,10 @@ export interface FieldProps<C extends FieldConfig, T> {
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => Promise<void>
-  checkPageAuth: (pageID: any) => Promise<boolean>
-  loadPageURL: (pageID: any) => Promise<string>
-  loadPageFrameURL: (pageID: any) => Promise<string>
-  loadPageConfig: (pageID: any) => Promise<CCMSConfig>
+  checkPageAuth: (pageID: unknown) => Promise<boolean>
+  loadPageURL: (pageID: unknown) => Promise<string>
+  loadPageFrameURL: (pageID: unknown) => Promise<string>
+  loadPageConfig: (pageID: unknown) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
@@ -212,14 +212,14 @@ export class Field<C extends FieldConfig, E, T, S = unknown>
    */
 
   handleSubLabelContent(config) {
-    const { data, step } = this.props
+    const { data, step, containerPath } = this.props
     if (config?.subLabelConfig?.enable) {
       const content = StatementHelper(
         {
           statement: config.subLabelConfig?.content?.statement || '',
           params: config.subLabelConfig?.content?.params || []
         },
-        { data, step }
+        { data, step, containerPath }
       ).replace(/(^\s*)|(\s*$)/g, '')
       const mode = config.subLabelConfig?.mode
       switch (mode) {
@@ -240,9 +240,9 @@ export class Field<C extends FieldConfig, E, T, S = unknown>
    * 获取默认值
    */
   defaultValue: () => Promise<T> = async () => {
-    const { config, record, data, step } = this.props
+    const { config, record, data, step, containerPath } = this.props
     if (config.defaultValue !== undefined) {
-      return ParamHelper(config.defaultValue, { record, data, step }, this)
+      return ParamHelper(config.defaultValue, { record, data, step, containerPath }, this)
     }
 
     return undefined
@@ -301,7 +301,7 @@ export interface DisplayProps<C extends FieldConfig, T> {
   step: { [field: string]: unknown }
   config: C
   // 事件：设置值
-  onValueSet: (path: string, value: T, options?: { noPathCombination?: boolean }) => Promise<void>
+  onValueSet: (path: string, value: unknown, options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：置空值
   onValueUnset: (path: string, options?: { noPathCombination?: boolean }) => Promise<void>
   // 事件：修改值 - 列表 - 追加
@@ -315,16 +315,18 @@ export interface DisplayProps<C extends FieldConfig, T> {
   ) => Promise<void>
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
+  containerPath: string
 }
 
 export abstract class Display<C extends FieldConfig, E, T, S = unknown> extends React.Component<DisplayProps<C, T>, S> {
   defaultValue = async () => {
-    const { config, record, data, step } = this.props
+    const { config, record, data, step, containerPath } = this.props
     if (config.defaultValue !== undefined) {
       return ParamHelper(config.defaultValue, {
         record,
         data,
-        step
+        step,
+        containerPath
       })
     }
 

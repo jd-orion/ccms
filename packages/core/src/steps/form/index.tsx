@@ -233,7 +233,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
     this.formData = []
 
     if (this.props.config.defaultValue) {
-      let formDefault = ParamHelper(this.props.config.defaultValue, { data, step })
+      let formDefault = ParamHelper(this.props.config.defaultValue, { data, step, containerPath: '' })
 
       if (this.props.config.unstringify) {
         for (const field of this.props.config.unstringify) {
@@ -317,7 +317,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
           !ConditionHelper(validation.condition, {
             record: this.state.formValue,
             data: this.props.data,
-            step: this.formValue
+            step: this.formValue,
+            containerPath: ''
           })
         ) {
           this.canSubmit = false
@@ -325,7 +326,8 @@ export default class FormStep extends Step<FormConfig, FormState> {
             StatementHelper(validation.message, {
               record: this.state.formValue,
               data: this.props.data,
-              step: this.formValue
+              step: this.formValue,
+              containerPath: ''
             }) || '未填写失败文案或失败文案配置异常'
           this.renderModalComponent({ message })
           return
@@ -697,7 +699,9 @@ export default class FormStep extends Step<FormConfig, FormState> {
     if (Object.prototype.toString.call(actions) === '[object Array]') {
       actions_ = []
       for (let index = 0, len = actions.length; index < len; index++) {
-        if (!ConditionHelper(actions[index].condition, { record: formValue, data, step: formValue })) {
+        if (
+          !ConditionHelper(actions[index].condition, { record: formValue, data, step: formValue, containerPath: '' })
+        ) {
           continue
         }
         if (actions[index].type === 'submit') {
@@ -793,7 +797,14 @@ export default class FormStep extends Step<FormConfig, FormState> {
             submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ''), // TODO 待删除
             cancelText: this.props.config?.cancelText?.replace(/(^\s*)|(\s*$)/g, ''), // TODO 待删除
             children: fields.map((formFieldConfig, formFieldIndex) => {
-              if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step: formValue })) {
+              if (
+                !ConditionHelper(formFieldConfig.condition, {
+                  record: formValue,
+                  data,
+                  step: formValue,
+                  containerPath: ''
+                })
+              ) {
                 this.formFieldsMounted = set(this.formFieldsMounted, `[${formFieldIndex}]`, false)
                 this.formFields && (this.formFields[formFieldIndex] = null)
                 return null
@@ -842,7 +853,11 @@ export default class FormStep extends Step<FormConfig, FormState> {
                   : undefined,
                 status,
                 message: formData[formFieldIndex]?.message || '',
-                extra: StatementHelper(formFieldConfig.extra, { data: this.props.data, step: formValue }),
+                extra: StatementHelper(formFieldConfig.extra, {
+                  data: this.props.data,
+                  step: formValue,
+                  containerPath: ''
+                }),
                 required: getBoolean(formFieldConfig.required),
                 layout,
                 visitable: display,

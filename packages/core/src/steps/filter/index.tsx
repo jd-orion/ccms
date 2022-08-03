@@ -118,7 +118,11 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
     this.formData = []
 
     if (this.props.config.defaultValue) {
-      const formDefault = ParamHelper(this.props.config.defaultValue, { data: this.props.data, step: this.props.step })
+      const formDefault = ParamHelper(this.props.config.defaultValue, {
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: ''
+      })
       for (let formFieldIndex = 0; formFieldIndex < (this.props.config.fields || []).length; formFieldIndex++) {
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
         const value =
@@ -223,7 +227,11 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
     this.formData = []
 
     if (this.props.config.defaultValue) {
-      const formDefault = ParamHelper(this.props.config.defaultValue, { data: this.props.data, step: this.props.step })
+      const formDefault = ParamHelper(this.props.config.defaultValue, {
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: ''
+      })
       for (let formFieldIndex = 0; formFieldIndex < (this.props.config.fields || []).length; formFieldIndex++) {
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
         const value =
@@ -518,7 +526,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
           submitText: this.props.config?.submitText?.replace(/(^\s*)|(\s*$)/g, ''),
           resetText: this.props.config?.resetText?.replace(/(^\s*)|(\s*$)/g, ''),
           children: fields.map((formFieldConfig, formFieldIndex) => {
-            if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step })) {
+            if (!ConditionHelper(formFieldConfig.condition, { record: formValue, data, step, containerPath: '' })) {
               this.formFieldsMounted = set(this.formFieldsMounted, `[${formFieldIndex}]`, false)
               return null
             }
