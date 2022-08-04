@@ -3,7 +3,8 @@ import { ParamConfig } from '../interface'
 import { CCMSConfig, PageListItem } from '../main'
 import ConditionHelper, { ConditionConfig } from './condition'
 import { OperationConfig } from './operation'
-import { InterfaceConfig } from './interface'
+import InterfaceHelper, { InterfaceConfig } from './interface'
+import { getParamText } from './value'
 
 export type OperationsConfig<Operation = OperationConfig> = (
   | OperationConfigGroup<Operation>
@@ -79,6 +80,14 @@ export type IOperationDropdown = IOperationRoot & {
 
 export type IOperationNode = IOperationRoot & IOperationLeaf
 
+export interface IOperationConfirm {
+  title: string
+  okText: string
+  cancelText: string
+  onOk: () => void
+  onCancel: () => void
+}
+
 type OperationsHelperProps<Operation = OperationConfig> = {
   config: OperationsConfig<Operation>
   onClick: (
@@ -99,6 +108,8 @@ type OperationsHelperProps<Operation = OperationConfig> = {
 export default class OperationsHelper<Operation = OperationConfig> extends React.Component<
   OperationsHelperProps<Operation>
 > {
+  interfaceHelper = new InterfaceHelper()
+
   renderOperationComponent: (props: IOperations) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现OperationsHelper组件的Operation部分。</>
   }
@@ -115,6 +126,69 @@ export default class OperationsHelper<Operation = OperationConfig> extends React
     return <>您当前使用的UI版本没有实现OperationsHelper组件的OperationNode部分。</>
   }
 
+  renderOperationConfirm = (props: IOperationConfirm) => {
+    const mask = document.createElement('DIV')
+    mask.style.position = 'fixed'
+    mask.style.left = '0px'
+    mask.style.top = '0px'
+    mask.style.width = '100%'
+    mask.style.height = '100%'
+    mask.style.backgroundColor = 'white'
+    mask.innerText = '您当前使用的UI版本没有实现Table的OperationConfirm组件。'
+    mask.onclick = () => {
+      mask.remove()
+      props.onOk()
+    }
+
+    document.body.appendChild(mask)
+  }
+
+  beforeClick: (
+    config: OperationConfigLeaf<Operation>,
+    datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
+  ) => Promise<boolean> = async (config, datas) => {
+    const { loadDomain } = this.props
+
+    if (config.check && config.check.enable) {
+      const checkResult = await this.interfaceHelper.request(config.check.interface, {}, datas, {
+        loadDomain
+      })
+      if (!checkResult) {
+        return false
+      }
+    }
+
+    if (config.confirm && config.confirm.enable) {
+      const title = config.confirm.titleParams
+        ? await getParamText(config.confirm.titleText, config.confirm.titleParams, datas)
+        : config.confirm.titleText
+      const showConfirm = () => {
+        return new Promise((resolve, reject) => {
+          if (config.confirm && config.confirm.enable) {
+            this.renderOperationConfirm({
+              title,
+              okText: config.confirm.okText,
+              cancelText: config.confirm.cancelText,
+              onOk: () => {
+                resolve(true)
+              },
+              onCancel: () => {
+                reject(new Error('用户取消'))
+              }
+            })
+          }
+        })
+      }
+      try {
+        await showConfirm()
+      } catch (e) {
+        return false
+      }
+    }
+
+    return true
+  }
+
   render() {
     const { config, datas, onClick } = this.props
 
@@ -128,7 +202,16 @@ export default class OperationsHelper<Operation = OperationConfig> extends React
           .map((currentOperation) => ({
             label: currentOperation.label || '',
             level: currentOperation.level || 'normal',
-            onClick: onClick(currentOperation.handle, datas)
+            onClick: (children) =>
+              onClick(
+                currentOperation.handle,
+                datas
+              )((onClickFunction) => {
+                return children(async () => {
+                  if (!(await this.beforeClick(currentOperation, datas))) return
+                  await onClickFunction()
+                })
+              })
           }))
       })
     }
@@ -139,7 +222,16 @@ export default class OperationsHelper<Operation = OperationConfig> extends React
         operation: {
           label: operation.operation?.label || '',
           level: operation.operation?.level || 'normal',
-          onClick: onClick(operation.operation?.handle, datas)
+          onClick: (children) =>
+            onClick(
+              operation.operation?.handle,
+              datas
+            )((onClickFunction) => {
+              return children(async () => {
+                if (!(await this.beforeClick(operation, datas))) return
+                await onClickFunction()
+              })
+            })
         },
         operations: (operation.operations || [])
           .filter(
@@ -148,7 +240,16 @@ export default class OperationsHelper<Operation = OperationConfig> extends React
           .map((currentOperation) => ({
             label: currentOperation.label || '',
             level: currentOperation.level || 'normal',
-            onClick: onClick(currentOperation.handle, datas)
+            onClick: (children) =>
+              onClick(
+                currentOperation.handle,
+                datas
+              )((onClickFunction) => {
+                return children(async () => {
+                  if (!(await this.beforeClick(currentOperation, datas))) return
+                  await onClickFunction()
+                })
+              })
           }))
       })
     }
@@ -158,7 +259,16 @@ export default class OperationsHelper<Operation = OperationConfig> extends React
         mode: operation.mode || 'button',
         label: operation.label || '',
         level: operation.level || 'normal',
-        onClick: onClick(operation.handle, datas)
+        onClick: (children) =>
+          onClick(
+            operation.handle,
+            datas
+          )((onClickFunction) => {
+            return children(async () => {
+              if (!(await this.beforeClick(operation, datas))) return
+              await onClickFunction()
+            })
+          })
       })
     }
 

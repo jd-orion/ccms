@@ -1,16 +1,20 @@
 import { DownOutlined } from '@ant-design/icons'
-import { Button, Dropdown, Menu, Space, Typography } from 'antd'
+import { Button, Dropdown, Menu, Modal, Space, Typography } from 'antd'
 import { OperationsHelper } from 'ccms'
 import {
   IOperations,
   IOperationGroup,
   IOperationDropdown,
   IOperationNode,
-  IOperationLeaf
+  IOperationLeaf,
+  IOperationConfirm
 } from 'ccms/dist/src/util/operations'
 import React from 'react'
+import InterfaceHelper from './interface'
 
 export default class OperationsHelperComponent extends OperationsHelper {
+  interfaceHelper = new InterfaceHelper()
+
   renderOperationComponent: (props: IOperations) => JSX.Element = (props) => {
     return <Space>{props.operations}</Space>
   }
@@ -195,5 +199,20 @@ export default class OperationsHelperComponent extends OperationsHelper {
       return props.onClick((onClick) => <Typography.Link onClick={onClick}>{props.label}</Typography.Link>)
     }
     return <></>
+  }
+
+  renderOperationConfirm = (props: IOperationConfirm) => {
+    Modal.confirm({
+      getContainer: () => document.getElementById('ccms-antd') || document.body,
+      title: props.title,
+      okText: props.okText,
+      cancelText: props.cancelText,
+      onOk: () => {
+        props.onOk()
+      },
+      onCancel: () => {
+        props.onCancel()
+      }
+    })
   }
 }

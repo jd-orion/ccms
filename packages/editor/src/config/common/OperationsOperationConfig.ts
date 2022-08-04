@@ -54,6 +54,130 @@ const config: FieldConfigs[] = [
       ],
       method: 'GET'
     }
+  },
+  {
+    field: 'confirm',
+    label: '二次确认',
+    type: 'group',
+    fields: [
+      {
+        field: 'enable',
+        label: '启用',
+        type: 'switch',
+        defaultValue: {
+          source: 'static',
+          value: false
+        }
+      },
+      {
+        field: 'titleText',
+        label: '确认文案',
+        type: 'text',
+        condition: {
+          template: '${enable} === true',
+          params: [
+            {
+              field: 'enable',
+              data: {
+                source: 'record',
+                field: 'enable'
+              }
+            }
+          ]
+        }
+      },
+      {
+        field: 'titleParams',
+        label: '文案参数',
+        type: 'form',
+        primaryField: 'field',
+        canInsert: true,
+        canRemove: true,
+        canSort: true,
+        canCollapse: true,
+        fields: [
+          {
+            field: 'field',
+            label: '参数',
+            type: 'text'
+          },
+          {
+            field: 'data',
+            label: '',
+            type: 'import_subform',
+            interface: {
+              url: '${configDomain}/common/ParamConfig.json',
+              urlParams: [
+                {
+                  field: 'version',
+                  data: {
+                    source: 'source',
+                    field: 'version'
+                  }
+                },
+                {
+                  field: 'configDomain',
+                  data: {
+                    source: 'source',
+                    field: 'configDomain'
+                  }
+                }
+              ],
+              method: 'GET',
+              cache: {
+                global: 'CCMS_CONFIG_common_ParamConfig'
+              }
+            }
+          }
+        ],
+        condition: {
+          template: '${enable} === true',
+          params: [
+            {
+              field: 'enable',
+              data: {
+                source: 'record',
+                field: 'enable'
+              }
+            }
+          ]
+        }
+      },
+      {
+        field: 'okText',
+        label: '确定按钮',
+        type: 'text',
+        condition: {
+          template: '${enable} === true',
+          params: [
+            {
+              field: 'enable',
+              data: {
+                source: 'record',
+                field: 'enable'
+              }
+            }
+          ]
+        }
+      },
+      {
+        field: 'cancelText',
+        label: '取消按钮',
+        type: 'text',
+        condition: {
+          template: '${enable} === true',
+          params: [
+            {
+              field: 'enable',
+              data: {
+                source: 'record',
+                field: 'enable'
+              }
+            }
+          ]
+        }
+      }
+    ]
   }
 ]
 
