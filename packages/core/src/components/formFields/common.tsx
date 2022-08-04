@@ -123,7 +123,7 @@ export interface FieldProps<C extends FieldConfig, T> {
   onValueListSort: (
     path: string,
     index: number,
-    sortType: 'up' | 'down',
+    sortType: 'up' | 'down' | 'top' | 'bottom',
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => Promise<void>

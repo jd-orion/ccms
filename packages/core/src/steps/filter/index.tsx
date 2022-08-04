@@ -455,7 +455,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
     formFieldIndex: number,
     path: string,
     index: number,
-    sortType: 'up' | 'down',
+    sortType: 'up' | 'down' | 'top' | 'bottom',
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {

@@ -19,7 +19,9 @@ export interface TableFieldConfig extends FieldConfig {
       bottomLeft?: OperationsConfig<OperationConfig | TableFieldCreateConfig>
       bottomRight?: OperationsConfig<OperationConfig | TableFieldCreateConfig>
     }
-    rowOperations?: OperationsConfig<OperationConfig | TableFieldUpdateConfig | TableFieldRemoveConfig>
+    rowOperations?: OperationsConfig<
+      OperationConfig | TableFieldUpdateConfig | TableFieldRemoveConfig | TableFieldMoveConfig
+    >
   }
 }
 
@@ -35,6 +37,11 @@ export interface TableFieldUpdateConfig {
 
 export interface TableFieldRemoveConfig {
   type: 'form-table-remove'
+}
+
+export interface TableFieldMoveConfig {
+  type: 'form-table-move'
+  mode: 'up' | 'down' | 'top' | 'bottom'
 }
 
 /**
@@ -211,7 +218,7 @@ export default class TableField
     formFieldIndex: number,
     path: string,
     _index: number,
-    sortType: 'up' | 'down',
+    sortType: 'up' | 'down' | 'top' | 'bottom',
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {
@@ -248,6 +255,7 @@ export default class TableField
       onValueSet,
       onValueListAppend,
       onValueListSplice,
+      onValueListSort,
       checkPageAuth,
       loadPageURL,
       loadPageFrameURL,
@@ -359,8 +367,13 @@ export default class TableField
                     if (operationConfig.type === 'form-table-remove') {
                       return children(() => onValueListSplice('', index, 1, true))
                     }
+                    if (operationConfig.type === 'form-table-move') {
+                      return children(() => onValueListSort('', index, operationConfig.mode, true))
+                    }
                   }
-                  return <></>
+                  return children(() => {
+                    /* 无逻辑 */
+                  })
                 }
               }}
               datas={{
@@ -440,7 +453,9 @@ export default class TableField
                       )
                     }
                   }
-                  return <></>
+                  return children(() => {
+                    /* 无逻辑 */
+                  })
                 }
               }}
               datas={{

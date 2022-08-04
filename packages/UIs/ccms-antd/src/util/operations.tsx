@@ -104,26 +104,20 @@ export default class OperationsHelperComponent extends OperationsHelper {
         if (operation.level === 'primary') {
           return operation.onClick((onClick) => (
             <Typography.Link strong onClick={onClick}>
-              <Space>
-                {operation.label} <DownOutlined />
-              </Space>
+              {operation.label} <DownOutlined />
             </Typography.Link>
           ))
         }
         if (operation.level === 'danger') {
           return operation.onClick((onClick) => (
             <Typography.Link type="danger" onClick={onClick}>
-              <Space>
-                {operation.label} <DownOutlined />
-              </Space>
+              {operation.label} <DownOutlined />
             </Typography.Link>
           ))
         }
         return operation.onClick((onClick) => (
           <Typography.Link onClick={onClick}>
-            <Space>
-              {operation.label} <DownOutlined />
-            </Space>
+            {operation.label} <DownOutlined />
           </Typography.Link>
         ))
       }

@@ -431,7 +431,7 @@ export default class FormField
     formFieldIndex: number,
     path: string,
     _index: number,
-    sortType: 'up' | 'down',
+    sortType: 'up' | 'down' | 'top' | 'bottom',
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {
