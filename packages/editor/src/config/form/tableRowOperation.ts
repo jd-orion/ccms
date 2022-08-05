@@ -11,17 +11,29 @@ const config: FieldConfigs[] = [
       data: [
         {
           value: 'ccms',
-          label: '通用事件'
+          label: '通用'
         },
         {
           value: 'form-table-update',
-          label: '更新事件'
+          label: '更新'
+        },
+        {
+          value: 'form-table-move',
+          label: '移动'
         },
         {
           value: 'form-table-remove',
-          label: '删除事件'
+          label: '删除'
+        },
+        {
+          value: false,
+          label: '空'
         }
       ]
+    },
+    defaultValue: {
+      source: 'static',
+      value: false
     }
   },
   {
@@ -119,6 +131,45 @@ const config: FieldConfigs[] = [
     },
     condition: {
       template: '${type} === "form-table-update"',
+      params: [
+        {
+          field: 'type',
+          data: {
+            source: 'record',
+            field: 'type'
+          }
+        }
+      ]
+    }
+  },
+  {
+    field: 'mode',
+    label: '移动方式',
+    type: 'select_single',
+    mode: 'button',
+    options: {
+      from: 'manual',
+      data: [
+        {
+          value: 'up',
+          label: '上移'
+        },
+        {
+          value: 'down',
+          label: '下移'
+        },
+        {
+          value: 'top',
+          label: '置顶'
+        },
+        {
+          value: 'bottom',
+          label: '置底'
+        }
+      ]
+    },
+    condition: {
+      template: '${type} === "form-table-move"',
       params: [
         {
           field: 'type',

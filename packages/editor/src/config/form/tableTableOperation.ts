@@ -11,13 +11,21 @@ const config: FieldConfigs[] = [
       data: [
         {
           value: 'ccms',
-          label: '通用事件'
+          label: '通用'
         },
         {
           value: 'form-table-create',
-          label: '新增事件'
+          label: '新增'
+        },
+        {
+          value: false,
+          label: '空'
         }
       ]
+    },
+    defaultValue: {
+      source: 'static',
+      value: false
     }
   },
   {
