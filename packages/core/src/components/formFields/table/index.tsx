@@ -12,6 +12,7 @@ export interface TableFieldConfig extends FieldConfig {
   primary: string
   width?: number
   tableColumns: FieldConfigs[]
+  tableSort?: boolean
   operations?: {
     tableOperations?: {
       topLeft?: OperationsConfig<OperationConfig | TableFieldCreateConfig>
@@ -71,6 +72,7 @@ export interface ITableField {
   width?: number
   data: unknown[]
   tableColumns: ITableColumn[]
+  tableSort?: boolean | ((fromIndex: number, toIndex: number) => Promise<void>)
   tableOperations?: {
     topLeft?: React.ReactNode
     topRight?: React.ReactNode
@@ -400,7 +402,8 @@ export default class TableField
       width: config.width || 0,
       primary: config.primary,
       data: this.props.value,
-      tableColumns
+      tableColumns,
+      tableSort: config.tableSort ? async (fromIndex, toIndex) => onValueListSort('', fromIndex, toIndex, true) : false
     }
 
     if (config.operations && config.operations.tableOperations) {

@@ -7,6 +7,29 @@ const config: FieldConfigs[] = [
     type: 'text'
   },
   {
+    field: 'tableSort',
+    label: '拖动排序',
+    type: 'select_single',
+    mode: 'button',
+    options: {
+      from: 'manual',
+      data: [
+        {
+          value: true,
+          label: '开启'
+        },
+        {
+          value: false,
+          label: '关闭'
+        }
+      ]
+    },
+    defaultValue: {
+      source: 'static',
+      value: false
+    }
+  },
+  {
     field: 'tableColumns',
     label: '表格列',
     type: 'form',

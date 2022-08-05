@@ -114,7 +114,11 @@ export const getBoolean = (value: unknown) => {
  * @param currentIndex  当前操作元素在list索引
  * @param sortType  up或down
  */
-export const listItemMove = (list: unknown[], currentIndex: number, sortType: 'up' | 'down' | 'top' | 'bottom') => {
+export const listItemMove = (
+  list: unknown[],
+  currentIndex: number,
+  sortType: 'up' | 'down' | 'top' | 'bottom' | number
+) => {
   switch (sortType) {
     case 'up':
       // eslint-disable-next-line prefer-destructuring, no-param-reassign
@@ -131,6 +135,7 @@ export const listItemMove = (list: unknown[], currentIndex: number, sortType: 'u
       list.push(...list.splice(currentIndex, 1))
       break
     default:
+      list.splice(sortType, 0, list.splice(currentIndex, 1)[0])
   }
   return list
 }

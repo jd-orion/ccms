@@ -77,7 +77,12 @@ export const splice = (current: unknown, path: string, index: number, count: num
  * @param sortType
  * @returns
  */
-export const sort = (current: unknown, path: string, index: number, sortType: 'up' | 'down' | 'top' | 'bottom') => {
+export const sort = (
+  current: unknown,
+  path: string,
+  index: number,
+  sortType: 'up' | 'down' | 'top' | 'bottom' | number
+) => {
   const target = produce<unknown>(current, (draft) => {
     const list = lodash.get(draft, path, [])
     listItemMove(list, index, sortType)
