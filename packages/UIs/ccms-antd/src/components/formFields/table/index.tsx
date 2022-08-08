@@ -1,7 +1,7 @@
 import React from 'react'
 import { TableField } from 'ccms'
 import { ITableField, ITableColumn } from 'ccms/dist/src/components/formFields/table'
-import { Table } from 'antd'
+import { Table, Tooltip } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import { SortableContainer, SortableContainerProps, SortableElement, SortableHandle } from 'react-sortable-hoc'
 import { MenuOutlined } from '@ant-design/icons'
@@ -11,13 +11,32 @@ import styles from './index.less'
 import OperationsHelperComponent from '../../../util/operations'
 import OperationHelper from '../../../util/operation'
 import TableFieldForm from './common/form'
+import FormContainerComponent from '../container'
 
-const DragHandle = SortableHandle(() => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />)
+const DragHandle = SortableHandle<{ expanded: boolean }>(({ expanded }) =>
+  expanded ? (
+    <Tooltip title="表格中有被展开的行时无法拖拽排序">
+      <MenuOutlined style={{ cursor: 'not-allowed', color: '#999' }} />
+    </Tooltip>
+  ) : (
+    <MenuOutlined style={{ cursor: 'move', color: '#999' }} />
+  )
+)
 
 const SortableItem = SortableElement((props: React.HTMLAttributes<HTMLTableRowElement>) => <tr {...props} />)
 const SortableBody = SortableContainer((props: React.HTMLAttributes<HTMLTableSectionElement>) => <tbody {...props} />)
 
-export default class TableFieldComponent extends TableField {
+interface TableFieldComponentState {
+  expanded: boolean
+}
+
+export default class TableFieldComponent extends TableField<TableFieldComponentState> {
+  constructor(props) {
+    super(props, {
+      expanded: false
+    })
+  }
+
   CCMS = CCMS
 
   display = (type: string) => display[type]
@@ -26,17 +45,20 @@ export default class TableFieldComponent extends TableField {
 
   OperationHelper = OperationHelper
 
+  FormContainer = FormContainerComponent
+
   TableFieldForm = TableFieldForm
 
   renderComponent = (props: ITableField) => {
-    const { width, primary, tableColumns, tableSort, tableOperations, data } = props
+    const { width, primary, tableColumns, tableSort, tableExpand, tableOperations, data } = props
+    const { expanded } = this.state
 
     const prefixColumns: ColumnType<object>[] = []
     if (tableSort) {
       prefixColumns.push({
         dataIndex: 'sort',
         width: 50,
-        render: () => <DragHandle />
+        render: () => <DragHandle expanded={expanded} />
       })
     }
     function DraggableContainer(draggableContainerProps: SortableContainerProps) {
@@ -107,7 +129,7 @@ export default class TableFieldComponent extends TableField {
           size="middle"
           pagination={false}
           components={
-            tableSort
+            tableSort && !expanded
               ? {
                   body: {
                     wrapper: DraggableContainer,
@@ -116,6 +138,23 @@ export default class TableFieldComponent extends TableField {
                 }
               : undefined
           }
+          expandable={{
+            expandedRowRender: (record, index) => (
+              <>
+                {(tableExpand || [])
+                  .filter(({ show }) => show(record as { [key: string]: unknown }))
+                  .map(({ render }) => render(record as { [key: string]: unknown }, index))}
+              </>
+            ),
+            rowExpandable: (record) => {
+              return !!(tableExpand || []).find(({ show }) => show(record as { [key: string]: unknown }))
+            },
+            onExpandedRowsChange: (expandedKeys) => {
+              this.setState({
+                expanded: expandedKeys.length > 0
+              })
+            }
+          }}
         />
       </div>
     )

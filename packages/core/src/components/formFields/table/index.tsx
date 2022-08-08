@@ -6,6 +6,8 @@ import OperationsHelper, { OperationsConfig } from '../../../util/operations'
 import OperationHelper, { OperationConfig } from '../../../util/operation'
 import TableFieldForm from './common/form'
 import { getChainPath } from '../../../util/value'
+import ConditionHelper, { ConditionConfig } from '../../../util/condition'
+import FormContainer from '../container'
 
 export interface TableFieldConfig extends FieldConfig {
   type: 'table'
@@ -13,6 +15,10 @@ export interface TableFieldConfig extends FieldConfig {
   width?: number
   tableColumns: FieldConfigs[]
   tableSort?: boolean
+  tableExpand?: {
+    fields?: FieldConfigs[]
+    condition?: ConditionConfig
+  }[]
   operations?: {
     tableOperations?: {
       topLeft?: OperationsConfig<OperationConfig | TableFieldCreateConfig>
@@ -55,6 +61,11 @@ export interface ITableColumn {
   render: (value: unknown, record: { [type: string]: unknown }, index: number) => React.ReactNode
 }
 
+export interface ITableExpand {
+  show: (record: { [type: string]: unknown }) => boolean
+  render: (record: { [type: string]: unknown }, index: number) => React.ReactNode
+}
+
 interface TableState {
   didMount: boolean
   formDataList: { status: 'normal' | 'error' | 'loading'; message?: string }[][]
@@ -73,6 +84,7 @@ export interface ITableField {
   data: unknown[]
   tableColumns: ITableColumn[]
   tableSort?: boolean | ((fromIndex: number, toIndex: number) => Promise<void>)
+  tableExpand?: ITableExpand[]
   tableOperations?: {
     topLeft?: React.ReactNode
     topRight?: React.ReactNode
@@ -87,8 +99,8 @@ export interface ITableField {
   }
 }
 
-export default class TableField
-  extends Field<TableFieldConfig, ITableField, unknown[], TableState>
+export default class TableField<UIState = object>
+  extends Field<TableFieldConfig, ITableField, unknown[], TableState & UIState>
   implements IField<unknown[]>
 {
   getALLComponents = (type: string): typeof Field => getALLComponents[type]
@@ -99,20 +111,23 @@ export default class TableField
 
   OperationHelper = OperationHelper
 
+  FormContainer = FormContainer
+
   TableFieldForm = TableFieldForm
 
   formFieldsList: Array<Array<Field<FieldConfigs, unknown, unknown> | null>> = []
 
   formFieldsMountedList: Array<Array<boolean>> = []
 
-  constructor(props: FieldProps<TableFieldConfig, unknown[]>) {
+  constructor(props: FieldProps<TableFieldConfig, unknown[]>, state: UIState) {
     super(props)
 
     this.state = {
       didMount: false,
       formDataList: [],
       showItem: false,
-      showIndex: 0
+      showIndex: 0,
+      ...state
     }
   }
 
@@ -255,6 +270,7 @@ export default class TableField
       data,
       step,
       onValueSet,
+      onValueUnset,
       onValueListAppend,
       onValueListSplice,
       onValueListSort,
@@ -403,7 +419,43 @@ export default class TableField
       primary: config.primary,
       data: this.props.value,
       tableColumns,
-      tableSort: config.tableSort ? async (fromIndex, toIndex) => onValueListSort('', fromIndex, toIndex, true) : false
+      tableSort: config.tableSort ? async (fromIndex, toIndex) => onValueListSort('', fromIndex, toIndex, true) : false,
+      tableExpand: (config.tableExpand || []).map((tableExpandConfig) => ({
+        show: (record) => {
+          return ConditionHelper(tableExpandConfig.condition, { record, data, step, containerPath })
+        },
+        render: (record, index) => {
+          return (
+            <this.FormContainer
+              fieldsConfig={tableExpandConfig.fields || []}
+              value={record}
+              form={form}
+              formLayout={formLayout}
+              datas={{ record, data, step, containerPath }}
+              onValueSet={(path, value, validation, options) =>
+                onValueSet(getChainPath(index, path), value, validation, options)
+              }
+              onValueUnset={(path, validation, options) => onValueUnset(getChainPath(index, path), validation, options)}
+              onValueListAppend={(path, value, validation, options) =>
+                onValueListAppend(getChainPath(index, path), value, validation, options)
+              }
+              onValueListSplice={(path, indexSplice, count, validation, options) =>
+                onValueListSplice(getChainPath(index, path), indexSplice, count, validation, options)
+              }
+              onValueListSort={(path, indexSort, sortType, validation, options) =>
+                onValueListSort(getChainPath(index, path), indexSort, sortType, validation, options)
+              }
+              checkPageAuth={checkPageAuth}
+              loadPageURL={loadPageURL}
+              loadPageFrameURL={loadPageFrameURL}
+              loadPageConfig={loadPageConfig}
+              loadPageList={loadPageList}
+              baseRoute={baseRoute}
+              loadDomain={loadDomain}
+            />
+          )
+        }
+      }))
     }
 
     if (config.operations && config.operations.tableOperations) {
