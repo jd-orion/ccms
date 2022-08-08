@@ -4,11 +4,11 @@ import getALLComponents, { FieldConfigs } from '../..'
 import { ColumnsConfig } from '../../../../interface'
 import { CCMSConfig, PageListItem } from '../../../../main'
 import { IFormItem } from '../../../../steps/form'
-import ConditionHelper from '../../../../util/condition'
 import { push, set, sort, splice } from '../../../../util/produce'
 import StatementHelper from '../../../../util/statement'
-import { getBoolean, getValue, updateCommonPrefixItem } from '../../../../util/value'
+import { getValue, updateCommonPrefixItem } from '../../../../util/value'
 import { Field, FieldError } from '../../common'
+import FormContainer from '../../container'
 
 export interface TableFieldFormProps {
   form: React.ReactNode
@@ -16,7 +16,7 @@ export interface TableFieldFormProps {
   config: { fields: FieldConfigs[]; childColumns?: ColumnsConfig }
   data: { [field: string]: unknown }
   datas: {
-    record?: object | undefined
+    record: { [field: string]: unknown }
     data: object[]
     step: {
       [field: string]: unknown
@@ -39,6 +39,7 @@ export interface TableFieldFormProps {
 
 interface TableFieldFormState {
   visible: boolean
+  formValue: { [key: string]: unknown }
   formData: { status: 'normal' | 'error' | 'loading'; message?: string; name: string }[]
 }
 
@@ -52,32 +53,32 @@ export interface ITableFieldFormModal {
 export default class TableFieldForm extends React.Component<TableFieldFormProps, TableFieldFormState> {
   dependentFields: string[] = []
 
+  FormContainer = FormContainer
+
   formFieldsMounted: Array<boolean> = []
 
   formFields: Array<Field<FieldConfigs, unknown, unknown> | null> = []
-
-  formValue: { [key: string]: unknown } = {}
-
-  formData: { status: 'normal' | 'error' | 'loading'; message?: string; name: string }[] = []
 
   constructor(props) {
     super(props)
 
     this.state = {
       visible: false,
+      formValue: {},
       formData: []
     }
   }
 
   handleSubLabelContent(config) {
     const { datas } = this.props
+    const { formValue } = this.state
     if (config?.subLabelConfig?.enable) {
       const content = StatementHelper(
         {
           statement: config.subLabelConfig?.content?.statement || '',
           params: config.subLabelConfig?.content?.params || []
         },
-        { ...datas, record: this.formValue }
+        { ...datas, record: formValue }
       ).replace(/(^\s*)|(\s*$)/g, '')
       const mode = config.subLabelConfig?.mode
       switch (mode) {
@@ -114,15 +115,18 @@ export default class TableFieldForm extends React.Component<TableFieldFormProps,
       const formField = this.formFields[formFieldIndex]
       if (formField) {
         const { config } = this.props
+        const { formValue } = this.state
         const formFieldConfig = (config.fields || [])[formFieldIndex]
-        let value = getValue(this.formValue, formFieldConfig.field)
+        let value = getValue(formValue, formFieldConfig.field)
         const source = value
         if (formFieldConfig.defaultValue && value === undefined) {
           value = await formField.reset()
         }
         value = await formField.set(value)
         if (source !== value) {
-          set(this.formValue, formFieldConfig.field, value)
+          this.setState({
+            formValue: set(formValue, formFieldConfig.field, value)
+          })
         }
 
         if (value !== undefined) {
@@ -147,125 +151,34 @@ export default class TableFieldForm extends React.Component<TableFieldFormProps,
     })
   }
 
-  handleValueSet = async (
-    formFieldIndex: number,
-    path: string,
-    value: unknown,
-    validation: true | FieldError[],
-    options?: { noPathCombination?: boolean }
-  ) => {
-    const { config } = this.props
-    const formFieldConfig = (config.fields || [])[formFieldIndex]
-    if (formFieldConfig) {
-      let fullPath = ''
-      if (options && options.noPathCombination) {
-        fullPath = path
-      } else if (formFieldConfig.field === '' || path === '') {
-        fullPath = `${formFieldConfig.field}${path}`
-      } else {
-        fullPath = `${formFieldConfig.field}.${path}`
-      }
-
-      this.formValue = set(this.formValue, fullPath, value)
-      this.handleValueCallback(formFieldIndex, validation)
-    }
+  handleValueSet = async (path: string, value: unknown) => {
+    this.setState((prevState) => ({
+      formValue: set(prevState.formValue, path, value)
+    }))
   }
 
-  handleValueUnset = async (
-    formFieldIndex: number,
-    path: string,
-    validation: true | FieldError[],
-    options?: { noPathCombination?: boolean }
-  ) => {
-    const { config } = this.props
-    const formFieldConfig = (config.fields || [])[formFieldIndex]
-    if (formFieldConfig) {
-      let fullPath = ''
-      if (options && options.noPathCombination) {
-        fullPath = path
-      } else if (formFieldConfig.field === '' || path === '') {
-        fullPath = `${formFieldConfig.field}${path}`
-      } else {
-        fullPath = `${formFieldConfig.field}.${path}`
-      }
-
-      this.formValue = set(this.formValue, fullPath)
-      this.handleValueCallback(formFieldIndex, validation)
-    }
+  handleValueUnset = async (path: string) => {
+    this.setState((prevState) => ({
+      formValue: set(prevState.formValue, path)
+    }))
   }
 
-  handleValueListAppend = async (
-    formFieldIndex: number,
-    path: string,
-    value: unknown,
-    validation: true | FieldError[],
-    options?: { noPathCombination?: boolean }
-  ) => {
-    const { config } = this.props
-    const formFieldConfig = (config.fields || [])[formFieldIndex]
-    if (formFieldConfig) {
-      let fullPath = ''
-      if (options && options.noPathCombination) {
-        fullPath = path
-      } else if (formFieldConfig.field === '' || path === '') {
-        fullPath = `${formFieldConfig.field}${path}`
-      } else {
-        fullPath = `${formFieldConfig.field}.${path}`
-      }
-
-      this.formValue = push(this.formValue, fullPath, value)
-      this.handleValueCallback(formFieldIndex, validation)
-    }
+  handleValueListAppend = async (path: string, value: unknown) => {
+    this.setState((prevState) => ({
+      formValue: push(prevState.formValue, path, value)
+    }))
   }
 
-  handleValueListSplice = async (
-    formFieldIndex: number,
-    path: string,
-    index: number,
-    count: number,
-    validation: true | FieldError[],
-    options?: { noPathCombination?: boolean }
-  ) => {
-    const { config } = this.props
-    const formFieldConfig = (config.fields || [])[formFieldIndex]
-    if (formFieldConfig) {
-      let fullPath = ''
-      if (options && options.noPathCombination) {
-        fullPath = path
-      } else if (formFieldConfig.field === '' || path === '') {
-        fullPath = `${formFieldConfig.field}${path}`
-      } else {
-        fullPath = `${formFieldConfig.field}.${path}`
-      }
-
-      this.formValue = splice(this.formValue, fullPath, index, count)
-      this.handleValueCallback(formFieldIndex, validation)
-    }
+  handleValueListSplice = async (path: string, index: number, count: number) => {
+    this.setState((prevState) => ({
+      formValue: splice(prevState.formValue, path, index, count)
+    }))
   }
 
-  handleValueListSort = async (
-    formFieldIndex: number,
-    path: string,
-    index: number,
-    sortType: 'up' | 'down' | 'top' | 'bottom',
-    validation: true | FieldError[],
-    options?: { noPathCombination?: boolean }
-  ) => {
-    const { config } = this.props
-    const formFieldConfig = (config.fields || [])[formFieldIndex]
-    if (formFieldConfig) {
-      let fullPath = ''
-      if (options && options.noPathCombination) {
-        fullPath = path
-      } else if (formFieldConfig.field === '' || path === '') {
-        fullPath = `${formFieldConfig.field}${path}`
-      } else {
-        fullPath = `${formFieldConfig.field}.${path}`
-      }
-
-      this.formValue = sort(this.formValue, fullPath, index, sortType)
-      this.handleValueCallback(formFieldIndex, validation)
-    }
+  handleValueListSort = async (path: string, index: number, sortType: 'up' | 'down' | 'top' | 'bottom' | number) => {
+    this.setState((prevState) => ({
+      formValue: sort(prevState.formValue, path, index, sortType)
+    }))
   }
 
   renderModal: (props: ITableFieldFormModal) => JSX.Element = () => {
@@ -290,120 +203,47 @@ export default class TableFieldForm extends React.Component<TableFieldFormProps,
       loadPageConfig,
       loadPageList,
       baseRoute,
-      loadDomain,
-      containerPath
+      loadDomain
     } = this.props
 
-    const { visible, formData } = this.state
+    const { visible, formValue } = this.state
 
     return (
       <>
         {children(() => {
-          this.formValue = data
-          this.setState({ visible: true })
+          this.setState({
+            visible: true,
+            formValue: data
+          })
         })}
         {visible &&
           this.renderModal({
             title: 'title',
-            content: (config.fields || []).map((formFieldConfig, formFieldIndex) => {
-              if (!ConditionHelper(formFieldConfig.condition, { ...datas, record: this.formValue })) {
-                this.formFieldsMounted = set(this.formFieldsMounted, `[${formFieldIndex}]`, false)
-                this.formFields && (this.formFields[formFieldIndex] = null)
-                return null
-              }
-              let hidden = true
-              let display = true
-
-              if (formFieldConfig.type === 'hidden') {
-                hidden = true
-                display = false
-              }
-
-              if (formFieldConfig.display === 'none') {
-                hidden = true
-                display = false
-              }
-
-              // 隐藏项同时打标录入数据并清空填写项
-              if (!hidden) {
-                this.formData = set(this.formData, `[${formFieldIndex}]`, {
-                  status: 'normal',
-                  name: formFieldConfig.label
-                })
-              }
-
-              const FormField = this.getALLComponents(formFieldConfig.type) || Field
-
-              let status = formData[formFieldIndex]?.status || 'normal'
-
-              if (['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)) {
-                status = 'normal'
-              }
-
-              const renderData = {
-                key: formFieldIndex,
-                label: formFieldConfig.label,
-                subLabel: this.handleSubLabelContent(formFieldConfig),
-                styles: formFieldConfig.styles,
-                status,
-                message: (formData[formFieldIndex] || {}).message || '',
-                extra: StatementHelper(formFieldConfig.extra, { ...datas, record: this.formValue }),
-                required: getBoolean(formFieldConfig.required),
-                layout: formLayout,
-                visitable: display,
-                fieldType: formFieldConfig.type,
-                children: (
-                  <FormField
-                    key={formFieldIndex}
-                    ref={(formField: Field<FieldConfigs, unknown, unknown> | null) => {
-                      if (formField) {
-                        this.formFields = set(this.formFields, `[${formFieldIndex}]`, formField)
-                        this.handleMount(formFieldIndex)
-                      }
-                    }}
-                    form={form}
-                    formLayout={formLayout}
-                    value={getValue(this.formValue, formFieldConfig.field)}
-                    record={this.formValue}
-                    data={datas.data}
-                    step={datas.step}
-                    config={formFieldConfig}
-                    onChange={async () => {
-                      /* 无逻辑 */
-                    }}
-                    onValueSet={async (path, valueSet, validation, options) =>
-                      this.handleValueSet(formFieldIndex, path, valueSet, validation, options)
-                    }
-                    onValueUnset={async (path, validation, options) =>
-                      this.handleValueUnset(formFieldIndex, path, validation, options)
-                    }
-                    onValueListAppend={async (path, valueAppend, validation, options) =>
-                      this.handleValueListAppend(formFieldIndex, path, valueAppend, validation, options)
-                    }
-                    onValueListSplice={async (path, index, count, validation, options) =>
-                      this.handleValueListSplice(formFieldIndex, path, index, count, validation, options)
-                    }
-                    onValueListSort={async (path, index, sortType, validation, options) =>
-                      this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)
-                    }
-                    checkPageAuth={async (pageID) => checkPageAuth(pageID)}
-                    loadPageURL={async (pageID) => loadPageURL(pageID)}
-                    loadPageFrameURL={async (pageID) => loadPageFrameURL(pageID)}
-                    loadPageConfig={async (pageID) => loadPageConfig(pageID)}
-                    loadPageList={async () => loadPageList()}
-                    baseRoute={baseRoute}
-                    loadDomain={async (domain: string) => loadDomain(domain)}
-                    containerPath={containerPath}
-                    onReportFields={async (field: string) => this.handleReportFields(field)}
-                  />
-                )
-              }
-              // 渲染表单项容器
-              return hidden ? this.renderItemComponent(renderData) : <React.Fragment key={formFieldIndex} />
-            }),
+            content: (
+              <this.FormContainer
+                fieldsConfig={config.fields || []}
+                value={formValue}
+                form={form}
+                formLayout={formLayout}
+                datas={datas}
+                onValueSet={async (path, valueSet) => this.handleValueSet(path, valueSet)}
+                onValueUnset={async (path) => this.handleValueUnset(path)}
+                onValueListAppend={async (path, valueAppend) => this.handleValueListAppend(path, valueAppend)}
+                onValueListSplice={async (path, index, count) => this.handleValueListSplice(path, index, count)}
+                onValueListSort={async (path, index, sortType) => this.handleValueListSort(path, index, sortType)}
+                onReportFields={async (field: string) => this.handleReportFields(field)}
+                checkPageAuth={async (pageID) => checkPageAuth(pageID)}
+                loadPageURL={async (pageID) => loadPageURL(pageID)}
+                loadPageFrameURL={async (pageID) => loadPageFrameURL(pageID)}
+                loadPageConfig={async (pageID) => loadPageConfig(pageID)}
+                loadPageList={async () => loadPageList()}
+                baseRoute={baseRoute}
+                loadDomain={async (domain: string) => loadDomain(domain)}
+              />
+            ),
             onOk: () => {
               const { onSubmit } = this.props
-              onSubmit(this.formValue)
+              onSubmit(formValue)
               this.setState({
                 visible: false
               })

@@ -12,7 +12,7 @@ export interface StatementConfig {
 export default function StatementHelper(
   config: StatementConfig | undefined,
   datas: {
-    record?: object
+    record: { [field: string]: unknown }
     data: object[]
     step: { [field: string]: unknown }
     containerPath: string

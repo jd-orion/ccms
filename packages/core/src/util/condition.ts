@@ -27,7 +27,7 @@ export interface ConditionConfig {
 export default function ConditionHelper(
   condition: ConditionConfig | undefined,
   datas: {
-    record?: object
+    record: { [field: string]: unknown }
     data: object[]
     step: { [field: string]: unknown }
     containerPath: string

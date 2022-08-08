@@ -1,6 +1,6 @@
 import React from 'react'
 import queryString from 'query-string'
-import { set } from '../util/produce'
+import { set } from './produce'
 import { ParamConfig } from '../interface'
 import { CCMSConfig, CCMSProps, PageListItem } from '../main'
 import { getParam } from './value'
@@ -19,11 +19,11 @@ interface _CCMSOperationConfig {
   type: 'ccms'
 
   /** 目标资源 */
-  page: any
+  page: unknown
 
   /** 参数 */
   data: { [key: string]: ParamConfig }
-  params?: { field: string, data: ParamConfig }[]
+  params?: { field: string; data: ParamConfig }[]
 }
 
 /** CCMS模态窗口操作 */
@@ -47,17 +47,21 @@ interface CCMSInvisibleOperationConfig extends _CCMSOperationConfig {
   mode: 'invisible'
 }
 
-type CCMSOperationConfig = CCMSPopupOperationConfig | CCMSRedirectOperationConfig | CCMSWindowOperationConfig | CCMSInvisibleOperationConfig
+type CCMSOperationConfig =
+  | CCMSPopupOperationConfig
+  | CCMSRedirectOperationConfig
+  | CCMSWindowOperationConfig
+  | CCMSInvisibleOperationConfig
 
 interface OperationHelperProps {
-  config?: OperationConfig,
-  datas: { record?: object, data: object[], step: { [field: string]: any } },
-  checkPageAuth: (pageID: any) => Promise<boolean>,
-  loadPageURL: (pageID: any) => Promise<string>,
-  loadPageFrameURL: (pageID: any) => Promise<string>,
-  loadPageConfig: (pageID: any) => Promise<CCMSConfig>,
-  loadPageList: () => Promise<Array<PageListItem>>,
-  baseRoute: string,
+  config?: OperationConfig
+  datas: { record: { [field: string]: unknown }; data: object[]; step: { [field: string]: unknown } }
+  checkPageAuth: (pageID: unknown) => Promise<boolean>
+  loadPageURL: (pageID: unknown) => Promise<string>
+  loadPageFrameURL: (pageID: unknown) => Promise<string>
+  loadPageConfig: (pageID: unknown) => Promise<CCMSConfig>
+  loadPageList: () => Promise<Array<PageListItem>>
+  baseRoute: string
   loadDomain: (domain: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
 
@@ -67,11 +71,11 @@ interface OperationHelperProps {
 
 interface OperationHelperState {
   operationConfig: CCMSConfig | null
-  sourceData?: any
+  sourceData?: unknown
 }
 
 export default class OperationHelper extends React.Component<OperationHelperProps, OperationHelperState> {
-  constructor (props: OperationHelperProps) {
+  constructor(props: OperationHelperProps) {
     super(props)
 
     this.state = {
@@ -79,27 +83,8 @@ export default class OperationHelper extends React.Component<OperationHelperProp
     }
   }
 
-  protected renderModal (props: IOperationModal) {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现OpertionHelper组件。
-    </React.Fragment>
-  }
-
-  protected renderCCMS (props: CCMSProps) {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现OpertionHelper组件。
-    </React.Fragment>
-  }
-
-  private handleCCMS (config: CCMSOperationConfig) {
-    const {
-      datas,
-      loadPageURL,
-      loadPageFrameURL,
-      loadPageConfig,
-      loadPageList,
-      handlePageRedirect
-    } = this.props
+  private handleCCMS(config: CCMSOperationConfig) {
+    const { datas, loadPageURL, loadPageFrameURL, loadPageConfig, handlePageRedirect } = this.props
     return async () => {
       if (config.type === 'ccms') {
         let sourceData = {}
@@ -124,44 +109,73 @@ export default class OperationHelper extends React.Component<OperationHelperProp
           const sourceURL = await loadPageURL(config.page)
           const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
           if (handlePageRedirect) {
-            handlePageRedirect(queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || '', false)
+            handlePageRedirect(
+              queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || '',
+              false
+            )
           } else {
-            window.location.href = queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || ''
+            window.location.href =
+              queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || ''
           }
         } else if (config.mode === 'window') {
           const sourceURL = await loadPageFrameURL(config.page)
           const { url, query } = queryString.parseUrl(sourceURL, { arrayFormat: 'bracket' })
-          window.open(queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || '')
+          window.open(
+            queryString.stringifyUrl({ url, query: { ...query, ...sourceData } }, { arrayFormat: 'bracket' }) || ''
+          )
         }
       }
     }
   }
 
-  render () {
-    if (this.props.config) {
+  protected renderCCMS: (props: CCMSProps) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现OpertionHelper组件。</>
+  }
+
+  protected renderModal: (props: IOperationModal) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现OpertionHelper组件。</>
+  }
+
+  render() {
+    const {
+      config,
+      baseRoute,
+      checkPageAuth,
+      loadPageURL,
+      loadPageFrameURL,
+      loadPageConfig,
+      loadPageList,
+      loadDomain,
+      handlePageRedirect,
+      callback,
+      children
+    } = this.props
+    const { operationConfig, sourceData } = this.state
+    if (config) {
       return (
-        <React.Fragment>
-          {this.props.children && this.props.children(this.handleCCMS(this.props.config))}
-          {this.state.operationConfig !== null && this.props.config.mode === 'popup' && (
+        <>
+          {children && children(this.handleCCMS(config))}
+          {operationConfig !== null &&
+            config.mode === 'popup' &&
             this.renderModal({
-              title: this.props.config.label,
+              title: config.label,
               content: this.renderCCMS({
-                config: this.state.operationConfig,
-                sourceData: this.state.sourceData,
-                baseRoute: this.props.baseRoute,
-                checkPageAuth: this.props.checkPageAuth,
-                loadPageURL: this.props.loadPageURL,
-                loadPageFrameURL: this.props.loadPageFrameURL,
-                loadPageConfig: this.props.loadPageConfig,
-                loadPageList: this.props.loadPageList,
-                loadDomain: this.props.loadDomain,
-                handlePageRedirect: this.props.handlePageRedirect,
+                config: operationConfig,
+                sourceData,
+                baseRoute,
+                checkPageAuth,
+                loadPageURL,
+                loadPageFrameURL,
+                loadPageConfig,
+                loadPageList,
+                loadDomain,
+                handlePageRedirect,
                 callback: (success) => {
                   this.setState({
                     operationConfig: null,
                     sourceData: null
                   })
-                  this.props.callback && this.props.callback(success)
+                  callback && callback(success)
                 }
               }),
               onClose: () => {
@@ -169,39 +183,40 @@ export default class OperationHelper extends React.Component<OperationHelperProp
                   operationConfig: null,
                   sourceData: null
                 })
-                this.props.callback && this.props.callback(false)
+                callback && callback(false)
               }
-            })
-          )}
-          {this.state.operationConfig !== null && this.props.config.mode === 'invisible' && (
+            })}
+          {operationConfig !== null &&
+            config.mode === 'invisible' &&
             this.renderCCMS({
-              config: this.state.operationConfig,
-              sourceData: this.state.sourceData,
-              baseRoute: this.props.baseRoute,
-              checkPageAuth: this.props.checkPageAuth,
-              loadPageURL: this.props.loadPageURL,
-              loadPageFrameURL: this.props.loadPageFrameURL,
-              loadPageConfig: this.props.loadPageConfig,
-              loadPageList: this.props.loadPageList,
-              loadDomain: this.props.loadDomain,
-              handlePageRedirect: this.props.handlePageRedirect,
+              config: operationConfig,
+              sourceData,
+              baseRoute,
+              checkPageAuth,
+              loadPageURL,
+              loadPageFrameURL,
+              loadPageConfig,
+              loadPageList,
+              loadDomain,
+              handlePageRedirect,
               callback: (success) => {
                 this.setState({
                   operationConfig: null,
                   sourceData: null
                 })
-                this.props.callback && this.props.callback(success)
+                callback && callback(success)
               }
-            })
-          )}
-        </React.Fragment>
-      )
-    } else {
-      return (
-        <React.Fragment>
-          {this.props.children && this.props.children(() => {})}
-        </React.Fragment>
+            })}
+        </>
       )
     }
+    return (
+      <>
+        {children &&
+          children(() => {
+            /* 无逻辑 */
+          })}
+      </>
+    )
   }
 }

@@ -17,7 +17,7 @@ setAutoFreeze(false)
  * @param value
  * @returns
  */
-export function set(current: unknown, path: string, value?: unknown) {
+export function set<T>(current: T, path: string, value?: unknown): T {
   const target = produce<unknown>(current, (draft) => {
     if (path) {
       if (arguments.length === 2) {
@@ -29,7 +29,7 @@ export function set(current: unknown, path: string, value?: unknown) {
     }
     return draft
   })
-  return target
+  return target as T
 }
 /**
  * current指定路径下的数组添加元素
@@ -38,7 +38,7 @@ export function set(current: unknown, path: string, value?: unknown) {
  * @param value
  * @returns
  */
-export const push = (current: unknown, path: string, value?: unknown) => {
+export function push<T>(current: T, path: string, value?: unknown): T {
   const target = produce<unknown>(current, (draft) => {
     const list = lodash.get(draft, path)
     if (!Array.isArray(list)) {
@@ -50,7 +50,7 @@ export const push = (current: unknown, path: string, value?: unknown) => {
       list.push(value)
     }
   })
-  return target
+  return target as T
 }
 
 /**
@@ -61,12 +61,12 @@ export const push = (current: unknown, path: string, value?: unknown) => {
  * @param count
  * @returns
  */
-export const splice = (current: unknown, path: string, index: number, count: number) => {
+export function splice<T>(current: T, path: string, index: number, count: number): T {
   const target = produce<unknown>(current, (draft) => {
     const list = lodash.get(draft, path, [])
     list.splice(index, count)
   })
-  return target
+  return target as T
 }
 
 /**
@@ -77,17 +77,17 @@ export const splice = (current: unknown, path: string, index: number, count: num
  * @param sortType
  * @returns
  */
-export const sort = (
-  current: unknown,
+export function sort<T>(
+  current: T,
   path: string,
   index: number,
   sortType: 'up' | 'down' | 'top' | 'bottom' | number
-) => {
+): T {
   const target = produce<unknown>(current, (draft) => {
     const list = lodash.get(draft, path, [])
     listItemMove(list, index, sortType)
   })
-  return target
+  return target as T
 }
 
 /**
@@ -111,7 +111,7 @@ const merge = (a: unknown, b: unknown): unknown => {
   })
 }
 
-export const setValue = (current: unknown, path: string, value: unknown) => {
+export function setValue<T>(current: T, path: string, value: unknown): T {
   const target = produce<unknown>(current, (draft) => {
     if (path === '') {
       if (Object.prototype.toString.call(value) === '[object Object]') {
@@ -133,5 +133,5 @@ export const setValue = (current: unknown, path: string, value: unknown) => {
       }
     }
   })
-  return target
+  return target as T
 }

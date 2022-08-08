@@ -417,7 +417,7 @@ export default class ObjectField<S>
     formFieldIndex: number,
     path: string,
     _index: number,
-    sortType: 'up' | 'down' | 'top' | 'bottom',
+    sortType: 'up' | 'down' | 'top' | 'bottom' | number,
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {
