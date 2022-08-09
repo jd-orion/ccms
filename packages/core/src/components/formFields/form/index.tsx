@@ -178,7 +178,7 @@ export default class FormField
               !ConditionHelper(
                 formFieldConfig.condition,
                 {
-                  record: this.props.value[index] as object,
+                  record: this.props.value[index] as { [field: string]: unknown },
                   data: this.props.data,
                   step: this.props.step,
                   containerPath: this.props.containerPath,
