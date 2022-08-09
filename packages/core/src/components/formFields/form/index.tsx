@@ -178,7 +178,7 @@ export default class FormField
               !ConditionHelper(
                 formFieldConfig.condition,
                 {
-                  record: this.props.value[index] as object,
+                  record: this.props.value[index] as { [field: string]: unknown },
                   data: this.props.data,
                   step: this.props.step,
                   containerPath: this.props.containerPath,
@@ -431,7 +431,7 @@ export default class FormField
     formFieldIndex: number,
     path: string,
     _index: number,
-    sortType: 'up' | 'down' | 'top' | 'bottom',
+    sortType: 'up' | 'down' | 'top' | 'bottom' | number,
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {
@@ -513,7 +513,7 @@ export default class FormField
                           !ConditionHelper(
                             formFieldConfig.condition,
                             {
-                              record: itemValue as object,
+                              record: itemValue as { [field: string]: unknown },
                               data: this.props.data,
                               step: this.props.step,
                               containerPath: this.props.containerPath,
@@ -567,7 +567,7 @@ export default class FormField
                           extra: StatementHelper(
                             formFieldConfig.extra,
                             {
-                              record: itemValue as object,
+                              record: itemValue as { [field: string]: unknown },
                               data: this.props.data,
                               step: this.props.step,
                               containerPath: this.props.containerPath,

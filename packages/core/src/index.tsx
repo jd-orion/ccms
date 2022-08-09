@@ -3,6 +3,7 @@ export { default as FormStep } from './steps/form'
 export { default as FilterStep } from './steps/filter'
 export { default as SkipStep } from './steps/skip'
 
+export { default as FormContainer } from './components/formFields/container'
 export { default as TextField } from './components/formFields/text'
 export { default as FormField } from './components/formFields/form'
 export { default as RadioField } from './components/formFields/radio'

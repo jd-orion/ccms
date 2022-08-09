@@ -44,7 +44,12 @@ export default class EnumerationHelper {
 
   optionsDataValue = (
     sourceConfig: ParamConfig,
-    datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
+    datas: {
+      record: { [field: string]: unknown }
+      data: object[]
+      step: { [field: string]: unknown }
+      containerPath: string
+    }
   ) => {
     if (sourceConfig !== undefined) {
       return ParamHelper(sourceConfig, datas)
@@ -55,7 +60,12 @@ export default class EnumerationHelper {
   public async options(
     config: EnumerationOptionsConfig,
     interfaceRequire: (interfaceConfig: InterfaceConfig, source: { [key: string]: unknown }) => Promise<unknown>,
-    datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
+    datas: {
+      record: { [field: string]: unknown }
+      data: object[]
+      step: { [field: string]: unknown }
+      containerPath: string
+    }
   ): Promise<{ value: unknown; label: string }[]> {
     if (config) {
       if (config.from === 'manual') {
@@ -121,7 +131,12 @@ export default class EnumerationHelper {
   static async options(
     config: EnumerationOptionsConfig,
     interfaceRequire: (interfaceConfig: InterfaceConfig, source: { [key: string]: unknown }) => Promise<unknown>,
-    datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
+    datas: {
+      record: { [field: string]: unknown }
+      data: object[]
+      step: { [field: string]: unknown }
+      containerPath: string
+    }
   ) {
     if (!EnumerationHelper._instance) {
       EnumerationHelper._instance = new EnumerationHelper()

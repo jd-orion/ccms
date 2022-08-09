@@ -27,14 +27,14 @@ const merge = (a: unknown, b: unknown): unknown => {
   })
 }
 
-export const setValue = (obj: unknown, path: string, value: unknown) => {
+export function setValue<T extends object>(obj: T, path: string, value: unknown): T {
   if (path === '') {
     if (Object.prototype.toString.call(value) === '[object Object]') {
       // eslint-disable-next-line no-param-reassign
-      obj = merge(obj, value)
+      obj = merge(obj, value) as T
     } else if (value !== undefined) {
       // eslint-disable-next-line no-param-reassign
-      obj = value
+      obj = value as T
     }
   } else {
     const source = get(obj, path)
@@ -54,7 +54,7 @@ export const setValue = (obj: unknown, path: string, value: unknown) => {
 export const getParam = (
   config: ParamConfig,
   datas: {
-    record?: object
+    record: { [field: string]: unknown }
     data: object[]
     step: { [field: string]: unknown }
   }
@@ -81,7 +81,7 @@ export const getParamText = (
   text: string,
   params: Array<{ field?: string; data?: ParamConfig }>,
   datas: {
-    record?: object
+    record: { [field: string]: unknown }
     data: object[]
     step: { [field: string]: unknown }
   }

@@ -84,6 +84,96 @@ const config: FieldConfigs[] = [
     }
   },
   {
+    field: 'tableExpand',
+    label: '表格展开内容',
+    type: 'form',
+    canInsert: true,
+    canRemove: true,
+    canSort: true,
+    canCollapse: true,
+    primaryField: '_index',
+    fields: [
+      {
+        field: 'fields',
+        label: '内容',
+        type: 'form',
+        primaryField: 'field',
+        canInsert: true,
+        canRemove: true,
+        canSort: true,
+        canCollapse: true,
+        fields: [
+          {
+            field: 'label',
+            label: '字段描述',
+            type: 'text'
+          },
+          {
+            field: 'field',
+            label: '字段名',
+            type: 'text'
+          },
+          {
+            field: '',
+            label: '',
+            type: 'import_subform',
+            interface: {
+              url: '${configDomain}/form/index.json',
+              urlParams: [
+                {
+                  field: 'version',
+                  data: {
+                    source: 'source',
+                    field: 'version'
+                  }
+                },
+                {
+                  field: 'configDomain',
+                  data: {
+                    source: 'source',
+                    field: 'configDomain'
+                  }
+                }
+              ],
+              method: 'GET',
+              cache: {
+                global: 'CCMS_CONFIG_form'
+              }
+            }
+          }
+        ]
+      },
+      {
+        field: 'condition',
+        label: '展示条件',
+        type: 'import_subform',
+        interface: {
+          url: '${configDomain}/common/ConditionConfig.json',
+          urlParams: [
+            {
+              field: 'version',
+              data: {
+                source: 'source',
+                field: 'version'
+              }
+            },
+            {
+              field: 'configDomain',
+              data: {
+                source: 'source',
+                field: 'configDomain'
+              }
+            }
+          ],
+          method: 'GET',
+          cache: {
+            global: 'CCMS_CONFIG_common_ConditionConfig'
+          }
+        }
+      }
+    ]
+  },
+  {
     field: 'operations',
     label: '表格操作',
     type: 'group',

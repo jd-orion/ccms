@@ -108,7 +108,7 @@ export default class InterfaceHelper {
     config: InterfaceConfig,
     source: { [key: string]: unknown },
     datas: {
-      record?: object
+      record: { [field: string]: unknown }
       data: object[]
       step: { [field: string]: unknown }
       containerPath: string

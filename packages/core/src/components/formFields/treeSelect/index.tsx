@@ -251,7 +251,10 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
       }
     } else if (multiple?.type === 'split') {
       if (typeof value === 'string' && value !== '') {
-        props.value = transformValueType(String(value).split(multiple.split || ','), multiple?.valueType)
+        props.value = transformValueType(String(value).split(multiple.split || ','), multiple?.valueType) as (
+          | string
+          | number
+        )[]
       } else if (value !== undefined) {
         props.value = undefined
       }
