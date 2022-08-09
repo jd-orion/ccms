@@ -119,6 +119,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
 
     if (this.props.config.defaultValue) {
       const formDefault = ParamHelper(this.props.config.defaultValue, {
+        record: {},
         data: this.props.data,
         step: this.props.step,
         containerPath: ''
@@ -228,6 +229,7 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
 
     if (this.props.config.defaultValue) {
       const formDefault = ParamHelper(this.props.config.defaultValue, {
+        record: {},
         data: this.props.data,
         step: this.props.step,
         containerPath: ''
