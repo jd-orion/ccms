@@ -26,7 +26,14 @@ export interface ConditionConfig {
 
 export default function ConditionHelper(
   condition: ConditionConfig | undefined,
-  datas: { record?: object; data: object[]; step: { [field: string]: any }; extraContainerPath?: string },
+  datas: {
+    record?: object
+    data: object[]
+    step: { [field: string]: unknown }
+    containerPath: string
+    extraContainerPath?: string
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _this?: Field<any, any, any>
 ): boolean {
   // 条件语句模版
@@ -97,6 +104,7 @@ const execConditionHandler = (
   try {
     if (Object.values(statementParams).some((param) => param === undefined)) {
       if (condition?.debug) {
+        // eslint-disable-next-line no-console
         console.info(`CCMS debug: condition ${conditionTemplate} => false`)
       }
       return false
@@ -106,18 +114,18 @@ const execConditionHandler = (
     try {
       const result = evil(statement)
       if (condition?.debug) {
+        // eslint-disable-next-line no-console
         console.info(`CCMS debug: condition ${statement} => ${result}`)
       }
       return result
     } catch (e) {
-      console.error('表单项展示条件语句执行错误。', conditionTemplate, statement)
       return false
     }
   } catch (e) {
     if (condition?.debug) {
+      // eslint-disable-next-line no-console
       console.info(`CCMS debug: condition - \`${conditionTemplate}\` => error`)
     }
-    console.error('表单项展示条件语句执行错误。', conditionTemplate)
     return false
   }
 }

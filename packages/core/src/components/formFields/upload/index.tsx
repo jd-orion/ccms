@@ -1,9 +1,9 @@
 import React from 'react'
+import { merge } from 'lodash'
 import { Field, FieldConfig, FieldError, IField } from '../common'
 import { getBoolean, getValue } from '../../../util/value'
 import { InterfaceHelper } from '../../..'
 import { InterfaceConfig } from '../../../util/interface'
-import { merge } from 'lodash'
 
 export type UploadFieldConfig = UploadFieldConfigImage | UploadFieldConfigFile
 export interface UploadFieldConfigBasic extends FieldConfig {
@@ -11,7 +11,7 @@ export interface UploadFieldConfigBasic extends FieldConfig {
   interface: InterfaceConfig
   requireField: string
   responseField: string
-  extraResponseField: Array<{from: string, to: string}>
+  extraResponseField: Array<{ from: string; to: string }>
 }
 
 export interface UploadFieldConfigImage extends UploadFieldConfigBasic {
@@ -20,29 +20,30 @@ export interface UploadFieldConfigImage extends UploadFieldConfigBasic {
   sizeCheck?: {
     height?: number
     width?: number
-    maxSize?: number,
+    maxSize?: number
     sizeUnit?: 'B' | 'K' | 'M' | 'G' | 'T'
-  },
+  }
 }
 export interface UploadFieldConfigFile extends UploadFieldConfigBasic {
   mode: 'file'
   sizeCheck?: {
-    maxSize?: number,
+    maxSize?: number
     sizeUnit?: 'B' | 'K' | 'M' | 'G' | 'T'
-  },
+  }
 }
 
 export interface IUploadField {
   mode: 'image' | 'file'
   value?: string
-  onChange: (file: any) => Promise<void>
+  onChange: (file: File) => Promise<void>
   onCancel: () => Promise<void>
-  readonly?: any
-  disabled?: any
+  readonly?: boolean
+  disabled?: boolean
 }
 
 export default class UploadField extends Field<UploadFieldConfig, IUploadField, string> implements IField<string> {
   interfaceHelper = new InterfaceHelper()
+
   errors: FieldError[] = []
 
   reset: () => Promise<string> = async () => {
@@ -50,12 +51,11 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
 
     if (defaults === undefined) {
       return ''
-    } else {
-      return defaults
     }
-  };
+    return defaults
+  }
 
-  validate = async (value: any): Promise<true | FieldError[]> => {
+  validate = async (value: unknown): Promise<true | FieldError[]> => {
     const errors: FieldError[] = []
 
     if (this.props.config.required) {
@@ -68,10 +68,8 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
     return errors.length ? errors : true
   }
 
-  beforeUpload = async (file: any) => {
-    const {
-      config
-    } = this.props
+  beforeUpload = async (file: File) => {
+    const { config } = this.props
 
     this.errors = []
 
@@ -80,9 +78,9 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
     }
 
     if (config.sizeCheck && config.sizeCheck.maxSize) {
-      const maxSize = config.sizeCheck.maxSize
+      const { maxSize } = config.sizeCheck
       let sizeString = ''
-      const sizeUnit = config.sizeCheck.sizeUnit
+      const { sizeUnit } = config.sizeCheck
       switch (sizeUnit) {
         case 'B':
           if (file.size > maxSize) {
@@ -109,20 +107,24 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
             sizeString = `${maxSize}T`
           }
           break
+        default:
+          sizeString = `${file.size}`
       }
       sizeString && this.errors.push(new FieldError(`文件大小超过${sizeString}。`))
     }
 
     if (config.mode === 'image' && config.sizeCheck && (config.sizeCheck.width || config.sizeCheck.height)) {
       const checkSize = () => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           const URL = window.URL || window.webkitURL
           const img = new Image()
           img.onload = () => {
             if (config.sizeCheck) {
               if (config.sizeCheck.width && config.sizeCheck.height) {
                 if (img.width !== config.sizeCheck.width || img.height !== config.sizeCheck.height) {
-                  this.errors.push(new FieldError(`图片应为宽度${config.sizeCheck.width}像素，高度${config.sizeCheck.height}像素。`))
+                  this.errors.push(
+                    new FieldError(`图片应为宽度${config.sizeCheck.width}像素，高度${config.sizeCheck.height}像素。`)
+                  )
                   resolve(false)
                   return
                 }
@@ -154,16 +156,21 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
     if (this.errors.length === 0) {
       // TODO 实际执行上传
 
-      const response = await this.interfaceHelper.request(
+      const response = (await this.interfaceHelper.request(
         merge(config.interface, { caches: false, contentType: 'form-data' }),
         {},
-        { record: this.props.record, data: this.props.data, step: this.props.step },
+        {
+          record: this.props.record,
+          data: this.props.data,
+          step: this.props.step,
+          containerPath: this.props.containerPath
+        },
         {
           loadDomain: this.props.loadDomain,
-          extra_data: { data: { [config.requireField]: file } }
+          extraData: { data: { [config.requireField]: file } }
         },
         this
-      )
+      )) as object
       const value = getValue(response, config.responseField)
       this.props.onValueSet('', value, true)
       const extraField = config.extraResponseField || []
@@ -178,51 +185,41 @@ export default class UploadField extends Field<UploadFieldConfig, IUploadField, 
     throw new Error('Do not upload.')
   }
 
-  renderComponent = (props: IUploadField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现UploadField组件。
-      <div style={{ display: 'none' }}>
-        <input data-testid="upload-input" type='file' onChange={(file) => props.onChange(file.target.files?.[0])}/>
-      </div>
-    </React.Fragment>
+  renderComponent: (props: IUploadField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现UploadField组件。</>
   }
 
   render = () => {
-    const {
-      value,
-      config
-    } = this.props
+    const { value, config } = this.props
 
     if (config.mode === 'image') {
       return (
-        <React.Fragment>
+        <>
           {this.renderComponent({
             mode: 'image',
             value: value ? `${config.imagePrefix || ''}${value}` : undefined,
-            onChange: async (file) => await this.beforeUpload(file),
+            onChange: async (file) => this.beforeUpload(file),
             onCancel: async () => this.props.onValueSet('', '', true),
             disabled: getBoolean(config.disabled),
             readonly: getBoolean(config.readonly)
           })}
-        </React.Fragment>
+        </>
       )
-    } else if (config.mode === 'file') {
+    }
+    if (config.mode === 'file') {
       return (
-        <React.Fragment>
+        <>
           {this.renderComponent({
             mode: 'file',
             value,
-            onChange: async (file) => await this.beforeUpload(file),
+            onChange: async (file) => this.beforeUpload(file),
             onCancel: async () => this.props.onValueSet('', '', true),
             disabled: getBoolean(config.disabled),
             readonly: getBoolean(config.readonly)
           })}
-        </React.Fragment>
-      )
-    } else {
-      return (
-        <React.Fragment></React.Fragment>
+        </>
       )
     }
+    return <></>
   }
 }

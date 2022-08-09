@@ -1,8 +1,8 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
-import { setValue, getValue } from '../../../util/value'
+import { setValue, getValue, getChainPath } from '../../../util/value'
 import { DetailField, DetailFieldConfig, DetailFieldProps, IDetailField } from '../common'
-import getALLComponents, { DetailFieldConfigs } from '../'
+import getALLComponents, { DetailFieldConfigs } from '..'
 import { IDetailItem } from '../../../steps/detail'
 import ConditionHelper from '../../../util/condition'
 import { ColumnsConfig } from '../../../interface'
@@ -19,29 +19,37 @@ export interface IGroupField {
   children: React.ReactNode[]
 }
 
-interface IGroupFieldState {
-}
-
-export default class GroupField extends DetailField<GroupFieldConfig, IGroupField, any, IGroupFieldState> implements IDetailField<string> {
+export default class GroupField
+  extends DetailField<GroupFieldConfig, IGroupField, { [key: string]: unknown }>
+  implements IDetailField<{ [key: string]: unknown }>
+{
   // 各表单项对应的类型所使用的UI组件的类
-  getALLComponents = (type: any): typeof DetailField => getALLComponents[type]
+  getALLComponents = (type: string): typeof DetailField => getALLComponents[type]
 
-  detailFields: Array<DetailField<DetailFieldConfigs, {}, any> | null> = []
+  detailFields: Array<DetailField<DetailFieldConfigs, unknown, unknown> | null> = []
+
   detailFieldsMounted: Array<boolean> = []
 
-  constructor(props: DetailFieldProps<GroupFieldConfig, any>) {
+  constructor(props: DetailFieldProps<GroupFieldConfig, { [key: string]: unknown }>) {
     super(props)
 
     this.state = {}
   }
 
   get = async () => {
-    let data: any = {}
+    let data: { [key: string]: unknown } = {}
 
     if (Array.isArray(this.props.config.fields)) {
-      for (const detailFieldIndex in this.props.config.fields) {
+      for (let detailFieldIndex = 0; detailFieldIndex < this.props.config.fields.length; detailFieldIndex++) {
         const detailFieldConfig = this.props.config.fields[detailFieldIndex]
-        if (!ConditionHelper(detailFieldConfig.condition, { record: this.props.value, data: this.props.data, step: this.props.step })) {
+        if (
+          !ConditionHelper(detailFieldConfig.condition, {
+            record: this.props.value,
+            data: this.props.data,
+            step: this.props.step,
+            containerPath: this.props.containerPath
+          })
+        ) {
           continue
         }
         const detailField = this.detailFields[detailFieldIndex]
@@ -70,39 +78,27 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
     }
   }
 
-  handleChange = async (formFieldIndex: number, value: any) => {
-    // const formField = this.formFields[formFieldIndex]
-    // const formFieldConfig = this.props.config.fields[formFieldIndex]
-
-    // const formData = cloneDeep(this.state.formData)
-
-    // if (formField && formFieldConfig) {
-    //   if (this.props.onChange) {
-    //     if (formFieldConfig.field === '') {
-    //       await this.props.onChange(value)
-    //     } else {
-    //       const changeValue = setValue({}, formFieldConfig.field, value)
-    //       await this.props.onChange(changeValue)
-    //     }
-    //   }
-
-    //   const validation = await formField.validate(value)
-    //   if (validation === true) {
-    //     formData[formFieldIndex] = { value, status: 'normal' }
-    //   } else {
-    //     formData[formFieldIndex] = { value, status: 'error', message: validation[0].message }
-    //   }
-
-    //   await this.setState({
-    //     formData
-    //   })
-    // }
+  handleChange: (formFieldIndex: number, value: unknown) => Promise<void> = async () => {
+    /* 无逻辑 */
   }
 
-  handleValueSet = async (detailFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
+  handleValueSet = async (
+    detailFieldIndex: number,
+    path: string,
+    value: unknown,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      let fullPath = ''
+      if (options && options.noPathCombination) {
+        fullPath = path
+      } else if (detailFieldConfig.field === '' || path === '') {
+        fullPath = `${detailFieldConfig.field}${path}`
+      } else {
+        fullPath = `${detailFieldConfig.field}.${path}`
+      }
+
       await this.props.onValueSet(fullPath, value)
     }
   }
@@ -110,31 +106,64 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
   handleValueUnset = async (detailFieldIndex: number, path: string, options?: { noPathCombination?: boolean }) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      let fullPath = ''
+      if (options && options.noPathCombination) {
+        fullPath = path
+      } else if (detailFieldConfig.field === '' || path === '') {
+        fullPath = `${detailFieldConfig.field}${path}`
+      } else {
+        fullPath = `${detailFieldConfig.field}.${path}`
+      }
+
       await this.props.onValueUnset(fullPath)
     }
   }
 
-  handleValueListAppend = async (detailFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
+  handleValueListAppend = async (
+    detailFieldIndex: number,
+    path: string,
+    value: unknown,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      let fullPath = ''
+      if (options && options.noPathCombination) {
+        fullPath = path
+      } else if (detailFieldConfig.field === '' || path === '') {
+        fullPath = `${detailFieldConfig.field}${path}`
+      } else {
+        fullPath = `${detailFieldConfig.field}.${path}`
+      }
+
       await this.props.onValueListAppend(fullPath, value)
     }
   }
 
-  handleValueListSplice = async (detailFieldIndex: number, path: string, index: number, count: number, options?: { noPathCombination?: boolean }) => {
+  handleValueListSplice = async (
+    detailFieldIndex: number,
+    path: string,
+    index: number,
+    count: number,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const detailFieldConfig = (this.props.config.fields || [])[detailFieldIndex]
     if (detailFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (detailFieldConfig.field === '' || path === '' ? `${detailFieldConfig.field}${path}` : `${detailFieldConfig.field}.${path}`)
+      let fullPath = ''
+      if (options && options.noPathCombination) {
+        fullPath = path
+      } else if (detailFieldConfig.field === '' || path === '') {
+        fullPath = `${detailFieldConfig.field}${path}`
+      } else {
+        fullPath = `${detailFieldConfig.field}.${path}`
+      }
+
       await this.props.onValueListSplice(fullPath, index, count)
     }
   }
 
-  renderComponent = (props: IGroupField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现GroupField组件。
-    </React.Fragment>
+  renderComponent: (props: IGroupField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现GroupField组件。</>
   }
 
   /**
@@ -142,33 +171,31 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
    * 各UI库需重写该方法
    * @param props
    */
-  renderItemComponent = (props: IDetailItem) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现DetailItem组件。
-    </React.Fragment>
+  renderItemComponent: (props: IDetailItem) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现DetailItem组件。</>
   }
 
   render = () => {
-    const {
-      config,
-      formLayout,
-      value,
-      record,
-      data,
-      step
-    } = this.props
+    const { config, formLayout, value, record, data, step } = this.props
 
     return (
-      <React.Fragment>
+      <>
         {this.renderComponent({
           columns: config?.columns?.enable ? config.columns : undefined,
           children: (this.props.config.fields || []).map((detailFieldConfig, detailFieldIndex) => {
-            if (!ConditionHelper(detailFieldConfig.condition, { record: value, data: this.props.data, step: this.props.step })) {
+            if (
+              !ConditionHelper(detailFieldConfig.condition, {
+                record: value,
+                data: this.props.data,
+                step: this.props.step,
+                containerPath: this.props.containerPath
+              })
+            ) {
               this.detailFieldsMounted[detailFieldIndex] = false
               return null
             }
-            let hidden: boolean = true
-            let display: boolean = true
+            let hidden = true
+            let display = true
 
             // if (detailFieldConfig.type === 'hidden') {
             //   hidden = true
@@ -187,12 +214,12 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
               label: detailFieldConfig.label,
               columns: config.columns?.enable
                 ? {
-                  type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
-                  value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
-                  wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
-                  gap: config.columns?.gap || 0,
-                  rowGap: config.columns?.rowGap || 0
-                }
+                    type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                    value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
+                    wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                    gap: config.columns?.gap || 0,
+                    rowGap: config.columns?.rowGap || 0
+                  }
                 : undefined,
               styles: detailFieldConfig.styles,
               layout: formLayout,
@@ -208,7 +235,7 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
                   handlePageRedirect={this.props.handlePageRedirect}
                   onUnmount={this.props.onUnmount}
                   key={detailFieldIndex}
-                  ref={(detailField: DetailField<DetailFieldConfigs, any, any> | null) => {
+                  ref={(detailField: DetailField<DetailFieldConfigs, unknown, unknown> | null) => {
                     if (detailFieldIndex !== null) {
                       this.detailFields[detailFieldIndex] = detailField
                       this.handleMount(detailFieldIndex)
@@ -221,25 +248,30 @@ export default class GroupField extends DetailField<GroupFieldConfig, IGroupFiel
                   step={step}
                   config={detailFieldConfig}
                   detail={this.props.detail}
-                  onChange={async (value: any) => { await this.handleChange(detailFieldIndex, value) }}
-                  onValueSet={async (path, value, options) => this.handleValueSet(detailFieldIndex, path, value, options)}
+                  onChange={async (valueChange: unknown) => {
+                    await this.handleChange(detailFieldIndex, valueChange)
+                  }}
+                  onValueSet={async (path, valueSet, options) =>
+                    this.handleValueSet(detailFieldIndex, path, valueSet, options)
+                  }
                   onValueUnset={async (path, options) => this.handleValueUnset(detailFieldIndex, path, options)}
-                  onValueListAppend={async (path, value, options) => this.handleValueListAppend(detailFieldIndex, path, value, options)}
-                  onValueListSplice={async (path, index, count, options) => this.handleValueListSplice(detailFieldIndex, path, index, count, options)}
+                  onValueListAppend={async (path, valueAppend, options) =>
+                    this.handleValueListAppend(detailFieldIndex, path, valueAppend, options)
+                  }
+                  onValueListSplice={async (path, index, count, options) =>
+                    this.handleValueListSplice(detailFieldIndex, path, index, count, options)
+                  }
                   baseRoute={this.props.baseRoute}
-                  loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                  loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                  containerPath={getChainPath(this.props.containerPath, config.field)}
                 />
               )
             }
             // 渲染表单项容器
-            return (
-              hidden
-                ? this.renderItemComponent(renderData)
-                : <React.Fragment key={detailFieldIndex} />
-            )
+            return hidden ? this.renderItemComponent(renderData) : <React.Fragment key={detailFieldIndex} />
           })
         })}
-      </React.Fragment>
+      </>
     )
   }
 }

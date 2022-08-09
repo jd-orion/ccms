@@ -7,11 +7,12 @@
  * - content: 内容
  */
 export interface RichStringConfig {
-  type: 'plain' | 'markdown' | 'html';
-  content: string;
+  type: 'plain' | 'markdown' | 'html'
+  content: string
 }
 
 export type ParamConfig =
+  | RelativeParamConfig
   | RecordParamConfig
   | DataParamConfig
   | StepParamConfig
@@ -20,55 +21,61 @@ export type ParamConfig =
   | QueryParamConfig
   | HashParamConfig
   | InterfaceParamConfig
-  | StaticParamConfig;
+  | StaticParamConfig
+
+export interface RelativeParamConfig {
+  source: 'relative'
+  relative: number
+  field: string
+}
 
 export interface RecordParamConfig {
-  source: 'record';
-  field: string;
+  source: 'record'
+  field: string
 }
 
 export interface DataParamConfig {
-  source: 'data';
-  field: string;
+  source: 'data'
+  field: string
 }
 
 export interface StepParamConfig {
-  source: 'step';
-  step: number;
-  field: string;
+  source: 'step'
+  step: number
+  field: string
 }
 
 export interface SourceParamConfig {
-  source: 'source';
-  field: string;
+  source: 'source'
+  field: string
 }
 
 interface URLParamConfig {
-  source: 'url';
-  field: string;
+  source: 'url'
+  field: string
 }
 interface QueryParamConfig {
-  source: 'query';
-  filed: any;
+  source: 'query'
+  filed: unknown
 }
 interface HashParamConfig {
-  source: 'hash';
-  filed: any;
+  source: 'hash'
+  filed: unknown
 }
 interface InterfaceParamConfig {
-  source: 'interface';
+  source: 'interface'
   // api: {
   //   url: string,
   //   method: 'POST',
   //   contentType: 'json',
   //   withCredentials: true
   // },
-  api: object;
-  apiResponse: string;
+  api: object
+  apiResponse: string
 }
 interface StaticParamConfig {
-  source: 'static';
-  value: any;
+  source: 'static'
+  value: unknown
 }
 
 /**
@@ -81,10 +88,10 @@ interface StaticParamConfig {
  * - * gap: 分栏边距
  */
 export interface ColumnsConfig {
-  enable?: boolean;
-  type?: 'span' | 'width';
-  value?: number | string;
-  wrap?: boolean;
-  gap?: number | string;
-  rowGap?: number | string;
+  enable?: boolean
+  type?: 'span' | 'width'
+  value?: number | string
+  wrap?: boolean
+  gap?: number | string
+  rowGap?: number | string
 }

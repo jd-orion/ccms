@@ -47,14 +47,17 @@ export interface IDiffCodeFieldContainer {
   exitFull: () => void
 }
 interface DiffCodeFieldValue {
-   [field: string]: any
+  [field: string]: any
 }
 interface State {
   fullScreenStatus: boolean // 编辑器是不是处于全屏状态
 }
 
-export default class DiffCodeField extends Field<DiffCodeFieldConfig, IDiffCodeField, DiffCodeFieldValue> implements IField<DiffCodeFieldValue> {
-  state:State = {
+export default class DiffCodeField
+  extends Field<DiffCodeFieldConfig, IDiffCodeField, DiffCodeFieldValue>
+  implements IField<DiffCodeFieldValue>
+{
+  state: State = {
     fullScreenStatus: false
   }
 
@@ -64,7 +67,7 @@ export default class DiffCodeField extends Field<DiffCodeFieldConfig, IDiffCodeF
 
   reset: () => Promise<DiffCodeFieldValue> = async () => {
     const defaults = await this.defaultValue()
-    return (defaults === undefined) ? '' : defaults
+    return defaults === undefined ? {} : defaults
   }
 
   validate = async (value: DiffCodeFieldValue): Promise<true | FieldError[]> => {
@@ -78,7 +81,7 @@ export default class DiffCodeField extends Field<DiffCodeFieldConfig, IDiffCodeF
     if (this.props.config.fullScreen) {
       if ((e.key === 'j' || keyCode === 74) && ctrlKey) {
         this.enterFull()
-      } else if ((e.key === 'Escape' || keyCode === 27)) {
+      } else if (e.key === 'Escape' || keyCode === 27) {
         this.exitFull()
       }
     }
@@ -93,38 +96,33 @@ export default class DiffCodeField extends Field<DiffCodeFieldConfig, IDiffCodeF
   }
 
   renderContainer = (props: IDiffCodeFieldContainer) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现CodeField的container组件。
-      <div style={{ display: 'none' }}>
-      </div>
-    </React.Fragment>
+    return (
+      <>
+        您当前使用的UI版本没有实现CodeField的container组件。
+        <div style={{ display: 'none' }} />
+      </>
+    )
   }
 
   renderComponent = (props: IDiffCodeField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现CodeField组件。
-      <div style={{ display: 'none' }}>
-      </div>
-    </React.Fragment>
+    return (
+      <>
+        您当前使用的UI版本没有实现CodeField组件。
+        <div style={{ display: 'none' }} />
+      </>
+    )
   }
 
   render = () => {
     const {
       value,
-      config: {
-        theme,
-        fullScreen,
-        height,
-        codeType,
-        originalCodeField,
-        modifiedCodeField
-      }
+      config: { theme, fullScreen, height, codeType, originalCodeField, modifiedCodeField }
     } = this.props
     const { fullScreenStatus } = this.state
     const originalCode = get(value, originalCodeField) || ''
     const modifiedCode = get(value, modifiedCodeField) || ''
     return (
-      <React.Fragment>
+      <>
         {this.renderContainer({
           fullScreenStatus,
           fullScreen,
@@ -141,7 +139,7 @@ export default class DiffCodeField extends Field<DiffCodeFieldConfig, IDiffCodeF
             height
           })
         })}
-      </React.Fragment>
+      </>
     )
   }
 }

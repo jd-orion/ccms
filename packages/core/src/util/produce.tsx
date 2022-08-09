@@ -17,14 +17,14 @@ setAutoFreeze(false)
  * @param value
  * @returns
  */
-export function set(current: any, path?: string, value?: any) {
-  const target = produce<any>(current, (draft: any) => {
+export function set(current: unknown, path: string, value?: unknown) {
+  const target = produce<unknown>(current, (draft) => {
     if (path) {
       if (arguments.length === 2) {
         // 移除对象路径的属性 参数改动时同步修改这块
         lodash.unset(draft, path)
       } else {
-        return lodash.set(draft, path, value)
+        return lodash.set(draft as object, path, value)
       }
     }
     return draft
@@ -38,14 +38,14 @@ export function set(current: any, path?: string, value?: any) {
  * @param value
  * @returns
  */
-export const push = (current: any, path = '', value?: any) => {
-  const target = produce<any>(current, (draft: any) => {
+export const push = (current: unknown, path: string, value?: unknown) => {
+  const target = produce<unknown>(current, (draft) => {
     const list = lodash.get(draft, path)
     if (!Array.isArray(list)) {
       // 如果指定路径下不是数组类型
-      const tempArr: any[] = []
+      const tempArr: unknown[] = []
       tempArr.push(value)
-      lodash.set(draft, path, tempArr)
+      lodash.set(draft as object, path, tempArr)
     } else {
       list.push(value)
     }
@@ -61,8 +61,8 @@ export const push = (current: any, path = '', value?: any) => {
  * @param count
  * @returns
  */
-export const splice = (current: any, path = '', index: number, count: number) => {
-  const target = produce<any>(current, (draft: any) => {
+export const splice = (current: unknown, path: string, index: number, count: number) => {
+  const target = produce<unknown>(current, (draft) => {
     const list = lodash.get(draft, path, [])
     list.splice(index, count)
   })
@@ -77,8 +77,13 @@ export const splice = (current: any, path = '', index: number, count: number) =>
  * @param sortType
  * @returns
  */
-export const sort = (current: any, path = '', index: number, sortType: 'up' | 'down') => {
-  const target = produce<any>(current, (draft: any) => {
+export const sort = (
+  current: unknown,
+  path: string,
+  index: number,
+  sortType: 'up' | 'down' | 'top' | 'bottom' | number
+) => {
+  const target = produce<unknown>(current, (draft) => {
     const list = lodash.get(draft, path, [])
     listItemMove(list, index, sortType)
   })
@@ -91,26 +96,29 @@ export const sort = (current: any, path = '', index: number, sortType: 'up' | 'd
  * @param b 来源对象
  * @returns
  */
-const merge = (a: any, b: any): any => {
-  return lodash.assignInWith(a, b, (a, b) => {
-    if (lodash.isUndefined(a) && lodash.isArray(b)) {
-      a = []
+const merge = (a: unknown, b: unknown): unknown => {
+  return lodash.assignInWith(a, b, (_a, _b) => {
+    if (lodash.isUndefined(_a) && lodash.isArray(b)) {
+      // eslint-disable-next-line no-param-reassign
+      _a = []
     }
-    if (lodash.isObject(b)) {
-      if (lodash.isArray(a)) {
-        return merge(a, b).filter((i: any) => i !== undefined)
+    if (lodash.isObject(_b)) {
+      if (lodash.isArray(_a)) {
+        return (merge(_a, _b) as unknown[]).filter((i: unknown) => i !== undefined)
       }
-      return merge(a, b)
+      return merge(_a, _b)
     }
   })
 }
 
-export const setValue = (obj: any, path = '', value: any) => {
-  const target = produce<any>(obj, (draft: any) => {
+export const setValue = (current: unknown, path: string, value: unknown) => {
+  const target = produce<unknown>(current, (draft) => {
     if (path === '') {
       if (Object.prototype.toString.call(value) === '[object Object]') {
+        // eslint-disable-next-line no-param-reassign
         draft = merge(draft, value)
       } else if (value !== undefined) {
+        // eslint-disable-next-line no-param-reassign
         draft = value
       }
     } else {
@@ -119,9 +127,9 @@ export const setValue = (obj: any, path = '', value: any) => {
         Object.prototype.toString.call(value) === '[object Object]' &&
         Object.prototype.toString.call(source) === '[object Object]'
       ) {
-        lodash.set(draft, path, merge(source, value))
+        lodash.set(draft as object, path, merge(source, value))
       } else {
-        lodash.set(draft, path, value)
+        lodash.set(draft as object, path, value)
       }
     }
   })
