@@ -513,7 +513,7 @@ export default class FormField
                           !ConditionHelper(
                             formFieldConfig.condition,
                             {
-                              record: itemValue as object,
+                              record: itemValue as { [field: string]: unknown },
                               data: this.props.data,
                               step: this.props.step,
                               containerPath: this.props.containerPath,
@@ -567,7 +567,7 @@ export default class FormField
                           extra: StatementHelper(
                             formFieldConfig.extra,
                             {
-                              record: itemValue as object,
+                              record: itemValue as { [field: string]: unknown },
                               data: this.props.data,
                               step: this.props.step,
                               containerPath: this.props.containerPath,
