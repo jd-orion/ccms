@@ -41,7 +41,7 @@ export default class SwitchField
           onChange: async (valueChange: boolean) =>
             this.props.onValueSet(
               '',
-              value ? valueTrue : valueFalse,
+              valueChange ? valueTrue : valueFalse,
               await this.validate(valueChange ? valueTrue : valueFalse)
             )
         })}
