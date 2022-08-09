@@ -118,9 +118,9 @@ export default class DetailOperation extends DetailField<OperationDetailConfig, 
         let hidden = false
         if (actions[index].handle && actions[index].handle.type === 'ccms') {
           if (actions[index].handle.page !== undefined) {
-            this.checkPageAuth(actions[index].handle.page.toString())
+            this.checkPageAuth(String(actions[index].handle.page))
           }
-          hidden = actions[index].handle.page === undefined || !pageAuth[actions[index].handle.page.toString()]
+          hidden = actions[index].handle.page === undefined || !pageAuth[String(actions[index].handle.page)]
           if (hidden) continue
         }
         const OperationHelperWrapper = (
