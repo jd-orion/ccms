@@ -117,7 +117,7 @@ export default class FormFieldComponent extends FormField {
         <Collapse accordion bordered={false} className={styles['ccms-antd-mini-formField-form']}>
           {children}
         </Collapse>
-        {children.length > 0 && onInsert ? (
+        {children?.length > 0 && onInsert ? (
           <div className={styles['ccms-antd-mini-formField-form-after-button']}>
             <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>
               {insertText}
