@@ -87,7 +87,7 @@ export default class ObjectField<S>
             !ConditionHelper(
               formFieldConfig.condition,
               {
-                record: this.props.value[key] as object,
+                record: this.props.value[key] as { [field: string]: unknown },
                 data: this.props.data,
                 step: this.props.step,
                 containerPath: this.props.containerPath
