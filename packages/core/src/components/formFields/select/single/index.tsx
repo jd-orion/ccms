@@ -44,19 +44,22 @@ export default class SelectSingleField<UIState = object> extends SelectField<
   }
 
   get = async () => {
-    const { value } = this.props
-    if (this.props.config.moreSubmit && this.props.config.moreSubmit.valueField) {
+    const {
+      value,
+      config: { moreSubmit }
+    } = this.props
+    if (moreSubmit && moreSubmit.valueField) {
       let result = {}
 
-      const currentValue = getValue(value, this.props.config.moreSubmit.valueField)
-      result = setValue(result, this.props.config.moreSubmit.valueField, currentValue) as { [key: string]: unknown }
+      const currentValue = getValue(value, moreSubmit.valueField)
+      result = setValue(result, moreSubmit.valueField, currentValue) as { [key: string]: unknown }
 
       const options = this.options(this.props.config.options)
       const option = options.find((currentOption) => currentOption.value === currentValue)
 
       if (option) {
-        if (this.props.config.moreSubmit.labelField) {
-          result = setValue(result, this.props.config.moreSubmit.labelField, option.label) as { [key: string]: unknown }
+        if (moreSubmit.labelField) {
+          result = setValue(result, moreSubmit.labelField, option.label) as { [key: string]: unknown }
         }
         if (option.extra) {
           result = setValue(result, '', option.extra) as { [key: string]: unknown }
@@ -81,15 +84,18 @@ export default class SelectSingleField<UIState = object> extends SelectField<
   }
 
   handleChange = async (valueChange, options) => {
-    if (this.props.config.moreSubmit && this.props.config.moreSubmit.valueField) {
-      let value: { [key: string]: unknown } = setValue({}, this.props.config.moreSubmit.valueField, valueChange) as {
+    const {
+      config: { moreSubmit }
+    } = this.props
+    if (moreSubmit && moreSubmit.valueField) {
+      let value: { [key: string]: unknown } = setValue({}, moreSubmit.valueField, valueChange) as {
         [key: string]: unknown
       }
 
       const option = options.find((currentOption) => currentOption.value === valueChange)
       if (option) {
-        if (this.props.config.moreSubmit.labelField) {
-          value = setValue(value, this.props.config.moreSubmit.labelField, option.label) as { [key: string]: unknown }
+        if (moreSubmit.labelField) {
+          value = setValue(value, moreSubmit.labelField, option.label) as { [key: string]: unknown }
         }
         if (option.extra) {
           value = setValue(value, '', option.extra) as { [key: string]: unknown }
@@ -105,7 +111,16 @@ export default class SelectSingleField<UIState = object> extends SelectField<
   render = () => {
     const {
       value,
-      config: { mode = 'dropdown', options: optionsConfig, defaultSelect, disabled, readonly, placeholder }
+      config: {
+        mode = 'dropdown',
+        options: optionsConfig,
+        defaultSelect,
+        disabled,
+        readonly,
+        placeholder,
+        moreSubmit,
+        canClear
+      }
     } = this.props
 
     const options = this.options(optionsConfig)
@@ -114,7 +129,7 @@ export default class SelectSingleField<UIState = object> extends SelectField<
       value: undefined,
       options,
       onChange: async (valueChange) => this.handleChange(valueChange, options),
-      onClear: this.props.config.canClear
+      onClear: canClear
         ? async () => {
             await this.props.onValueSet('', undefined, await this.validate(undefined))
           }
@@ -125,8 +140,8 @@ export default class SelectSingleField<UIState = object> extends SelectField<
     }
 
     let currentValue = value
-    if (this.props.config.moreSubmit && this.props.config.moreSubmit.valueField && typeof value === 'object') {
-      currentValue = getValue(value, this.props.config.moreSubmit.valueField)
+    if (moreSubmit && moreSubmit.valueField && typeof value === 'object') {
+      currentValue = getValue(value, moreSubmit.valueField)
     }
     if (currentValue === undefined) {
       if (defaultSelect !== undefined && defaultSelect !== false && props.options.length) {
