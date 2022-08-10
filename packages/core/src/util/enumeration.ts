@@ -1,7 +1,9 @@
+import { get } from 'lodash'
 import { InterfaceConfig } from './interface'
 import { getValue } from './value'
 import { ParamConfig } from '../interface'
 import ParamHelper from './param'
+import { set } from './produce'
 
 export type EnumerationOptionsConfig =
   | ManualEnumerationOptionsConfig
@@ -13,7 +15,10 @@ interface ManualEnumerationOptionsConfig {
   data?: Array<{
     value: string | number | boolean
     label: string
-    [extra: string]: unknown
+    extra?: {
+      field: string
+      value: unknown
+    }[]
   }>
 }
 
@@ -37,6 +42,12 @@ export interface InterfaceEnumerationOptionsListConfig {
   type: 'list'
   keyField: string
   labelField: string
+  extra?: [
+    {
+      sourceField: string
+      targetField: string
+    }
+  ]
 }
 
 export default class EnumerationHelper {
@@ -66,15 +77,23 @@ export default class EnumerationHelper {
       step: { [field: string]: unknown }
       containerPath: string
     }
-  ): Promise<{ value: unknown; label: string }[]> {
+  ): Promise<{ value: unknown; label: string; extra?: { [key: string]: unknown } }[]> {
     if (config) {
       if (config.from === 'manual') {
         if (config.data) {
           return config.data.map((option) => {
-            return {
-              value: option.value,
-              label: option.label
+            const { value, label, extra } = option
+            const result: { value: unknown; label: string; extra?: { [key: string]: unknown } } = {
+              value,
+              label
             }
+            if (extra) {
+              result.extra = {}
+              for (const { field: extraField, value: extraValue } of extra || []) {
+                result.extra[extraField] = extraValue
+              }
+            }
+            return result
           })
         }
       } else if (config.from === 'interface') {
@@ -89,13 +108,21 @@ export default class EnumerationHelper {
             }
             if (config.format.type === 'list') {
               return (data as unknown[]).map((item: unknown) => {
-                if (config.format && config.format.type === 'list') {
-                  return {
-                    value: getValue(item, config.format.keyField),
-                    label: getValue(item, config.format.labelField)
+                const formatConfig = config.format as InterfaceEnumerationOptionsListConfig
+                let extra = {}
+                if (formatConfig.extra) {
+                  for (let extraIndex = 0; extraIndex < formatConfig.extra.length; extraIndex++) {
+                    const extraConfig = formatConfig.extra[extraIndex]
+                    extra = set(extra, extraConfig.targetField, get(item, extraConfig.sourceField)) as {
+                      [key: string]: unknown
+                    }
                   }
                 }
-                return item as { value: unknown; label: string }
+                return {
+                  value: getValue(item, formatConfig.keyField),
+                  label: getValue(item, formatConfig.labelField),
+                  extra
+                }
               })
             }
           }
@@ -113,9 +140,20 @@ export default class EnumerationHelper {
             if (config.format.type === 'list') {
               if (Array.isArray(data)) {
                 return data.map((item: unknown) => {
+                  const formatConfig = config.format as InterfaceEnumerationOptionsListConfig
+                  let extra = {}
+                  if (formatConfig.extra) {
+                    for (let extraIndex = 0; extraIndex < formatConfig.extra.length; extraIndex++) {
+                      const extraConfig = formatConfig.extra[extraIndex]
+                      extra = set(extra, extraConfig.targetField, get(item, extraConfig.sourceField)) as {
+                        [key: string]: unknown
+                      }
+                    }
+                  }
                   return {
-                    value: getValue(item, (config.format as InterfaceEnumerationOptionsListConfig).keyField),
-                    label: getValue(item, (config.format as InterfaceEnumerationOptionsListConfig).labelField)
+                    value: getValue(item, formatConfig.keyField),
+                    label: getValue(item, formatConfig.labelField),
+                    extra
                   }
                 })
               }

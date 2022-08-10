@@ -99,7 +99,7 @@ export default class DetailOperation extends DetailField<OperationDetailConfig, 
    * 处理按钮列表按钮项回调
    * @param action 按钮项配置
    */
-  handleCallback = async (action: ActionConfig, success: boolean) => { }
+  handleCallback = async (action: ActionConfig, success: boolean) => {}
 
   render = () => {
     const {

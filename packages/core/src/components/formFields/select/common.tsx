@@ -6,6 +6,10 @@ import { Field, FieldConfig, FieldProps, IField, Display, DisplayProps } from '.
 
 export interface SelectFieldConfig extends FieldConfig {
   options?: EnumerationOptionsConfig
+  moreSubmit?: {
+    valueField?: string
+    labelField?: string
+  }
   defaultSelect?: boolean | number
 }
 
@@ -19,7 +23,7 @@ interface SelectSingleFieldState {
   options: Array<{
     value: string | number | boolean
     label: string
-    [extra: string]: unknown
+    extra?: { [key: string]: unknown }
   }>
 }
 
@@ -65,7 +69,8 @@ export default class SelectField<C extends SelectFieldConfig, E, T>
           this.setState({
             options: options.map((option) => ({
               value: option.value as string | number | boolean,
-              label: option.label
+              label: option.label,
+              extra: option.extra
             }))
           })
         }
@@ -115,7 +120,8 @@ export class SelectDisplay<C extends SelectFieldConfig, E, T> extends Display<C,
           this.setState({
             options: options.map((option) => ({
               value: option.value as string | number | boolean,
-              label: option.label
+              label: option.label,
+              extra: option.extra
             }))
           })
         }
