@@ -284,7 +284,7 @@ export default class GroupField
     formFieldIndex: number,
     path: string,
     index: number,
-    sortType: 'up' | 'down' | 'top' | 'bottom',
+    sortType: 'up' | 'down' | 'top' | 'bottom' | number,
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {

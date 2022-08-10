@@ -233,7 +233,12 @@ export default class FormStep extends Step<FormConfig, FormState> {
     this.formData = []
 
     if (this.props.config.defaultValue) {
-      let formDefault = ParamHelper(this.props.config.defaultValue, { data, step, containerPath: '' })
+      let formDefault = ParamHelper(this.props.config.defaultValue, {
+        record: this.formValue,
+        data,
+        step,
+        containerPath: ''
+      })
 
       if (this.props.config.unstringify) {
         for (const field of this.props.config.unstringify) {
@@ -600,7 +605,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
     formFieldIndex: number,
     path: string,
     index: number,
-    sortType: 'up' | 'down' | 'top' | 'bottom',
+    sortType: 'up' | 'down' | 'top' | 'bottom' | number,
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {
@@ -854,6 +859,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 status,
                 message: formData[formFieldIndex]?.message || '',
                 extra: StatementHelper(formFieldConfig.extra, {
+                  record: formValue,
                   data: this.props.data,
                   step: formValue,
                   containerPath: ''

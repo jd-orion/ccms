@@ -7,7 +7,7 @@ import { Field } from '../components/formFields/common'
 export default function ParamHelper(
   config: ParamConfig,
   datas: {
-    record?: object
+    record: { [field: string]: unknown }
     data: object[]
     step: { [field: string]: unknown }
     containerPath: string

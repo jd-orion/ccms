@@ -276,7 +276,7 @@ export default class FormField extends Display<FormFieldConfig, IFormField, { [k
         {this.renderComponent({
           canCollapse,
           children: this.state.didMount
-            ? (Array.isArray(value) ? value : []).map((itemValue: object, index: number) => {
+            ? (Array.isArray(value) ? value : []).map((itemValue: { [key: string]: unknown }, index: number) => {
                 return (
                   <React.Fragment key={index}>
                     {this.renderItemComponent({

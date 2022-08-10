@@ -316,7 +316,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
    * @param record
    * @returns
    */
-  handleRowOperation = async (operation: TableOperationConfig, record?: { [field: string]: unknown }) => {
+  handleRowOperation = async (operation: TableOperationConfig, record: { [field: string]: unknown } = {}) => {
     const { data, step } = this.props
     if (operation.check && operation.check.enable) {
       const checkResult = await this.interfaceHelper.request(
@@ -725,6 +725,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         props.description = {
           type: 'text',
           label: StatementHelper(description.label, {
+            record: this.props.step,
             data: this.props.data,
             step: this.props.step,
             containerPath: ''
@@ -736,6 +737,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         props.description = {
           type: 'tooltip',
           label: StatementHelper(description.label, {
+            record: this.props.step,
             data: this.props.data,
             step: this.props.step,
             containerPath: ''
@@ -747,6 +749,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         props.description = {
           type: 'modal',
           label: StatementHelper(description.label, {
+            record: this.props.step,
             data: this.props.data,
             step: this.props.step,
             containerPath: ''
@@ -761,6 +764,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
           case 'plain':
             props.description &&
               (props.description.content = StatementHelper(description.content, {
+                record: this.props.step,
                 data: this.props.data,
                 step: this.props.step,
                 containerPath: ''
@@ -774,6 +778,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   dangerouslySetInnerHTML={{
                     __html: marked(
                       StatementHelper(description.content, {
+                        record: this.props.step,
                         data: this.props.data,
                         step: this.props.step,
                         containerPath: ''
@@ -790,6 +795,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   // eslint-disable-next-line react/no-danger
                   dangerouslySetInnerHTML={{
                     __html: StatementHelper(description.content, {
+                      record: this.props.step,
                       data: this.props.data,
                       step: this.props.step,
                       containerPath: ''

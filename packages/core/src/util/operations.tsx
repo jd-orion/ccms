@@ -92,9 +92,19 @@ type OperationsHelperProps<Operation = OperationConfig> = {
   config: OperationsConfig<Operation>
   onClick: (
     config: Operation | undefined,
-    datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
+    datas: {
+      record: { [field: string]: unknown }
+      data: object[]
+      step: { [field: string]: unknown }
+      containerPath: string
+    }
   ) => (children: (onClick: () => void) => JSX.Element) => JSX.Element
-  datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
+  datas: {
+    record: { [field: string]: unknown }
+    data: object[]
+    step: { [field: string]: unknown }
+    containerPath: string
+  }
   checkPageAuth: (pageID: unknown) => Promise<boolean>
   loadPageURL: (pageID: unknown) => Promise<string>
   loadPageFrameURL: (pageID: unknown) => Promise<string>
@@ -145,7 +155,12 @@ export default class OperationsHelper<Operation = OperationConfig> extends React
 
   beforeClick: (
     config: OperationConfigLeaf<Operation>,
-    datas: { record?: object; data: object[]; step: { [field: string]: unknown }; containerPath: string }
+    datas: {
+      record: { [field: string]: unknown }
+      data: object[]
+      step: { [field: string]: unknown }
+      containerPath: string
+    }
   ) => Promise<boolean> = async (config, datas) => {
     const { loadDomain } = this.props
 
