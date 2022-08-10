@@ -15,7 +15,10 @@ interface ManualEnumerationOptionsConfig {
   data?: Array<{
     value: string | number | boolean
     label: string
-    [extra: string]: unknown
+    extra?: {
+      field: string
+      value: unknown
+    }[]
   }>
 }
 
@@ -79,12 +82,18 @@ export default class EnumerationHelper {
       if (config.from === 'manual') {
         if (config.data) {
           return config.data.map((option) => {
-            const { value, label, ...extra } = option
-            return {
+            const { value, label, extra } = option
+            const result: { value: unknown; label: string; extra?: { [key: string]: unknown } } = {
               value,
-              label,
-              extra
+              label
             }
+            if (extra) {
+              result.extra = {}
+              for (const { field: extraField, value: extraValue } of extra || []) {
+                result.extra[extraField] = extraValue
+              }
+            }
+            return result
           })
         }
       } else if (config.from === 'interface') {

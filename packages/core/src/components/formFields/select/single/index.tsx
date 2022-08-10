@@ -138,7 +138,6 @@ export default class SelectSingleField<UIState = object> extends SelectField<
       !props.options.map((option) => option.value).includes(currentValue)
     ) {
       currentValue = undefined
-      this.handleChange(undefined, options)
     }
 
     props.value = currentValue
