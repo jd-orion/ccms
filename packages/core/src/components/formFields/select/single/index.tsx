@@ -1,7 +1,7 @@
 import React from 'react'
 import { FieldError } from '../../common'
 import SelectField, { SelectFieldConfig, ISelectFieldOption } from '../common'
-import { getBoolean } from '../../../../util/value'
+import { getBoolean, getValue, setValue } from '../../../../util/value'
 
 export interface SelectSingleFieldConfig extends SelectFieldConfig {
   type: 'select_single'
@@ -20,55 +20,16 @@ export interface ISelectSingleField {
   placeholder?: string
 }
 
-export default class SelectSingleField extends SelectField<SelectSingleFieldConfig, {}, string | number | boolean | undefined> {
-  // reset = async () => {
-  //   const defaults = await this.defaultValue()
-
-  //   if (defaults === undefined) {
-  //     const {
-  //       config: {
-  //         options
-  //       }
-  //     } = this.props
-
-  //     if (options && options.from === 'interface' && options.interface) {
-  //       const response = await this.interfaceHelper.request(options.interface, { record: this.props.record, data: this.props.data, step: this.props.step })
-
-  //       if (options.format?.type === 'kv') {
-  //         interfaceOptionsData = Object.keys(response).map((key) => ({
-  //           value: key,
-  //           label: response[key]
-  //         }))
-  //       } else if (options.response.data?.type === 'list') {
-  //         interfaceOptionsData = response.map((item: any) => {
-  //           if (options.response.data?.type === 'list') {
-  //             return ({
-  //               value: getValue(item, options.response.data.keyField),
-  //               label: getValue(item, options.response.data.labelField)
-  //             })
-  //           }
-  //           return {}
-  //         })
-  //       }
-  //       return options.defaultIndex === undefined ? undefined : interfaceOptionsData[options.defaultIndex || 0].value
-  //     }
-  //     return undefined
-  //   } else {
-  //     if (typeof defaults === 'string' || typeof defaults === 'number') {
-  //       return defaults
-  //     } else {
-  //       console.warn('单项选择框的值需要是字符串或数值。')
-  //       return undefined
-  //     }
-  //   }
-  // }
-
-  validate = async (_value: string | number | boolean | undefined): Promise<true | FieldError[]> => {
+export default class SelectSingleField<UIState = object> extends SelectField<
+  SelectSingleFieldConfig,
+  UIState,
+  string | number | boolean | { [key: string]: unknown } | undefined
+> {
+  validate = async (
+    _value: string | number | boolean | { [key: string]: unknown } | undefined
+  ): Promise<true | FieldError[]> => {
     const {
-      config: {
-        label,
-        required
-      }
+      config: { label, required }
     } = this.props
 
     const errors: FieldError[] = []
@@ -82,80 +43,112 @@ export default class SelectSingleField extends SelectField<SelectSingleFieldConf
     return errors.length ? errors : true
   }
 
-  renderDorpdownComponent = (props: ISelectSingleField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现SelectSingleField组件的SelectSingle模式。
-      <div style={{ display: 'none' }}>
-        <button onClick={() => props.onChange('onChange')}>onChange</button>
-      </div>
-    </React.Fragment>
+  get = async () => {
+    const { value } = this.props
+    if (this.props.config.moreSubmit && this.props.config.moreSubmit.valueField) {
+      let result = {}
+
+      const currentValue = getValue(value, this.props.config.moreSubmit.valueField)
+      result = setValue(result, this.props.config.moreSubmit.valueField, currentValue) as { [key: string]: unknown }
+
+      const options = this.options(this.props.config.options)
+      const option = options.find((currentOption) => currentOption.value === currentValue)
+
+      if (option) {
+        if (this.props.config.moreSubmit.labelField) {
+          result = setValue(result, this.props.config.moreSubmit.labelField, option.label) as { [key: string]: unknown }
+        }
+        if (option.extra) {
+          result = setValue(result, '', option.extra) as { [key: string]: unknown }
+        }
+      }
+
+      return result
+    }
+    return value
   }
 
-  renderRadioComponent = (props: ISelectSingleField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现SelectSingleField组件的Radio模式。
-      <div style={{ display: 'none' }}>
-        <button onClick={() => props.onChange('onChange')}>onChange</button>
-      </div>
-    </React.Fragment>
+  renderDorpdownComponent: (props: ISelectSingleField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现SelectSingleField组件的SelectSingle模式。</>
   }
 
-  renderButtonComponent = (props: ISelectSingleField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现SelectSingleField组件的Button模式。
-      <div style={{ display: 'none' }}>
-        <button onClick={() => props.onChange('onChange')}>onChange</button>
-      </div>
-    </React.Fragment>
+  renderRadioComponent: (props: ISelectSingleField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现SelectSingleField组件的Radio模式。</>
+  }
+
+  renderButtonComponent: (props: ISelectSingleField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现SelectSingleField组件的Button模式。</>
+  }
+
+  handleChange = async (valueChange, options) => {
+    if (this.props.config.moreSubmit && this.props.config.moreSubmit.valueField) {
+      let value: { [key: string]: unknown } = setValue({}, this.props.config.moreSubmit.valueField, valueChange) as {
+        [key: string]: unknown
+      }
+
+      const option = options.find((currentOption) => currentOption.value === valueChange)
+      if (option) {
+        if (this.props.config.moreSubmit.labelField) {
+          value = setValue(value, this.props.config.moreSubmit.labelField, option.label) as { [key: string]: unknown }
+        }
+        if (option.extra) {
+          value = setValue(value, '', option.extra) as { [key: string]: unknown }
+        }
+      }
+
+      await this.props.onValueSet('', value, await this.validate(value))
+    } else {
+      await this.props.onValueSet('', valueChange, await this.validate(valueChange))
+    }
   }
 
   render = () => {
     const {
       value,
-      config: {
-        mode = 'dropdown',
-        options: optionsConfig,
-        defaultSelect,
-        disabled,
-        readonly,
-        placeholder
-      }
+      config: { mode = 'dropdown', options: optionsConfig, defaultSelect, disabled, readonly, placeholder }
     } = this.props
+
+    const options = this.options(optionsConfig)
 
     const props: ISelectSingleField = {
       value: undefined,
-      options: this.options(optionsConfig),
-      onChange: async (value) => { await this.props.onValueSet('', value, await this.validate(value)) },
-      onClear: this.props.config.canClear ? async () => { await this.props.onValueSet('', undefined, await this.validate(undefined)) } : undefined,
+      options,
+      onChange: async (valueChange) => this.handleChange(valueChange, options),
+      onClear: this.props.config.canClear
+        ? async () => {
+            await this.props.onValueSet('', undefined, await this.validate(undefined))
+          }
+        : undefined,
       disabled: getBoolean(disabled),
       readonly: getBoolean(readonly),
       placeholder
     }
 
-    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-      if (props.options.map((option) => option.value).includes(value)) {
-        props.value = value
-      } else {
-        console.warn(`选择框的当前值${value}不在选项中。`)
-        props.value = undefined
-      }
-    } else if (value !== undefined) {
-      props.value = undefined
-      console.warn('单项选择框的值需要是字符串或数值。')
-    } else if (value === undefined) {
-      if (defaultSelect !== undefined && defaultSelect !== false && props.options.length) {
-        const value = props.options[defaultSelect === true ? 0 : defaultSelect]?.value
-        props.value = value
-        this.props.onValueSet('', value, true)
-      }
+    let currentValue = value
+    if (this.props.config.moreSubmit && this.props.config.moreSubmit.valueField && typeof value === 'object') {
+      currentValue = getValue(value, this.props.config.moreSubmit.valueField)
     }
+    if (currentValue === undefined) {
+      if (defaultSelect !== undefined && defaultSelect !== false && props.options.length) {
+        currentValue = props.options[defaultSelect === true ? 0 : defaultSelect]?.value
+        this.handleChange(currentValue, options)
+      }
+    } else if (
+      !(typeof currentValue === 'string' || typeof currentValue === 'number' || typeof currentValue === 'boolean') ||
+      !props.options.map((option) => option.value).includes(currentValue)
+    ) {
+      currentValue = undefined
+      this.handleChange(undefined, options)
+    }
+
+    props.value = currentValue
 
     if (mode === 'radio') {
       return this.renderRadioComponent(props)
-    } else if (mode === 'button') {
-      return this.renderButtonComponent(props)
-    } else {
-      return this.renderDorpdownComponent(props)
     }
+    if (mode === 'button') {
+      return this.renderButtonComponent(props)
+    }
+    return this.renderDorpdownComponent(props)
   }
 }
