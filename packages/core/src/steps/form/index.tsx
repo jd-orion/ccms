@@ -446,7 +446,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
         return `${formFieldConfig.field}.${path}`
       })()
 
-      this.formValue = set(this.formValue, fullPath, value)
+      this.formValue = setValue(this.formValue, fullPath, value)
       this.setState({
         formValue: this.formValue
       })
