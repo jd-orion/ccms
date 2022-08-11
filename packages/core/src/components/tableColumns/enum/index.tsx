@@ -67,7 +67,8 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, un
         { record: this.props.record, data: this.props.data, step: this.props.step, containerPath: '' }
       ).then((currentOptions) => {
         if (multiple === undefined || multiple === false) {
-          const option = currentOptions.find((currentOption) => currentOption.value === value)
+          // TODO: 兼容1.3.0以下老版本的表格option值为key
+          const option = currentOptions.find((option: any) => option.value === value || option.key === value)
           const label = option ? option.label : (value as string).toString()
           if (label !== this.state.value) {
             this.setState({ value: label })
@@ -77,7 +78,8 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, un
             const label = theValue
               .map((item) => {
                 const option = currentOptions.find((currentOption) => {
-                  return currentOption.value === item
+                  // TODO: 兼容1.3.0以下老版本的表格option值为key
+                  return currentOption.value === item || option.key === item
                 })
                 return option ? option.label : item.toString()
               })
