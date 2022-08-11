@@ -4,7 +4,7 @@ import getALLComponents, { FieldConfigs } from '../..'
 import { ColumnsConfig } from '../../../../interface'
 import { CCMSConfig, PageListItem } from '../../../../main'
 import { IFormItem } from '../../../../steps/form'
-import { push, set, sort, splice } from '../../../../util/produce'
+import { push, set, setValue, sort, splice } from '../../../../util/produce'
 import StatementHelper from '../../../../util/statement'
 import { getValue, updateCommonPrefixItem } from '../../../../util/value'
 import { Field, FieldError } from '../../common'
@@ -153,7 +153,7 @@ export default class TableFieldForm extends React.Component<TableFieldFormProps,
 
   handleValueSet = async (path: string, value: unknown) => {
     this.setState((prevState) => ({
-      formValue: set(prevState.formValue, path, value)
+      formValue: setValue(prevState.formValue, path, value)
     }))
   }
 
