@@ -55,6 +55,16 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, un
     }
 
     if (options) {
+      // TODO: 兼容1.3.0以下老版本的表格option.data下的值为key
+      if (options.from === 'manual' && options.data) {
+        options.data.forEach((option: any) => {
+          if (option.key && option.value === undefined) {
+            // eslint-disable-next-line no-param-reassign
+            option.value = option.key
+          }
+        })
+      }
+
       EnumerationHelper.options(
         options,
         (config, source) =>
@@ -67,8 +77,7 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, un
         { record: this.props.record, data: this.props.data, step: this.props.step, containerPath: '' }
       ).then((currentOptions) => {
         if (multiple === undefined || multiple === false) {
-          // TODO: 兼容1.3.0以下老版本的表格option值为key
-          const option = currentOptions.find((option: any) => option.value === value || option.key === value)
+          const option = currentOptions.find((option: any) => option.value === value)
           const label = option ? option.label : (value as string).toString()
           if (label !== this.state.value) {
             this.setState({ value: label })
@@ -78,8 +87,7 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, un
             const label = theValue
               .map((item) => {
                 const option = currentOptions.find((currentOption) => {
-                  // TODO: 兼容1.3.0以下老版本的表格option值为key
-                  return currentOption.value === item || option.key === item
+                  return currentOption.value === item
                 })
                 return option ? option.label : item.toString()
               })
