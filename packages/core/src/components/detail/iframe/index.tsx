@@ -25,7 +25,7 @@ export default class IframeDetail
   extends DetailField<IframeDetailConfig, IIframeDetail, string>
   implements IDetailField<string>
 {
-  renderComponent = (props: IIframeDetail) => {
+  renderComponent: (props: IIframeDetail) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Iframe组件。</>
   }
 
@@ -42,7 +42,6 @@ export default class IframeDetail
 
   render = () => {
     const {
-      value,
       config: { height, width }
     } = this.props
     const props: IIframeDetail = {
@@ -50,7 +49,11 @@ export default class IframeDetail
       width
     }
     if (this.props.config.url) {
-      props.url = StatementHelper(this.props.config.url, { data: this.props.data, step: this.props.step })
+      props.url = StatementHelper(this.props.config.url, {
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: this.props.containerPath
+      })
     }
     return <>{this.renderComponent(props)}</>
   }

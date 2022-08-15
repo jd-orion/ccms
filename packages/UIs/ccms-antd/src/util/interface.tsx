@@ -1,26 +1,26 @@
-import { InterfaceHelper as _InterfaceHelper } from "ccms"
-import { IRenderFailModal, IRenderSuccessModal } from "ccms/dist/src/util/interface"
-import { Modal } from "antd"
+import { InterfaceHelper as _InterfaceHelper } from 'ccms'
+import { IRenderFailModal, IRenderSuccessModal } from 'ccms/dist/src/util/interface'
+import { Modal } from 'antd'
 
 export default class InterfaceHelper extends _InterfaceHelper {
-  renderSuccessModal (props: IRenderSuccessModal) {
+  renderSuccessModal: (props: IRenderSuccessModal) => Promise<void> = (props) => {
     return new Promise((resolve) => {
       Modal.success({
         title: props.message,
         onOk: () => {
-          resolve(null)
+          resolve()
         },
         getContainer: () => document.getElementById('ccms-antd') || document.body
       })
     })
   }
 
-  renderFailModal (props: IRenderFailModal) {
+  renderFailModal: (props: IRenderFailModal) => Promise<void> = (props) => {
     return new Promise((resolve) => {
       Modal.error({
         title: props.message,
         onOk: () => {
-          resolve(null)
+          resolve()
         },
         getContainer: () => document.getElementById('ccms-antd') || document.body
       })

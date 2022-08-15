@@ -18,7 +18,7 @@ export default class FormStepComponent extends FormStep {
   OperationHelper = OperationHelper
 
   renderModalComponent = (props: IFormStepModal) => {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       Modal.error({
         getContainer: () => {
           return document.getElementById('ccms-antd') || document.body
@@ -26,7 +26,7 @@ export default class FormStepComponent extends FormStep {
         centered: true,
         title: props.message,
         onOk: () => {
-          resolve(null)
+          resolve()
         }
       })
     })

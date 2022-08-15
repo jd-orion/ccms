@@ -22,6 +22,7 @@ import ImportSubformField from './importSubform'
 import AnyField from './any'
 import CodeField from './code'
 import DiffCodeField from './diffCode'
+import TableField from './table'
 
 import TextDisplayComponent from './text/display'
 import FormDisplayComponent from './form/display'
@@ -64,7 +65,8 @@ export default {
   import_subform: ImportSubformField,
   any: AnyField,
   code: CodeField,
-  diffcode: DiffCodeField
+  diffcode: DiffCodeField,
+  table: TableField
 }
 
 export const display = {
@@ -84,4 +86,5 @@ export const display = {
   tabs: TabsDisplayComponent,
   multiple_text: MultipleTextDisplayComponent,
   import_subform: ImportSubformDisplayComponent,
+  table: TableField
 }

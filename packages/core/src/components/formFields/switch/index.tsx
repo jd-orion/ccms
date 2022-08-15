@@ -12,41 +12,40 @@ export interface ISwitchField {
   onChange: (value: boolean) => Promise<void>
 }
 
-export default class SwitchField extends Field<SwitchFieldConfig, ISwitchField, boolean | number | string> implements IField<boolean | number | string> {
-  reset: () => Promise<boolean> = async () => {
+export default class SwitchField
+  extends Field<SwitchFieldConfig, ISwitchField, boolean | number | string>
+  implements IField<boolean | number | string>
+{
+  reset: () => Promise<boolean | number | string> = async () => {
     const defaults = await this.defaultValue()
 
     if (defaults === undefined) {
       return ''
-    } else {
-      return defaults
     }
+    return defaults
   }
 
-  renderComponent = (props: ISwitchField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现SwitchField组件。
-      <div style={{ display: 'none' }}>
-        <button onClick={() => props.onChange(false)}>onChange</button>
-      </div>
-    </React.Fragment>
+  renderComponent: (props: ISwitchField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现SwitchField组件。</>
   }
 
   render = () => {
     const {
       value,
-      config: {
-        valueTrue = true,
-        valueFalse = false
-      }
+      config: { valueTrue = true, valueFalse = false }
     } = this.props
     return (
-      <React.Fragment>
+      <>
         {this.renderComponent({
           value: value === valueTrue,
-          onChange: async (value: boolean) => this.props.onValueSet('', value ? valueTrue : valueFalse, await this.validate(value ? valueTrue : valueFalse))
+          onChange: async (valueChange: boolean) =>
+            this.props.onValueSet(
+              '',
+              valueChange ? valueTrue : valueFalse,
+              await this.validate(valueChange ? valueTrue : valueFalse)
+            )
         })}
-      </React.Fragment>
+      </>
     )
   }
 }

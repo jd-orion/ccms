@@ -1,4 +1,3 @@
-
 import FormField, { FormFieldConfig } from './form'
 import TextField, { TextFieldConfig } from './text'
 import RadioField, { RadioFieldConfig } from './radio'
@@ -43,68 +42,71 @@ import SwitchDisplay from './switch/display'
 import TabsDisplay from './tabs/display'
 import MultipleTextDisplay from './multipleText/display'
 import HiddenDisplay from './hidden/display'
+import TableField, { TableFieldConfig } from './table'
 
 export interface HiddenFieldConfig extends FieldConfig {
-    type: 'hidden' | 'none'
+  type: 'hidden' | 'none'
 }
 
 /**
  * 表单项配置文件格式定义 - 枚举
  */
 export type FieldConfigs =
-    TextFieldConfig |
-    LongtextFieldConfig |
-    NumberFieldConfig |
-    SelectSingleFieldConfig |
-    SelectMultipleFieldConfig |
-    SwitchFieldConfig |
-    DatetimeFieldConfig |
-    DatetimeRangeFieldConfig |
-    TreeSelectFieldConfig |
-    ColorFieldConfig |
-    FormFieldConfig |
-    RadioFieldConfig |
-    HiddenFieldConfig |
-    DescFieldConfig |
-    UploadFieldConfig |
-    ImageUrlFieldConfig |
-    ImportSubformFieldConfig |
-    GroupFieldConfig |
-    AnyFieldConfig |
-    // ObjectFieldConfig |
-    TabsFieldConfig |
-    MultipleTextFieldConfig |
-    CustomFieldConfig |
-    CodeFieldConfig |
-    DiffCodeFieldConfig
+  | TextFieldConfig
+  | LongtextFieldConfig
+  | NumberFieldConfig
+  | SelectSingleFieldConfig
+  | SelectMultipleFieldConfig
+  | SwitchFieldConfig
+  | DatetimeFieldConfig
+  | DatetimeRangeFieldConfig
+  | TreeSelectFieldConfig
+  | ColorFieldConfig
+  | FormFieldConfig
+  | RadioFieldConfig
+  | HiddenFieldConfig
+  | DescFieldConfig
+  | UploadFieldConfig
+  | ImageUrlFieldConfig
+  | ImportSubformFieldConfig
+  | GroupFieldConfig
+  | AnyFieldConfig
+  // ObjectFieldConfig |
+  | TabsFieldConfig
+  | MultipleTextFieldConfig
+  | CustomFieldConfig
+  | CodeFieldConfig
+  | DiffCodeFieldConfig
+  | TableFieldConfig
 
 export type componentType =
-    'text' |
-    'form' |
-    'radio' |
-    'longtext' |
-    'number' |
-    'datetime' |
-    'datetimeRange' |
-    'select_single' |
-    'select_multiple' |
-    'hidden' |
-    'none' |
-    'desc' |
-    'tree_select' |
-    'color' |
-    'upload' |
-    'imageurl' |
-    'import_subform' |
-    'group' |
-    'any' |
-    'switch' |
-    // 'object' |
-    'tabs' |
-    'multiple_text'|
-    'custom' |
-    'code' |
-    'diffcode'
+  | 'text'
+  | 'form'
+  | 'radio'
+  | 'longtext'
+  | 'number'
+  | 'datetime'
+  | 'datetimeRange'
+  | 'select_single'
+  | 'select_multiple'
+  | 'hidden'
+  | 'none'
+  | 'desc'
+  | 'tree_select'
+  | 'color'
+  | 'upload'
+  | 'imageurl'
+  | 'import_subform'
+  | 'group'
+  | 'any'
+  | 'switch'
+  // 'object' |
+  | 'tabs'
+  | 'multiple_text'
+  | 'custom'
+  | 'code'
+  | 'diffcode'
+  | 'table'
 
 export default {
   text: TextField,
@@ -131,7 +133,8 @@ export default {
   multiple_text: MultipleTextField,
   custom: CustomField,
   code: CodeField,
-  diffcode: DiffCodeField
+  diffcode: DiffCodeField,
+  table: TableField
 }
 
 export const display = {
@@ -151,5 +154,6 @@ export const display = {
   switch: SwitchDisplay,
   tabs: TabsDisplay,
   multiple_text: MultipleTextDisplay,
-  hidden: HiddenDisplay
+  hidden: HiddenDisplay,
+  table: TableField
 }

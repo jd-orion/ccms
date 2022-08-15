@@ -3,6 +3,7 @@ export { default as FormStep } from './steps/form'
 export { default as FilterStep } from './steps/filter'
 export { default as SkipStep } from './steps/skip'
 
+export { default as FormContainer } from './components/formFields/container'
 export { default as TextField } from './components/formFields/text'
 export { default as FormField } from './components/formFields/form'
 export { default as RadioField } from './components/formFields/radio'
@@ -28,6 +29,8 @@ export { default as MultipleTextField } from './components/formFields/multipleTe
 export { default as CustomField } from './components/formFields/custom'
 export { default as CodeField } from './components/formFields/code'
 export { default as DiffCodeField } from './components/formFields/diffCode'
+export { default as TableField } from './components/formFields/table'
+export { default as TableFieldForm } from './components/formFields/table/common/form'
 
 export { default as TextDisplay } from './components/formFields/text/display'
 export { default as FormDisplay } from './components/formFields/form/display'
@@ -80,5 +83,5 @@ export { default as CustomDetail } from './components/detail/custom'
 export { default as HeaderStep } from './steps/header'
 
 export { default as InterfaceHelper } from './util/interface'
-
 export { default as OperationHelper } from './util/operation'
+export { default as OperationsHelper } from './util/operations'
