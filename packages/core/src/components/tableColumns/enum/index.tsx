@@ -27,10 +27,10 @@ interface EnumColumnState {
   value: string | string[]
 }
 
-export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, any, EnumColumnState> {
+export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, unknown, EnumColumnState> {
   interfaceHelper = new InterfaceHelper()
 
-  renderComponent = (props: IEnumColumn) => {
+  renderComponent: (props: IEnumColumn) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现EnumColumn组件。</>
   }
 
@@ -43,33 +43,42 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, an
     if (value === '' || value === undefined) return defaultValue
 
     let theValue = value
-    if (Object.prototype.toString.call(theValue) !== '[object Array]') {
+    if (!Array.isArray(theValue)) {
       if (typeof theValue !== 'string') {
-        theValue = theValue?.toString()
+        theValue = (theValue as string)?.toString()
       }
       if (multiple && typeof multiple !== 'boolean' && multiple.type === 'split' && multiple.split) {
-        theValue = theValue?.split(multiple.split)
+        theValue = (theValue as string)?.split(multiple.split)
       } else {
-        theValue = theValue?.split(',')
+        theValue = (theValue as string)?.split(',')
       }
     }
 
     if (options) {
+      // TODO: 兼容1.3.0以下老版本的表格option.data下的值为key
+      if (options.from === 'manual' && options.data) {
+        options.data.forEach((option: any) => {
+          if (option.key && option.value === undefined) {
+            // eslint-disable-next-line no-param-reassign
+            option.value = option.key
+          }
+        })
+      }
+
       EnumerationHelper.options(
         options,
         (config, source) =>
           this.interfaceHelper.request(
             config,
             source,
-            { record: this.props.record, data: this.props.data, step: this.props.step },
+            { record: this.props.record, data: this.props.data, step: this.props.step, containerPath: '' },
             { loadDomain: this.props.loadDomain }
           ),
-        { record: this.props.record, data: this.props.data, step: this.props.step }
-      ).then((options) => {
+        { record: this.props.record, data: this.props.data, step: this.props.step, containerPath: '' }
+      ).then((currentOptions) => {
         if (multiple === undefined || multiple === false) {
-          // TODO: 兼容1.3.0以下老版本的表格option值为key
-          const option = options.find((option: any) => option.value === value || option.key === value)
-          const label = option ? option.label : value.toString()
+          const option = currentOptions.find((option: any) => option.value === value)
+          const label = option ? option.label : (value as string).toString()
           if (label !== this.state.value) {
             this.setState({ value: label })
           }
@@ -77,8 +86,8 @@ export default class EnumColumn extends Column<EnumColumnConfig, IEnumColumn, an
           if (Array.isArray(theValue)) {
             const label = theValue
               .map((item) => {
-                const option = options.find((option: any) => {
-                  return option.value === item || option.key === item
+                const option = currentOptions.find((currentOption) => {
+                  return currentOption.value === item
                 })
                 return option ? option.label : item.toString()
               })

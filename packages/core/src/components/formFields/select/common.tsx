@@ -1,17 +1,21 @@
 import _ from 'lodash'
 import { ReactNode } from 'react'
-import EnumerationHelper, { EnumerationOptionsConfig, InterfaceEnumerationOptionsKVConfig, InterfaceEnumerationOptionsListConfig } from '../../../util/enumeration'
+import EnumerationHelper, { EnumerationOptionsConfig } from '../../../util/enumeration'
 import InterfaceHelper from '../../../util/interface'
 import { Field, FieldConfig, FieldProps, IField, Display, DisplayProps } from '../common'
 
 export interface SelectFieldConfig extends FieldConfig {
   options?: EnumerationOptionsConfig
+  moreSubmit?: {
+    valueField?: string
+    labelField?: string
+  }
   defaultSelect?: boolean | number
 }
 
 export interface ISelectFieldOption {
-  value: string | number | boolean,
-  label: ReactNode,
+  value: string | number | boolean
+  label: ReactNode
   children?: Array<ISelectFieldOption>
 }
 
@@ -19,11 +23,14 @@ interface SelectSingleFieldState {
   options: Array<{
     value: string | number | boolean
     label: string
-    [extra: string]: any
+    extra?: { [key: string]: unknown }
   }>
 }
 
-export default class SelectField<C extends SelectFieldConfig, E, T> extends Field<C, E, T, SelectSingleFieldState> implements IField<T> {
+export default class SelectField<C extends SelectFieldConfig, E, T>
+  extends Field<C, E, T, SelectSingleFieldState>
+  implements IField<T>
+{
   interfaceHelper = new InterfaceHelper()
 
   constructor(props: FieldProps<C, T>) {
@@ -34,18 +41,37 @@ export default class SelectField<C extends SelectFieldConfig, E, T> extends Fiel
     }
   }
 
-  options = (
-    config: EnumerationOptionsConfig | undefined
-  ) => {
+  options = (config: EnumerationOptionsConfig | undefined) => {
     if (config) {
       EnumerationHelper.options(
         config,
-        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }, this),
-        { record: this.props.record, data: _.cloneDeep(this.props.data), step: this.props.step }
+        (optionConfig, source) =>
+          this.interfaceHelper.request(
+            optionConfig,
+            source,
+            {
+              record: this.props.record,
+              data: this.props.data,
+              step: this.props.step,
+              containerPath: this.props.containerPath
+            },
+            { loadDomain: this.props.loadDomain },
+            this
+          ),
+        {
+          record: this.props.record,
+          data: _.cloneDeep(this.props.data),
+          step: this.props.step,
+          containerPath: this.props.containerPath
+        }
       ).then((options) => {
         if (JSON.stringify(this.state.options) !== JSON.stringify(options)) {
           this.setState({
-            options
+            options: options.map((option) => ({
+              value: option.value as string | number | boolean,
+              label: option.label,
+              extra: option.extra
+            }))
           })
         }
       })
@@ -67,18 +93,36 @@ export class SelectDisplay<C extends SelectFieldConfig, E, T> extends Display<C,
     }
   }
 
-  options = (
-    config: EnumerationOptionsConfig | undefined
-  ) => {
+  options = (config: EnumerationOptionsConfig | undefined) => {
     if (config) {
       EnumerationHelper.options(
         config,
-        (config, source) => this.interfaceHelper.request(config, source, { record: this.props.record, data: _.cloneDeep(this.props.data), step: this.props.step }, { loadDomain: this.props.loadDomain }),
-        { record: this.props.record, data: this.props.data, step: this.props.step }
+        (optionConfig, source) =>
+          this.interfaceHelper.request(
+            optionConfig,
+            source,
+            {
+              record: this.props.record,
+              data: _.cloneDeep(this.props.data),
+              step: this.props.step,
+              containerPath: this.props.containerPath
+            },
+            { loadDomain: this.props.loadDomain }
+          ),
+        {
+          record: this.props.record,
+          data: this.props.data,
+          step: this.props.step,
+          containerPath: this.props.containerPath
+        }
       ).then((options) => {
         if (JSON.stringify(this.state.options) !== JSON.stringify(options)) {
           this.setState({
-            options
+            options: options.map((option) => ({
+              value: option.value as string | number | boolean,
+              label: option.label,
+              extra: option.extra
+            }))
           })
         }
       })

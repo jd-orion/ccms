@@ -1,9 +1,9 @@
 import React from 'react'
-import { display as getALLComponents } from '../'
+import { cloneDeep } from 'lodash'
+import { display as getALLComponents } from '..'
 import { FormFieldConfig } from '.'
 import { Display, FieldConfigs, DisplayProps } from '../common'
-import { getValue, setValue } from '../../../util/value'
-import { cloneDeep } from 'lodash'
+import { getChainPath, getValue, setValue } from '../../../util/value'
 import ConditionHelper from '../../../util/condition'
 
 export interface IFormField {
@@ -31,13 +31,14 @@ interface FormState {
   showIndex: number
 }
 
-export default class FormField extends Display<FormFieldConfig, IFormField, Array<any>, FormState> {
-  getALLComponents = (type: any): typeof Display => getALLComponents[type]
+export default class FormField extends Display<FormFieldConfig, IFormField, { [key: string]: unknown }[], FormState> {
+  getALLComponents = (type: string): typeof Display => getALLComponents[type]
 
-  formFieldsList: Array<Array<Display<FieldConfigs, any, any> | null>> = []
+  formFieldsList: Array<Array<Display<FieldConfigs, unknown, unknown> | null>> = []
+
   formFieldsMountedList: Array<Array<boolean>> = []
 
-  constructor (props: DisplayProps<FormFieldConfig, any>) {
+  constructor(props: DisplayProps<FormFieldConfig, { [key: string]: unknown }[]>) {
     super(props)
 
     this.state = {
@@ -53,34 +54,44 @@ export default class FormField extends Display<FormFieldConfig, IFormField, Arra
     })
   }
 
-  set = async (value: any) => {
-    if (this.props.config.unstringify && this.props.config.unstringify.length > 0 && Array.isArray(value)) {
-      for (let index = 0; index < value.length; index++) {
-        if (value[index]) {
+  set = async (value: unknown) => {
+    const _value = value
+    if (this.props.config.unstringify && this.props.config.unstringify.length > 0 && Array.isArray(_value)) {
+      for (let index = 0; index < _value.length; index++) {
+        if (_value[index]) {
           for (const field of this.props.config.unstringify) {
-            const info = getValue(value[index], field)
+            const info = getValue(_value[index], field)
             try {
-              value[index] = setValue(value[index], field, JSON.parse(info))
-            } catch (e) {}
+              _value[index] = setValue(_value[index], field, JSON.parse(info))
+            } catch (e) {
+              /* 无逻辑 */
+            }
           }
         }
       }
     }
 
-    return value
+    return _value
   }
 
   get = async () => {
-    const data: any[] = []
+    const data: { [key: string]: unknown }[] = []
 
     for (let index = 0; index < this.formFieldsList.length; index++) {
       if (this.formFieldsList[index]) {
-        let item: any = {}
+        let item: { [key: string]: unknown } = {}
 
         if (Array.isArray(this.props.config.fields)) {
-          for (const formFieldIndex in this.props.config.fields) {
+          for (let formFieldIndex = 0; formFieldIndex < this.props.config.fields.length; formFieldIndex++) {
             const formFieldConfig = this.props.config.fields[formFieldIndex]
-            if (!ConditionHelper(formFieldConfig.condition, { record: this.props.value[index], data: this.props.data, step: this.props.step })) {
+            if (
+              !ConditionHelper(formFieldConfig.condition, {
+                record: this.props.value[index],
+                data: this.props.data,
+                step: this.props.step,
+                containerPath: this.props.containerPath
+              })
+            ) {
               continue
             }
             const formField = this.formFieldsList[index] && this.formFieldsList[index][formFieldIndex]
@@ -119,9 +130,12 @@ export default class FormField extends Display<FormFieldConfig, IFormField, Arra
       if (formField) {
         const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
 
-        let value = getValue(this.props.value[index] === undefined ? {} : this.props.value[index], formFieldConfig.field)
+        let value = getValue(
+          this.props.value[index] === undefined ? {} : this.props.value[index],
+          formFieldConfig.field
+        )
         const source = value
-        if ((formFieldConfig.defaultValue) && value === undefined) {
+        if (formFieldConfig.defaultValue && value === undefined) {
           value = await formField.reset()
         }
         value = await formField.set(value)
@@ -134,34 +148,90 @@ export default class FormField extends Display<FormFieldConfig, IFormField, Arra
     }
   }
 
-  handleValueSet = async (index: number, formFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
+  handleValueSet = async (
+    index: number,
+    formFieldIndex: number,
+    path: string,
+    value: unknown,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
+      let fullPath = ''
+      if (options && options.noPathCombination) {
+        fullPath = path
+      } else if (formFieldConfig.field === '' || path === '') {
+        fullPath = `${formFieldConfig.field}${path}`
+      } else {
+        fullPath = `${formFieldConfig.field}.${path}`
+      }
+
       await this.props.onValueSet(`[${index}]${fullPath}`, value)
     }
   }
 
-  handleValueUnset = async (index: number, formFieldIndex: number, path: string, options?: { noPathCombination?: boolean }) => {
+  handleValueUnset = async (
+    index: number,
+    formFieldIndex: number,
+    path: string,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
+      let fullPath = ''
+      if (options && options.noPathCombination) {
+        fullPath = path
+      } else if (formFieldConfig.field === '' || path === '') {
+        fullPath = `${formFieldConfig.field}${path}`
+      } else {
+        fullPath = `${formFieldConfig.field}.${path}`
+      }
+
       await this.props.onValueUnset(`[${index}]${fullPath}`)
     }
   }
 
-  handleValueListAppend = async (index: number, formFieldIndex: number, path: string, value: any, options?: { noPathCombination?: boolean }) => {
+  handleValueListAppend = async (
+    index: number,
+    formFieldIndex: number,
+    path: string,
+    value: unknown,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
+      let fullPath = ''
+      if (options && options.noPathCombination) {
+        fullPath = path
+      } else if (formFieldConfig.field === '' || path === '') {
+        fullPath = `${formFieldConfig.field}${path}`
+      } else {
+        fullPath = `${formFieldConfig.field}.${path}`
+      }
+
       await this.props.onValueListAppend(`[${index}]${fullPath}`, value)
     }
   }
 
-  handleValueListSplice = async (index: number, formFieldIndex: number, path: string, _index: number, count: number, options?: { noPathCombination?: boolean }) => {
+  handleValueListSplice = async (
+    index: number,
+    formFieldIndex: number,
+    path: string,
+    _index: number,
+    count: number,
+    options?: { noPathCombination?: boolean }
+  ) => {
     const formFieldConfig = (this.props.config.fields || [])[formFieldIndex]
     if (formFieldConfig) {
-      const fullPath = options && options.noPathCombination ? path : (formFieldConfig.field === '' || path === '' ? `${formFieldConfig.field}${path}` : `${formFieldConfig.field}.${path}`)
+      let fullPath = ''
+      if (options && options.noPathCombination) {
+        fullPath = path
+      } else if (formFieldConfig.field === '' || path === '') {
+        fullPath = `${formFieldConfig.field}${path}`
+      } else {
+        fullPath = `${formFieldConfig.field}.${path}`
+      }
+
       await this.props.onValueListSplice(`[${index}]${fullPath}`, _index, count)
     }
   }
@@ -171,10 +241,8 @@ export default class FormField extends Display<FormFieldConfig, IFormField, Arra
    * @param props
    * @returns
    */
-  renderItemFieldComponent = (props: IFormFieldItemField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现FormField组件的renderItemFieldComponent方法。
-    </React.Fragment>
+  renderItemFieldComponent: (props: IFormFieldItemField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现FormField组件的renderItemFieldComponent方法。</>
   }
 
   /**
@@ -182,10 +250,8 @@ export default class FormField extends Display<FormFieldConfig, IFormField, Arra
    * @param props
    * @returns
    */
-  renderItemComponent = (props: IFormFieldItem) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现FormField组件的renderItemComponent方法。
-    </React.Fragment>
+  renderItemComponent: (props: IFormFieldItem) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现FormField组件的renderItemComponent方法。</>
   }
 
   /**
@@ -193,10 +259,8 @@ export default class FormField extends Display<FormFieldConfig, IFormField, Arra
    * @param _props
    * @returns
    */
-  renderComponent = (_props: IFormField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现FormField组件。
-    </React.Fragment>
+  renderComponent: (props: IFormField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现FormField组件。</>
   }
 
   render = () => {
@@ -204,79 +268,88 @@ export default class FormField extends Display<FormFieldConfig, IFormField, Arra
       value = [],
       data,
       step,
-      config: {
-        fields,
-        primaryField,
-        canCollapse
-      }
+      config: { fields, primaryField, canCollapse }
     } = this.props
 
     return (
-      <React.Fragment>
-        {
-          this.renderComponent({
-            canCollapse,
-            children: (
-              this.state.didMount
-                ? (Array.isArray(value) ? value : []).map((itemValue: any, index: number) => {
-                    return <React.Fragment key={index} >
-                      {this.renderItemComponent({
-                        index,
-                        title: primaryField !== undefined ? getValue(itemValue, primaryField, '').toString() : index.toString(),
-                        canCollapse,
-                        children: (fields || []).map((formFieldConfig, fieldIndex) => {
-                          if (!ConditionHelper(formFieldConfig.condition, { record: itemValue, data: this.props.data, step: this.props.step })) {
-                            if (!this.formFieldsMountedList[index]) this.formFieldsMountedList[index] = []
-                            this.formFieldsMountedList[index][fieldIndex] = false
-                            return null
-                          }
-                          const FormField = this.getALLComponents(formFieldConfig.type) || Display
+      <>
+        {this.renderComponent({
+          canCollapse,
+          children: this.state.didMount
+            ? (Array.isArray(value) ? value : []).map((itemValue: { [key: string]: unknown }, index: number) => {
+                return (
+                  <React.Fragment key={index}>
+                    {this.renderItemComponent({
+                      index,
+                      title:
+                        primaryField !== undefined
+                          ? getValue(itemValue, primaryField, '').toString()
+                          : index.toString(),
+                      canCollapse,
+                      children: (fields || []).map((formFieldConfig, fieldIndex) => {
+                        if (
+                          !ConditionHelper(formFieldConfig.condition, {
+                            record: itemValue,
+                            data: this.props.data,
+                            step: this.props.step,
+                            containerPath: this.props.containerPath
+                          })
+                        ) {
+                          if (!this.formFieldsMountedList[index]) this.formFieldsMountedList[index] = []
+                          this.formFieldsMountedList[index][fieldIndex] = false
+                          return null
+                        }
+                        const CurrentFormField = this.getALLComponents(formFieldConfig.type) || Display
 
-                          // 渲染表单项容器
-                          return (
-                            <div key={fieldIndex}>
-                              {
-                                this.renderItemFieldComponent({
-                                  index: fieldIndex,
-                                  label: formFieldConfig.label,
-                                  fieldType: formFieldConfig.type,
-                                  children: (
-                                    <FormField
-                                      ref={(fieldRef: Display<FieldConfigs, any, any> | null) => {
-                                        if (fieldRef) {
-                                          if (!this.formFieldsList[index]) this.formFieldsList[index] = []
-                                          this.formFieldsList[index][fieldIndex] = fieldRef
-                                          this.handleMount(index, fieldIndex)
-                                        }
-                                      }}
-                                      value={getValue(value[index], formFieldConfig.field)}
-                                      record={value[index]}
-                                      data={cloneDeep(data)}
-                                      step={step}
-                                      config={formFieldConfig}
-                                      onValueSet={async (path, value, options) => this.handleValueSet(index, fieldIndex, path, value, options)}
-                                      onValueUnset={async (path, options) => this.handleValueUnset(index, fieldIndex, path, options)}
-                                      onValueListAppend={async (path, value, options) => this.handleValueListAppend(index, fieldIndex, path, value, options)}
-                                      onValueListSplice={async (path, _index, count, options) => this.handleValueListSplice(index, fieldIndex, path, _index, count, options)}
-                                      baseRoute={this.props.baseRoute}
-                                      loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
-                                    />
-                                  )
-                                })
-                              }
-                            </div>
-                          )
-                        })
+                        // 渲染表单项容器
+                        return (
+                          <div key={fieldIndex}>
+                            {this.renderItemFieldComponent({
+                              index: fieldIndex,
+                              label: formFieldConfig.label,
+                              fieldType: formFieldConfig.type,
+                              children: (
+                                <CurrentFormField
+                                  ref={(fieldRef: Display<FieldConfigs, unknown, unknown> | null) => {
+                                    if (fieldRef) {
+                                      if (!this.formFieldsList[index]) this.formFieldsList[index] = []
+                                      this.formFieldsList[index][fieldIndex] = fieldRef
+                                      this.handleMount(index, fieldIndex)
+                                    }
+                                  }}
+                                  value={getValue(value[index], formFieldConfig.field)}
+                                  record={value[index]}
+                                  data={cloneDeep(data)}
+                                  step={step}
+                                  config={formFieldConfig}
+                                  onValueSet={async (path, valueSet, options) =>
+                                    this.handleValueSet(index, fieldIndex, path, valueSet, options)
+                                  }
+                                  onValueUnset={async (path, options) =>
+                                    this.handleValueUnset(index, fieldIndex, path, options)
+                                  }
+                                  onValueListAppend={async (path, valueAppend, options) =>
+                                    this.handleValueListAppend(index, fieldIndex, path, valueAppend, options)
+                                  }
+                                  onValueListSplice={async (path, _index, count, options) =>
+                                    this.handleValueListSplice(index, fieldIndex, path, _index, count, options)
+                                  }
+                                  baseRoute={this.props.baseRoute}
+                                  loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                                  containerPath={getChainPath(this.props.containerPath, this.props.config.field, index)}
+                                />
+                              )
+                            })}
+                          </div>
+                        )
                       })
-                      }
-                    </React.Fragment >
-                  }
-                  )
-                : []
-            )
-          })
-        }
-      </React.Fragment >
+                    })}
+                  </React.Fragment>
+                )
+              })
+            : []
+        })}
+      </>
     )
   }
 }
