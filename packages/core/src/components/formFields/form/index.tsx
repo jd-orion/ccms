@@ -1,4 +1,5 @@
 import React from 'react'
+import { Modal} from 'antd';
 import { Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from '../common'
 import getALLComponents from '../'
 // import { cloneDeep } from 'lodash'
@@ -6,6 +7,9 @@ import { getValue, getBoolean, getChainPath } from '../../../util/value'
 import { set, setValue, sort, splice } from '../../../util/produce'
 import ConditionHelper from '../../../util/condition'
 import StatementHelper from '../../../util/statement'
+import { config } from 'process'
+import { type } from 'os'
+
 
 export interface FormFieldConfig extends FieldConfig {
   type: 'form'
@@ -22,6 +26,7 @@ export interface FormFieldConfig extends FieldConfig {
   canCollapse?: boolean // 是否用Collapse折叠展示
   stringify?: string[] // 序列号字段
   unstringify?: string[] // 反序列化字段
+
 }
 
 export interface IFormField {
@@ -155,6 +160,8 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
       }
     }
 
+
+
     await this.setState({
       formDataList
     })
@@ -267,20 +274,24 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
   }
 
   handleInsert = async () => {
-    const index = (this.props.value || []).length
 
+    const index = (this.props.value || []).length
     const formDataList = set(this.state.formDataList, `[${index}]`, [])
     this.setState({
       formDataList
     })
-
+    console.log("formdatalist"+JSON.stringify(formDataList))
+   
     this.formFieldsList = set(this.formFieldsList, `${index}`, [])
     this.formFieldsMountedList = set(this.formFieldsMountedList, `${index}`, [])
 
     await this.props.onValueListAppend('', this.props.config.initialValues === undefined ? {} : this.props.config.initialValues, true)
+    console.log("awaitvalue"+JSON.stringify(this.props.value))
+    const awaitvalue = (this.props.value || []).length
   }
 
   handleRemove = async (index: number) => {
+    
     const formDataList = splice(this.state.formDataList, '', index, 1)
     this.setState({
       formDataList
@@ -288,6 +299,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
     this.formFieldsList = splice(this.formFieldsList, '', index, 1)
     this.formFieldsMountedList = splice(this.formFieldsMountedList, '', index, 1)
     await this.props.onValueListSplice('', index, 1, true)
+
   }
 
   handleSort = async (index: number, sortType: 'up' | 'down') => {
@@ -442,13 +454,15 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
         canInsert,
         canRemove,
         canSort,
-        canCollapse
+        canCollapse,
       }
     } = this.props
 
     return (
+      
       <React.Fragment>
         {
+          
           this.renderComponent({
             insertText: insertText === undefined ? `插入 ${label}` : insertText,
             onInsert: canInsert ? async () => await this.handleInsert() : undefined,
@@ -459,6 +473,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
                     return <React.Fragment key={index} >
                     {this.renderItemComponent({
                       index,
+                      
                       isLastIndex: value.length - 1 === index,
                       title: primaryField !== undefined ? getValue(itemValue, primaryField, '').toString() : index.toString(),
                       removeText: removeText === undefined

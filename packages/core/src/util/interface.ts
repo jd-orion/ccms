@@ -18,6 +18,8 @@ export interface InterfaceConfig {
 
   params?: { field: string, data: ParamConfig }[]
   data?: { field: string, data: ParamConfig }[]
+  headers?: { field: string, data: ParamConfig }[]
+
 
   condition?: {
     enable?: boolean,
@@ -58,6 +60,8 @@ export default class InterfaceHelper {
   private _params: any = {}
   private _data: any = {}
   private _response: any
+  private _headers: any = {}
+  
 
   protected renderSuccessModal (props: IRenderSuccessModal) {
     return new Promise((resolve) => {
@@ -133,6 +137,7 @@ export default class InterfaceHelper {
       // 数据处理
       let params = {}
       let data = config.contentType === 'form-data' ? new FormData() : {}
+      let headers = {}
       if ((config.method || 'GET') === 'GET') {
         params = source || {}
       } else {
@@ -155,6 +160,18 @@ export default class InterfaceHelper {
           }
         })
       }
+      if (config.headers) {
+        config.headers.forEach((param) => {
+          if (param.field !== undefined && param.data !== undefined) {
+            if (param.field === '') {
+              headers = ParamHelper(param.data, datas, _this)
+            } else {
+              headers = set(headers, param.field, ParamHelper(param.data, datas, _this))
+            }
+          }
+        })
+      }
+
       if (option && option.extra_data && option.extra_data.params) {
         merge(params, option.extra_data.params)
       }
@@ -196,7 +213,8 @@ export default class InterfaceHelper {
         isEqual(this._config, config) &&
         isEqual(this._url, url) &&
         isEqual(this._params, params) &&
-        isEqual(this._data, data)
+        isEqual(this._data, data) &&
+        isEqual(this._headers, headers)
       ) {
         return this._response
       } else if (config.cache && config.cache.global && Object.keys(InterfaceHelper.cacheResolve).includes(config.cache.global) && InterfaceHelper.cacheResolve[config.cache.global].length > 0) {
@@ -209,6 +227,7 @@ export default class InterfaceHelper {
         this._url = url
         this._params = params
         this._data = data
+        this._headers = headers
 
         const request: AxiosRequestConfig = {
           url,

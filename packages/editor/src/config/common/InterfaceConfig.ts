@@ -535,6 +535,51 @@ const config: FieldConfigs[] = [
     "field": "cache.disable",
     "label": "禁用缓存",
     "type": "switch"
+  },
+  {
+    "field": "headers",
+    "label": "header参数",
+    "type": "form",
+    "primaryField": "field",
+    "canInsert": true,
+    "canRemove": true,
+    "canSort": true,
+    "canCollapse": true,
+    "fields": [
+      {
+        "field": "field",
+        "label": "参数名",
+        "type": "text"
+      },
+      {
+        "field": "data",
+        "label": "",
+        "type": "import_subform",
+        "interface": {
+          "url": "${configDomain}/common/ParamConfig.json",
+          "urlParams": [
+            {
+              "field": "version",
+              "data": {
+                "source": "source",
+                "field": "version"
+              }
+            },
+            {
+              "field": "configDomain",
+              "data": {
+                "source": "source",
+                "field": "configDomain"
+              }
+            }
+          ],
+          "method": 'GET',
+          "cache": {
+            "global": "CCMS_CONFIG_common_ParamConfig"
+          }
+        }
+      }
+    ]
   }
 ]
 
