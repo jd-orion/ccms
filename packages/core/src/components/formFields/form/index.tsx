@@ -26,6 +26,8 @@ export interface FormFieldConfig extends FieldConfig {
   canCollapse?: boolean // 是否用Collapse折叠展示
   stringify?: string[] // 序列号字段
   unstringify?: string[] // 反序列化字段
+  //hz
+  //1111
 
 }
 
