@@ -1,7 +1,7 @@
 // import { isEqual, cloneDeep, template, get, set, merge } from "lodash"
-import { isEqual, template, get, merge } from "lodash"
-import { set } from '../util/produce'
+import { isEqual, template, get, merge } from 'lodash'
 import axios, { AxiosRequestConfig } from 'axios'
+import { set } from './produce'
 import { ParamConfig } from '../interface'
 import ParamHelper from './param'
 import { getValue } from './value'
@@ -10,32 +10,36 @@ import { Field } from '../components/formFields/common'
 export interface InterfaceConfig {
   domain?: string
   url?: string
-  urlParams?: { field: string, data: ParamConfig }[]
+  urlParams?: { field: string; data: ParamConfig }[]
 
   method?: 'GET' | 'POST'
   contentType?: 'json' | 'form-data'
   withCredentials?: boolean
+
 
   params?: { field: string, data: ParamConfig }[]
   data?: { field: string, data: ParamConfig }[]
   headers?: { field: string, data: ParamConfig }[]
 
 
+
   condition?: {
-    enable?: boolean,
-    field?: string,
-    value?: any,
-    success?: { type: 'none' } |
-              { type: 'modal', content?: { type: 'static', content?: string } |
-                                         { type: 'field', field?: string }},
-    fail?: { type: 'none' } |
-           { type: 'modal', content?: {type: 'static', content?: string } |
-                                      {type: 'field', field?: string }}
+    enable?: boolean
+    field?: string
+    value?: unknown
+    success?:
+      | { type: 'none' }
+      | { type: 'modal'; content?: { type: 'static'; content?: string } | { type: 'field'; field?: string } }
+    fail?:
+      | { type: 'none' }
+      | { type: 'modal'; content?: { type: 'static'; content?: string } | { type: 'field'; field?: string } }
   }
 
-  response?: {
-    root?: string
-  } | { field?: string, path?: string }[]
+  response?:
+    | {
+        root?: string
+      }
+    | { field?: string; path?: string }[]
 
   cache?: {
     global?: string
@@ -52,18 +56,27 @@ export interface IRenderFailModal {
 }
 
 export default class InterfaceHelper {
-  public static cacheResolve: { [key: string]: ((value: any) => void)[] } = {}
-  public static cache: { [key: string]: any } = {}
+  public static cacheResolve: { [key: string]: ((value: unknown) => void)[] } = {}
+
+  public static cache: { [key: string]: unknown } = {}
 
   private _config: InterfaceConfig = {}
+
   private _url: string = ''
   private _params: any = {}
   private _data: any = {}
   private _response: any
   private _headers: any = {}
-  
 
-  protected renderSuccessModal (props: IRenderSuccessModal) {
+  private _url = ''
+
+  private _params: object = {}
+
+  private _data: object = {}
+
+  private _response: unknown
+
+  protected renderSuccessModal: (props: IRenderSuccessModal) => Promise<void> = () => {
     return new Promise((resolve) => {
       const mask = document.createElement('DIV')
       mask.style.position = 'fixed'
@@ -75,14 +88,14 @@ export default class InterfaceHelper {
       mask.innerText = '您当前使用的UI版本没有实现Fetch的SuccessModal组件。'
       mask.onclick = () => {
         mask.remove()
-        resolve(null)
+        resolve()
       }
 
       document.body.appendChild(mask)
     })
   }
 
-  protected renderFailModal (props: IRenderFailModal) {
+  protected renderFailModal: (props: IRenderFailModal) => Promise<void> = () => {
     return new Promise((resolve) => {
       const mask = document.createElement('DIV')
       mask.style.position = 'fixed'
@@ -94,23 +107,31 @@ export default class InterfaceHelper {
       mask.innerText = '您当前使用的UI版本没有实现Fetch的SuccessModal组件。'
       mask.onclick = () => {
         mask.remove()
-        resolve(null)
+        resolve()
       }
 
       document.body.appendChild(mask)
     })
   }
 
-  public request (
+  public request(
     config: InterfaceConfig,
-    source: any,
-    datas: { record?: object, data: object[], step: { [field: string]: any }, extraContainerPath?: string },
+    source: { [key: string]: unknown },
+    datas: {
+      record: { [field: string]: unknown }
+      data: object[]
+      step: { [field: string]: unknown }
+      containerPath: string
+      extraContainerPath?: string
+    },
     option?: {
       loadDomain?: (domain: string) => Promise<string>
-      extra_data?: { params?: any, data?: any }
+      extraData?: { params?: object; data?: object }
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _this?: Field<any, any, any>
-  ): Promise<any> {
+  ): Promise<unknown> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       // 处理URL
       const urlTemplate = template(config.url)
@@ -126,28 +147,24 @@ export default class InterfaceHelper {
           }
         })
       }
-      const url = (
-        config.domain
-          ? (option && option.loadDomain
-              ? (await option.loadDomain(config.domain))
-              : '')
-          : ''
-      ) + urlTemplate(urlParams)
+      let url = ''
+      if (config.domain && option && option.loadDomain) {
+        url = await option.loadDomain(config.domain)
+      }
+      url += urlTemplate(urlParams)
 
       // 数据处理
-      let params = {}
+      let params: { [key: string]: unknown } = {}
       let data = config.contentType === 'form-data' ? new FormData() : {}
       let headers = {}
       if ((config.method || 'GET') === 'GET') {
         params = source || {}
-      } else {
-        if (config.contentType === 'form-data') {
-          for (const [key, value] of Object.entries(source || {})) {
-            (data as FormData).append(key, value as any)
-          }
-        } else {
-          data = source || {}
+      } else if (config.contentType === 'form-data') {
+        for (const [key, value] of Object.entries(source || {})) {
+          ;(data as FormData).append(key, value as string | Blob)
         }
+      } else {
+        data = source || {}
       }
       if (config.params) {
         config.params.forEach((param) => {
@@ -160,6 +177,7 @@ export default class InterfaceHelper {
           }
         })
       }
+      
       if (config.headers) {
         config.headers.forEach((param) => {
           if (param.field !== undefined && param.data !== undefined) {
@@ -174,18 +192,21 @@ export default class InterfaceHelper {
 
       if (option && option.extra_data && option.extra_data.params) {
         merge(params, option.extra_data.params)
+
       }
       if (config.contentType === 'form-data') {
         if (config.data) {
           config.data.forEach((param) => {
             if (param.field !== undefined && param.data !== undefined) {
-              (data as FormData).append(param.field, ParamHelper(param.data, datas, _this))
+              ;(data as FormData).append(param.field, ParamHelper(param.data, datas, _this))
             }
           })
         }
-        if (option && option.extra_data && option.extra_data.data) {
-          for (const field in option.extra_data.data) {
-            (data as FormData).append(field, option.extra_data.data[field])
+        if (option && option.extraData && option.extraData.data) {
+          for (const field in option.extraData.data) {
+            if (Object.prototype.hasOwnProperty.call(option.extraData.data, field)) {
+              ;(data as FormData).append(field, option.extraData.data[field])
+            }
           }
         }
       } else {
@@ -200,8 +221,8 @@ export default class InterfaceHelper {
             }
           })
         }
-        if (option && option.extra_data && option.extra_data.data) {
-          merge(data, option.extra_data.data)
+        if (option && option.extraData && option.extraData.data) {
+          merge(data, option.extraData.data)
         }
       }
 
@@ -216,12 +237,17 @@ export default class InterfaceHelper {
         isEqual(this._data, data) &&
         isEqual(this._headers, headers)
       ) {
-        return this._response
-      } else if (config.cache && config.cache.global && Object.keys(InterfaceHelper.cacheResolve).includes(config.cache.global) && InterfaceHelper.cacheResolve[config.cache.global].length > 0) {
+        resolve(this._response)
+      } else if (
+        config.cache &&
+        config.cache.global &&
+        Object.keys(InterfaceHelper.cacheResolve).includes(config.cache.global) &&
+        InterfaceHelper.cacheResolve[config.cache.global].length > 0
+      ) {
         InterfaceHelper.cacheResolve[config.cache.global].push(resolve)
       } else {
         if (config.cache && config.cache.global) {
-          InterfaceHelper.cacheResolve[config.cache.global] = [ resolve ]
+          InterfaceHelper.cacheResolve[config.cache.global] = [resolve]
         }
         this._config = config
         this._url = url
@@ -241,7 +267,7 @@ export default class InterfaceHelper {
         }
 
         try {
-          const response = await axios(request).then((response) => response.data)
+          const response = await axios(request).then((res) => res.data)
 
           if (config.condition && config.condition.enable) {
             if (get(response, config.condition.field || '') === config.condition.value) {
@@ -251,7 +277,9 @@ export default class InterfaceHelper {
                     if (config.condition.success.content.type === 'static') {
                       await this.renderSuccessModal({ message: config.condition.success.content.content || '' })
                     } else if (config.condition.success.content.type === 'field') {
-                      await this.renderSuccessModal({ message: get(response, config.condition.success.content.field || '', '') })
+                      await this.renderSuccessModal({
+                        message: get(response, config.condition.success.content.field || '', '')
+                      })
                     }
                   }
                 }
@@ -263,7 +291,9 @@ export default class InterfaceHelper {
                     if (config.condition.fail.content.type === 'static') {
                       await this.renderFailModal({ message: config.condition.fail.content.content || '' })
                     } else if (config.condition.fail.content.type === 'field') {
-                      await this.renderFailModal({ message: get(response, config.condition.fail.content.field || '', '') })
+                      await this.renderFailModal({
+                        message: get(response, config.condition.fail.content.field || '', '')
+                      })
                     }
                   }
                 }
@@ -277,7 +307,7 @@ export default class InterfaceHelper {
             if (Array.isArray(config.response)) {
               let content = {}
               for (const { field, path } of config.response) {
-                const value = (path === undefined || path === '') ? response : get(response, path)
+                const value = path === undefined || path === '' ? response : get(response, path)
                 if (field === undefined || field === '') {
                   content = value
                 } else {
@@ -289,7 +319,7 @@ export default class InterfaceHelper {
                 InterfaceHelper.cache[config.cache.global] = content
               }
               if (config.cache && config.cache.global) {
-                while(InterfaceHelper.cacheResolve[config.cache.global].length) {
+                while (InterfaceHelper.cacheResolve[config.cache.global].length) {
                   const _resolve = InterfaceHelper.cacheResolve[config.cache.global].shift()
                   _resolve && _resolve(content)
                 }
@@ -303,7 +333,7 @@ export default class InterfaceHelper {
                 InterfaceHelper.cache[config.cache.global] = content
               }
               if (config.cache && config.cache.global) {
-                while(InterfaceHelper.cacheResolve[config.cache.global].length) {
+                while (InterfaceHelper.cacheResolve[config.cache.global].length) {
                   const _resolve = InterfaceHelper.cacheResolve[config.cache.global].shift()
                   _resolve && _resolve(content)
                 }
@@ -317,7 +347,7 @@ export default class InterfaceHelper {
               InterfaceHelper.cache[config.cache.global] = response
             }
             if (config.cache && config.cache.global) {
-              while(InterfaceHelper.cacheResolve[config.cache.global].length) {
+              while (InterfaceHelper.cacheResolve[config.cache.global].length) {
                 const _resolve = InterfaceHelper.cacheResolve[config.cache.global].shift()
                 _resolve && _resolve(response)
               }
@@ -325,9 +355,9 @@ export default class InterfaceHelper {
               resolve(response)
             }
           }
-        } catch (e: any) {
+        } catch (e: unknown) {
           await this.renderFailModal({
-            message: `网络错误 - ${e.message}`
+            message: `网络错误 - ${(e as Error).message}`
           })
           reject()
         }

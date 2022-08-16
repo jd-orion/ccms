@@ -1,6 +1,5 @@
 import React from 'react'
 import { cloneDeep, isEqual } from 'lodash'
-import { setTimeout } from 'timers'
 import { getValue, getChainPath } from '../../../util/value'
 
 import { DetailField, DetailFieldConfig, DetailFieldProps, IDetailField } from '../common'
@@ -48,24 +47,29 @@ interface IImportSubformFieldState {
 }
 
 export default class DetailImportSubformField
-  extends DetailField<ImportSubformFieldConfig, IImportSubformField, any, IImportSubformFieldState>
-  implements IDetailField<string>
+  extends DetailField<
+    ImportSubformFieldConfig,
+    IImportSubformField,
+    { [key: string]: unknown },
+    IImportSubformFieldState
+  >
+  implements IDetailField<{ [key: string]: unknown }>
 {
   // 各表单项对应的类型所使用的UI组件的类
-  getALLComponents = (type: any): typeof Display => getALLComponents[type]
+  getALLComponents = (type: string): typeof Display => getALLComponents[type]
 
   // 用于请求防频的判断条件
   requestConfig = ''
 
   value = ''
 
-  formFields: Array<Display<FieldConfigs, {}, any> | null> = []
+  formFields: Array<Display<FieldConfigs, unknown, unknown> | null> = []
 
   formFieldsMounted: Array<boolean> = []
 
   interfaceHelper = new InterfaceHelper()
 
-  constructor(props: DetailFieldProps<ImportSubformFieldConfig, any>) {
+  constructor(props: DetailFieldProps<ImportSubformFieldConfig, { [key: string]: unknown }>) {
     super(props)
 
     this.state = {
@@ -112,7 +116,7 @@ export default class DetailImportSubformField
   handleValueSet = async (
     formFieldIndex: number,
     path: string,
-    value: any,
+    value: unknown,
     options?: { noPathCombination?: boolean }
   ) => {
     const withConfigPath =
@@ -143,7 +147,7 @@ export default class DetailImportSubformField
   handleValueListAppend = async (
     formFieldIndex: number,
     path: string,
-    value: any,
+    value: unknown,
     options?: { noPathCombination?: boolean }
   ) => {
     const withConfigPath =
@@ -177,7 +181,7 @@ export default class DetailImportSubformField
     }
   }
 
-  renderComponent = (props: IImportSubformField) => {
+  renderComponent: (props: IImportSubformField) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现ImportSubformField组件。</>
   }
 
@@ -186,7 +190,7 @@ export default class DetailImportSubformField
    * 各UI库需重写该方法
    * @param props
    */
-  renderItemComponent = (props: IDetailItem) => {
+  renderItemComponent: (props: IDetailItem) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现FormItem组件。</>
   }
 
@@ -195,15 +199,16 @@ export default class DetailImportSubformField
    * @param  {any} data 待处理数据
    * @returns 返回data反序列化形式
    */
-  handleDataToUnstringfy = (data: any) => {
-    let dataToUnstringfy = data
-    if (Object.prototype.toString.call(data) === '[object String]') {
+  handleDataToUnstringfy = (data: FieldConfigs[] | string) => {
+    let dataToUnstringfy: FieldConfigs[] = []
+    if (typeof data === 'string') {
       try {
         dataToUnstringfy = JSON.parse(data)
       } catch (e) {
-        console.error('当前动态子表单接口响应数据格式不是合格的json字符串')
         dataToUnstringfy = []
       }
+    } else {
+      dataToUnstringfy = data
     }
     return dataToUnstringfy
   }
@@ -215,11 +220,16 @@ export default class DetailImportSubformField
         .request(
           config.configFrom.interface,
           {},
-          { record: this.props.record, data: this.props.data, step: this.props.step },
+          {
+            record: this.props.record,
+            data: this.props.data,
+            step: this.props.step,
+            containerPath: this.props.containerPath
+          },
           { loadDomain: this.props.loadDomain }
         )
-        .then((data: any) => {
-          const dataToUnstringfy = this.handleDataToUnstringfy(data)
+        .then((data) => {
+          const dataToUnstringfy = this.handleDataToUnstringfy(data as FieldConfigs[] | string)
           if (!isEqual(dataToUnstringfy, this.state.fields)) {
             this.setState({
               fields: dataToUnstringfy
@@ -249,7 +259,7 @@ export default class DetailImportSubformField
   }
 
   render = () => {
-    const { config, formLayout, value, record, data, step } = this.props
+    const { config, formLayout, value, record, data, step, containerPath } = this.props
 
     const { fields } = this.state
 
@@ -266,7 +276,7 @@ export default class DetailImportSubformField
           columns: config?.columns?.enable ? config.columns : undefined,
           children: this.state.didMount
             ? fields.map((formFieldConfig, formFieldIndex) => {
-                if (!ConditionHelper(formFieldConfig.condition, { record: value, data, step })) {
+                if (!ConditionHelper(formFieldConfig.condition, { record: value, data, step, containerPath })) {
                   this.formFieldsMounted[formFieldIndex] = false
                   return null
                 }
@@ -296,7 +306,7 @@ export default class DetailImportSubformField
                   children: (
                     <FormField
                       key={formFieldIndex}
-                      ref={(formField: Display<FieldConfigs, any, any> | null) => {
+                      ref={(formField: Display<FieldConfigs, unknown, unknown> | null) => {
                         if (formField) {
                           this.formFields[formFieldIndex] = formField
                           this.handleMount(formFieldIndex)
@@ -307,18 +317,19 @@ export default class DetailImportSubformField
                       data={cloneDeep(data)}
                       step={step}
                       config={formFieldConfig}
-                      onValueSet={async (path, value, options) =>
-                        this.handleValueSet(formFieldIndex, path, value, options)
+                      onValueSet={async (path, valueSet, options) =>
+                        this.handleValueSet(formFieldIndex, path, valueSet, options)
                       }
                       onValueUnset={async (path, options) => this.handleValueUnset(formFieldIndex, path, options)}
-                      onValueListAppend={async (path, value, options) =>
-                        this.handleValueListAppend(formFieldIndex, path, value, options)
+                      onValueListAppend={async (path, valueAppend, options) =>
+                        this.handleValueListAppend(formFieldIndex, path, valueAppend, options)
                       }
                       onValueListSplice={async (path, index, count, options) =>
                         this.handleValueListSplice(formFieldIndex, path, index, count, options)
                       }
                       baseRoute={this.props.baseRoute}
-                      loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                      containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
                     />
                   )
                 }
