@@ -61,7 +61,13 @@ const config: FieldConfigs[] = [
   {
     "field": "canInsert",
     "label": "可添加",
-    "type": "switch"
+    "type": "switch",
+    //"canInsert":true,
+    
+    // "defaultValue": {
+    //   "source": "static",
+    //   "value": true
+    // }
   },
   {
     "field": "canRemove",
@@ -77,6 +83,11 @@ const config: FieldConfigs[] = [
     "field": "canCollapse",
     "label": "可折叠",
     "type": "switch"
+  },
+  {
+    "field": "inputMax",
+    "label": "最大可添加项",
+    "type": "number"
   },
   {
     "field": "stringify",

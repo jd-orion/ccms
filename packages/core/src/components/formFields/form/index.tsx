@@ -24,11 +24,9 @@ export interface FormFieldConfig extends FieldConfig {
   canRemove?: boolean
   canSort?: boolean
   canCollapse?: boolean // 是否用Collapse折叠展示
+  inputMax?: number //最大可添加字表单数
   stringify?: string[] // 序列号字段
   unstringify?: string[] // 反序列化字段
-  //hz
-  //1111
-
 }
 
 export interface IFormField {
@@ -276,9 +274,16 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
   }
 
   handleInsert = async () => {
-
+    console.log(this.props.config.canInsert)
+    //this.props.config.canInsert = true
     const index = (this.props.value || []).length
     const formDataList = set(this.state.formDataList, `[${index}]`, [])
+    const inputmaxnumber = this.props.config.inputMax as number
+    if(index+1 > inputmaxnumber){
+      console.log("超出最大可添加项");
+      alert("超出最大可添加项")
+      return 
+    }
     this.setState({
       formDataList
     })
@@ -457,6 +462,7 @@ export default class FormField extends Field<FormFieldConfig, IFormField, Array<
         canRemove,
         canSort,
         canCollapse,
+        inputMax
       }
     } = this.props
 
