@@ -16,10 +16,9 @@ export interface InterfaceConfig {
   contentType?: 'json' | 'form-data'
   withCredentials?: boolean
 
-  params?: { field: string, data: ParamConfig }[]
-  data?: { field: string, data: ParamConfig }[]
-  headers?: { field: string, data: ParamConfig }[]
-
+  params?: { field: string; data: ParamConfig }[]
+  data?: { field: string; data: ParamConfig }[]
+  headers?: { field: string; data: ParamConfig }[]
 
   condition?: {
     enable?: boolean
@@ -59,19 +58,16 @@ export default class InterfaceHelper {
   public static cache: { [key: string]: unknown } = {}
 
   private _config: InterfaceConfig = {}
-  private _url: string = ''
-  private _params: any = {}
-  private _data: any = {}
-  private _response: any
-  private _headers: any = {}
 
   private _url = ''
 
-  private _params: object = {}
+  private _params: any = {}
 
-  private _data: object = {}
+  private _data: any = {}
 
-  private _response: unknown
+  private _response: any
+
+  private _headers: any = {}
 
   protected renderSuccessModal: (props: IRenderSuccessModal) => Promise<void> = () => {
     return new Promise((resolve) => {
@@ -174,7 +170,7 @@ export default class InterfaceHelper {
           }
         })
       }
-      
+
       if (config.headers) {
         config.headers.forEach((param) => {
           if (param.field !== undefined && param.data !== undefined) {
