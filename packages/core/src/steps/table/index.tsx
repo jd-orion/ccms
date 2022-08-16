@@ -90,7 +90,7 @@ export interface TableOperationConfig {
 
 export interface TableCCMSOperationConfig {
   type: 'ccms'
-  page: any
+  page: unknown
   target: 'current' | 'page' | 'open' | 'handle'
   replaceHistory?: boolean
   targetURL: string
@@ -138,7 +138,7 @@ export interface ITable {
   title: string | null
   primary: string
   width: string
-  data: { [field: string]: any }[]
+  data: { [field: string]: unknown }[]
   columns: ITableColumn[]
   pagination?: {
     current: number
@@ -159,7 +159,7 @@ export interface ITableColumn {
   field: string
   label: string
   align: 'left' | 'center' | 'right'
-  render: (value: any, record: { [type: string]: any }, index: number) => React.ReactNode
+  render: (value: unknown, record: { [type: string]: unknown }, index: number) => React.ReactNode
 }
 
 /**
@@ -263,7 +263,7 @@ export interface TableState {
     modalWidthMode?: 'none' | 'percentage' | 'pixel'
     modalWidthValue?: string | number
     config: CCMSConfig
-    data: any
+    data: object
     callback?: boolean
     closeCallback?: boolean
   }
@@ -276,7 +276,7 @@ export interface TableState {
 export default class TableStep extends Step<TableConfig, TableState> {
   CCMS = CCMS
 
-  getALLComponents = (type: any): typeof Column => getALLComponents[type]
+  getALLComponents = (type: string): typeof Column => getALLComponents[type]
 
   interfaceHelper = new InterfaceHelper()
 
@@ -316,13 +316,13 @@ export default class TableStep extends Step<TableConfig, TableState> {
    * @param record
    * @returns
    */
-  handleRowOperation = async (operation: TableOperationConfig, record: { [field: string]: any }) => {
+  handleRowOperation = async (operation: TableOperationConfig, record: { [field: string]: unknown } = {}) => {
     const { data, step } = this.props
     if (operation.check && operation.check.enable) {
       const checkResult = await this.interfaceHelper.request(
         operation.check.interface,
         {},
-        { record, data, step },
+        { record, data, step, containerPath: '' },
         { loadDomain: this.props.loadDomain }
       )
       if (!checkResult) {
@@ -372,6 +372,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         }
       }
       if (operation.handle.debug) {
+        // eslint-disable-next-line no-console
         console.log('CCMS debug: operation - params', params)
       }
       if (operation.handle.target === 'current' || operation.handle.target === 'handle') {
@@ -425,6 +426,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
         }
 
         if (operation.handle.debug) {
+          // eslint-disable-next-line no-console
           console.log('CCMS debug: operation - operation.handle.type === link', params)
         }
 
@@ -479,55 +481,55 @@ export default class TableStep extends Step<TableConfig, TableState> {
    * @param props
    * @returns
    */
-  renderComponent = (props: ITable) => {
+  renderComponent: (props: ITable) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件。</>
   }
 
-  renderRowOperationComponent = (props: ITableStepRowOperation) => {
+  renderRowOperationComponent: (props: ITableStepRowOperation) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationButton部分。</>
   }
 
-  renderRowOperationButtonComponent = (props: ITableStepRowOperationButton) => {
+  renderRowOperationButtonComponent: (props: ITableStepRowOperationButton) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationButton部分。</>
   }
 
-  renderRowOperationGroupComponent = (props: ITableStepRowOperationGroup) => {
+  renderRowOperationGroupComponent: (props: ITableStepRowOperationGroup) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationGroup部分。</>
   }
 
-  renderRowOperationGroupItemComponent = (props: ITableStepRowOperationGroupItem) => {
+  renderRowOperationGroupItemComponent: (props: ITableStepRowOperationGroupItem) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationGroupItem部分。</>
   }
 
-  renderRowOperationDropdownComponent = (props: ITableStepRowOperationGroup) => {
+  renderRowOperationDropdownComponent: (props: ITableStepRowOperationGroup) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationDropdown部分。</>
   }
 
-  renderRowOperationDropdownItemComponent = (props: ITableStepRowOperationGroupItem) => {
+  renderRowOperationDropdownItemComponent: (props: ITableStepRowOperationGroupItem) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationDropdownItem部分。</>
   }
 
-  renderTableOperationComponent = (props: ITableStepTableOperation) => {
+  renderTableOperationComponent: (props: ITableStepTableOperation) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationButton部分。</>
   }
 
-  renderTableOperationButtonComponent = (props: ITableStepTableOperationButton) => {
+  renderTableOperationButtonComponent: (props: ITableStepTableOperationButton) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationButton部分。</>
   }
 
-  renderTableOperationGroupComponent = (props: ITableStepTableOperationGroup) => {
+  renderTableOperationGroupComponent: (props: ITableStepTableOperationGroup) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationGroup部分。</>
   }
 
-  renderTableOperationGroupItemComponent = (props: ITableStepTableOperationGroupItem) => {
+  renderTableOperationGroupItemComponent: (props: ITableStepTableOperationGroupItem) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationGroupItem部分。</>
   }
 
-  renderTableOperationDropdownComponent = (props: ITableStepTableOperationGroup) => {
+  renderTableOperationDropdownComponent: (props: ITableStepTableOperationGroup) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationDropdown部分。</>
   }
 
-  renderTableOperationDropdownItemComponent = (props: ITableStepTableOperationGroupItem) => {
+  renderTableOperationDropdownItemComponent: (props: ITableStepTableOperationGroupItem) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationDropdownItem部分。</>
   }
 
@@ -548,7 +550,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
     document.body.appendChild(mask)
   }
 
-  tableOperations = (tableOperationsList: Array<TableOperationsType>, getDate: Array<{}>) => {
+  tableOperations = (tableOperationsList: Array<TableOperationsType>) => {
     const { pageAuth } = this.state
     return tableOperationsList.length > 0
       ? this.renderTableOperationComponent({
@@ -556,8 +558,8 @@ export default class TableStep extends Step<TableConfig, TableState> {
             if (operation.type === 'button') {
               let hidden = false
               if (operation.handle && operation.handle.type === 'ccms') {
-                hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
-                operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
+                hidden = operation.handle.page === undefined || !pageAuth[(operation.handle.page as string).toString()]
+                operation.handle.page !== undefined && this.checkPageAuth((operation.handle.page as string).toString())
               }
 
               return (
@@ -568,7 +570,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                         label: operation.label,
                         level: operation.level || 'normal',
                         onClick: async () => {
-                          await this.handleRowOperation(operation, getDate)
+                          await this.handleRowOperation(operation)
                         }
                       })}
                 </React.Fragment>
@@ -579,19 +581,22 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 <React.Fragment key={index}>
                   {this.renderTableOperationGroupComponent({
                     label: operation.label,
-                    children: (operation.operations || []).map((operation) => {
+                    children: (operation.operations || []).map((currrentOperation) => {
                       let hidden = false
-                      if (operation.handle && operation.handle.type === 'ccms') {
-                        hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
-                        operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
+                      if (currrentOperation.handle && currrentOperation.handle.type === 'ccms') {
+                        hidden =
+                          currrentOperation.handle.page === undefined ||
+                          !pageAuth[(currrentOperation.handle.page as string).toString()]
+                        currrentOperation.handle.page !== undefined &&
+                          this.checkPageAuth((currrentOperation.handle.page as string).toString())
                       }
                       return hidden
                         ? null
                         : this.renderTableOperationGroupItemComponent({
-                            label: operation.label,
-                            level: operation.level || 'normal',
+                            label: currrentOperation.label,
+                            level: currrentOperation.level || 'normal',
                             onClick: async () => {
-                              await this.handleRowOperation(operation, getDate)
+                              await this.handleRowOperation(currrentOperation)
                             }
                           })
                     })
@@ -604,19 +609,22 @@ export default class TableStep extends Step<TableConfig, TableState> {
                 <React.Fragment key={index}>
                   {this.renderTableOperationDropdownComponent({
                     label: operation.label,
-                    children: (operation.operations || []).map((operation) => {
+                    children: (operation.operations || []).map((currrentOperation) => {
                       let hidden = false
-                      if (operation.handle && operation.handle.type === 'ccms') {
-                        hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
-                        operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
+                      if (currrentOperation.handle && currrentOperation.handle.type === 'ccms') {
+                        hidden =
+                          currrentOperation.handle.page === undefined ||
+                          !pageAuth[(currrentOperation.handle.page as string).toString()]
+                        currrentOperation.handle.page !== undefined &&
+                          this.checkPageAuth((currrentOperation.handle.page as string).toString())
                       }
                       return hidden
                         ? null
                         : this.renderTableOperationDropdownItemComponent({
-                            label: operation.label,
-                            level: operation.level || 'normal',
+                            label: currrentOperation.label,
+                            level: currrentOperation.level || 'normal',
                             onClick: async () => {
-                              await this.handleRowOperation(operation, getDate)
+                              await this.handleRowOperation(currrentOperation)
                             }
                           })
                     })
@@ -667,25 +675,28 @@ export default class TableStep extends Step<TableConfig, TableState> {
       columns: (columns || [])
         .filter((column) => column.field !== undefined && column.field !== '')
         .map((column, index) => {
-          const field = column.field.split('.')[0]
+          const currrentField = column.field.split('.')[0]
           return {
-            field,
+            field: currrentField,
             label: column.label,
             align: column.align,
-            render: (value: any, record: { [field: string]: any }) => {
-              if (value && Object.prototype.toString.call(value) === '[object Object]') {
-                value = getValue(value, column.field.replace(field, '').slice(1))
+            render: (value: unknown, record: { [field: string]: unknown }) => {
+              let _value = value
+              if (_value && Object.prototype.toString.call(_value) === '[object Object]') {
+                _value = getValue(_value, column.field.replace(currrentField, '').slice(1))
               }
 
-              const Column = this.getALLComponents(column.type)
-              if (Column) {
+              const CurrentColumn = this.getALLComponents(column.type)
+              if (CurrentColumn) {
                 const addfix = ['multirowText'].some((val) => val !== column.field)
                 return (
                   <ColumnStyleComponent key={index} style={column.style} addfix={addfix}>
-                    <Column
-                      ref={() => {}}
+                    <CurrentColumn
+                      ref={() => {
+                        /* 无逻辑 */
+                      }}
                       record={record}
-                      value={value}
+                      value={_value}
                       data={data}
                       step={step}
                       config={column}
@@ -697,7 +708,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                       loadPageFrameURL={this.props.loadPageFrameURL}
                       loadPageConfig={this.props.loadPageConfig}
                       loadPageList={this.props.loadPageList}
-                      loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
                     />
                   </ColumnStyleComponent>
                 )
@@ -705,29 +716,44 @@ export default class TableStep extends Step<TableConfig, TableState> {
             }
           }
         }),
-      tableOperations: this.tableOperations(operations?.tableOperations || [], getDate),
-      leftTableOperations: this.tableOperations(operations?.leftTableOperations || [], getDate),
+      tableOperations: this.tableOperations(operations?.tableOperations || []),
+      leftTableOperations: this.tableOperations(operations?.leftTableOperations || []),
       multirowOperations: null
     }
     if (description) {
       if (description.type === 'text') {
         props.description = {
           type: 'text',
-          label: StatementHelper(description.label, { data: this.props.data, step: this.props.step }),
+          label: StatementHelper(description.label, {
+            record: this.props.step,
+            data: this.props.data,
+            step: this.props.step,
+            containerPath: ''
+          }),
           content: description.content,
           showIcon: description.showIcon
         }
       } else if (description.type === 'tooltip') {
         props.description = {
           type: 'tooltip',
-          label: StatementHelper(description.label, { data: this.props.data, step: this.props.step }),
+          label: StatementHelper(description.label, {
+            record: this.props.step,
+            data: this.props.data,
+            step: this.props.step,
+            containerPath: ''
+          }),
           content: description.content,
           showIcon: description.showIcon
         }
       } else {
         props.description = {
           type: 'modal',
-          label: StatementHelper(description.label, { data: this.props.data, step: this.props.step }),
+          label: StatementHelper(description.label, {
+            record: this.props.step,
+            data: this.props.data,
+            step: this.props.step,
+            containerPath: ''
+          }),
           content: description.content,
           showIcon: description.showIcon
         }
@@ -738,17 +764,25 @@ export default class TableStep extends Step<TableConfig, TableState> {
           case 'plain':
             props.description &&
               (props.description.content = StatementHelper(description.content, {
+                record: this.props.step,
                 data: this.props.data,
-                step: this.props.step
+                step: this.props.step,
+                containerPath: ''
               }))
             break
           case 'markdown':
             props.description &&
               (props.description.content = (
                 <div
+                  // eslint-disable-next-line react/no-danger
                   dangerouslySetInnerHTML={{
                     __html: marked(
-                      StatementHelper(description.content, { data: this.props.data, step: this.props.step })
+                      StatementHelper(description.content, {
+                        record: this.props.step,
+                        data: this.props.data,
+                        step: this.props.step,
+                        containerPath: ''
+                      })
                     )
                   }}
                 />
@@ -758,12 +792,19 @@ export default class TableStep extends Step<TableConfig, TableState> {
             props.description &&
               (props.description.content = (
                 <div
+                  // eslint-disable-next-line react/no-danger
                   dangerouslySetInnerHTML={{
-                    __html: StatementHelper(description.content, { data: this.props.data, step: this.props.step })
+                    __html: StatementHelper(description.content, {
+                      record: this.props.step,
+                      data: this.props.data,
+                      step: this.props.step,
+                      containerPath: ''
+                    })
                   }}
                 />
               ))
             break
+          default:
         }
       }
     }
@@ -807,19 +848,21 @@ export default class TableStep extends Step<TableConfig, TableState> {
         field: 'ccms-table-rowOperation',
         label: '操作',
         align: 'left',
-        render: (_value: any, record: { [field: string]: any }) => {
+        render: (_value: unknown, record: { [field: string]: unknown }) => {
           if (operations.rowOperations) {
             return this.renderRowOperationComponent({
               children: (operations.rowOperations || []).map((operation, index) => {
                 if (operation.type === 'button') {
-                  if (!ConditionHelper(operation.condition, { record, data, step })) {
+                  if (!ConditionHelper(operation.condition, { record, data, step, containerPath: '' })) {
                     return null
                   }
 
                   let hidden = false
                   if (operation.handle && operation.handle.type === 'ccms') {
-                    hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
-                    operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
+                    hidden =
+                      operation.handle.page === undefined || !pageAuth[(operation.handle.page as string).toString()]
+                    operation.handle.page !== undefined &&
+                      this.checkPageAuth((operation.handle.page as string).toString())
                   }
 
                   return (
@@ -837,22 +880,32 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   )
                 }
                 if (operation.type === 'group' || operation.type === 'dropdown') {
-                  if (!ConditionHelper(operation.condition, { record, data, step })) {
+                  if (!ConditionHelper(operation.condition, { record, data, step, containerPath: '' })) {
                     return null
-                  } 
+                  }
                   return (
                     <React.Fragment key={index}>
                       {this.renderRowOperationDropdownComponent({
                         label: operation.label,
                         children: (operation.operations || []).map((operationGroupDropdown) => {
-                          if (!ConditionHelper(operationGroupDropdown.condition, { record, data, step })) {
+                          if (
+                            !ConditionHelper(operationGroupDropdown.condition, {
+                              record,
+                              data,
+                              step,
+                              containerPath: ''
+                            })
+                          ) {
                             return null
-                          } 
+                          }
 
                           let hidden = false
                           if (operationGroupDropdown.handle && operationGroupDropdown.handle.type === 'ccms') {
-                            hidden = operationGroupDropdown.handle.page === undefined || !pageAuth[operationGroupDropdown.handle.page.toString()]
-                            operationGroupDropdown.handle.page !== undefined && this.checkPageAuth(operationGroupDropdown.handle.page.toString())
+                            hidden =
+                              operationGroupDropdown.handle.page === undefined ||
+                              !pageAuth[(operationGroupDropdown.handle.page as string).toString()]
+                            operationGroupDropdown.handle.page !== undefined &&
+                              this.checkPageAuth((operationGroupDropdown.handle.page as string).toString())
                           }
                           return hidden
                             ? null
@@ -883,7 +936,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
       }
     }
 
-    const { CCMS } = this
+    const { CCMS: CurrentCCMS } = this
 
     return (
       <>
@@ -897,7 +950,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
               modalWidthMode: operationModalWidthMode,
               modalWidthValue: operationModalWidthValue,
               children: (
-                <CCMS
+                <CurrentCCMS
                   config={operationConfig}
                   sourceData={operationData}
                   baseRoute={this.props.baseRoute}
@@ -936,7 +989,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
               }
             })
           ) : (
-            <CCMS
+            <CurrentCCMS
               config={operationConfig}
               sourceData={operationData}
               baseRoute={this.props.baseRoute}

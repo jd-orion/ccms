@@ -1,38 +1,39 @@
 import React, { useState } from 'react'
 import { FormField } from 'ccms'
-import { Form, Button, Divider, Collapse, Space, Row, Col } from 'antd'
-import { PlusOutlined, MinusCircleOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Form, Button, Collapse, Space } from 'antd'
+import { PlusOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
-import getALLComponents from '../'
+import getALLComponents from '..'
 import { formItemLayout } from '../common'
-import commonStyles from '../common.less'
 
 export default class FormFieldComponent extends FormField {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type: string) => getALLComponents[type]
 
-  remove: () => Promise<void> = async () => { }
+  remove: () => Promise<void> = async () => {
+    /* 无逻辑 */
+  }
 
   renderItemFieldComponent = (props: IFormFieldItemField) => {
-    const {
-      label,
-      subLabel,
-      status,
-      message,
-      extra,
-      required,
-      fieldType,
-      layout,
-      children
-    } = props
+    const { label, subLabel, status, message, extra, required, fieldType, layout, visitable, children } = props
+    const itemStyle = visitable ? {} : { overflow: 'hidden', width: 0, height: 0, margin: 0, padding: 0 }
+    let validateStatus: '' | 'error' | 'validating' | 'success' | 'warning' | undefined
+    if (status === 'normal') {
+      validateStatus = undefined
+    } else if (status === 'error') {
+      validateStatus = 'error'
+    } else {
+      validateStatus = 'validating'
+    }
     return (
       <Form.Item
         extra={extra ? extra.trim() : ''}
         required={required}
         label={label}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+        validateStatus={validateStatus}
         help={message === '' ? null : message}
         {...formItemLayout(layout, fieldType, label)}
-      // className={ layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null }
+        // className={ layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null }
+        style={itemStyle}
       >
         {subLabel || null}
         {children}
@@ -56,12 +57,12 @@ export default class FormFieldComponent extends FormField {
       <Collapse.Panel
         header={<div style={{ display: 'inline-block', width: 'calc(100% - 60px)' }}>{title}</div>}
         key={index}
-        forceRender={true}
+        forceRender
         showArrow={!!canCollapse}
-        extra={(
+        extra={
           <Space>
-            {onSort
-              ? <React.Fragment>
+            {onSort ? (
+              <>
                 <ArrowUpOutlined
                   onClick={(e) => {
                     e.stopPropagation()
@@ -82,15 +83,18 @@ export default class FormFieldComponent extends FormField {
                     cursor: isLastIndex ? 'not-allowed' : 'pointer'
                   }}
                 />
-              </React.Fragment>
-              : null}
-            {onRemove
-              ? <DeleteOutlined onClick={(e) => {
-                e.stopPropagation()
-                onRemove()
-              }} />
-              : null}
-          </Space>)}
+              </>
+            ) : null}
+            {onRemove ? (
+              <DeleteOutlined
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onRemove()
+                }}
+              />
+            ) : null}
+          </Space>
+        }
       >
         {children}
       </Collapse.Panel>
@@ -98,32 +102,32 @@ export default class FormFieldComponent extends FormField {
   }
 
   renderComponent = (props: IFormField) => {
-    const {
-      insertText,
-      onInsert,
-      canCollapse,
-      children
-    } = props
+    const { insertText, onInsert, canCollapse, children } = props
 
     const collapsePaneldDefaultActiveKeys = Array.from(Array(children.length), (v, k) => k)
-    const CollapseProps = canCollapse ? {
-      accordion: true
-    } : {
-      activeKey: collapsePaneldDefaultActiveKeys
-    }
+    const CollapseProps = canCollapse
+      ? {
+          accordion: true
+        }
+      : {
+          activeKey: collapsePaneldDefaultActiveKeys
+        }
 
     return (
-      <React.Fragment>
-        <Space
-          style={{ width: '100%' }}
-          direction="vertical"
-        >
-          <Collapse bordered={false} style={{ marginBottom: '24px' }} {...CollapseProps} >{children}</Collapse>
-          {onInsert ? <Form.Item wrapperCol={{ span: 24 }}>
-            <Button block type='dashed' icon={<PlusOutlined />} onClick={() => onInsert()}>{insertText}</Button>
-          </Form.Item> : null}
+      <>
+        <Space style={{ width: '100%' }} direction="vertical">
+          <Collapse bordered={false} style={{ marginBottom: '24px' }} {...CollapseProps}>
+            {children}
+          </Collapse>
+          {onInsert ? (
+            <Form.Item wrapperCol={{ span: 24 }}>
+              <Button block type="dashed" icon={<PlusOutlined />} onClick={() => onInsert()}>
+                {insertText}
+              </Button>
+            </Form.Item>
+          ) : null}
         </Space>
-      </React.Fragment>
+      </>
     )
   }
 }

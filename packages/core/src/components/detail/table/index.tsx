@@ -68,7 +68,7 @@ export interface TableOperationConfig {
 
 export interface TableCCMSOperationConfig {
   type: 'ccms'
-  page: any
+  page: unknown
   target: 'current' | 'page' | 'open' | 'handle'
   targetURL: string
   data: { [key: string]: ParamConfig }
@@ -106,7 +106,7 @@ export interface ITableColumn {
   field: string
   label: string
   align: 'left' | 'center' | 'right'
-  render: (value: any, record: { [type: string]: any }, index: number) => React.ReactNode
+  render: (value: unknown, record: { [type: string]: unknown }, index: number) => React.ReactNode
 }
 
 /**
@@ -205,7 +205,7 @@ interface TableState {
     title: string
     visible: boolean
     config: CCMSConfig
-    data: any
+    data: unknown
     callback?: boolean
   }
   pageAuth: { [page: string]: boolean }
@@ -219,7 +219,7 @@ export interface ITableField {
   title: string | null
   primary: string
   width?: number
-  data: { [field: string]: any }[]
+  data: { [field: string]: unknown }[]
   tableColumns: ITableColumn[]
   pagination?: {
     current: number
@@ -238,12 +238,12 @@ export interface ITableField {
 }
 
 export default class TableField
-  extends DetailField<TableFieldConfig, ITableField, string, TableState>
-  implements IDetailField<string>
+  extends DetailField<TableFieldConfig, ITableField, { [key: string]: unknown }[], TableState>
+  implements IDetailField<{ [key: string]: unknown }[]>
 {
   CCMS = CCMS
 
-  getALLComponents = (type: any): typeof Column => getALLComponents[type]
+  getALLComponents = (type: string): typeof Column => getALLComponents[type]
 
   interfaceHelper = new InterfaceHelper()
 
@@ -256,7 +256,7 @@ export default class TableField
   /* 服务端分页情况下页码溢出标识：页码溢出时退回重新请求，此标识符用于防止死循环判断 */
   pageOverflow = false
 
-  constructor(props: DetailFieldProps<TableFieldConfig, any>) {
+  constructor(props: DetailFieldProps<TableFieldConfig, { [key: string]: unknown }[]>) {
     super(props)
 
     this.state = {
@@ -279,13 +279,13 @@ export default class TableField
    * @param record
    * @returns
    */
-  handleRowOperation = async (operation: TableOperationConfig, record: { [field: string]: any }) => {
-    const { data, step } = this.props
+  handleRowOperation = async (operation: TableOperationConfig, record: { [field: string]: unknown }) => {
+    const { data, step, containerPath } = this.props
     if (operation.check && operation.check.enable) {
       const checkResult = await this.interfaceHelper.request(
         operation.check.interface,
         {},
-        { record, data, step },
+        { record, data, step, containerPath },
         { loadDomain: this.props.loadDomain }
       )
       if (!checkResult) {
@@ -335,6 +335,7 @@ export default class TableField
         }
       }
       if (operation.handle.debug) {
+        // eslint-disable-next-line no-console
         console.log('CCMS debug: operation - params', params)
       }
       if (operation.handle.target === 'current' || operation.handle.target === 'handle') {
@@ -382,6 +383,7 @@ export default class TableField
         }
 
         if (operation.handle.debug) {
+          // eslint-disable-next-line no-console
           console.log('CCMS debug: operation - operation.handle.type === link', params)
         }
 
@@ -438,7 +440,7 @@ export default class TableField
    * @param props
    * @returns
    */
-  renderComponent = (props: ITableField) => {
+  renderComponent: (props: ITableField) => JSX.Element = () => {
     return (
       <>
         您当前使用的UI版本没有实现Table组件。
@@ -447,27 +449,27 @@ export default class TableField
     )
   }
 
-  renderRowOperationComponent = (props: ITableDetailRowOperation) => {
+  renderRowOperationComponent: (props: ITableDetailRowOperation) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationButton部分。</>
   }
 
-  renderRowOperationButtonComponent = (props: ITableDetailRowOperationButton) => {
+  renderRowOperationButtonComponent: (props: ITableDetailRowOperationButton) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationButton部分。</>
   }
 
-  renderRowOperationGroupComponent = (props: ITableDetailRowOperationGroup) => {
+  renderRowOperationGroupComponent: (props: ITableDetailRowOperationGroup) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationGroup部分。</>
   }
 
-  renderRowOperationGroupItemComponent = (props: ITableDetailRowOperationGroupItem) => {
+  renderRowOperationGroupItemComponent: (props: ITableDetailRowOperationGroupItem) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationGroupItem部分。</>
   }
 
-  renderRowOperationDropdownComponent = (props: ITableDetailRowOperationGroup) => {
+  renderRowOperationDropdownComponent: (props: ITableDetailRowOperationGroup) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationDropdown部分。</>
   }
 
-  renderRowOperationDropdownItemComponent = (props: ITableDetailRowOperationGroupItem) => {
+  renderRowOperationDropdownItemComponent: (props: ITableDetailRowOperationGroupItem) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现Table组件的OperationDropdownItem部分。</>
   }
 
@@ -502,7 +504,8 @@ export default class TableField
       data,
       step,
       onUnmount,
-      value
+      value,
+      containerPath
     } = this.props
 
     const {
@@ -532,19 +535,21 @@ export default class TableField
             field,
             label: column.label,
             align: column.align,
-            render: (value: any, record: { [field: string]: any }) => {
-              let tempValue = value
+            render: (valueRender: unknown, record: { [field: string]: unknown }) => {
+              let tempValue = valueRender
               if (tempValue && Object.prototype.toString.call(tempValue) === '[object Object]') {
                 tempValue = getValue(tempValue, column.field.replace(field, '').slice(1))
               }
 
-              const Column = this.getALLComponents(column.type)
-              if (Column) {
+              const CurrentColumn = this.getALLComponents(column.type)
+              if (CurrentColumn) {
                 const addfix = ['multirowText'].some((val) => val !== column.field)
                 return (
                   <ColumnStyleComponent key={index} style={column.style} addfix={addfix}>
-                    <Column
-                      ref={() => {}}
+                    <CurrentColumn
+                      ref={() => {
+                        /* 无逻辑 */
+                      }}
                       record={record}
                       value={tempValue}
                       data={data}
@@ -558,7 +563,7 @@ export default class TableField
                       loadPageFrameURL={this.props.loadPageFrameURL}
                       loadPageConfig={this.props.loadPageConfig}
                       loadPageList={this.props.loadPageList}
-                      loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
+                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
                     />
                   </ColumnStyleComponent>
                 )
@@ -610,19 +615,21 @@ export default class TableField
         field: 'ccms-table-rowOperation',
         label: '操作',
         align: 'left',
-        render: (_value: any, record: { [field: string]: any }) => {
+        render: (_value: unknown, record: { [field: string]: unknown }) => {
           if (operations.rowOperations) {
             return this.renderRowOperationComponent({
               children: (operations.rowOperations || []).map((operation, index) => {
                 if (operation.type === 'button') {
-                  if (!ConditionHelper(operation.condition, { record, data, step })) {
+                  if (!ConditionHelper(operation.condition, { record, data, step, containerPath })) {
                     return null
                   }
 
                   let hidden = false
                   if (operation.handle && operation.handle.type === 'ccms') {
-                    hidden = operation.handle.page === undefined || !pageAuth[operation.handle.page.toString()]
-                    operation.handle.page !== undefined && this.checkPageAuth(operation.handle.page.toString())
+                    hidden =
+                      operation.handle.page === undefined || !pageAuth[(operation.handle.page as string).toString()]
+                    operation.handle.page !== undefined &&
+                      this.checkPageAuth((operation.handle.page as string).toString())
                   }
                   return (
                     <React.Fragment key={index}>
@@ -644,7 +651,7 @@ export default class TableField
                       {this.renderRowOperationGroupComponent({
                         label: operation.label,
                         children: (operation.operations || []).map((operationGroup) => {
-                          if (!ConditionHelper(operationGroup.condition, { record, data, step })) {
+                          if (!ConditionHelper(operationGroup.condition, { record, data, step, containerPath })) {
                             return null
                           }
 
@@ -652,9 +659,9 @@ export default class TableField
                           if (operationGroup.handle && operationGroup.handle.type === 'ccms') {
                             hidden =
                               operationGroup.handle.page === undefined ||
-                              !pageAuth[operationGroup.handle.page.toString()]
+                              !pageAuth[(operationGroup.handle.page as string).toString()]
                             operationGroup.handle.page !== undefined &&
-                              this.checkPageAuth(operationGroup.handle.page.toString())
+                              this.checkPageAuth((operationGroup.handle.page as string).toString())
                           }
 
                           return hidden
@@ -672,7 +679,7 @@ export default class TableField
                   )
                 }
                 if (operation.type === 'dropdown') {
-                  if (!ConditionHelper(operation.condition, { record, data, step })) {
+                  if (!ConditionHelper(operation.condition, { record, data, step, containerPath })) {
                     return null
                   }
                   return (
@@ -680,7 +687,7 @@ export default class TableField
                       {this.renderRowOperationDropdownComponent({
                         label: operation.label,
                         children: (operation.operations || []).map((operationDropdown) => {
-                          if (!ConditionHelper(operation.condition, { record, data, step })) {
+                          if (!ConditionHelper(operation.condition, { record, data, step, containerPath })) {
                             return null
                           }
 
@@ -688,9 +695,9 @@ export default class TableField
                           if (operationDropdown.handle && operationDropdown.handle.type === 'ccms') {
                             hidden =
                               operationDropdown.handle.page === undefined ||
-                              !pageAuth[operationDropdown.handle.page.toString()]
+                              !pageAuth[(operationDropdown.handle.page as string).toString()]
                             operationDropdown.handle.page !== undefined &&
-                              this.checkPageAuth(operationDropdown.handle.page.toString())
+                              this.checkPageAuth((operationDropdown.handle.page as string).toString())
                           }
 
                           return hidden
@@ -716,7 +723,7 @@ export default class TableField
       })
     }
 
-    const { CCMS } = this
+    const { CCMS: CurrentCCMS } = this
     return (
       <>
         {this.renderComponent(props)}
@@ -727,7 +734,7 @@ export default class TableField
               width: '500',
               visible: operationVisible,
               children: (
-                <CCMS
+                <CurrentCCMS
                   checkPageAuth={this.props.checkPageAuth}
                   loadPageURL={this.props.loadPageURL}
                   loadPageFrameURL={this.props.loadPageFrameURL}
@@ -766,14 +773,14 @@ export default class TableField
               }
             })
           ) : (
-            <CCMS
+            <CurrentCCMS
               config={operationConfig}
               sourceData={operationData}
               baseRoute={this.props.baseRoute}
-              checkPageAuth={this.props.checkPageAuth as (pageID: any) => Promise<boolean>}
-              loadPageURL={this.props.loadPageURL as (pageID: any) => Promise<string>}
-              loadPageFrameURL={this.props.loadPageFrameURL as (pageID: any) => Promise<string>}
-              loadPageConfig={this.props.loadPageConfig as (pageID: any) => Promise<CCMSConfig>}
+              checkPageAuth={this.props.checkPageAuth as (pageID: unknown) => Promise<boolean>}
+              loadPageURL={this.props.loadPageURL as (pageID: unknown) => Promise<string>}
+              loadPageFrameURL={this.props.loadPageFrameURL as (pageID: unknown) => Promise<string>}
+              loadPageConfig={this.props.loadPageConfig as (pageID: unknown) => Promise<CCMSConfig>}
               loadPageList={this.props.loadPageList}
               loadDomain={this.props.loadDomain}
               handlePageRedirect={this.props.handlePageRedirect}

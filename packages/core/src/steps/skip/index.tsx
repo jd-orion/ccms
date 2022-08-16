@@ -1,24 +1,24 @@
 import React from 'react'
 import QueryString from 'query-string'
+import { set } from 'lodash'
 import { FieldConfigs } from '../../components/formFields'
 import TextField from '../../components/formFields/text'
 import Step, { StepConfig } from '../common'
 import { getValue } from '../../util/value'
-import { set } from 'lodash'
 
 export interface SkipConfig extends StepConfig {
   type: 'skip'
-  fields: FieldConfigs[],
+  fields: FieldConfigs[]
   default?: {
     type: 'static' | 'data' | 'query' | 'hash' | 'step'
-    value?: any
+    value?: unknown
     field?: string
     step?: string | number
   }
 }
 
 export default class SkipStep extends Step<SkipConfig> {
-  FieldType: { [type: string]: any } = {
+  FieldType: { [type: string]: unknown } = {
     text: TextField
   }
 
@@ -28,21 +28,16 @@ export default class SkipStep extends Step<SkipConfig> {
       data,
       config: {
         fields,
-        default: {
-          type: defaultType,
-          value: defaultValue,
-          field: defaultField,
-          step: defaultStep
-        } = {},
+        default: { type: defaultType, value: defaultValue, field: defaultField, step: defaultStep } = {},
         default: defaultConfig
       },
       step,
       onSubmit
     } = this.props
 
-    let result: { [key: string]: any } = {}
+    let result: { [key: string]: unknown } = {}
 
-    let formDefault: any
+    let formDefault: unknown
 
     if (defaultConfig) {
       switch (defaultType) {
@@ -80,14 +75,17 @@ export default class SkipStep extends Step<SkipConfig> {
                 formDefault = hash
               }
             } catch (e) {
+              /* 无逻辑 */
             }
           }
           break
         case 'step':
-          formDefault = defaultStep && getValue(data[defaultStep] || {}, defaultField)
+          formDefault = defaultStep && getValue(data[defaultStep] || {}, defaultField || '')
           break
+        default:
+        /* 无逻辑 */
       }
-      for (const formFieldIndex in fields) {
+      for (let formFieldIndex = 0; formFieldIndex < fields.length; formFieldIndex++) {
         const formFieldConfig = fields[formFieldIndex]
         const value = getValue(formDefault, formFieldConfig.field)
         if (formFieldConfig.field === '') {
@@ -100,9 +98,7 @@ export default class SkipStep extends Step<SkipConfig> {
     onSubmit(result)
   }
 
-  render () {
-    return (
-      <React.Fragment></React.Fragment>
-    )
+  render() {
+    return <></>
   }
 }

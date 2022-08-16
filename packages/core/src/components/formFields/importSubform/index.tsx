@@ -56,24 +56,24 @@ interface IImportSubformFieldState {
 }
 
 export default class ImportSubformField
-  extends Field<ImportSubformFieldConfig, IImportSubformField, any, IImportSubformFieldState>
-  implements IField<string>
+  extends Field<ImportSubformFieldConfig, IImportSubformField, { [key: string]: unknown }, IImportSubformFieldState>
+  implements IField<{ [key: string]: unknown }>
 {
   // 各表单项对应的类型所使用的UI组件的类
-  getALLComponents = (type: any): typeof Field => getALLComponents[type]
+  getALLComponents = (type: string): typeof Field => getALLComponents[type]
 
   // 用于请求防频的判断条件
   requestConfig = ''
 
   value = ''
 
-  formFields: Array<Field<FieldConfigs, {}, any> | null> = []
+  formFields: Array<Field<FieldConfigs, unknown, unknown> | null> = []
 
   formFieldsMounted: Array<boolean> = []
 
   interfaceHelper = new InterfaceHelper()
 
-  constructor(props: FieldProps<ImportSubformFieldConfig, any>) {
+  constructor(props: FieldProps<ImportSubformFieldConfig, { [key: string]: unknown }>) {
     super(props)
 
     this.state = {
@@ -90,10 +90,10 @@ export default class ImportSubformField
   }
 
   get = async () => {
-    let data: any = {}
+    let data: { [key: string]: unknown } = {}
 
     if (Array.isArray(this.state.fields)) {
-      for (const formFieldIndex in this.state.fields) {
+      for (let formFieldIndex = 0; formFieldIndex < this.state.fields.length; formFieldIndex++) {
         const formFieldConfig = this.state.fields[formFieldIndex]
         if (
           !ConditionHelper(
@@ -102,6 +102,7 @@ export default class ImportSubformField
               record: this.props.value,
               data: this.props.data,
               step: this.props.step,
+              containerPath: this.props.containerPath,
               extraContainerPath: this.props.config.field
             },
             this
@@ -135,7 +136,7 @@ export default class ImportSubformField
     return data
   }
 
-  reset: () => Promise<string> = async () => {
+  reset: () => Promise<{ [key: string]: unknown }> = async () => {
     const defaults = await this.defaultValue()
 
     if (defaults === undefined) {
@@ -144,7 +145,7 @@ export default class ImportSubformField
     return defaults
   }
 
-  validate = async (value: any): Promise<true | FieldError[]> => {
+  validate = async (value: unknown): Promise<true | FieldError[]> => {
     const errors: FieldError[] = []
 
     let childrenError = 0
@@ -152,7 +153,7 @@ export default class ImportSubformField
 
     let { formData } = this.state
 
-    for (const fieldIndex in this.state.fields || []) {
+    for (let fieldIndex = 0; fieldIndex < (this.state.fields || []).length; fieldIndex++) {
       const formItem = this.formFields[fieldIndex]
       const formConfig = this.state.fields?.[fieldIndex]
       if (formItem !== null && formItem !== undefined) {
@@ -226,29 +227,8 @@ export default class ImportSubformField
     }
   }
 
-  handleChange = async (formFieldIndex: number, value: any) => {
-    // const formField = this.formFields[formFieldIndex]
-    // const formFieldConfig = this.state.fields[formFieldIndex]
-    // const formData = cloneDeep(this.state.formData)
-    // if (formField && formFieldConfig) {
-    //   if (this.props.onChange) {
-    //     if (formFieldConfig.field === '') {
-    //       await this.props.onChange(value)
-    //     } else {
-    //       const changeValue = setValue({}, formFieldConfig.field, value)
-    //       await this.props.onChange(changeValue)
-    //     }
-    //   }
-    //   const validation = await formField.validate(value)
-    //   if (validation === true) {
-    //     formData[formFieldIndex] = { value, status: 'normal' }
-    //   } else {
-    //     formData[formFieldIndex] = { value, status: 'error', message: validation[0].message }
-    //   }
-    //   await this.setState({
-    //     formData
-    //   })
-    // }
+  handleChange: (formFieldIndex: number, value: unknown) => Promise<void> = async () => {
+    /* 无逻辑 */
   }
 
   /**
@@ -269,7 +249,7 @@ export default class ImportSubformField
   handleValueSet = async (
     formFieldIndex: number,
     path: string,
-    value: any,
+    value: unknown,
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {
@@ -310,7 +290,7 @@ export default class ImportSubformField
   handleValueListAppend = async (
     formFieldIndex: number,
     path: string,
-    value: any,
+    value: unknown,
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {
@@ -354,7 +334,7 @@ export default class ImportSubformField
     formFieldIndex: number,
     path: string,
     index: number,
-    sortType: 'up' | 'down',
+    sortType: 'up' | 'down' | 'top' | 'bottom' | number,
     validation: true | FieldError[],
     options?: { noPathCombination?: boolean }
   ) => {
@@ -377,20 +357,21 @@ export default class ImportSubformField
    * @param  {any} data 待处理数据
    * @returns 返回data反序列化形式
    */
-  handleDataToUnstringfy = (data: any) => {
-    let dataToUnstringfy = data
-    if (Object.prototype.toString.call(data) === '[object String]') {
+  handleDataToUnstringfy = (data: FieldConfigs[] | string) => {
+    let dataToUnstringfy: FieldConfigs[] = []
+    if (typeof data === 'string') {
       try {
         dataToUnstringfy = JSON.parse(data)
       } catch (e) {
-        console.error('当前动态子表单接口响应数据格式不是合格的json字符串')
         dataToUnstringfy = []
       }
+    } else {
+      dataToUnstringfy = data
     }
     return dataToUnstringfy
   }
 
-  renderComponent = (props: IImportSubformField) => {
+  renderComponent: (props: IImportSubformField) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现ImportSubformField组件。</>
   }
 
@@ -399,7 +380,7 @@ export default class ImportSubformField
    * 各UI库需重写该方法
    * @param props
    */
-  renderItemComponent = (props: IFormItem) => {
+  renderItemComponent: (props: IFormItem) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现FormItem组件。</>
   }
 
@@ -430,12 +411,17 @@ export default class ImportSubformField
         .request(
           interfaceConfig,
           {},
-          { record: this.props.record, data: this.props.data, step: this.props.step },
+          {
+            record: this.props.record,
+            data: this.props.data,
+            step: this.props.step,
+            containerPath: this.props.containerPath
+          },
           { loadDomain: this.props.loadDomain },
           this
         )
-        .then((data: any) => {
-          const dataToUnstringfy = this.handleDataToUnstringfy(data)
+        .then((data) => {
+          const dataToUnstringfy = this.handleDataToUnstringfy(data as FieldConfigs[] | string)
           if (this.props.config.withConfig?.enable && this.props.config.withConfig?.configField)
             this.props.onValueSet(this.props.config.withConfig.configField, data, true)
           if (!isEqual(dataToUnstringfy, this.state.fields)) {
@@ -456,7 +442,7 @@ export default class ImportSubformField
   }
 
   render = () => {
-    const { config, formLayout, value, data, step } = this.props
+    const { config, formLayout, value, data, step, containerPath } = this.props
 
     const { fields } = this.state
 
@@ -476,7 +462,7 @@ export default class ImportSubformField
                 if (
                   !ConditionHelper(
                     formFieldConfig.condition,
-                    { record: value, data, step, extraContainerPath: this.props.config.field },
+                    { record: value, data, step, containerPath, extraContainerPath: this.props.config.field },
                     this
                   )
                 ) {
@@ -528,6 +514,7 @@ export default class ImportSubformField
                       record: this.props.value,
                       data: this.props.data,
                       step: this.props.step,
+                      containerPath: this.props.containerPath,
                       extraContainerPath: this.props.config.field
                     },
                     this
@@ -539,7 +526,7 @@ export default class ImportSubformField
                   children: (
                     <FormField
                       key={formFieldIndex}
-                      ref={(formField: Field<FieldConfigs, any, any> | null) => {
+                      ref={(formField: Field<FieldConfigs, unknown, unknown> | null) => {
                         if (formField) {
                           this.formFields = set(this.formFields, `[${formFieldIndex}]`, formField)
                           this.handleMount(formFieldIndex)
@@ -552,17 +539,17 @@ export default class ImportSubformField
                       step={this.props.step}
                       data={data}
                       config={formFieldConfig}
-                      onChange={async (value: any) => {
-                        await this.handleChange(formFieldIndex, value)
+                      onChange={async (valueChange: unknown) => {
+                        await this.handleChange(formFieldIndex, valueChange)
                       }}
-                      onValueSet={async (path, value, validation, options) =>
-                        this.handleValueSet(formFieldIndex, path, value, validation, options)
+                      onValueSet={async (path, valueSet, validation, options) =>
+                        this.handleValueSet(formFieldIndex, path, valueSet, validation, options)
                       }
                       onValueUnset={async (path, validation, options) =>
                         this.handleValueUnset(formFieldIndex, path, validation, options)
                       }
-                      onValueListAppend={async (path, value, validation, options) =>
-                        this.handleValueListAppend(formFieldIndex, path, value, validation, options)
+                      onValueListAppend={async (path, valueAppend, validation, options) =>
+                        this.handleValueListAppend(formFieldIndex, path, valueAppend, validation, options)
                       }
                       onValueListSplice={async (path, index, count, validation, options) =>
                         this.handleValueListSplice(formFieldIndex, path, index, count, validation, options)
@@ -570,11 +557,15 @@ export default class ImportSubformField
                       onValueListSort={async (path, index, sortType, validation, options) =>
                         this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)
                       }
+                      checkPageAuth={this.props.checkPageAuth}
+                      loadPageURL={this.props.loadPageURL}
+                      loadPageFrameURL={this.props.loadPageFrameURL}
+                      loadPageConfig={this.props.loadPageConfig}
                       baseRoute={this.props.baseRoute}
-                      loadDomain={async (domain: string) => await this.props.loadDomain(domain)}
-                      loadPageList={async () => await this.props.loadPageList()}
+                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                      loadPageList={async () => this.props.loadPageList()}
                       containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
-                      onReportFields={async (field: string) => await this.handleReportFields(field)}
+                      onReportFields={async (field: string) => this.handleReportFields(field)}
                     />
                   )
                 }

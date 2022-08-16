@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { get } from 'lodash'
-import { Field, FieldConfig, IField, FieldError, FieldProps } from '../common'
+import { Field, FieldConfig, FieldError, FieldProps } from '../common'
 import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 import ParamHelper from '../../../util/param'
 import { RecordParamConfig, DataParamConfig, StepParamConfig, SourceParamConfig } from '../../../interface'
@@ -10,8 +10,8 @@ type OptionsConfigDefaultValue = RecordParamConfig | DataParamConfig | StepParam
 export interface TreeSelectFieldConfig extends FieldConfig {
   type: 'tree_select'
   mode?: 'tree' | 'table' | 'treeSelect'
-  multiple?: true | TreeSelectMultipleArrayConfig | TreeSelectMultipleSplitConfig,
-  titleColumn?: string,
+  multiple?: true | TreeSelectMultipleArrayConfig | TreeSelectMultipleSplitConfig
+  titleColumn?: string
   treeData?: ManualOptionsConfig | InterfaceOptionsConfig | DataOptionsConfig
 }
 
@@ -20,13 +20,13 @@ interface TreeSelectMultipleArrayConfig {
 }
 
 interface TreeSelectMultipleSplitConfig {
-  type: 'split',
-  split?: string,
+  type: 'split'
+  split?: string
   valueType?: 'string' | 'number' | 'boolean' | undefined
 }
 export interface DataOptionsConfig {
   from: 'data'
-  sourceConfig?: OptionsConfigDefaultValue,
+  sourceConfig?: OptionsConfigDefaultValue
   format?: InterfaceOptionsListConfig
 }
 
@@ -66,7 +66,7 @@ type TreeSelectValueType = string | Array<string | number> | undefined
 
 export interface ITreeSelectField {
   multiple?: boolean
-  value: TreeSelectValueType,
+  value: TreeSelectValueType
   treeData: Array<TreeSelectFieldOption>
   titleColumn?: string
   onChange: (value: TreeSelectValueType) => Promise<void>
@@ -75,7 +75,8 @@ export interface ITreeSelectField {
 export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeSelectField, TreeSelectValueType> {
   interfaceHelper = new InterfaceHelper()
 
-  interfaceOptionsConfig: string = ''
+  interfaceOptionsConfig = ''
+
   state: TreeSelectFieldState = {
     interfaceOptionsData: []
   }
@@ -90,7 +91,12 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
 
   optionsData = (sourceConfig: OptionsConfigDefaultValue) => {
     if (sourceConfig !== undefined) {
-      return ParamHelper(sourceConfig, { record: this.props.record, data: this.props.data, step: this.props.step })
+      return ParamHelper(sourceConfig, {
+        record: this.props.record,
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: this.props.containerPath
+      })
     }
     return undefined
   }
@@ -118,14 +124,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
     return rsMenu
   }
 
-  options = (
-    config: ManualOptionsConfig | InterfaceOptionsConfig | DataOptionsConfig | undefined,
-    datas: {
-      record?: object
-      data: object[]
-      step: { [field: string]: any }
-    }
-  ) => {
+  options = (config: ManualOptionsConfig | InterfaceOptionsConfig | DataOptionsConfig | undefined) => {
     if (config) {
       if (config.from === 'data') {
         if (config.sourceConfig && config.sourceConfig.source && config.sourceConfig.field) {
@@ -145,22 +144,29 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
         }
       } else if (config.from === 'interface') {
         if (config.interface) {
-          this.interfaceHelper.request(
-            config.interface,
-            {},
-            { record: this.props.record, data: this.props.data, step: this.props.step },
-            { loadDomain: this.props.loadDomain },
-            this
-          ).then((data) => {
-            this.setState({
-              interfaceOptionsData: this.formatTree(
-                data,
-                config.format?.keyField || 'value',
-                config.format?.titleField || 'title',
-                config.format?.childrenField || 'children'
-              )
+          this.interfaceHelper
+            .request(
+              config.interface,
+              {},
+              {
+                record: this.props.record,
+                data: this.props.data,
+                step: this.props.step,
+                containerPath: this.props.containerPath
+              },
+              { loadDomain: this.props.loadDomain },
+              this
+            )
+            .then((data) => {
+              this.setState({
+                interfaceOptionsData: this.formatTree(
+                  data as TreeSelectFieldOption[],
+                  config.format?.keyField || 'value',
+                  config.format?.titleField || 'title',
+                  config.format?.childrenField || 'children'
+                )
+              })
             })
-          })
         }
       }
     }
@@ -190,9 +196,7 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
 
   validate = async (_value: TreeSelectValueType): Promise<true | FieldError[]> => {
     const {
-      config: {
-        required
-      }
+      config: { required }
     } = this.props
 
     const errors: FieldError[] = []
@@ -206,57 +210,34 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
     return errors.length ? errors : true
   }
 
-  renderComponent = (props: ITreeSelectField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现TreeSelectField组件的treeSelect模式。
-      <div style={{ display: 'none' }}>
-        <button onClick={() => props.onChange('')}>onChange</button>
-      </div>
-    </React.Fragment>
+  renderComponent: (props: ITreeSelectField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现TreeSelectField组件的treeSelect模式。</>
   }
 
-  renderTreeComponent = (props: ITreeSelectField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现TreeSelectField组件的tree模式。
-      <div style={{ display: 'none' }}>
-        <button onClick={() => props.onChange(['onChange'])}>onChange</button>
-      </div>
-    </React.Fragment>
+  renderTreeComponent: (props: ITreeSelectField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现TreeSelectField组件的tree模式。</>
   }
 
-  renderTableComponent = (props: ITreeSelectField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现TreeSelectField组件的table模式。
-      <div style={{ display: 'none' }}>
-        <button onClick={() => props.onChange(['onChange'])}>onChange</button>
-      </div>
-    </React.Fragment>
+  renderTableComponent: (props: ITreeSelectField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现TreeSelectField组件的table模式。</>
   }
 
   render = () => {
     const {
       value,
-      config: {
-        multiple,
-        mode,
-        titleColumn,
-        treeData: optionsConfig
-      },
-      record,
-      data,
-      step
+      config: { multiple, mode, titleColumn, treeData: optionsConfig }
     } = this.props
 
-    const temp = this.options(optionsConfig, { record, data, step })
+    const temp = this.options(optionsConfig)
     const props: ITreeSelectField = {
       value: undefined,
       treeData: this.state.interfaceOptionsData,
-      onChange: async (value: TreeSelectValueType) => {
-        let useV = value
+      onChange: async (valueChange: TreeSelectValueType) => {
+        let useV = valueChange
         if (Array.isArray(useV) && multiple !== true && multiple?.type === 'split') {
           useV = useV.join(multiple.split || ',')
         }
-        return await this.props.onValueSet('', useV, await this.validate(useV))
+        return this.props.onValueSet('', useV, await this.validate(useV))
       }
     }
     if (optionsConfig && (optionsConfig.from === 'manual' || optionsConfig.from === 'data')) {
@@ -264,34 +245,35 @@ export default class TreeSelectField extends Field<TreeSelectFieldConfig, ITreeS
     }
     if (multiple === true || multiple?.type === 'array') {
       if (Array.isArray(value)) {
-        props.value = (value as Array<string | number>)
+        props.value = value as Array<string | number>
       } else if (value !== undefined) {
         props.value = undefined
-        console.warn('数组类型的树形选框的值需要是字符串或数值的数组。')
       }
     } else if (multiple?.type === 'split') {
       if (typeof value === 'string' && value !== '') {
-        props.value = transformValueType(String(value).split(multiple.split || ','), multiple?.valueType)
+        props.value = transformValueType(String(value).split(multiple.split || ','), multiple?.valueType) as (
+          | string
+          | number
+        )[]
       } else if (value !== undefined) {
         props.value = undefined
-        console.warn('字符串分隔类型的树形选框的值需要是字符串。')
       }
+    } else if (Array.isArray(value)) {
+      props.value = value
+    } else if (mode === 'treeSelect') {
+      props.value = value
     } else {
-      props.value = Array.isArray(value) ? value : (mode === 'treeSelect' ? value : undefined)
+      props.value = undefined
     }
 
     if (mode === 'table') {
       props.titleColumn = titleColumn
       return this.renderTableComponent(props)
-    } else if (mode === 'tree') {
-      return this.renderTreeComponent(props)
-    } else {
-      props.multiple = multiple === true || multiple?.type === 'array'
-      return (
-        <React.Fragment>
-          {this.renderComponent(props)}
-        </React.Fragment>
-      )
     }
+    if (mode === 'tree') {
+      return this.renderTreeComponent(props)
+    }
+    props.multiple = multiple === true || multiple?.type === 'array'
+    return <>{this.renderComponent(props)}</>
   }
 }

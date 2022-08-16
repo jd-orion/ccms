@@ -1,15 +1,15 @@
 import React, { ReactNode } from 'react'
+import marked from 'marked'
+import { merge } from 'lodash'
 import Step, { StepConfig } from '../common'
 import { ParamConfig } from '../../interface'
 import StatementHelper, { StatementConfig } from '../../util/statement'
-import marked from 'marked'
 import ParamHelper from '../../util/param'
 import EnumerationHelper, { EnumerationOptionsConfig } from '../../util/enumeration'
 import { InterfaceHelper } from '../..'
 import OperationHelper, { OperationConfig } from '../../util/operation'
 import { DetailFieldConfigs } from '../../components/detail'
 import DetailStep, { DetailConfig } from '../detail'
-import { merge } from 'lodash'
 
 /**
  * header页头配置文件格式定义
@@ -27,13 +27,18 @@ export interface HeaderConfig extends StepConfig {
     enable?: boolean
     separator?: string
     items?: breadcrumbConfig[]
-  },
-  title?: StatementConfig,
+  }
+  title?: StatementConfig
   subTitle?: StatementConfig
   back?: {
     enable?: boolean
-  },
-  mainContent?: plainContentConfig | markdownContentConfig | htmlContentConfig | detailContentConfig | statisticContentConfig
+  }
+  mainContent?:
+    | plainContentConfig
+    | markdownContentConfig
+    | htmlContentConfig
+    | detailContentConfig
+    | statisticContentConfig
   extraContent?: statisticContentConfig | imageContentConfig
 }
 
@@ -53,17 +58,17 @@ interface basicContentConfig {
 export interface plainContentConfig extends basicContentConfig {
   type: 'plain'
   content?: string
-  params?: { field: string, data: ParamConfig }[]
+  params?: { field: string; data: ParamConfig }[]
 }
 export interface markdownContentConfig extends basicContentConfig {
   type: 'markdown'
   content?: string
-  params?: { field: string, data: ParamConfig }[]
+  params?: { field: string; data: ParamConfig }[]
 }
 export interface htmlContentConfig extends basicContentConfig {
   type: 'html'
   content?: string
-  params?: { field: string, data: ParamConfig }[]
+  params?: { field: string; data: ParamConfig }[]
 }
 export interface detailContentConfig extends basicContentConfig {
   type: 'detail'
@@ -149,7 +154,9 @@ export interface IHeaderProps {
 
 export default class HeaderStep extends Step<HeaderConfig> {
   interfaceHelper = new InterfaceHelper()
+
   OperationHelper = OperationHelper
+
   DetailStep = DetailStep
 
   stepPush = async () => {
@@ -167,10 +174,8 @@ export default class HeaderStep extends Step<HeaderConfig> {
    * @param props
    * @returns
    */
-  renderBreadcurmbItemComponent = (props: IBreadcurmbItemProps) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现HeaderStep组件的renderBreadcurmbItemComponent方法。
-    </React.Fragment>
+  renderBreadcurmbItemComponent: (props: IBreadcurmbItemProps) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现HeaderStep组件的renderBreadcurmbItemComponent方法。</>
   }
 
   /**
@@ -178,10 +183,8 @@ export default class HeaderStep extends Step<HeaderConfig> {
    * @param props
    * @returns
    */
-  renderBreadcurmbComponent = (props: IBreadcurmbProps) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现HeaderStep组件的renderBreadcurmbComponent方法。
-    </React.Fragment>
+  renderBreadcurmbComponent: (props: IBreadcurmbProps) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现HeaderStep组件的renderBreadcurmbComponent方法。</>
   }
 
   /**
@@ -189,45 +192,60 @@ export default class HeaderStep extends Step<HeaderConfig> {
    * @param props
    * @returns
    */
-  renderStatisticComponent = (props: IStatisticProps) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现HeaderStep组件的renderStatisticComponent方法。
-    </React.Fragment>
+  renderStatisticComponent: (props: IStatisticProps) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现HeaderStep组件的renderStatisticComponent方法。</>
   }
 
-  renderComponent = (props: IHeaderProps) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现HeaderStep组件。
-    </React.Fragment>
+  renderComponent: (props: IHeaderProps) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现HeaderStep组件。</>
   }
 
-  handlePlainContent = (config: plainContentConfig, _position: string) => {
-    return StatementHelper({ statement: config.content || '', params: config.params || [] }, { data: this.props.data, step: this.props.step })
+  handlePlainContent: (config: plainContentConfig, position: string) => string = (config) => {
+    return StatementHelper(
+      { statement: config.content || '', params: config.params || [] },
+      { data: this.props.data, step: this.props.step, containerPath: '' }
+    )
   }
 
-  handleMarkdownContent = (config: markdownContentConfig, _position: string) => {
-    const content = StatementHelper({ statement: config.content || '', params: config.params || [] }, { data: this.props.data, step: this.props.step })
-    return <div dangerouslySetInnerHTML={{ __html: marked(content) }}></div>
+  handleMarkdownContent: (config: markdownContentConfig, position: string) => JSX.Element = (config) => {
+    const content = StatementHelper(
+      { statement: config.content || '', params: config.params || [] },
+      { data: this.props.data, step: this.props.step, containerPath: '' }
+    )
+    // eslint-disable-next-line react/no-danger
+    return <div dangerouslySetInnerHTML={{ __html: marked(content) }} />
   }
 
-  handleHTMLContent = (config: htmlContentConfig, _position: string) => {
-    const content = StatementHelper({ statement: config.content || '', params: config.params || [] }, { data: this.props.data, step: this.props.step })
-    return <div dangerouslySetInnerHTML={{ __html: content }}></div>
+  handleHTMLContent: (config: htmlContentConfig, position: string) => JSX.Element = (config) => {
+    const content = StatementHelper(
+      { statement: config.content || '', params: config.params || [] },
+      { data: this.props.data, step: this.props.step, containerPath: '' }
+    )
+    // eslint-disable-next-line react/no-danger
+    return <div dangerouslySetInnerHTML={{ __html: content }} />
   }
 
-  handleDetailContent = (config: detailContentConfig, _position: string) => {
+  handleDetailContent: (config: detailContentConfig, position: string) => JSX.Element = (config) => {
     const defaultConfig: DetailConfig = {
       type: 'detail',
       hiddenBack: true
     }
     return (
       <this.DetailStep
-        ref={(e: Step<DetailConfig, {}> | null) => { e && e.stepPush() }}
+        ref={(e: Step<DetailConfig, unknown> | null) => {
+          e && e.stepPush()
+        }}
         data={this.props.data}
         step={this.props.step}
-        onSubmit={async (data, unmountView) => { }}
-        onMount={async () => { }}
-        onUnmount={async (reload = false, data) => { }}
+        onSubmit={async () => {
+          /* 无逻辑 */
+        }}
+        onMount={async () => {
+          /* 无逻辑 */
+        }}
+        onUnmount={async () => {
+          /* 无逻辑 */
+        }}
         config={merge(config, defaultConfig)}
         baseRoute={this.props.baseRoute}
         checkPageAuth={this.props.checkPageAuth}
@@ -243,7 +261,9 @@ export default class HeaderStep extends Step<HeaderConfig> {
 
   handleStatisticContent = (config: statisticContentConfig, _position: string) => {
     return (config.statistics || []).map((statistic, index) => {
-      const value = statistic.value ? ParamHelper(statistic.value, { data: this.props.data, step: this.props.step }) : undefined
+      const value = statistic.value
+        ? ParamHelper(statistic.value, { data: this.props.data, step: this.props.step, containerPath: '' })
+        : undefined
       switch (statistic.type) {
         case 'value':
           return this.renderStatisticComponent({
@@ -254,23 +274,33 @@ export default class HeaderStep extends Step<HeaderConfig> {
           if (statistic.options) {
             EnumerationHelper.options(
               statistic.options,
-              (config, source) => this.interfaceHelper.request(config, source, { data: this.props.data, step: this.props.step }, { loadDomain: this.props.loadDomain }),
-              { data: this.props.data, step: this.props.step }
+              (optionConfig, source) =>
+                this.interfaceHelper.request(
+                  optionConfig,
+                  source,
+                  { data: this.props.data, step: this.props.step, containerPath: '' },
+                  { loadDomain: this.props.loadDomain }
+                ),
+              { data: this.props.data, step: this.props.step, containerPath: '' }
             ).then((options) => {
-              if (!this.state || JSON.stringify(this.state[`statistic_options_${_position}_${index}`]) !== JSON.stringify(options)) {
+              if (
+                !this.state ||
+                JSON.stringify(this.state[`statistic_options_${_position}_${index}`]) !== JSON.stringify(options)
+              ) {
                 this.setState({
                   [`statistic_options_${_position}_${index}`]: options
                 })
               }
             })
 
-            const options: { value: any, label: any }[] = this.state && this.state[`statistic_options_${_position}_${index}`]
+            const options: { value: unknown; label: unknown }[] =
+              this.state && this.state[`statistic_options_${_position}_${index}`]
             if (options) {
-              const option = options.find((option) => option.value === value)
+              const option = options.find((currentOption) => currentOption.value === value)
               if (option) {
                 return this.renderStatisticComponent({
                   label: statistic.label || '',
-                  value: option.label
+                  value: option.label as string | number
                 })
               }
             }
@@ -285,22 +315,28 @@ export default class HeaderStep extends Step<HeaderConfig> {
     })
   }
 
-  handleImageContent = (config: imageContentConfig, _position: string) => {
+  handleImageContent: (config: imageContentConfig, position: string) => JSX.Element = (config) => {
     if (config.image && config.image.src) {
-      return <img src={config.image.src} style={{ maxWidth: config.image.maxWidth, maxHeight: config.image.maxHeight }} />
-    } else {
-      return null
+      return (
+        <img
+          src={config.image.src}
+          alt={config.image.src}
+          style={{ maxWidth: config.image.maxWidth, maxHeight: config.image.maxHeight }}
+        />
+      )
     }
+    return <></>
   }
 
   render() {
     const props: IHeaderProps = {}
 
     if (this.props.config.breadcrumb && this.props.config.breadcrumb.enable) {
-      const breadcrumbConfig = this.props.config.breadcrumb
+      const currentBreadcrumbConfig = this.props.config.breadcrumb
       props.breadcrumb = this.renderBreadcurmbComponent({
-        items: (breadcrumbConfig.items || []).map((breadcrumbItem) => (
+        items: (currentBreadcrumbConfig.items || []).map((breadcrumbItem, index) => (
           <this.OperationHelper
+            key={index}
             config={breadcrumbItem.action}
             datas={{ data: this.props.data, step: this.props.step }}
             checkPageAuth={this.props.checkPageAuth}
@@ -312,33 +348,43 @@ export default class HeaderStep extends Step<HeaderConfig> {
             loadDomain={this.props.loadDomain}
             handlePageRedirect={this.props.handlePageRedirect}
           >
-            {(onClick) => (
+            {(onClick) =>
               this.renderBreadcurmbItemComponent({
                 label: breadcrumbItem.label || '',
                 type: breadcrumbItem.type || 'normal',
                 onClick
               })
-            )}
+            }
           </this.OperationHelper>
         )),
-        separator: breadcrumbConfig.separator || '>'
+        separator: currentBreadcrumbConfig.separator || '>'
       })
     }
 
     if (this.props.config.title) {
-      props.title = StatementHelper(this.props.config.title, { data: this.props.data, step: this.props.step })
+      props.title = StatementHelper(this.props.config.title, {
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: ''
+      })
     }
 
     if (this.props.config.subTitle) {
-      props.subTitle = StatementHelper(this.props.config.subTitle, { data: this.props.data, step: this.props.step })
+      props.subTitle = StatementHelper(this.props.config.subTitle, {
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: ''
+      })
     }
 
     if (this.props.config.back && this.props.config.back.enable) {
-      props.onBack = () => { this.props.onUnmount() }
+      props.onBack = () => {
+        this.props.onUnmount()
+      }
     }
 
     if (this.props.config.mainContent && this.props.config.mainContent.enable) {
-      const mainContent = this.props.config.mainContent
+      const { mainContent } = this.props.config
       switch (mainContent.type) {
         case 'plain':
           props.mainContent = this.handlePlainContent(mainContent, 'main')
@@ -355,11 +401,12 @@ export default class HeaderStep extends Step<HeaderConfig> {
         case 'statistic':
           props.mainContent = this.handleStatisticContent(mainContent, 'main')
           break
+        default:
       }
     }
 
     if (this.props.config.extraContent && this.props.config.extraContent.enable) {
-      const extraContent = this.props.config.extraContent
+      const { extraContent } = this.props.config
       switch (extraContent.type) {
         case 'statistic':
           props.extraContent = this.handleStatisticContent(extraContent, 'extra')
@@ -372,10 +419,6 @@ export default class HeaderStep extends Step<HeaderConfig> {
       }
     }
 
-    return (
-      <React.Fragment>
-        {this.renderComponent(props)}
-      </React.Fragment>
-    )
+    return <>{this.renderComponent(props)}</>
   }
 }
