@@ -16,11 +16,9 @@ export interface InterfaceConfig {
   contentType?: 'json' | 'form-data'
   withCredentials?: boolean
 
-
   params?: { field: string, data: ParamConfig }[]
   data?: { field: string, data: ParamConfig }[]
   headers?: { field: string, data: ParamConfig }[]
-
 
 
   condition?: {
@@ -61,7 +59,6 @@ export default class InterfaceHelper {
   public static cache: { [key: string]: unknown } = {}
 
   private _config: InterfaceConfig = {}
-
   private _url: string = ''
   private _params: any = {}
   private _data: any = {}
@@ -192,7 +189,6 @@ export default class InterfaceHelper {
 
       if (option && option.extra_data && option.extra_data.params) {
         merge(params, option.extra_data.params)
-
       }
       if (config.contentType === 'form-data') {
         if (config.data) {

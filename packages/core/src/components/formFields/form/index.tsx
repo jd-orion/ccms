@@ -290,13 +290,11 @@ export default class FormField
     this.formFieldsList = set(this.formFieldsList, `${index}`, [])
     this.formFieldsMountedList = set(this.formFieldsMountedList, `${index}`, [])
 
-
     await this.props.onValueListAppend(
       '',
       this.props.config.initialValues === undefined ? {} : this.props.config.initialValues,
       true
     )
-
   }
 
   handleRemove = async (index: number) => {
@@ -503,7 +501,6 @@ export default class FormField
       value = [],
       formLayout,
       data,
-<<<<<<< HEAD
       config: {
         label,
         fields,
@@ -516,10 +513,6 @@ export default class FormField
         canCollapse,
         inputMax
       }
-=======
-
-      config: { label, fields, primaryField, insertText, removeText, canInsert, canRemove, canSort, canCollapse }
->>>>>>> aa10c81f08afe676f6eb76d8bce4cb954506e38f
     } = this.props
 
     return (

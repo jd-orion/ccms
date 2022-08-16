@@ -86,7 +86,6 @@ export default class FormFieldComponent extends FormField {
             ) : null}
           </Space>
         }
-
       >
         {children}
       </Collapse.Panel>
@@ -97,7 +96,6 @@ export default class FormFieldComponent extends FormField {
     const { insertText, onInsert, canCollapse, children } = props
 
     const collapsePaneldDefaultActiveKeys = Array.from(Array(children.length), (v, k) => k)
-
     const CollapseProps = canCollapse
       ? {
           accordion: true
@@ -119,7 +117,6 @@ export default class FormFieldComponent extends FormField {
               </Button>
             </Form.Item>
           ) : null}
-
         </Space>
       </>
     )
