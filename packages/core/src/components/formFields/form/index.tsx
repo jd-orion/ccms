@@ -107,7 +107,7 @@ export default class FormField
       if (!formDataList[formItemsIndex]) formDataList[formItemsIndex] = []
       const formItems = this.formFieldsList[formItemsIndex]
       const itemErrorMsg: Array<{ name: string; msg: string }> = []
-      for (let fieldIndex = 0; fieldIndex < (this.props.config.field || []).length; fieldIndex++) {
+      for (let fieldIndex = 0; fieldIndex < (this.props.config.fields || []).length; fieldIndex++) {
         const formItem = formItems[fieldIndex]
         if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
           const validation = await formItem.validate(
