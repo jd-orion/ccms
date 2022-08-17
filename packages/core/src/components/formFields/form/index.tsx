@@ -130,7 +130,7 @@ export default class FormField
           }
         }
       }
-      console.log(value, 'value,form')
+
       itemErrorMsg.length > 0 && (childrenErrorMsg[formItemsIndex] = itemErrorMsg)
     }
 
@@ -138,7 +138,6 @@ export default class FormField
       formDataList
     })
 
-    console.log(childrenErrorMsg)
     if (childrenError > 0) {
       let errTips = `${this.props.config.label || ''}表单有以下错误项：`
       for (const variable in childrenErrorMsg) {
