@@ -1,6 +1,12 @@
 import React from 'react'
 import { FormStep } from 'ccms'
-import { IForm, IFormItem, IFormStepModal, FormConfig, IButtonProps } from 'ccms/dist/src/steps/form'
+import {
+  IForm,
+  IFormItem,
+  IFormStepModal,
+  FormConfig,
+  IButtonProps
+} from 'ccms/dist/src/steps/form'
 import { Button, Form, Space, Modal, Collapse, Row } from 'antd'
 
 import { FormProps } from 'antd/lib/form'
@@ -38,10 +44,10 @@ export default class FormStepComponent extends FormStep {
     const formItemLayout: FormProps | null =
       layout === 'horizontal'
         ? {
-            labelAlign: 'left',
-            labelCol: { span: 6 },
-            wrapperCol: { span: 18 }
-          }
+          labelAlign: 'left',
+          labelCol: { span: 6 },
+          wrapperCol: { span: 18 }
+        }
         : null
 
     const gapStyle = computedGapStyle(columns, 'row')
@@ -102,7 +108,7 @@ export default class FormStepComponent extends FormStep {
         ].join(' ')}
       >
         {fieldType === 'group' ? (
-          this.renderGroupUI(label, children, 'header')
+          this.renderGroupUI(label, children, message, 'header')
         ) : (
           <Form.Item
             extra={extra ? extra.trim() : ''}
@@ -111,7 +117,7 @@ export default class FormStepComponent extends FormStep {
             label={label}
             {...formItemLayout(layout, fieldType, label)}
             validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
-            help={fieldType === 'group' || fieldType === 'import_subform' || message === '' ? null : message}
+            help={message === '' ? null : <div style={{ color: 'red' }}>{message}</div>}
             style={itemStyle}
             className={styles[`ccms-antd-mini-form-${fieldType}`]}
             // className={ [styles[`ccms-antd-mini-form-${fieldType}`], layout === 'horizontal' && subLabel ? styles['ccms-antd-label-vertical-flex-start']: null].join(' ') } // 预留layout配置项启用时所需label css代码
@@ -125,18 +131,21 @@ export default class FormStepComponent extends FormStep {
   }
 
   // group UI
-  renderGroupUI = (label: string, children: any, collapsible?: 'header' | 'disabled') => {
+  renderGroupUI = (label: string, children: any, message, collapsible?: 'header' | 'disabled') => {
     return (
-      <Collapse collapsible="header" defaultActiveKey={['1']}>
-        <Panel header={label} key="1" collapsible={collapsible || 'header'}>
-          <div className={styles['form-group-content']}>{children}</div>
-        </Panel>
-      </Collapse>
+      <>
+        <Collapse collapsible="header" defaultActiveKey={['1']}>
+          <Panel header={label} key="1" collapsible={collapsible || 'header'}>
+            <div className={styles['form-group-content']}>{children}</div>
+          </Panel>
+        </Collapse>
+        <div style={{ color: 'red' }}>{message}</div>
+      </>
     )
   }
 }
 // <FormConfig, IForm>
-export const PropsType = (props: IForm) => {}
+export const PropsType = (props: IForm) => { }
 
-export const PropsTypeFormConfig = (props: FormConfig) => {}
-export const PropsTypeStep = (props: FormStep) => {}
+export const PropsTypeFormConfig = (props: FormConfig) => { }
+export const PropsTypeStep = (props: FormStep) => { }

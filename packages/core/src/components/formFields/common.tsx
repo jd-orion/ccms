@@ -219,7 +219,12 @@ export class Field<C extends FieldConfig, E, T, S = unknown>
           statement: config.subLabelConfig?.content?.statement || '',
           params: config.subLabelConfig?.content?.params || []
         },
-        { data, step, containerPath }
+        {
+          data,
+          step,
+          containerPath,
+          record: {}
+        }
       ).replace(/(^\s*)|(\s*$)/g, '')
       const mode = config.subLabelConfig?.mode
       switch (mode) {

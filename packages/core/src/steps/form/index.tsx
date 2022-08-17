@@ -160,7 +160,7 @@ export interface IFormItem {
   status: 'normal' | 'error' | 'loading'
   required: boolean
   description?: string
-  message?: string
+  message?: React.ReactNode
   extra?: string
   layout: 'horizontal' | 'vertical' | 'inline'
   columns?: ColumnsConfig
@@ -857,7 +857,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                     }
                   : undefined,
                 status,
-                message: formData[formFieldIndex]?.message || '',
+                message: { message: formData[formFieldIndex]?.message || '' },
                 extra: StatementHelper(formFieldConfig.extra, {
                   record: formValue,
                   data: this.props.data,
