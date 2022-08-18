@@ -40,7 +40,8 @@ export default class FetchStep extends Step<FetchConfig, FetchState> {
           {
             data: this.props.data,
             step: this.props.step,
-            containerPath: ''
+            containerPath: '',
+            record: {}
           },
           {
             loadDomain: this.props.loadDomain,

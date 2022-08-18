@@ -49,7 +49,8 @@ export default class LinkDetail
       props.url = StatementHelper(url, {
         data: this.props.data,
         step: this.props.step,
-        containerPath: this.props.containerPath
+        containerPath: this.props.containerPath,
+        record: {}
       })
       props.name = name || props.url || ''
     }

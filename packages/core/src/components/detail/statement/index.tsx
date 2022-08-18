@@ -30,7 +30,8 @@ export default class StatementDetail
       props.content = StatementHelper(this.props.config.statement, {
         data: this.props.data,
         step: this.props.step,
-        containerPath: this.props.containerPath
+        containerPath: this.props.containerPath,
+        record: {}
       })
     }
 

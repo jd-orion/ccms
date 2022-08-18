@@ -43,7 +43,8 @@ export default class InfoDetail
           label: StatementHelper(description.label, {
             data: this.props.data,
             step: this.props.step,
-            containerPath: this.props.containerPath
+            containerPath: this.props.containerPath,
+            record: {}
           }),
           content: description.content,
           showIcon: description.showIcon
@@ -54,7 +55,8 @@ export default class InfoDetail
           label: StatementHelper(description.label, {
             data: this.props.data,
             step: this.props.step,
-            containerPath: this.props.containerPath
+            containerPath: this.props.containerPath,
+            record: {}
           }),
           content: description.content,
           showIcon: description.showIcon
@@ -65,7 +67,8 @@ export default class InfoDetail
           label: StatementHelper(description.label, {
             data: this.props.data,
             step: this.props.step,
-            containerPath: this.props.containerPath
+            containerPath: this.props.containerPath,
+            record: {}
           }),
           content: description.content,
           showIcon: description.showIcon
@@ -79,7 +82,8 @@ export default class InfoDetail
               (props.description.content = StatementHelper(description.content, {
                 data: this.props.data,
                 step: this.props.step,
-                containerPath: this.props.containerPath
+                containerPath: this.props.containerPath,
+                record: {}
               }))
             break
           case 'markdown':
@@ -92,7 +96,8 @@ export default class InfoDetail
                       StatementHelper(description.content, {
                         data: this.props.data,
                         step: this.props.step,
-                        containerPath: this.props.containerPath
+                        containerPath: this.props.containerPath,
+                        record: {}
                       })
                     )
                   }}
@@ -108,7 +113,8 @@ export default class InfoDetail
                     __html: StatementHelper(description.content, {
                       data: this.props.data,
                       step: this.props.step,
-                      containerPath: this.props.containerPath
+                      containerPath: this.props.containerPath,
+                      record: {}
                     })
                   }}
                 />

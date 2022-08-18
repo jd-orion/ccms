@@ -52,7 +52,8 @@ export default class IframeDetail
       props.url = StatementHelper(this.props.config.url, {
         data: this.props.data,
         step: this.props.step,
-        containerPath: this.props.containerPath
+        containerPath: this.props.containerPath,
+        record: {}
       })
     }
     return <>{this.renderComponent(props)}</>
