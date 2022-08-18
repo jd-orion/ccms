@@ -100,7 +100,6 @@ export default class FormField
 
     let childrenError = 0
     let childrenErrorMsg = {}
-    const errIndex: Array<number> = []
     let { formDataList } = this.state
 
     for (let formItemsIndex = 0; formItemsIndex < this.formFieldsList.length; formItemsIndex++) {
@@ -122,7 +121,6 @@ export default class FormField
               status: 'error',
               message: validation[0].message
             })
-            errIndex.push(formItemsIndex + 1)
             itemErrorMsg.push({
               name: this.props.config.fields[fieldIndex].label,
               msg: validation[0].message
