@@ -44,7 +44,7 @@ export default class InfoDetail
             data: this.props.data,
             step: this.props.step,
             containerPath: this.props.containerPath,
-            record: {}
+            record: this.props.record
           }),
           content: description.content,
           showIcon: description.showIcon
@@ -56,7 +56,7 @@ export default class InfoDetail
             data: this.props.data,
             step: this.props.step,
             containerPath: this.props.containerPath,
-            record: {}
+            record: this.props.record
           }),
           content: description.content,
           showIcon: description.showIcon
@@ -68,7 +68,7 @@ export default class InfoDetail
             data: this.props.data,
             step: this.props.step,
             containerPath: this.props.containerPath,
-            record: {}
+            record: this.props.record
           }),
           content: description.content,
           showIcon: description.showIcon
@@ -83,7 +83,7 @@ export default class InfoDetail
                 data: this.props.data,
                 step: this.props.step,
                 containerPath: this.props.containerPath,
-                record: {}
+                record: this.props.record
               }))
             break
           case 'markdown':
@@ -97,7 +97,7 @@ export default class InfoDetail
                         data: this.props.data,
                         step: this.props.step,
                         containerPath: this.props.containerPath,
-                        record: {}
+                        record: this.props.record
                       })
                     )
                   }}
@@ -114,7 +114,7 @@ export default class InfoDetail
                       data: this.props.data,
                       step: this.props.step,
                       containerPath: this.props.containerPath,
-                      record: {}
+                      record: this.props.record
                     })
                   }}
                 />

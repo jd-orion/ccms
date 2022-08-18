@@ -53,7 +53,7 @@ export default class IframeDetail
         data: this.props.data,
         step: this.props.step,
         containerPath: this.props.containerPath,
-        record: {}
+        record: this.props.record
       })
     }
     return <>{this.renderComponent(props)}</>

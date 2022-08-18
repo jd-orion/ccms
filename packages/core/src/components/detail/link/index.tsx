@@ -50,7 +50,7 @@ export default class LinkDetail
         data: this.props.data,
         step: this.props.step,
         containerPath: this.props.containerPath,
-        record: {}
+        record: this.props.record
       })
       props.name = name || props.url || ''
     }
