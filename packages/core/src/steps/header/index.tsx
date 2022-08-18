@@ -203,14 +203,24 @@ export default class HeaderStep extends Step<HeaderConfig> {
   handlePlainContent: (config: plainContentConfig, position: string) => string = (config) => {
     return StatementHelper(
       { statement: config.content || '', params: config.params || [] },
-      { data: this.props.data, step: this.props.step, containerPath: '' }
+      {
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: '',
+        record: {}
+      }
     )
   }
 
   handleMarkdownContent: (config: markdownContentConfig, position: string) => JSX.Element = (config) => {
     const content = StatementHelper(
       { statement: config.content || '', params: config.params || [] },
-      { data: this.props.data, step: this.props.step, containerPath: '' }
+      {
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: '',
+        record: {}
+      }
     )
     // eslint-disable-next-line react/no-danger
     return <div dangerouslySetInnerHTML={{ __html: marked(content) }} />
@@ -219,7 +229,12 @@ export default class HeaderStep extends Step<HeaderConfig> {
   handleHTMLContent: (config: htmlContentConfig, position: string) => JSX.Element = (config) => {
     const content = StatementHelper(
       { statement: config.content || '', params: config.params || [] },
-      { data: this.props.data, step: this.props.step, containerPath: '' }
+      {
+        data: this.props.data,
+        step: this.props.step,
+        containerPath: '',
+        record: {}
+      }
     )
     // eslint-disable-next-line react/no-danger
     return <div dangerouslySetInnerHTML={{ __html: content }} />
@@ -262,7 +277,12 @@ export default class HeaderStep extends Step<HeaderConfig> {
   handleStatisticContent = (config: statisticContentConfig, _position: string) => {
     return (config.statistics || []).map((statistic, index) => {
       const value = statistic.value
-        ? ParamHelper(statistic.value, { data: this.props.data, step: this.props.step, containerPath: '' })
+        ? ParamHelper(statistic.value, {
+            data: this.props.data,
+            step: this.props.step,
+            containerPath: '',
+            record: {}
+          })
         : undefined
       switch (statistic.type) {
         case 'value':
@@ -278,10 +298,20 @@ export default class HeaderStep extends Step<HeaderConfig> {
                 this.interfaceHelper.request(
                   optionConfig,
                   source,
-                  { data: this.props.data, step: this.props.step, containerPath: '' },
+                  {
+                    data: this.props.data,
+                    step: this.props.step,
+                    containerPath: '',
+                    record: {}
+                  },
                   { loadDomain: this.props.loadDomain }
                 ),
-              { data: this.props.data, step: this.props.step, containerPath: '' }
+              {
+                data: this.props.data,
+                step: this.props.step,
+                containerPath: '',
+                record: {}
+              }
             ).then((options) => {
               if (
                 !this.state ||
@@ -338,7 +368,7 @@ export default class HeaderStep extends Step<HeaderConfig> {
           <this.OperationHelper
             key={index}
             config={breadcrumbItem.action}
-            datas={{ data: this.props.data, step: this.props.step }}
+            datas={{ data: this.props.data, step: this.props.step, record: {} }}
             checkPageAuth={this.props.checkPageAuth}
             loadPageURL={this.props.loadPageURL}
             loadPageFrameURL={this.props.loadPageFrameURL}
@@ -365,7 +395,8 @@ export default class HeaderStep extends Step<HeaderConfig> {
       props.title = StatementHelper(this.props.config.title, {
         data: this.props.data,
         step: this.props.step,
-        containerPath: ''
+        containerPath: '',
+        record: {}
       })
     }
 
@@ -373,7 +404,8 @@ export default class HeaderStep extends Step<HeaderConfig> {
       props.subTitle = StatementHelper(this.props.config.subTitle, {
         data: this.props.data,
         step: this.props.step,
-        containerPath: ''
+        containerPath: '',
+        record: {}
       })
     }
 

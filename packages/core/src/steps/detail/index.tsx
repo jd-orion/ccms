@@ -141,7 +141,12 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
     } = this.props
 
     if (this.props.config.defaultValue) {
-      let detailDefault = ParamHelper(this.props.config.defaultValue, { data, step, containerPath: '' })
+      let detailDefault = ParamHelper(this.props.config.defaultValue, {
+        data,
+        step,
+        containerPath: '',
+        record: {}
+      })
       if (this.props.config.unstringify) {
         for (const field of this.props.config.unstringify) {
           const info = getValue(detailDefault, field)

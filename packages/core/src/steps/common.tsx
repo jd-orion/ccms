@@ -57,7 +57,12 @@ export default class Step<C extends StepConfig, S = unknown> extends React.Compo
           statement: config.subLabelConfig?.content?.statement || '',
           params: config.subLabelConfig?.content?.params || []
         },
-        { data, step, containerPath: '' }
+        {
+          data,
+          step,
+          containerPath: '',
+          record: {}
+        }
       ).replace(/(^\s*)|(\s*$)/g, '')
       const mode = config.subLabelConfig?.mode
       switch (mode) {
