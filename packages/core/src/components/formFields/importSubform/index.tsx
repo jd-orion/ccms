@@ -183,9 +183,7 @@ export default class ImportSubformField
     })
 
     if (childrenError > 0) {
-      const errTips = `${this.props.config.label || ''}子项中错误。\n ${childrenErrorMsg
-        .map((err) => `${err.name}:${err.msg}`)
-        .join('; ')}。`
+      const errTips = `${this.props.config.label || ''}${childrenErrorMsg.map((err) => `${err.msg}`).join('; ')}`
       errors.push(new FieldError(errTips))
     }
 

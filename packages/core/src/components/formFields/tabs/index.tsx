@@ -135,7 +135,7 @@ export default class TabsField<S>
     }
 
     let childrenError = 0
-    const childrenErrorMsg: Array<{ name: string; msg: string }> = []
+    const childrenErrorMsg = {}
 
     let { formDataList } = this.state
 
@@ -147,6 +147,7 @@ export default class TabsField<S>
           ? this.props.config.fields || []
           : ((this.props.config.tabs || [])[formItemsIndex] || {}).fields || []
       const tab = (this.props.config.tabs || [])[formItemsIndex]
+      const itemErrorMsg: Array<{ name: string; msg: string }> = []
       for (let fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
         const formItem = formItems[fieldIndex]
         const formFieldConfig = fields[fieldIndex]
@@ -164,22 +165,28 @@ export default class TabsField<S>
               status: 'error',
               message: validation[0].message
             })
-            childrenErrorMsg.push({
+            itemErrorMsg.push({
               name: formFieldConfig?.label,
               msg: validation[0].message
             })
           }
         }
       }
+      itemErrorMsg.length > 0 && (childrenErrorMsg[tab.label] = itemErrorMsg)
     }
 
     await this.setState({
       formDataList
     })
     if (childrenError > 0) {
-      const errTips = `${this.props.config.label || ''}子项中存在错误。\n ${childrenErrorMsg
-        .map((err) => `${err.name}:${err.msg}`)
-        .join('; ')}`
+      let errTips = `${this.props.config.label || ''}选项卡有以下错误项：`
+      for (const variable in childrenErrorMsg) {
+        if (variable) {
+          errTips += `${variable}中${childrenErrorMsg[variable].map(
+            (item: { name: string; msg: string }) => `${item.msg}`
+          )}；`
+        }
+      }
       errors.push(new FieldError(errTips))
     }
 

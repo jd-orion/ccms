@@ -99,9 +99,7 @@ export default class GroupField
     })
 
     if (childrenError > 0) {
-      const errTips = `${this.props.config.label || ''}子项中存在错误。\n ${childrenErrorMsg
-        .map((err) => `${err.name}:${err.msg}`)
-        .join('; ')}。`
+      const errTips = `${this.props.config.label || ''}${childrenErrorMsg.map((err) => `${err.msg}`).join('; ')}`
       errors.push(new FieldError(errTips))
     }
 
@@ -359,7 +357,6 @@ export default class GroupField
                 const FormField = this.getALLComponents(formFieldConfig.type) || Field
 
                 let status = (this.state.formData[formFieldIndex] || {}).status || 'normal'
-
                 if (
                   ['group', 'import_subform', 'object', 'tabs', 'form'].some((type) => type === formFieldConfig.type)
                 ) {

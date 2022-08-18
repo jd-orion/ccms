@@ -4,7 +4,7 @@ import { Form, Button, Collapse, Space } from 'antd'
 import { PlusOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
 import getALLComponents from '..'
-import { formItemLayout } from '../common'
+import { FiledErrMsg, formItemLayout } from '../common'
 
 export default class FormFieldComponent extends FormField {
   getALLComponents = (type: string) => getALLComponents[type]
@@ -30,7 +30,7 @@ export default class FormFieldComponent extends FormField {
         required={required}
         label={label}
         validateStatus={validateStatus}
-        help={message === '' ? null : message}
+        help={FiledErrMsg({ message, fieldType })}
         {...formItemLayout(layout, fieldType, label)}
         // className={ layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null }
         style={itemStyle}
@@ -98,11 +98,11 @@ export default class FormFieldComponent extends FormField {
     const collapsePaneldDefaultActiveKeys = Array.from(Array(children.length), (v, k) => k)
     const CollapseProps = canCollapse
       ? {
-          accordion: true
-        }
+        accordion: true
+      }
       : {
-          activeKey: collapsePaneldDefaultActiveKeys
-        }
+        activeKey: collapsePaneldDefaultActiveKeys
+      }
 
     return (
       <>

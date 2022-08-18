@@ -2,9 +2,9 @@ import React from 'react'
 import { TabsField } from 'ccms'
 import { Form, Tabs } from 'antd'
 import { ITabsField, ITabsFieldItem, ITabsFieldItemField } from 'ccms/dist/src/components/formFields/tabs'
-import getALLComponents from '../'
 import { Field } from 'ccms/dist/src/components/formFields/common'
-import { formItemLayout } from '../common'
+import getALLComponents from '..'
+import { FiledErrMsg, formItemLayout } from '../common'
 import commonStyles from '../common.less'
 
 export default class TabsFieldComponent extends TabsField<{}> {
@@ -12,25 +12,15 @@ export default class TabsFieldComponent extends TabsField<{}> {
   getALLComponents = (type: any): typeof Field => getALLComponents[type]
 
   renderItemFieldComponent = (props: ITabsFieldItemField) => {
-    const {
-      label,
-      subLabel,
-      status,
-      message,
-      extra,
-      required,
-      fieldType,
-      layout,
-      children
-    } = props
+    const { label, subLabel, status, message, extra, required, fieldType, layout, children } = props
 
     return (
       <Form.Item
         extra={extra ? extra.trim() : ''}
         required={required}
         label={label}
-        validateStatus={ status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating' }
-        help={ message === '' ? null : message}
+        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+        help={FiledErrMsg({ message, fieldType })}
         {...formItemLayout(layout, fieldType, label)}
         // className={ layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null }
       >
@@ -41,30 +31,24 @@ export default class TabsFieldComponent extends TabsField<{}> {
   }
 
   renderItemComponent = (props: ITabsFieldItem) => {
-    const {
-      key,
-      label,
-      children
-    } = props
+    const { key, label, children } = props
 
     return (
-      <Tabs.TabPane tab={label} key={key} forceRender={true}>
+      <Tabs.TabPane tab={label} key={key} forceRender>
         {children}
       </Tabs.TabPane>
     )
   }
 
   renderComponent = (props: ITabsField) => {
-    const {
-      children
-    } = props
+    const { children } = props
 
     return (
-      <React.Fragment>
-        <Tabs animated={true} style={{ width: '100%' }}>
+      <>
+        <Tabs animated style={{ width: '100%' }}>
           {children}
         </Tabs>
-      </React.Fragment>
+      </>
     )
   }
 }

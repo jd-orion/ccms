@@ -99,14 +99,14 @@ export default class FormField
     }
 
     let childrenError = 0
-    const childrenErrorMsg: Array<{ name: string; msg: string }> = []
-
+    let childrenErrorMsg = {}
     let { formDataList } = this.state
 
     for (let formItemsIndex = 0; formItemsIndex < this.formFieldsList.length; formItemsIndex++) {
       if (!formDataList[formItemsIndex]) formDataList[formItemsIndex] = []
       const formItems = this.formFieldsList[formItemsIndex]
-      for (let fieldIndex = 0; fieldIndex < (this.props.config.field || []).length; fieldIndex++) {
+      const itemErrorMsg: Array<{ name: string; msg: string }> = []
+      for (let fieldIndex = 0; fieldIndex < (this.props.config.fields || []).length; fieldIndex++) {
         const formItem = formItems[fieldIndex]
         if (formItem !== null && formItem !== undefined && !formItem.props.config.disabled) {
           const validation = await formItem.validate(
@@ -121,13 +121,15 @@ export default class FormField
               status: 'error',
               message: validation[0].message
             })
-            childrenErrorMsg.push({
+            itemErrorMsg.push({
               name: this.props.config.fields[fieldIndex].label,
               msg: validation[0].message
             })
           }
         }
       }
+
+      itemErrorMsg.length > 0 && (childrenErrorMsg[formItemsIndex] = itemErrorMsg)
     }
 
     await this.setState({
@@ -135,9 +137,15 @@ export default class FormField
     })
 
     if (childrenError > 0) {
-      const errTips = `${this.props.config.label || ''} ${childrenErrorMsg
-        .map((err) => `${err.name}:${err.msg}`)
-        .join('; ')}`
+      let errTips = `${this.props.config.label || ''}表单有以下错误项：`
+      for (const variable in childrenErrorMsg) {
+        if (variable) {
+          errTips += `第${Number(variable) + 1}项中${childrenErrorMsg[variable].map(
+            (item: { name: string; msg: string }) => `${item.msg}`
+          )}`
+        }
+      }
+      childrenErrorMsg = {}
       errors.push(new FieldError(errTips))
     }
 
