@@ -98,7 +98,7 @@ export function sort<T>(
  */
 const merge = (a: unknown, b: unknown): unknown => {
   return lodash.assignInWith(a, b, (_a, _b) => {
-    if (lodash.isUndefined(_a) && lodash.isArray(b)) {
+    if (lodash.isUndefined(_a) && lodash.isArray(_b)) {
       // eslint-disable-next-line no-param-reassign
       _a = []
     }
