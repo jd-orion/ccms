@@ -7,20 +7,19 @@ export interface ISelectSingleField {
   options: Array<ISelectFieldOption>
 }
 
-export default class SelectSingleDisplay extends SelectDisplay<SelectSingleFieldConfig, {}, string | number | boolean | undefined> {
+export default class SelectSingleDisplay extends SelectDisplay<
+  SelectSingleFieldConfig,
+  {},
+  string | number | boolean | undefined
+> {
   renderSelectSingleComponent = (props: ISelectSingleField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现SelectSingleDisplay组件。
-    </React.Fragment>
+    return <>您当前使用的UI版本没有实现SelectSingleDisplay组件。</>
   }
 
   render = () => {
     const {
       value,
-      config: {
-        options: optionsConfig,
-        defaultSelect
-      }
+      config: { options: optionsConfig, defaultSelect }
     } = this.props
 
     const props: ISelectSingleField = {
@@ -40,18 +39,12 @@ export default class SelectSingleDisplay extends SelectDisplay<SelectSingleField
       console.warn('单项选择框的值需要是字符串或数值。')
     } else if (value === undefined) {
       if (defaultSelect !== undefined && defaultSelect !== false && props.options.length) {
-        (async () => {
-          const value = props.options[defaultSelect === true ? 0 : defaultSelect].value
+        ;(async () => {
+          const { value } = props.options[defaultSelect === true || defaultSelect < 0 ? 0 : defaultSelect]
           props.value = value
         })()
       }
     }
-    return (
-      <React.Fragment>
-        {
-          this.renderSelectSingleComponent(props)
-        }
-      </React.Fragment>
-    )
+    return <>{this.renderSelectSingleComponent(props)}</>
   }
 }
