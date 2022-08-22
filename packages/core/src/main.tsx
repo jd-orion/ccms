@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { Suspense } from 'react'
 import marked from 'marked'
 import Step, { StepProps } from './steps/common'
 import StepComponents, { StepConfigs } from './steps'
@@ -300,7 +300,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
               
               const StepComponent = this.getStepComponent(currentStep.type)
               const children = (
-                StepComponent ? <StepComponent {...props}/> : <React.Fragment>您当前使用的UI版本没有实现{currentStep.type}步骤组件。</React.Fragment>
+                StepComponent ? <Suspense fallback={<>Loading</>}><StepComponent {...props}/></Suspense> : <React.Fragment>您当前使用的UI版本没有实现{currentStep.type}步骤组件。</React.Fragment>
               )
               return (
                 <div key={index} style={{ display: viewStep.includes(index) ? 'block' : 'none' }}>{children}</div>

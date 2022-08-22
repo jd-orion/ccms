@@ -9,11 +9,21 @@ import postcss from 'rollup-plugin-postcss'
 import { terser } from 'rollup-plugin-terser'
 
 export default {
-  input: 'src/index.tsx',
+  input: {
+    index: 'src/index.tsx',
+    'step/fetch': 'src/steps/fetch/index.ts',
+    'step/form': 'src/steps/form/index.tsx',
+    'step/skip': 'src/steps/skip/index.tsx',
+    'step/table': 'src/steps/table/table.tsx',
+    'step/filter': 'src/steps/filter/index.tsx',
+    'step/header': 'src/steps/header/index.tsx',
+    'step/detail': 'src/steps/detail/index.tsx'
+  },
   output: [
     {
       format: 'cjs',
-      file: path.resolve('dist/index.js')
+      // file: path.resolve('dist/index.js')
+      dir: 'dist'
     }
   ],
   onwarn(warning) {
@@ -42,7 +52,7 @@ export default {
     }),
     terser()
   ],
-  external: ['react', 'react-dom', 'ccms', '@ant-design/icons', 'react-color', 'antd'],
+  external: ['@ant-design/icons', '@monaco-editor/react', 'antd', 'ccms', 'react', 'react-color', 'react-sortable-hoc'],
   watch: {
     include: 'src/**'
   }

@@ -1,13 +1,14 @@
-import React from "react";
-import { FormStep } from "ccms-antd-mini";
-import { FormConfig } from "ccms/dist/src/steps/form";
-import { PageListItem } from "ccms/dist/src/main";
+import React from 'react'
+import { FormStep } from 'ccms-antd-mini'
+import { FormConfig } from 'ccms/dist/src/steps/form'
+import { PageListItem } from 'ccms/dist/src/main'
+
 interface CCMSFormProps {
-  data: any
+  data: { [field: string]: unknown }[]
   config: FormConfig
-  onChange: (data: any) => void
+  onChange: (data: unknown) => void
   loadDomain: (name: string) => Promise<string>
-  loadPageList: () => Promise<Array<PageListItem>>,
+  loadPageList: () => Promise<Array<PageListItem>>
   baseRoute: string
 }
 
@@ -16,35 +17,47 @@ interface CCMSFormState {
 }
 
 export default class CCMSForm extends React.Component<CCMSFormProps, CCMSFormState> {
-  state = {
-    formMounted: false
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      formMounted: false
+    }
   }
 
-  render () {
+  render() {
+    const { data, config, onChange, loadPageList, loadDomain, baseRoute } = this.props
     return (
       <FormStep
-        ref={(form: any) => {
-          if (!this.state.formMounted) {
+        ref={(form) => {
+          const { formMounted } = this.state
+          if (!formMounted) {
             this.setState({
               formMounted: true
             })
             form?.stepPush()
           }
         }}
-        step={this.props.data[0]}
-        data={this.props.data}
-        config={this.props.config}
-        onChange={async (data) => this.props.onChange(data)}
-        onSubmit={async () => { }}
-        onMount={async () => { }}
-        onUnmount={async () => { }}
+        step={data[0]}
+        data={data}
+        config={config}
+        onChange={async (dataChange) => onChange(dataChange)}
+        onSubmit={async () => {
+          /* TODO */
+        }}
+        onMount={async () => {
+          /* TODO */
+        }}
+        onUnmount={async () => {
+          /* TODO */
+        }}
         checkPageAuth={async () => true}
         loadPageURL={async () => ''}
         loadPageFrameURL={async () => ''}
         loadPageConfig={async () => ({})}
-        loadPageList={this.props.loadPageList}
-        loadDomain={this.props.loadDomain}
-        baseRoute={this.props.baseRoute}
+        loadPageList={loadPageList}
+        loadDomain={loadDomain}
+        baseRoute={baseRoute}
       />
     )
   }

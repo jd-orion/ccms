@@ -1,17 +1,11 @@
-import FetchStep from './fetch'
-import FormStep from './form'
-import SkipStep from './skip'
-import TableStep from './table'
-import FilterStep from './filter'
-import HeaderStep from './header'
-import DetailStep from './detail'
+import { lazy } from 'react'
 
 export default {
-  fetch: FetchStep,
-  form: FormStep,
-  skip: SkipStep,
-  table: TableStep,
-  filter: FilterStep,
-  header: HeaderStep,
-  detail: DetailStep
+  fetch: lazy(() => import(/* webpackChunkName: "ccms-antd_step_fetch" */ './fetch')),
+  form: lazy(() => import(/* webpackChunkName: "ccms-antd_step_form" */ './form')),
+  skip: lazy(() => import(/* webpackChunkName: "ccms-antd_step_skip" */ './skip')),
+  table: lazy(() => import(/* webpackChunkName: "ccms-antd_step_table" */ './table/table')),
+  filter: lazy(() => import(/* webpackChunkName: "ccms-antd_step_filter" */ './filter')),
+  header: lazy(() => import(/* webpackChunkName: "ccms-antd_step_header" */ './header')),
+  detail: lazy(() => import(/* webpackChunkName: "ccms-antd_step_detail" */ './detail'))
 }
