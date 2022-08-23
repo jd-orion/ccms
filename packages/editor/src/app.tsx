@@ -162,13 +162,19 @@ class App extends React.Component<AppProps, CCMSConsigState> {
    * 强制刷新
    */
   handleRefreshPreview = () => {
-    this.setState({
-      ready: false
-    }, () => {
-      this.setState({
-        ready: true
-      })
-    })
+    const { activeTab } = this.state
+    this.setState(
+      {
+        activeTab: 0,
+        ready: false
+      },
+      () => {
+        this.setState({
+          ready: true,
+          activeTab
+        })
+      }
+    )
   }
 
   /**
@@ -221,12 +227,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
   }
 
   render() {
-    const {
-      ready,
-      pageConfig,
-      activeTab,
-      pageTemplate
-    } = this.state
+    const { ready, pageConfig, activeTab, pageTemplate, configStringify } = this.state
 
     const {
       applicationName,
@@ -484,19 +485,15 @@ class App extends React.Component<AppProps, CCMSConsigState> {
         </Drawer>
 
         {/* 编辑配置文件 */}
-        <Modal
-          title="编辑配置文件"
-          visible={this.state.configStringify}
-          footer={false}
+        <ConfigJSON
+          configStringify={configStringify}
+          defaultValue={JSON.stringify(pageConfig, undefined, 2)}
+          onOk={(pageConfig) => {
+            this.setState({ pageConfig, configStringify: false });
+            this.handleRefreshPreview()
+          }}
           onCancel={() => this.setState({ configStringify: false })}
-          getContainer={() => document.getElementById('ccms-config') || document.body}
-        >
-          <ConfigJSON
-            defaultValue={this.state.pageConfig}
-            onOk={(pageConfig) => this.setState({ pageConfig, configStringify: false })}
-            onCancel={() => this.setState({ configStringify: false })}
-          />
-        </Modal>
+        />
       </div>
     )
   }
