@@ -1,6 +1,6 @@
 import React from 'react'
 import { DetailColorField } from 'ccms'
-import { IColorProps, ColorDetailConfig } from 'ccms/dist/src/components/detail/detailColor'
+import { IColorProps, ColorDetailConfig } from 'ccms/dist/components/detail/detailColor'
 
 export const PropsType = (props: ColorDetailConfig) => {}
 

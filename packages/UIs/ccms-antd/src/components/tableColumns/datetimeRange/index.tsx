@@ -1,6 +1,6 @@
 import React from 'react'
 import { DatetimeRangeColumn } from 'ccms'
-import { IDatetimeRangeColumn, DatetimeRangeColumnConfig } from 'ccms/dist/src/components/tableColumns/datetimeRange'
+import { IDatetimeRangeColumn, DatetimeRangeColumnConfig } from 'ccms/dist/components/tableColumns/datetimeRange'
 
 export const PropsType = (props: DatetimeRangeColumnConfig) => {}
 

@@ -1,48 +1,31 @@
-import FormField, { FormFieldConfig } from './form'
-import TextField, { TextFieldConfig } from './text'
-import RadioField, { RadioFieldConfig } from './radio'
-import ColorField, { ColorFieldConfig } from './color'
-import UploadField, { UploadFieldConfig } from './upload'
-import TreeSelectField, { TreeSelectFieldConfig } from './treeSelect'
-import LongtextField, { LongtextFieldConfig } from './longtext'
-import NumberField, { NumberFieldConfig } from './number'
-import DatetimeField, { DatetimeFieldConfig } from './datetime'
-import DatetimeRangeField, { DatetimeRangeFieldConfig } from './datetimeRange'
-import SelectSingleField, { SelectSingleFieldConfig } from './select/single'
-import SelectMultipleField, { SelectMultipleFieldConfig } from './select/multiple'
-import DescField, { DescFieldConfig } from './description'
-import ImageUrlField, { ImageUrlFieldConfig } from './imageurl'
+import { lazy } from 'react'
+import { FormFieldConfig } from './form'
+import { TextFieldConfig } from './text'
+import { RadioFieldConfig } from './radio'
+import { ColorFieldConfig } from './color'
+import { UploadFieldConfig } from './upload'
+import { TreeSelectFieldConfig } from './treeSelect'
+import { LongtextFieldConfig } from './longtext'
+import { NumberFieldConfig } from './number'
+import { DatetimeFieldConfig } from './datetime'
+import { DatetimeRangeFieldConfig } from './datetimeRange'
+import { SelectSingleFieldConfig } from './select/single'
+import { SelectMultipleFieldConfig } from './select/multiple'
+import { DescFieldConfig } from './description'
+import { ImageUrlFieldConfig } from './imageurl'
 import { FieldConfig } from './common'
-import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
-import GroupField, { GroupFieldConfig } from './group'
-import AnyField, { AnyFieldConfig } from './any'
-import SwitchField, { SwitchFieldConfig } from './switch'
+import { ImportSubformFieldConfig } from './importSubform'
+import { GroupFieldConfig } from './group'
+import { AnyFieldConfig } from './any'
+import { SwitchFieldConfig } from './switch'
 // import ObjectField, { ObjectFieldConfig } from './object'
-import HiddenField from './hidden'
-import TabsField, { TabsFieldConfig } from './tabs'
-import MultipleTextField, { MultipleTextFieldConfig } from './multipleText'
-import CustomField, { CustomFieldConfig } from './custom'
-import CodeField, { CodeFieldConfig } from './code'
-import DiffCodeField, { DiffCodeFieldConfig } from './diffCode'
+import { TabsFieldConfig } from './tabs'
+import { MultipleTextFieldConfig } from './multipleText'
+import { CustomFieldConfig } from './custom'
+import { CodeFieldConfig } from './code'
+import { DiffCodeFieldConfig } from './diffCode'
 
-import TextDisplay from './text/display'
-import FormDisplay from './form/display'
-import RadioDisplay from './radio/display'
-import ColorDisplay from './color/display'
-import UploadDisplay from './upload/display'
-import LongtextDisplay from './longtext/display'
-import NumberDisplay from './number/display'
-import DatetimeDisplay from './datetime/display'
-import DatetimeRangeDisplay from './datetimeRange/display'
-import SelectSingleDisplay from './select/single/display'
-import SelectMultipleDisplay from './select/multiple/display'
-import ImportSubformDisplay from './importSubform/display'
-import GroupDisplay from './group/display'
-import SwitchDisplay from './switch/display'
-import TabsDisplay from './tabs/display'
-import MultipleTextDisplay from './multipleText/display'
-import HiddenDisplay from './hidden/display'
-import TableField, { TableFieldConfig } from './table'
+import { TableFieldConfig } from './table'
 
 export interface HiddenFieldConfig extends FieldConfig {
   type: 'hidden' | 'none'
@@ -109,51 +92,51 @@ export type componentType =
   | 'table'
 
 export default {
-  text: TextField,
-  radio: RadioField,
-  form: FormField,
-  longtext: LongtextField,
-  number: NumberField,
-  datetime: DatetimeField,
-  datetimeRange: DatetimeRangeField,
-  select_single: SelectSingleField,
-  select_multiple: SelectMultipleField,
-  desc: DescField,
-  tree_select: TreeSelectField,
-  color: ColorField,
-  upload: UploadField,
-  imageurl: ImageUrlField,
-  import_subform: ImportSubformField,
-  group: GroupField,
-  any: AnyField,
-  switch: SwitchField,
+  text: lazy(() => import('./text')),
+  radio: lazy(() => import('./radio')),
+  form: lazy(() => import('./form')),
+  longtext: lazy(() => import('./longtext')),
+  number: lazy(() => import('./number')),
+  datetime: lazy(() => import('./datetime')),
+  datetimeRange: lazy(() => import('./datetimeRange')),
+  select_single: lazy(() => import('./select/single')),
+  select_multiple: lazy(() => import('./select/multiple')),
+  desc: lazy(() => import('./description')),
+  tree_select: lazy(() => import('./treeSelect')),
+  color: lazy(() => import('./color')),
+  upload: lazy(() => import('./upload')),
+  imageurl: lazy(() => import('./imageurl')),
+  import_subform: lazy(() => import('./importSubform')),
+  group: lazy(() => import('./group')),
+  any: lazy(() => import('./any')),
+  switch: lazy(() => import('./switch')),
   // object: ObjectField,
-  hidden: HiddenField,
-  tabs: TabsField,
-  multiple_text: MultipleTextField,
-  custom: CustomField,
-  code: CodeField,
-  diffcode: DiffCodeField,
-  table: TableField
+  hidden: lazy(() => import('./hidden')),
+  tabs: lazy(() => import('./tabs')),
+  multiple_text: lazy(() => import('./multipleText')),
+  custom: lazy(() => import('./custom')),
+  code: lazy(() => import('./code')),
+  diffcode: lazy(() => import('./diffCode')),
+  table: lazy(() => import('./table'))
 }
 
 export const display = {
-  text: TextDisplay,
-  longtext: LongtextDisplay,
-  form: FormDisplay,
-  radio: RadioDisplay,
-  color: ColorDisplay,
-  upload: UploadDisplay,
-  import_subform: ImportSubformDisplay,
-  group: GroupDisplay,
-  number: NumberDisplay,
-  datetime: DatetimeDisplay,
-  datetimeRange: DatetimeRangeDisplay,
-  select_single: SelectSingleDisplay,
-  select_multiple: SelectMultipleDisplay,
-  switch: SwitchDisplay,
-  tabs: TabsDisplay,
-  multiple_text: MultipleTextDisplay,
-  hidden: HiddenDisplay,
-  table: TableField
+  text: lazy(() => import('./text/display')),
+  longtext: lazy(() => import('./longtext/display')),
+  form: lazy(() => import('./form/display')),
+  radio: lazy(() => import('./radio/display')),
+  color: lazy(() => import('./color/display')),
+  upload: lazy(() => import('./upload/display')),
+  import_subform: lazy(() => import('./importSubform/display')),
+  group: lazy(() => import('./group/display')),
+  number: lazy(() => import('./number/display')),
+  datetime: lazy(() => import('./datetime/display')),
+  datetimeRange: lazy(() => import('./datetimeRange/display')),
+  select_single: lazy(() => import('./select/single/display')),
+  select_multiple: lazy(() => import('./select/multiple/display')),
+  switch: lazy(() => import('./switch/display')),
+  tabs: lazy(() => import('./tabs/display')),
+  multiple_text: lazy(() => import('./multipleText/display')),
+  hidden: lazy(() => import('./hidden/display')),
+  table: lazy(() => import('./table'))
 }

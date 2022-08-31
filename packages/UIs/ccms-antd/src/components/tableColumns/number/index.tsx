@@ -1,6 +1,6 @@
 import React from 'react'
 import { NumberColumn } from 'ccms'
-import { INumberColumn, NumberColumnConfig } from 'ccms/dist/src/components/tableColumns/number'
+import { INumberColumn, NumberColumnConfig } from 'ccms/dist/components/tableColumns/number'
 
 export const PropsType = (props: NumberColumnConfig) => {}
 

@@ -8,7 +8,7 @@ import {
   IOperationNode,
   IOperationLeaf,
   IOperationConfirm
-} from 'ccms/dist/src/util/operations'
+} from 'ccms/dist/util/operations'
 import React from 'react'
 import InterfaceHelper from './interface'
 

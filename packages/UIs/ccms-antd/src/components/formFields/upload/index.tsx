@@ -2,7 +2,7 @@ import React from "react";
 import { UploadField } from 'ccms';
 import { Upload as AntdUpload, Input, Button, Space, Tooltip } from 'antd'
 import { UploadOutlined, EyeOutlined, DeleteOutlined, CloseCircleFilled } from "@ant-design/icons"
-import { IUploadField, UploadFieldConfig } from "ccms/dist/src/components/formFields/upload";
+import { IUploadField, UploadFieldConfig } from "ccms/dist/components/formFields/upload";
 import { PaperClipOutlined } from '@ant-design/icons'
 export const PropsType = (props: UploadFieldConfig) => { };
 import styles from "./index.less"

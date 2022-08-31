@@ -1,6 +1,6 @@
 import React from 'react'
 import { DatetimeDisplay } from 'ccms'
-import { IDatetimeField } from 'ccms/dist/src/components/formFields/datetime/display'
+import { IDatetimeField } from 'ccms/dist/components/formFields/datetime/display'
 
 export default class DatetimeDisplayComponent extends DatetimeDisplay {
   renderComponent = (props: IDatetimeField) => {

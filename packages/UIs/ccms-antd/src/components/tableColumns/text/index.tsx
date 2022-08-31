@@ -1,6 +1,6 @@
 import React from 'react'
 import { TextColumn } from 'ccms'
-import { ITextColumn, TextColumnConfig } from 'ccms/dist/src/components/tableColumns/text'
+import { ITextColumn, TextColumnConfig } from 'ccms/dist/components/tableColumns/text'
 export const PropsType = (props: TextColumnConfig) => { }
 import styles from './index.less'
 import { Modal, Button } from "antd"

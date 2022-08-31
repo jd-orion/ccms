@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import fs from 'fs'
 import path from 'path'
 import ts from 'rollup-plugin-typescript2'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
@@ -8,20 +10,29 @@ import json from '@rollup/plugin-json'
 import postcss from 'rollup-plugin-postcss'
 import { terser } from 'rollup-plugin-terser'
 
+const input = {}
+const loadInput = (pathPrefix) => {
+  const sources = fs.readdirSync(path.resolve(__dirname, 'src', ...pathPrefix), { withFileTypes: true })
+  for (const source of sources) {
+    if (source.isDirectory()) {
+      loadInput([...pathPrefix, source.name])
+    } else {
+      const extIndex = source.name.indexOf('.')
+      const name = source.name.substring(0, extIndex)
+      const exts = source.name.substring(extIndex + 1)
+      if (exts === 'ts' || exts === 'tsx') {
+        input[[...pathPrefix, name].join('/')] = ['src', ...pathPrefix, source.name].join('/')
+      }
+    }
+  }
+}
+loadInput([])
+
 export default {
-  input: 'src/index.tsx',
-  output: [
-    {
-      format: 'cjs',
-      // file: path.resolve('dist/index.js')
-      dir: 'dist'
-    }
-  ],
-  onwarn(warning) {
-    if (warning.code === 'THIS_IS_UNDEFINED') {
-      return
-    }
-    console.error(warning.message)
+  input,
+  output: {
+    format: 'esm',
+    dir: 'dist'
   },
   plugins: [
     postcss({
@@ -43,7 +54,7 @@ export default {
     }),
     terser()
   ],
-  external: ['@ant-design/icons', '@monaco-editor/react', 'antd', 'ccms', 'react', 'react-color', 'react-sortable-hoc'],
+  external: ['axios', 'immer', 'lodash', 'marked', 'moment', 'qiankun', 'query-string', 'react'],
   watch: {
     include: 'src/**'
   }

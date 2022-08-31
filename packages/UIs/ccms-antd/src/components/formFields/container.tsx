@@ -1,8 +1,8 @@
 import React from 'react'
 import { FormContainer } from 'ccms'
 import { Form } from 'antd'
-import { IFormItem } from 'ccms/dist/src/steps/form'
-import { IFormContainer } from 'ccms/dist/src/components/formFields/container'
+import { IFormItem } from 'ccms/dist/steps/form'
+import { IFormContainer } from 'ccms/dist/components/formFields/container'
 import getALLComponents from '.'
 import { formItemLayout } from './common'
 

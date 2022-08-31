@@ -1,7 +1,7 @@
 import React from "react";
 import { Select } from "antd"
 import { MultipleTextField } from 'ccms';
-import { IMultipleTextField } from "ccms/dist/src/components/formFields/multipleText";
+import { IMultipleTextField } from "ccms/dist/components/formFields/multipleText";
 
 interface IMultipleTextFieldState {
   option: string

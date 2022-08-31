@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormStep } from 'ccms-antd-mini'
-import { FormConfig } from 'ccms/dist/src/steps/form'
-import { PageListItem } from 'ccms/dist/src/main'
+import { FormConfig } from 'ccms/dist/steps/form'
+import { PageListItem } from 'ccms/dist/main'
 
 interface CCMSFormProps {
   data: { [field: string]: unknown }[]

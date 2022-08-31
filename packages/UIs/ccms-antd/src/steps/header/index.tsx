@@ -1,7 +1,7 @@
 import React from 'react'
 import { Breadcrumb, BreadcrumbItemProps, Statistic, PageHeader, PageHeaderProps } from 'antd'
 import { HeaderStep } from 'ccms'
-import { IBreadcurmbItemProps, IBreadcurmbProps, IHeaderProps, IStatisticProps } from 'ccms/dist/src/steps/header'
+import { IBreadcurmbItemProps, IBreadcurmbProps, IHeaderProps, IStatisticProps } from 'ccms/dist/steps/header'
 import styles from './index.less'
 import InterfaceHelper from '../../util/interface'
 import OperationHelper from '../../util/operation'

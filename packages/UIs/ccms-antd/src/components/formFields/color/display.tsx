@@ -1,6 +1,6 @@
 import React from 'react'
 import { ColorDisplay } from 'ccms'
-import { IColorField } from 'ccms/dist/src/components/formFields/color/display'
+import { IColorField } from 'ccms/dist/components/formFields/color/display'
 import styles from './index.less'
 import { Space } from 'antd'
 

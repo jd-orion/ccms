@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { DatetimeField } from 'ccms'
 import { DatePicker, TimePicker } from 'antd'
-import { IDatetimeField, DatetimeFieldConfig } from 'ccms/dist/src/components/formFields/datetime'
+import { IDatetimeField, DatetimeFieldConfig } from 'ccms/dist/components/formFields/datetime'
 import pickerLocale from 'antd/lib/date-picker/locale/zh_CN'
 import styles from "./index.less"
 

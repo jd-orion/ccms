@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormDisplay } from 'ccms'
 import { Form, Collapse, Space } from 'antd'
-import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form/display'
+import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/components/formFields/form/display'
 import { display as getALLComponents } from '..'
 import { formItemLayout } from '../common'
 

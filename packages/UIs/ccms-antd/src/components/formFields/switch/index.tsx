@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch } from "antd"
 import { SwitchField } from 'ccms';
-import { ISwitchField, SwitchFieldConfig } from "ccms/dist/src/components/formFields/switch";
+import { ISwitchField, SwitchFieldConfig } from "ccms/dist/components/formFields/switch";
 
 export const PropsType = (props: SwitchFieldConfig) => { };
 

@@ -1,15 +1,15 @@
-const path = require('path');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path')
 
 module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', 'jsx'],
-    modules: [path.resolve("./node_modules")]
+    modules: [path.resolve('./node_modules')]
   },
   module: {
     rules: [
       {
         test: /\.(j|t)sx?$/,
-        include: [path.join(__dirname, './src')],
         use: [
           {
             loader: 'ts-loader'
@@ -19,11 +19,9 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          "style-loader",
-          "css-loader"
-        ]
-      }, {
+        use: ['style-loader', 'css-loader']
+      },
+      {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
         use: {
           loader: 'file-loader',
@@ -41,12 +39,12 @@ module.exports = {
             loader: 'less-loader',
             options: {
               lessOptions: {
-                javascriptEnabled: true,
+                javascriptEnabled: true
               }
-            },
+            }
           }
         ]
       }
     ]
-  },
+  }
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { DetailStatementField } from 'ccms'
-import { IStatementProps, StatementDetailConfig } from 'ccms/dist/src/components/detail/statement'
+import { IStatementProps, StatementDetailConfig } from 'ccms/dist/components/detail/statement'
 
 export const PropsType = (props: StatementDetailConfig) => {}
 

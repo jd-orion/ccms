@@ -3,7 +3,7 @@ import { Tooltip, Space } from 'antd'
 import { DiffCodeField } from 'ccms'
 import { FullscreenOutlined, FullscreenExitOutlined, UndoOutlined } from '@ant-design/icons'
 import { loader, DiffEditor } from '@monaco-editor/react'
-import { IDiffCodeFieldContainer, IDiffCodeField } from 'ccms/dist/src/components/formFields/diffCode'
+import { IDiffCodeFieldContainer, IDiffCodeField } from 'ccms/dist/components/formFields/diffCode'
 import styles from './index.less'
 
 loader.config({ paths: { vs: 'https://storage.360buyimg.com/swm-plus/monaco-editor-0.28.1/min/vs' } })

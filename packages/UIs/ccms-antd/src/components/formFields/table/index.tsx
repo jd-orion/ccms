@@ -1,6 +1,6 @@
 import React from 'react'
 import { TableField } from 'ccms'
-import { ITableField, ITableColumn } from 'ccms/dist/src/components/formFields/table'
+import { ITableField, ITableColumn } from 'ccms/dist/components/formFields/table'
 import { Table, Tooltip } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import { SortableContainer, SortableContainerProps, SortableElement, SortableHandle } from 'react-sortable-hoc'

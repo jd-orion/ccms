@@ -1,16 +1,17 @@
-import TextField, { TextFieldConfig } from './text'
-import EnumDetail, { EnumDetailConfig } from './enum'
-import StatementDetail, { StatementDetailConfig } from './statement'
-import ImageDetail, { ImageDetailConfig } from './image'
-import CustomDetail, { CustomDetailConfig } from './custom'
-import GroupField, { GroupFieldConfig } from './group'
-import ImportSubformField, { ImportSubformFieldConfig } from './importSubform'
-import InfoDetail, { InfoDetailConfig } from './detailInfo'
-import ColorDetail, { ColorDetailConfig } from './detailColor'
-import TableField, { TableFieldConfig } from './table'
-import FrameDetail, { IframeDetailConfig } from './iframe'
-import LinkDetail, { LinkDetailConfig } from './link'
-import OperationDetail, { OperationDetailConfig } from './operation'
+import { lazy } from 'react'
+import { TextFieldConfig } from './text'
+import { EnumDetailConfig } from './enum'
+import { StatementDetailConfig } from './statement'
+import { ImageDetailConfig } from './image'
+import { CustomDetailConfig } from './custom'
+import { GroupFieldConfig } from './group'
+import { ImportSubformFieldConfig } from './importSubform'
+import { InfoDetailConfig } from './detailInfo'
+import { ColorDetailConfig } from './detailColor'
+import { TableFieldConfig } from './table'
+import { IframeDetailConfig } from './iframe'
+import { LinkDetailConfig } from './link'
+import { OperationDetailConfig } from './operation'
 
 /**
  * 详情步骤内详情项配置文件格式定义 - 枚举
@@ -46,17 +47,17 @@ export type componentType =
   | 'operation'
 
 export default {
-  group: GroupField,
-  text: TextField,
-  import_subform: ImportSubformField,
-  detail_enum: EnumDetail,
-  image: ImageDetail,
-  statement: StatementDetail,
-  detail_info: InfoDetail,
-  detail_color: ColorDetail,
-  table: TableField,
-  custom: CustomDetail,
-  iframe: FrameDetail,
-  link: LinkDetail,
-  operation: OperationDetail
+  group: lazy(() => import('./group')),
+  text: lazy(() => import('./text')),
+  import_subform: lazy(() => import('./importSubform')),
+  detail_enum: lazy(() => import('./enum')),
+  image: lazy(() => import('./image')),
+  statement: lazy(() => import('./statement')),
+  detail_info: lazy(() => import('./detailInfo')),
+  detail_color: lazy(() => import('./detailColor')),
+  table: lazy(() => import('./table')),
+  custom: lazy(() => import('./custom')),
+  iframe: lazy(() => import('./iframe')),
+  link: lazy(() => import('./link')),
+  operation: lazy(() => import('./operation'))
 }

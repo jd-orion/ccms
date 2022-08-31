@@ -1,6 +1,6 @@
 import React from 'react'
 import { DescField } from 'ccms'
-import { IDescField, DescFieldConfig } from 'ccms/dist/src/components/formFields/description'
+import { IDescField, DescFieldConfig } from 'ccms/dist/components/formFields/description'
 
 export const PropsType = (props: DescFieldConfig) => { }
 

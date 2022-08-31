@@ -1,8 +1,14 @@
-import { CCMSConfig } from 'ccms/dist/src/main'
+import { CCMSConfig } from 'ccms/dist/main'
 
 const DefaultConfig: CCMSConfig = {
   steps: [
-    { type: 'header' },
+    {
+      type: 'header',
+      title: {
+        statement: 'TITLE',
+        params: []
+      }
+    },
     {
       type: 'form',
       fields: [

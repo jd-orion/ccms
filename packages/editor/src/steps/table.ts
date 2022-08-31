@@ -1,5 +1,5 @@
-import { FormConfig } from 'ccms/dist/src/steps/form'
-import { TableConfig } from 'ccms/dist/src/steps/table'
+import { FormConfig } from 'ccms/dist/steps/form'
+import { TableConfig } from 'ccms/dist/steps/table'
 
 export const Config: FormConfig = {
   type: 'form',

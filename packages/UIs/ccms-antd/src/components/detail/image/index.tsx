@@ -1,6 +1,6 @@
 import React from 'react'
 import { DetailImageField } from 'ccms'
-import { IImageDetail, IImageItemDetail, ImageDetailConfig } from 'ccms/dist/src/components/detail/image'
+import { IImageDetail, IImageItemDetail, ImageDetailConfig } from 'ccms/dist/components/detail/image'
 import { EyeOutlined } from '@ant-design/icons'
 import { Space, Tooltip } from 'antd'
 import styles from './index.less'

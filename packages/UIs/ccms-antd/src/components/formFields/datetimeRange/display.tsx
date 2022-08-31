@@ -1,6 +1,6 @@
 import React from 'react'
 import { DatetimeRangeDisplay } from 'ccms'
-import { IDatetimeRangeField } from 'ccms/dist/src/components/formFields/datetimeRange/display'
+import { IDatetimeRangeField } from 'ccms/dist/components/formFields/datetimeRange/display'
 import { SwapRightOutlined } from "@ant-design/icons"
 
 export default class DatetimeRangeDisplayComponent extends DatetimeRangeDisplay {

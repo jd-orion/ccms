@@ -2,7 +2,7 @@ import React from 'react'
 import { Space, Tooltip } from 'antd'
 import { EyeOutlined } from "@ant-design/icons"
 import { UploadDisplay } from 'ccms'
-import { IUploadField } from 'ccms/dist/src/components/formFields/upload/display'
+import { IUploadField } from 'ccms/dist/components/formFields/upload/display'
 import styles from "./index.less"
 
 export default class UploadDisplayComponent extends UploadDisplay {

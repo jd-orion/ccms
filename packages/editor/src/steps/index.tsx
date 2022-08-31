@@ -5,7 +5,7 @@ import { Config as FilterStepConfig, Template as FilterStepTemplate } from "./fi
 import { Config as SkipStepConfig, Template as SkipStepTemplate } from "./skip"
 import { Config as HeaderStepConfig, Template as HeaderStepTemplate } from "./header"
 import { Config as DetailStepConfig, Template as DetailStepTemplate } from "./detail"
-import { StepConfigs as IStepConfigs  } from "ccms/dist/src/steps"
+import { StepConfigs as IStepConfigs  } from "ccms/dist/steps"
 
 // 页面配置数据
 export const StepConfigs = {

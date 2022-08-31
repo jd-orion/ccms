@@ -1,6 +1,6 @@
 import React from 'react'
 import { DetailInfoField } from 'ccms'
-import { IInfoProps, InfoDetailConfig } from 'ccms/dist/src/components/detail/detailInfo'
+import { IInfoProps, InfoDetailConfig } from 'ccms/dist/components/detail/detailInfo'
 import { Modal, Tooltip } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
 

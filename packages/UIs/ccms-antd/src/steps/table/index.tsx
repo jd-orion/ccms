@@ -1,6 +1,6 @@
 import React from 'react'
 import { TableStep } from 'ccms'
-import { ITable, ITableColumn, ITableStepOperationConfirm, ITableStepOperationModal, ITableStepRowOperation, ITableStepRowOperationButton, ITableStepRowOperationGroup, ITableStepRowOperationGroupItem, ITableStepTableOperation, ITableStepTableOperationButton, ITableStepTableOperationGroup, ITableStepTableOperationGroupItem, DescriptionConfig } from 'ccms/dist/src/steps/table'
+import { ITable, ITableColumn, ITableStepOperationConfirm, ITableStepOperationModal, ITableStepRowOperation, ITableStepRowOperationButton, ITableStepRowOperationGroup, ITableStepRowOperationGroupItem, ITableStepTableOperation, ITableStepTableOperationButton, ITableStepTableOperationGroup, ITableStepTableOperationGroupItem, DescriptionConfig } from 'ccms/dist/steps/table'
 import { Table, Button, Dropdown, Menu, Modal, Space, Tooltip } from 'antd'
 import { DownOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import getALLComponents from '../../components/tableColumns'

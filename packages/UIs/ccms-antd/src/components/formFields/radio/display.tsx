@@ -1,6 +1,6 @@
 import React from 'react'
 import { RadioDisplay } from 'ccms'
-import { IRadioField } from 'ccms/dist/src/components/formFields/radio/display'
+import { IRadioField } from 'ccms/dist/components/formFields/radio/display'
 
 export default class RadioDisplayComponent extends RadioDisplay {
   renderComponent = (props: IRadioField) => {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { DetailOperation } from 'ccms'
-import { IButtonProps, IOperationDetail } from 'ccms/dist/src/components/detail/operation'
+import { IButtonProps, IOperationDetail } from 'ccms/dist/components/detail/operation'
 import { Button, Space } from 'antd'
 import OperationHelper from '../../../util/operation'
 

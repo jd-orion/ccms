@@ -1,6 +1,6 @@
 import React from 'react'
 import { FilterStep } from 'ccms'
-import { IFilter, IFilterItem, FilterConfig } from 'ccms/dist/src/steps/filter'
+import { IFilter, IFilterItem, FilterConfig } from 'ccms/dist/steps/filter'
 import { Button, Form, Space } from 'antd'
 import getALLComponents from '../../components/formFields'
 

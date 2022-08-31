@@ -1,6 +1,6 @@
 import React from 'react'
 import { ImageUrlField } from 'ccms'
-import { IImageUrlField, ImageUrlFieldConfig } from 'ccms/dist/src/components/formFields/imageurl'
+import { IImageUrlField, ImageUrlFieldConfig } from 'ccms/dist/components/formFields/imageurl'
 import TextCompnent from './commontext'
 
 export const PropsType = (props: ImageUrlFieldConfig) => { }

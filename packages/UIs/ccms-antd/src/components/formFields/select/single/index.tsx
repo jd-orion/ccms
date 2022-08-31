@@ -1,6 +1,6 @@
 import React from 'react'
 import { SelectSingleField } from 'ccms'
-import { ISelectSingleField, SelectSingleFieldConfig } from 'ccms/dist/src/components/formFields/select/single'
+import { ISelectSingleField, SelectSingleFieldConfig } from 'ccms/dist/components/formFields/select/single'
 import { Radio, Select } from 'antd'
 import InterfaceHelper from '../../../../util/interface'
 export default class SelectSingleFieldComponent extends SelectSingleField {

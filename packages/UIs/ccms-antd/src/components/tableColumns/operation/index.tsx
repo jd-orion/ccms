@@ -1,6 +1,6 @@
 import React from 'react'
 import { OperationColumn } from 'ccms'
-import { OperationColumnConfig, IButtonProps, IOperationColumn } from 'ccms/dist/src/components/tableColumns/operation'
+import { OperationColumnConfig, IButtonProps, IOperationColumn } from 'ccms/dist/components/tableColumns/operation'
 import { Button, Space } from 'antd'
 import OperationHelper from '../../../util/operation'
 

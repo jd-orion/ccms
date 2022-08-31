@@ -1,29 +1,17 @@
-import TextField from './text'
-import GroupField from './group'
-import StatementDetail from './statement'
-import EnumDetailComponent from './enum'
-import ImportSubformField from './importSubform'
-import InfoDetail from './detailInfo'
-import ImageDetail from './image'
-import ColorDetail from './detailColor'
-import CustomFieldComponent from './custom'
-import TableFieldComponent from './table'
-import IframeDetailComponent from './iframe'
-import LinkDetailComponent from './link'
-import OperationDetailComponent from './operation'
+import { lazy } from 'react'
 
 export default {
-  text: TextField,
-  group: GroupField,
-  statement: StatementDetail,
-  image: ImageDetail,
-  detail_enum: EnumDetailComponent,
-  import_subform: ImportSubformField,
-  custom: CustomFieldComponent,
-  table: TableFieldComponent,
-  detail_info: InfoDetail,
-  detail_color: ColorDetail,
-  iframe: IframeDetailComponent,
-  link: LinkDetailComponent,
-  operation: OperationDetailComponent
+  text: lazy(() => import('./text')),
+  group: lazy(() => import('./group')),
+  statement: lazy(() => import('./statement')),
+  image: lazy(() => import('./image')),
+  detail_enum: lazy(() => import('./enum')),
+  import_subform: lazy(() => import('./importSubform')),
+  custom: lazy(() => import('./custom')),
+  table: lazy(() => import('./table')),
+  detail_info: lazy(() => import('./detailInfo')),
+  detail_color: lazy(() => import('./detailColor')),
+  iframe: lazy(() => import('./iframe')),
+  link: lazy(() => import('./link')),
+  operation: lazy(() => import('./operation'))
 }

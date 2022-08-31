@@ -1,12 +1,10 @@
 {
   "name": "ccms",
-  "version": "1.4.0-beta.0",
+  "version": "1.4.0-beta.4",
   "description": "ConfigableCMS",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "lib",
     "dist"
   ],
   "scripts": {
@@ -24,7 +22,7 @@
   "author": "niuweb",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.27.2",
     "immer": "^9.0.7",
     "lodash": "^4.17.21",
     "marked": "^1.2.5",

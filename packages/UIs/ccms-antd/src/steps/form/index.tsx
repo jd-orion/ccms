@@ -6,7 +6,7 @@ import {
   IFormStepModal,
   FormConfig,
   IButtonProps
-} from 'ccms/dist/src/steps/form'
+} from 'ccms/dist/steps/form'
 import { Button, Form, Space, Modal, Collapse, Row } from 'antd'
 
 import { FormProps } from 'antd/lib/form'

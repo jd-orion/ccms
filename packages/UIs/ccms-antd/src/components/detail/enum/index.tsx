@@ -1,6 +1,6 @@
 import React from 'react'
 import { DetailEunmField } from 'ccms'
-import { IEnumProps, EnumDetailConfig } from 'ccms/dist/src/components/detail/enum'
+import { IEnumProps, EnumDetailConfig } from 'ccms/dist/components/detail/enum'
 
 export const PropsType = (props: EnumDetailConfig) => {}
 

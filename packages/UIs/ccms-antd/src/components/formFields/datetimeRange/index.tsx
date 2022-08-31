@@ -1,7 +1,7 @@
 import React from 'react'
 import { DatetimeRangeField } from 'ccms'
 import { DatePicker, TimePicker } from 'antd'
-import { IDatetimeRangeField } from 'ccms/dist/src/components/formFields/datetimeRange'
+import { IDatetimeRangeField } from 'ccms/dist/components/formFields/datetimeRange'
 import moment from 'moment'
 import { RangePickerProps } from 'antd/lib/date-picker/generatePicker'
 const { RangePicker: DateRangePicker } = DatePicker

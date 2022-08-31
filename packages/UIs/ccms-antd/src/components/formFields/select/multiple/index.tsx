@@ -1,7 +1,7 @@
 import React from 'react'
 import { SelectMultipleField } from 'ccms'
 import { Checkbox, Select } from 'antd'
-import { ISelectMultipleField } from 'ccms/dist/src/components/formFields/select/multiple'
+import { ISelectMultipleField } from 'ccms/dist/components/formFields/select/multiple'
 import InterfaceHelper from '../../../../util/interface'
 
 export default class SelectSingleFieldComponent extends SelectMultipleField {

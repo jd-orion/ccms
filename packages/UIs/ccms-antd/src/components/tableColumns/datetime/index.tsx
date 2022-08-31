@@ -1,6 +1,6 @@
 import React from 'react'
 import { DatetimeColumn } from 'ccms'
-import { IDatetimeColumn, DatetimeColumnConfig } from 'ccms/dist/src/components/tableColumns/datetime'
+import { IDatetimeColumn, DatetimeColumnConfig } from 'ccms/dist/components/tableColumns/datetime'
 
 export const PropsType = (props: DatetimeColumnConfig) => { };
 

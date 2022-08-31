@@ -4,7 +4,7 @@ const { Title } = Typography;
 const { Panel } = Collapse;
 import { FormProps } from 'antd/lib/form'
 import { DetailStep } from 'ccms'
-import { IDetail, IDetailItem, DetailConfig } from 'ccms/dist/src/steps/detail'
+import { IDetail, IDetailItem, DetailConfig } from 'ccms/dist/steps/detail'
 
 import getALLComponents from '../../components/detail'
 import style from "./index.less"

@@ -1,6 +1,6 @@
 import React from 'react'
 import { TextField } from 'ccms'
-import { ITextField, TextFieldConfig } from 'ccms/dist/src/components/formFields/text'
+import { ITextField, TextFieldConfig } from 'ccms/dist/components/formFields/text'
 import TextCompnent from './commontext'
 
 export const PropsType = (props: TextFieldConfig) => {}

@@ -1,9 +1,6 @@
 {
-  "exclude": [
-    "node_modules",
-    "dist",
-    "scripts",
-    "rollup.config.js"
+  "include": [
+    "./src/**/*"
   ],
   "compilerOptions": {
     "target": "ES6",

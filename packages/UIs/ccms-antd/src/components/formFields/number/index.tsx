@@ -1,7 +1,7 @@
 import React from 'react'
 import { NumberField } from 'ccms'
 import { InputNumber } from 'antd'
-import { INumberField, NumberFieldConfig } from 'ccms/dist/src/components/formFields/number'
+import { INumberField, NumberFieldConfig } from 'ccms/dist/components/formFields/number'
 
 export const PropsType = (props: NumberFieldConfig) => { }
 

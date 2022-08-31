@@ -1,7 +1,7 @@
 import React, { Key } from 'react'
 import { TreeSelectField } from 'ccms'
 import { Table, Tree, TreeSelect } from 'antd'
-import { ITreeSelectField } from 'ccms/dist/src/components/formFields/treeSelect'
+import { ITreeSelectField } from 'ccms/dist/components/formFields/treeSelect'
 import InterfaceHelper from '../../../util/interface'
 export default class TreeSelectFieldComponent extends TreeSelectField {
   interfaceHelper = new InterfaceHelper()

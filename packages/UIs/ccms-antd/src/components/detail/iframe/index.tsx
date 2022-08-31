@@ -1,6 +1,6 @@
 import React from 'react'
 import { DetailIframe } from 'ccms'
-import { IIframeDetail, IframeDetailConfig } from 'ccms/dist/src/components/detail/iframe'
+import { IIframeDetail, IframeDetailConfig } from 'ccms/dist/components/detail/iframe'
 import styles from './index.less'
 
 export const PropsType = (props: IframeDetailConfig) => { }

@@ -14,7 +14,7 @@ import {
   ITableDetailTableOperationButton,
   ITableDetailTableOperationGroup,
   ITableDetailTableOperationGroupItem
-} from 'ccms/dist/src/components/detail/table'
+} from 'ccms/dist/components/detail/table'
 import { Table, Dropdown, Menu, Modal, Space } from 'antd'
 import getALLComponents from '../../tableColumns'
 import CCMS from '../../../main'
