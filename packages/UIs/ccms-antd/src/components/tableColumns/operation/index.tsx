@@ -1,10 +1,10 @@
 import React from 'react'
 import { OperationColumn } from 'ccms'
-import { OperationColumnConfig, IButtonProps, IOperationColumn } from 'ccms/dist/components/tableColumns/operation'
+import { IButtonProps, IOperationColumn } from 'ccms/dist/components/tableColumns/operation'
 import { Button, Space } from 'antd'
+import 'antd/lib/button/style'
+import 'antd/lib/space/style'
 import OperationHelper from '../../../util/operation'
-
-export const PropsType = (props: OperationColumnConfig) => {}
 
 export default class OperationColumnComponent extends OperationColumn {
   OperationHelper = OperationHelper

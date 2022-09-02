@@ -4,13 +4,14 @@ import { IImportSubformField } from 'ccms/dist/components/detail/importSubform'
 import { Display } from 'ccms/dist/components/formFields/common'
 import { IDetailItem } from 'ccms/dist/steps/detail'
 import { Form } from 'antd'
+import 'antd/lib/form/style'
 import { display as getALLComponents } from '../../formFields'
 import InterfaceHelper from '../../../util/interface'
-import styles from './index.less'
-import { formItemLayout, computedItemStyle, computedGapStyle } from '../../formFields/common'
+import { computedItemStyle, computedGapStyle } from '../../formFields/common'
+import './index.less'
 
 export default class ImportSubformField extends DetailImportSubformField {
-  getALLComponents = (type: any): typeof Display => getALLComponents[type]
+  getALLComponents = (type): typeof Display => getALLComponents[type]
 
   interfaceHelper = new InterfaceHelper()
 
@@ -22,7 +23,7 @@ export default class ImportSubformField extends DetailImportSubformField {
         style={{
           ...gap
         }}
-        className={styles['ccms-antd-mini-form-group-row']}
+        className="ccms-antd-mini-form-group-row"
       >
         {children}
       </div>
@@ -43,18 +44,8 @@ export default class ImportSubformField extends DetailImportSubformField {
     }
 
     return (
-      <div
-        style={colStyle}
-        key={key}
-        className={[styles['form-group-col'], styles[`form-group-col-${fieldType}`]].join(' ')}
-      >
-        <Form.Item
-          key={key}
-          label={label}
-          className={styles[`ccms-antd-mini-detail-${fieldType}`]}
-          // {...formItemLayout(layout, fieldType, label)}
-          style={itemStyle}
-        >
+      <div style={colStyle} key={key} className={`form-group-col form-group-col-${fieldType}`}>
+        <Form.Item key={key} label={label} className={`ccms-antd-mini-detail-${fieldType}`} style={itemStyle}>
           {children}
         </Form.Item>
       </div>

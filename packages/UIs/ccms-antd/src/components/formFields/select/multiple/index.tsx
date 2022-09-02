@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { Key } from 'react'
 import { SelectMultipleField } from 'ccms'
 import { Checkbox, Select } from 'antd'
+import 'antd/lib/checkbox/style'
+import 'antd/lib/select/style'
 import { ISelectMultipleField } from 'ccms/dist/components/formFields/select/multiple'
 import InterfaceHelper from '../../../../util/interface'
 
@@ -25,7 +27,11 @@ export default class SelectSingleFieldComponent extends SelectMultipleField {
         onClear={() => onClear !== undefined && onClear()}
       >
         {options.map((option) => (
-          <Select.Option key={option.value as any} value={option.value as any} label={option.label}>
+          <Select.Option
+            key={option.value as unknown as string | number | undefined}
+            value={option.value as Key}
+            label={option.label}
+          >
             {option.label}
           </Select.Option>
         ))}

@@ -1,4 +1,3 @@
-import { HiddenField } from 'ccms';
+import { HiddenField } from 'ccms'
 
-export default class HiddenFieldComponent extends HiddenField {
-}
+export default class HiddenFieldComponent extends HiddenField {}

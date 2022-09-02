@@ -1,6 +1,10 @@
 import React from 'react'
 import { FormField } from 'ccms'
 import { Form, Button, Collapse, Space } from 'antd'
+import 'antd/lib/form/style'
+import 'antd/lib/button/style'
+import 'antd/lib/collapse/style'
+import 'antd/lib/space/style'
 import { PlusOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons'
 import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/components/formFields/form'
 import getALLComponents from '..'
@@ -98,11 +102,11 @@ export default class FormFieldComponent extends FormField {
     const collapsePaneldDefaultActiveKeys = Array.from(Array(children.length), (v, k) => k)
     const CollapseProps = canCollapse
       ? {
-        accordion: true
-      }
+          accordion: true
+        }
       : {
-        activeKey: collapsePaneldDefaultActiveKeys
-      }
+          activeKey: collapsePaneldDefaultActiveKeys
+        }
 
     return (
       <>

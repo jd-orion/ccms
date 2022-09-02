@@ -1,7 +1,8 @@
-import React from "react";
-import { Select } from "antd"
-import { MultipleTextField } from 'ccms';
-import { IMultipleTextField } from "ccms/dist/components/formFields/multipleText";
+import React from 'react'
+import { Select } from 'antd'
+import 'antd/lib/select/style'
+import { MultipleTextField } from 'ccms'
+import { IMultipleTextField } from 'ccms/dist/components/formFields/multipleText'
 
 interface IMultipleTextFieldState {
   option: string
@@ -9,19 +10,15 @@ interface IMultipleTextFieldState {
 
 export default class MultipleTextFieldComponent extends MultipleTextField<IMultipleTextFieldState> {
   renderComponent = (props: IMultipleTextField) => {
-    const {
-      value,
-      onChange,
-      placeholder
-    } = props
+    const { value, onChange, placeholder } = props
 
     return (
       <Select
         value={value}
-        onChange={(value) => onChange(value)}
+        onChange={(valueChange) => onChange(valueChange)}
         showSearch
         mode="multiple"
-        onSearch={(option)=> this.setState({ extra: { option } })}
+        onSearch={(option) => this.setState({ extra: { option } })}
         dropdownStyle={{ display: 'none' }}
         placeholder={placeholder}
       >

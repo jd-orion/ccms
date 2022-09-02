@@ -2,6 +2,8 @@ import React from 'react'
 import { DetailOperation } from 'ccms'
 import { IButtonProps, IOperationDetail } from 'ccms/dist/components/detail/operation'
 import { Button, Space } from 'antd'
+import 'antd/lib/button/style'
+import 'antd/lib/space/style'
 import OperationHelper from '../../../util/operation'
 
 export default class OperationDetailComponent extends DetailOperation {

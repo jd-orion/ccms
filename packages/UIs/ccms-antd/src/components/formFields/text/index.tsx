@@ -1,19 +1,11 @@
 import React from 'react'
 import { TextField } from 'ccms'
-import { ITextField, TextFieldConfig } from 'ccms/dist/components/formFields/text'
+import { ITextField } from 'ccms/dist/components/formFields/text'
 import TextCompnent from './commontext'
-
-export const PropsType = (props: TextFieldConfig) => {}
 
 export default class TextFieldComponent extends TextField {
   renderComponent = (props: ITextField) => {
-    const {
-      readonly,
-      disabled,
-      placeholder,
-      value,
-      onChange
-    } = props
+    const { readonly, disabled, placeholder, value, onChange } = props
     return (
       <TextCompnent
         readonly={readonly}

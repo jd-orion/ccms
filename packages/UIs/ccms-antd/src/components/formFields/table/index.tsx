@@ -2,12 +2,14 @@ import React from 'react'
 import { TableField } from 'ccms'
 import { ITableField, ITableColumn } from 'ccms/dist/components/formFields/table'
 import { Table, Tooltip } from 'antd'
+import 'antd/lib/table/style'
+import 'antd/lib/tooltip/style'
 import { ColumnType } from 'antd/lib/table'
 import { SortableContainer, SortableContainerProps, SortableElement, SortableHandle } from 'react-sortable-hoc'
 import { MenuOutlined } from '@ant-design/icons'
 import { display } from '..'
 import CCMS from '../../../main'
-import styles from './index.less'
+import './index.less'
 import OperationsHelperComponent from '../../../util/operations'
 import OperationHelper from '../../../util/operation'
 import TableFieldForm from './common/form'
@@ -66,7 +68,7 @@ export default class TableFieldComponent extends TableField<TableFieldComponentS
         <SortableBody
           useDragHandle
           disableAutoscroll
-          helperClass={styles['row-dragging']}
+          helperClass="row-dragging"
           onSortEnd={({ oldIndex, newIndex }) => {
             if (typeof tableSort === 'function' && oldIndex !== newIndex) {
               tableSort(oldIndex, newIndex)
@@ -86,7 +88,7 @@ export default class TableFieldComponent extends TableField<TableFieldComponentS
     }
 
     return (
-      <div className={styles['ccms-antd-table']} style={{ ...(width && { maxWidth: width }) }}>
+      <div className="ccms-antd-table" style={{ ...(width && { maxWidth: width }) }}>
         <Table
           title={
             tableOperations && (tableOperations.topLeft || tableOperations.topRight)
@@ -117,7 +119,7 @@ export default class TableFieldComponent extends TableField<TableFieldComponentS
                   key: columnIndex,
                   dataIndex: column.field,
                   title: column.label,
-                  className: typeof tableSort === 'function' ? styles['drag-visible'] : undefined,
+                  className: typeof tableSort === 'function' ? 'drag-visible' : undefined,
                   align: column.align,
                   render: (value: unknown, record: { [field: string]: unknown }, index: number) =>
                     column.render(value, record, index)

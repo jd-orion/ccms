@@ -4,16 +4,8 @@ import { IMultipleTextField } from 'ccms/dist/components/formFields/multipleText
 
 export default class MultipleTextDisplayComponent extends MultipleTextDisplay {
   renderComponent = (props: IMultipleTextField) => {
-    const {
-      value
-    } = props
+    const { value } = props
 
-    return (
-      <React.Fragment>
-        {
-          value && value.length > 0 && value.join('，')
-        }
-      </React.Fragment>
-    )
+    return <>{value && value.length > 0 && value.join('，')}</>
   }
 }

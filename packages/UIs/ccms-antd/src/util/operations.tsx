@@ -1,5 +1,11 @@
 import { DownOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, Modal, Space, Typography } from 'antd'
+import 'antd/lib/button/style'
+import 'antd/lib/dropdown/style'
+import 'antd/lib/menu/style'
+import 'antd/lib/modal/style'
+import 'antd/lib/space/style'
+import 'antd/lib/typography/style'
 import { OperationsHelper } from 'ccms'
 import {
   IOperations,

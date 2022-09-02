@@ -39,8 +39,7 @@ export default {
   plugins: [
     postcss({
       use: [['less', { javascriptEnabled: true, modifyVars: { '@ant-prefix': 'ccms-antd-ant' } }]],
-      extensions: ['.css', '.less'],
-      modules: true
+      extensions: ['.css', '.less']
     }),
     json(),
     ts({

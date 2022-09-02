@@ -1,16 +1,15 @@
 import React from 'react'
 import { GroupDisplay } from 'ccms'
-import { IGroupField, GroupFieldConfig } from 'ccms/dist/components/formFields/group'
+import { IGroupField } from 'ccms/dist/components/formFields/group'
 import { IFormItem } from 'ccms/dist/steps/form'
 import { Form } from 'antd'
+import 'antd/lib/form/style'
 import { display as getALLComponents } from '..'
-import styles from './index.less'
-import { formItemLayout, computedItemStyle, computedGapStyle } from '../common'
-
-export const PropsType = (props: GroupFieldConfig) => {}
+import './index.less'
+import { computedItemStyle, computedGapStyle } from '../common'
 
 export default class GroupDisplayComponent extends GroupDisplay {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type) => getALLComponents[type]
 
   renderComponent = (props: IGroupField) => {
     const { columns, children } = props
@@ -21,7 +20,7 @@ export default class GroupDisplayComponent extends GroupDisplay {
         style={{
           ...gap
         }}
-        className={styles['ccms-antd-mini-form-group-row']}
+        className="ccms-antd-mini-form-group-row"
       >
         {children}
       </div>
@@ -38,18 +37,8 @@ export default class GroupDisplayComponent extends GroupDisplay {
     }
 
     return (
-      <div
-        style={colStyle}
-        key={key}
-        className={[styles['form-group-col'], styles[`form-group-col-${fieldType}`]].join(' ')}
-      >
-        <Form.Item
-          key={key}
-          label={label}
-          // {...formItemLayout(layout, fieldType, label)}
-          className={styles[`ccms-antd-mini-form-${fieldType}`]}
-          style={itemStyle}
-        >
+      <div style={colStyle} key={key} className={`form-group-col form-group-col-${fieldType}`}>
+        <Form.Item key={key} label={label} className={`ccms-antd-mini-form-${fieldType}`} style={itemStyle}>
           {children}
         </Form.Item>
       </div>

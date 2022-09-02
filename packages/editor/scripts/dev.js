@@ -11,23 +11,30 @@ const webpack = require('../webpack.dev')
 const app = express()
 
 /** 修改文件，以支持本地源码调试 */
-const toLocalDebug = (currentPath) => {
-  const files = fs.readdirSync(currentPath, { withFileTypes: true })
-  for (const file of files) {
-    if (file.isDirectory()) {
-      toLocalDebug(path.resolve(currentPath, file.name))
-    } else {
-      const ext = file.name.substring(file.name.indexOf('.'))
-      if (['.js', '.jsx', '.ts', '.tsx'].includes(ext)) {
-        const content = fs.readFileSync(path.resolve(currentPath, file.name)).toString()
-        console.log('content', content)
-        break
-      }
-    }
-  }
-}
-toLocalDebug(path.resolve(__dirname, '../src'))
-return
+// const toLocalDebug = (currentPath) => {
+//   const files = fs.readdirSync(currentPath, { withFileTypes: true })
+//   for (const file of files) {
+//     if (file.isDirectory()) {
+//       toLocalDebug(path.resolve(currentPath, file.name))
+//     } else {
+//       const ext = file.name.substring(file.name.indexOf('.'))
+//       if (['.js', '.jsx', '.ts', '.tsx'].includes(ext)) {
+//         const contentPrev = fs.readFileSync(path.resolve(currentPath, file.name)).toString()
+//         const contentNext = contentPrev
+//           .replace(
+//             /import (.*) from ['"](ccms|ccms-antd|ccms-antd-mini)\/dist\/(.*)['"];?/g,
+//             "import $1 from '$2/src/$3'"
+//           )
+//           .replace(/import (.*) from ['"](ccms|ccms-antd|ccms-antd-mini)['"];?/g, "import $1 from '$2/src'")
+//         if (contentPrev !== contentNext) {
+//           fs.writeFileSync(path.resolve(currentPath, file.name), contentNext)
+//         }
+//       }
+//     }
+//   }
+// }
+// toLocalDebug(path.resolve(__dirname, '../src'))
+// toLocalDebug(path.resolve(__dirname, '../../UIs/ccms-antd/src'))
 
 const server = spawn('webpack', ['serve', '--config', './webpack.dev.js'], {
   cwd: path.join(__dirname, '../'),

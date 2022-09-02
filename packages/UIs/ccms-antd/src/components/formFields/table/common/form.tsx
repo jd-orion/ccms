@@ -1,4 +1,8 @@
 import { Button, Form, Modal, Space } from 'antd'
+import 'antd/lib/button/style'
+import 'antd/lib/form/style'
+import 'antd/lib/modal/style'
+import 'antd/lib/space/style'
 import { TableFieldForm } from 'ccms'
 import { Field } from 'ccms/dist/components/formFields/common'
 import { ITableFieldFormModal } from 'ccms/dist/components/formFields/table/common/form'

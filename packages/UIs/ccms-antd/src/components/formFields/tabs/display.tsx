@@ -1,25 +1,20 @@
 import React from 'react'
 import { TabsDisplay } from 'ccms'
 import { Form, Tabs } from 'antd'
+import 'antd/lib/form/style'
+import 'antd/lib/tabs/style'
 import { ITabsField, ITabsFieldItem, ITabsFieldItemField } from 'ccms/dist/components/formFields/tabs/display'
 import { Display } from 'ccms/dist/components/formFields/common'
 import { display as getALLComponents } from '..'
 
 export default class TabsDisplayComponent extends TabsDisplay<Record<string, never>> {
   // 各表单项对应的类型所使用的UI组件的类
-  getALLComponents = (type: any): typeof Display => getALLComponents[type]
+  getALLComponents = (type): typeof Display => getALLComponents[type]
 
   renderItemFieldComponent = (props: ITabsFieldItemField) => {
     const { label, children } = props
 
-    return (
-      <Form.Item
-        label={label}
-        // {...formItemLayout(layout, fieldType, label)}
-      >
-        {children}
-      </Form.Item>
-    )
+    return <Form.Item label={label}>{children}</Form.Item>
   }
 
   renderItemComponent = (props: ITabsFieldItem) => {

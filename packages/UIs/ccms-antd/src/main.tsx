@@ -2,8 +2,10 @@ import React from 'react'
 import { CCMS } from 'ccms'
 import { ICCMS } from 'ccms/dist/main'
 import { ConfigProvider, PageHeader } from 'antd'
+import 'antd/lib/config-provider/style'
+import 'antd/lib/page-header/style'
 import StepComponents from './steps'
-import styles from './main.less'
+import './main.less'
 
 export default class CCMSComponent extends CCMS {
   getStepComponent = (key: string) => StepComponents[key]
@@ -12,15 +14,15 @@ export default class CCMSComponent extends CCMS {
     const { title, description, children } = props
     return (
       <ConfigProvider prefixCls="ccms-antd-ant">
-        <div id="ccms-antd" className={styles['ccms-antd']}>
+        <div id="ccms-antd" className="ccms-antd">
           {(title || description) && (
-            <div className={styles.header}>
+            <div className="header">
               <PageHeader title={title} style={{ padding: 0 }}>
                 {description}
               </PageHeader>
             </div>
           )}
-          <div className={styles.content}>{children}</div>
+          <div className="content">{children}</div>
         </div>
       </ConfigProvider>
     )

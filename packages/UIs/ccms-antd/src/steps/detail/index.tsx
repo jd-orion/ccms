@@ -1,58 +1,46 @@
 import React from 'react'
-import { Button, Row, Col, Space, Typography, Collapse } from 'antd'
-const { Title } = Typography;
-const { Panel } = Collapse;
-import { FormProps } from 'antd/lib/form'
+import { Button, Col, Space, Typography, Collapse } from 'antd'
+import 'antd/lib/button/style'
+import 'antd/lib/col/style'
+import 'antd/lib/space/style'
+import 'antd/lib/typography/style'
+import 'antd/lib/collapse/style'
 import { DetailStep } from 'ccms'
-import { IDetail, IDetailItem, DetailConfig } from 'ccms/dist/steps/detail'
-
+import { IDetail, IDetailItem } from 'ccms/dist/steps/detail'
 import getALLComponents from '../../components/detail'
-import style from "./index.less"
+import './index.less'
 import { computedItemStyle } from '../../components/detail/common'
-import newstyles from "../../main.less"
+
+const { Title } = Typography
+const { Panel } = Collapse
 
 export default class DetailStepComponent extends DetailStep {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type) => getALLComponents[type]
 
   renderComponent = (props: IDetail) => {
-    const {
-      layout, // layout??
-      columns,
-      onBack,
-      backText,
-      children
-    } = props
+    const { columns, onBack, backText, children } = props
     const gap = Number(columns?.gap || 0)
     return (
       <div
         style={{
           rowGap: `${gap * 2}px`
         }}
-        className={style['ccms-antd-mini-detail-row']}
+        className="ccms-antd-mini-detail-row"
       >
         {children}
-        {
-          onBack && <Col span={24}>
+        {onBack && (
+          <Col span={24}>
             <Space>
-              {<Button onClick={() => onBack()}>{backText || '返回'}</Button>}
+              <Button onClick={() => onBack()}>{backText || '返回'}</Button>
             </Space>
           </Col>
-        }
+        )}
       </div>
     )
   }
 
   renderItemComponent = (props: IDetailItem) => {
-    const {
-      key,
-      layout,
-      styles,
-      label,
-      columns,
-      collapsible,
-      fieldType,
-      children
-    } = props
+    const { key, layout, styles, label, columns, fieldType, children } = props
 
     const colStyle = computedItemStyle(columns, layout)
 
@@ -60,34 +48,29 @@ export default class DetailStepComponent extends DetailStep {
       <div
         style={Object.assign(colStyle, styles)}
         key={key}
-        className={
-          [
-            style['detail-col'],
-            style[`detail-col-${fieldType}`],
-            style[`detail-col-${columns?.type || 'span'}`]
-          ].join(' ')
-        }
+        className={`detail-col detail-col-${fieldType} detail-col-${columns?.type || 'span'}`}
       >
-        {
-          fieldType === 'group' ? this.renderGroupUI(label, children) :
-            <div className={style['detail-group-content']}>
-              <div className={style[`detail-${fieldType}-title`]}>{label}</div>
-              {children}
-            </div>
-        }
-      </div >
+        {fieldType === 'group' ? (
+          this.renderGroupUI(label, children)
+        ) : (
+          <div className="detail-group-content">
+            <div className={`detail-${fieldType}-title`}>{label}</div>
+            {children}
+          </div>
+        )}
+      </div>
     )
   }
 
   // group UI
-  renderGroupUI = (label: string, children: any, collapsible?: 'header' | 'disabled') => {
-    return <Collapse collapsible="header" defaultActiveKey={['1']} >
-      <Panel header={label} key="1" collapsible={collapsible || 'header'}>
-        <div className={style['detail-group-content']}>
-          {children}
-        </div>
-      </Panel>
-    </Collapse>
+  renderGroupUI = (label: string, children: React.ReactNode, collapsible?: 'header' | 'disabled') => {
+    return (
+      <Collapse collapsible="header" defaultActiveKey={['1']}>
+        <Panel header={label} key="1" collapsible={collapsible || 'header'}>
+          <div className="detail-group-content">{children}</div>
+        </Panel>
+      </Collapse>
+    )
   }
 
   // title UI
@@ -95,8 +78,3 @@ export default class DetailStepComponent extends DetailStep {
     return <Title level={level}>{label}</Title>
   }
 }
-// <FormConfig, IForm>
-export const PropsType = (props: IDetail) => { };
-
-export const PropsTypeFormConfig = (props: DetailConfig) => { };
-export const PropsTypeStep = (props: DetailStep) => { };

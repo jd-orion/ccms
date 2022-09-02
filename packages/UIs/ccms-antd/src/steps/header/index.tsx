@@ -1,15 +1,20 @@
 import React from 'react'
 import { Breadcrumb, BreadcrumbItemProps, Statistic, PageHeader, PageHeaderProps } from 'antd'
+import 'antd/lib/breadcrumb/style'
+import 'antd/lib/statistic/style'
+import 'antd/lib/page-header/style'
 import { HeaderStep } from 'ccms'
 import { IBreadcurmbItemProps, IBreadcurmbProps, IHeaderProps, IStatisticProps } from 'ccms/dist/steps/header'
-import styles from './index.less'
+import './index.less'
 import InterfaceHelper from '../../util/interface'
 import OperationHelper from '../../util/operation'
 import DetailStep from '../detail'
 
 export default class HeaderStepComponent extends HeaderStep {
   interfaceHelper = new InterfaceHelper()
+
   OperationHelper = OperationHelper
+
   DetailStep = DetailStep
 
   /**
@@ -20,10 +25,12 @@ export default class HeaderStepComponent extends HeaderStep {
   renderBreadcurmbItemComponent = (props: IBreadcurmbItemProps) => {
     const breadcrumbItemProps: BreadcrumbItemProps = {}
     if (props.type === 'bold') {
-      breadcrumbItemProps.className = styles['breadcrumb-item-bold']
+      breadcrumbItemProps.className = 'breadcrumb-item-bold'
     }
     if (props.onClick) {
-      breadcrumbItemProps.className = breadcrumbItemProps.className ? (breadcrumbItemProps.className + ' ' + styles['breadcrumb-item-pointer']) : styles['breadcrumb-item-pointer']
+      breadcrumbItemProps.className = breadcrumbItemProps.className
+        ? `${breadcrumbItemProps.className} breadcrumb-item-pointer`
+        : 'breadcrumb-item-pointer'
       breadcrumbItemProps.onClick = props.onClick
     }
     return <Breadcrumb.Item {...breadcrumbItemProps}>{props.label}</Breadcrumb.Item>
@@ -34,12 +41,8 @@ export default class HeaderStepComponent extends HeaderStep {
    * @param props
    * @returns
    */
-   renderBreadcurmbComponent = (props: IBreadcurmbProps) => {
-    return (
-      <Breadcrumb separator={props.separator}>
-        {props.items}
-      </Breadcrumb>
-    )
+  renderBreadcurmbComponent = (props: IBreadcurmbProps) => {
+    return <Breadcrumb separator={props.separator}>{props.items}</Breadcrumb>
   }
 
   /**
@@ -48,9 +51,7 @@ export default class HeaderStepComponent extends HeaderStep {
    * @returns
    */
   renderStatisticComponent = (props: IStatisticProps) => {
-    return (
-      <Statistic title={props.label} value={props.value} />
-    )
+    return <Statistic title={props.label} value={props.value} />
   }
 
   renderContent = (mainContent?: React.ReactNode, extraContent?: React.ReactNode) => {
@@ -74,7 +75,7 @@ export default class HeaderStepComponent extends HeaderStep {
 
   renderComponent = (props: IHeaderProps) => {
     const pageHeaderProps: PageHeaderProps = {
-      className: styles['ccms-antd-header']
+      className: 'ccms-antd-header'
     }
     if (props.breadcrumb) {
       pageHeaderProps.breadcrumbRender = () => props.breadcrumb
@@ -88,9 +89,7 @@ export default class HeaderStepComponent extends HeaderStep {
     if (props.onBack) {
       pageHeaderProps.onBack = props.onBack
     }
-    
-    return (
-      <PageHeader {...pageHeaderProps}>{this.renderContent(props.mainContent, props.extraContent)}</PageHeader>
-    )
+
+    return <PageHeader {...pageHeaderProps}>{this.renderContent(props.mainContent, props.extraContent)}</PageHeader>
   }
 }

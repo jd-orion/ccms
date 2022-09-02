@@ -2,31 +2,30 @@ import React from 'react'
 import { DetailTableField } from 'ccms'
 import {
   ITableField,
-  TableFieldConfig,
   ITableColumn,
   ITableDetailOperationConfirm,
   ITableDetailOperationModal,
   ITableDetailRowOperation,
   ITableDetailRowOperationButton,
   ITableDetailRowOperationGroup,
-  ITableDetailRowOperationGroupItem,
-  ITableDetailTableOperation,
-  ITableDetailTableOperationButton,
-  ITableDetailTableOperationGroup,
-  ITableDetailTableOperationGroupItem
+  ITableDetailRowOperationGroupItem
 } from 'ccms/dist/components/detail/table'
-import { Table, Dropdown, Menu, Modal, Space } from 'antd'
+import { Table, Dropdown, Menu, Modal, Space, Typography } from 'antd'
+import 'antd/lib/table/style'
+import 'antd/lib/dropdown/style'
+import 'antd/lib/menu/style'
+import 'antd/lib/modal/style'
+import 'antd/lib/space/style'
+import 'antd/lib/typography/style'
 import getALLComponents from '../../tableColumns'
 import CCMS from '../../../main'
 import InterfaceHelper from '../../../util/interface'
-import styles from './index.less'
-
-export const PropsType = (props: TableFieldConfig) => { }
+import './index.less'
 
 export default class TableFieldComponent extends DetailTableField {
   CCMS = CCMS
 
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type) => getALLComponents[type]
 
   interfaceHelper = new InterfaceHelper()
 
@@ -48,7 +47,7 @@ export default class TableFieldComponent extends DetailTableField {
   renderComponent = (props: ITableField) => {
     const { width, primary, tableColumns, data, pagination } = props
     return (
-      <div className={styles['ccms-antd-table']} style={{ ...(width && { maxWidth: width }) }}>
+      <div className="ccms-antd-table" style={{ ...(width && { maxWidth: width }) }}>
         <Table
           rowKey={primary}
           columns={tableColumns.map((column: ITableColumn, index: number) => ({
@@ -56,7 +55,8 @@ export default class TableFieldComponent extends DetailTableField {
             dataIndex: column.field,
             title: column.label,
             align: column.align,
-            render: (value: any, record: { [field: string]: any }, index: number) => column.render(value, record, index)
+            render: (value: unknown, record: { [key: string]: unknown }, recordIndex: number) =>
+              column.render(value, record, recordIndex)
           }))}
           dataSource={data}
           scroll={width ? { x: width } : {}}
@@ -89,14 +89,14 @@ export default class TableFieldComponent extends DetailTableField {
   renderRowOperationButtonComponent = (props: ITableDetailRowOperationButton) => {
     const { label, onClick } = props
 
-    return <a onClick={() => onClick()}>{label}</a>
+    return <Typography.Link onClick={() => onClick()}>{label}</Typography.Link>
   }
 
   renderRowOperationDropdownComponent = (props: ITableDetailRowOperationGroup) => {
     const { label, children } = props
     return (
       <Dropdown getPopupContainer={(node) => node.parentElement || document.body} overlay={<Menu>{children}</Menu>}>
-        <a>{label}</a>
+        <Typography.Link>{label}</Typography.Link>
       </Dropdown>
     )
   }
