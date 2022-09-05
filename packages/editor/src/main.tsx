@@ -2,7 +2,6 @@ import React from 'react'
 import App, { AppExternalProps } from './app'
 import DefaultConfig from './DefaultConfig'
 import appInfo from '../package.json'
-import 'antd/dist/antd.css'
 
 function CCMSEditor(props: AppExternalProps) {
   const {

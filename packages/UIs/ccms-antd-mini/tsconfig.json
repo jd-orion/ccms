@@ -1,24 +1,15 @@
 {
-  "exclude": [
-    "node_modules",
-    "dist",
-    "scripts",
-    "rollup.config.js"
-  ],
+  "include": ["./src/**/*"],
   "compilerOptions": {
     "target": "ES6",
     "module": "ESNext",
     "sourceMap": true,
-    "outDir": "./dist/src",
+    "outDir": "./dist/",
     "esModuleInterop": true,
     "declaration": true,
     "jsx": "react",
     "strict": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -30,10 +21,7 @@
     "noImplicitAny": false,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "types": [
-      "node",
-      "jest"
-    ],
+    "types": ["node", "jest"],
     "experimentalDecorators": true
   }
 }

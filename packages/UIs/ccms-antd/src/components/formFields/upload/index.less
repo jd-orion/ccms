@@ -1,11 +1,11 @@
 .ccms-antd-upload {
-  & > :global(.ant-upload) {
+  & > .@{ant-prefix}-upload {
     width: 100%;
   }
 }
 
 .ccms-antd-upload-image-box {
-  & > :global(.ant-upload-select) {
+  & > .@{ant-prefix}-upload-select {
     width: auto;
   }
 }
@@ -39,8 +39,8 @@
     opacity: 0;
     transition: all 0.5s;
 
-    & > :global(.ant-space) {
-      & > :global(.ant-space-item) {
+    & > .@{ant-prefix}-space {
+      & > .@{ant-prefix}-space-item {
         cursor: pointer;
       }
     }

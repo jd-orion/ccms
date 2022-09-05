@@ -1,11 +1,15 @@
 import React from 'react'
 import { FormField } from 'ccms'
 import { Form, Button, Collapse, Space } from 'antd'
+import 'antd/lib/form/style'
+import 'antd/lib/button/style'
+import 'antd/lib/collapse/style'
+import 'antd/lib/space/style'
 import { PlusOutlined, DeleteOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
 import { FormItemProps } from 'antd/lib/form'
-import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/src/components/formFields/form'
+import { IFormField, IFormFieldItem, IFormFieldItemField } from 'ccms/dist/components/formFields/form'
 import getALLComponents from '..'
-import styles from './index.less'
+import './index.less'
 
 export default class FormFieldComponent extends FormField {
   getALLComponents = (type: string) => getALLComponents[type]
@@ -44,7 +48,7 @@ export default class FormFieldComponent extends FormField {
         validateStatus={validateStatus}
         help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
         {...formItemLayout}
-        className={styles[`ccms-antd-mini-form-${fieldType}`]}
+        className={`ccms-antd-mini-form-${fieldType}`}
         style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
       >
         {children}
@@ -108,17 +112,17 @@ export default class FormFieldComponent extends FormField {
     return (
       <>
         {onInsert ? (
-          <div className={styles['ccms-antd-mini-formField-form-before-button']}>
+          <div className="ccms-antd-mini-formField-form-before-button">
             <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>
               {insertText}
             </Button>
           </div>
         ) : null}
-        <Collapse accordion bordered={false} className={styles['ccms-antd-mini-formField-form']}>
+        <Collapse accordion bordered={false} className="ccms-antd-mini-formField-form">
           {children}
         </Collapse>
         {children?.length > 0 && onInsert ? (
-          <div className={styles['ccms-antd-mini-formField-form-after-button']}>
+          <div className="ccms-antd-mini-formField-form-after-button">
             <Button type="link" icon={<PlusOutlined />} onClick={() => onInsert()}>
               {insertText}
             </Button>

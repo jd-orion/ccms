@@ -15,6 +15,7 @@ module.exports = {
             loader: 'ts-loader'
           }
         ],
+        include: [path.join(__dirname, './src')],
         exclude: /node_modules/
       },
       {

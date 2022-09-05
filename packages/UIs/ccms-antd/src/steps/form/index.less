@@ -3,7 +3,7 @@
 .ccms-antd-mini-form-group {
   margin-bottom: 0 !important;
 
-  & > :global(.ant-form-item-label) {
+  & > .@{ant-prefix}-form-item-label {
     flex: 0 0 auto !important;
     width: calc(100% + 16px) !important;
     max-width: calc(100% + 16px) !important;
@@ -12,7 +12,7 @@
     background-color: #00000008 !important;
   }
 
-  & > :global(.ant-form-item-control) {
+  & > .@{ant-prefix}-form-item-control {
     max-width: calc(100% + 16px) !important;
     margin-right: -8px !important;
     margin-left: -8px !important;
@@ -20,7 +20,7 @@
     background-color: #00000004 !important;
   }
 
-  & > :global(.ant-form-item-control):first-child {
+  & > .@{ant-prefix}-form-item-control:first-child {
     padding-top: 0 !important;
     background-color: #0000 !important;
   }
@@ -33,9 +33,9 @@
 }
 
 .ccms-antd-mini-form-form {
-  & > :global(.ant-form-item-control) {
-    & > :global(.ant-form-item-control-input) {
-      & > :global(.ant-form-item-control-input-content) {
+  & > .@{ant-prefix}-form-item-control {
+    & > .@{ant-prefix}-form-item-control-input {
+      & > .@{ant-prefix}-form-item-control-input-content {
         min-height: 24px !important;
       }
     }
@@ -61,7 +61,7 @@
   margin-bottom: 0;
 }
 
-.ant-collapse-header-text {
+.@{ant-prefix}-collapse-header-text {
   font-weight: bold;
   font-size: 16px;
 }
@@ -75,10 +75,11 @@
     border-bottom: 1px solid #f1f1f1;
   }
 }
+
 .ccms-antd-label-vertical-flex-start {
   :global {
-    .ant-form-item-label > label {
-      align-items: flex-start!important;
+    .@{ant-prefix}-form-item-label > label {
+      align-items: flex-start !important;
     }
   }
 }

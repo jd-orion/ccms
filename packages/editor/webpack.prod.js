@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable import/no-extraneous-dependencies */
 const path = require('path')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common.js')
 
@@ -27,6 +28,10 @@ module.exports = merge(common, {
     react: 'react',
     'react-color': 'react-color',
     'react-dom': 'react-dom',
-    'react-sortable-hoc': 'react-sortable-hoc'
-  }
+    'react-sortable-hoc': 'react-sortable-hoc',
+    ccms: 'ccms',
+    'ccms-antd': 'ccms-antd',
+    'ccms-antd-mini': 'ccms-antd-mini'
+  },
+  plugins: [new BundleAnalyzerPlugin()]
 })

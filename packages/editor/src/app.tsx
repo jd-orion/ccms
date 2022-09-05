@@ -1,14 +1,25 @@
 import React from 'react'
 import { Drawer, Button, Modal, message, Card, Space, Radio, Dropdown, Menu } from 'antd'
+import 'antd/lib/drawer/style'
+import 'antd/lib/button/style'
+import 'antd/lib/modal/style'
+import 'antd/lib/message/style'
+import 'antd/lib/card/style'
+import 'antd/lib/space/style'
+import 'antd/lib/radio/style'
+import 'antd/lib/dropdown/style'
+import 'antd/lib/menu/style'
 import { DownOutlined } from '@ant-design/icons'
 import { CCMSConfig, BasicConfig, PageListItem } from 'ccms/dist/main'
 import { cloneDeep } from 'lodash'
-import { CCMS } from 'ccms'
 import copy from 'copy-html-to-clipboard'
-import { PageTemplate, PageTemplates, StepTemplates } from './steps'
-import './antd.less' // 加载antd样式（用于样式隔离）
+import { FormConfig } from 'ccms/dist/steps/form'
+import { PageTemplate, PageTemplates, StepConfigs, StepTemplates } from './steps'
 import './app.less'
 import ConfigJSON from './component/ConfigJSON'
+
+const CCMSPreview = React.lazy(() => import('./component/CCMSPreview'))
+const CCMSForm = React.lazy(() => import('./component/CCMSForm'))
 
 export interface AppPropsInterface {
   config: CCMSConfig
@@ -171,7 +182,12 @@ class App extends React.Component<AppProps, CCMSConsigState> {
       handlePageRedirect,
       onCancel,
       sourceData,
-      baseRoute
+      baseRoute,
+      applicationName,
+      type,
+      version,
+      subversion,
+      configDomain
     } = this.props
 
     return (
@@ -179,8 +195,8 @@ class App extends React.Component<AppProps, CCMSConsigState> {
         {/* 预览CCMS */}
         <div className="preview">
           {ready && (
-            <React.Suspense fallback={<div>Loading</div>}>
-              <CCMS
+            <React.Suspense fallback={<>Loading</>}>
+              <CCMSPreview
                 checkPageAuth={checkPageAuth}
                 loadPageURL={loadPageURL}
                 loadPageFrameURL={loadPageFrameURL}
@@ -190,19 +206,11 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                 handlePageRedirect={handlePageRedirect}
                 sourceData={sourceData}
                 baseRoute={baseRoute}
-                callback={() => {
-                  // if (window.history.length > 1) {
-                  //   window.history.back()
-                  // } else {
-                  //   window.close()
-                  // }
-                }}
-                config={pageConfig}
+                pageConfig={pageConfig}
               />
             </React.Suspense>
           )}
         </div>
-        <pre>{JSON.stringify(pageConfig, undefined, 2)}</pre>
 
         {/* 配置化步骤内容 */}
         <Drawer width={350} mask={false} placement="right" closable={false} visible getContainer={false}>
@@ -642,34 +650,34 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                 </div>
               </>
             ) : (
-              <>
-                {/* <CCMSForm
+              <React.Suspense fallback={<>Loading</>}>
+                <CCMSForm
                   key={activeTab}
                   data={[
                     {
                       ...(pageConfig.steps || [])[activeTab],
                       applicationName,
                       businessSuffix: type === 'business' ? '/business' : '',
-                      version: this.props.version,
-                      subversion: this.props.subversion,
-                      configDomain: this.props.configDomain
+                      version,
+                      subversion,
+                      configDomain
                     }
                   ]}
                   config={(StepConfigs[((pageConfig.steps || [])[activeTab] || {}).type] || {}) as FormConfig}
                   onChange={(data) => {
-                    const { pageConfig, activeTab } = this.state
-                    const { steps = [] } = pageConfig
-                    steps[activeTab] = data as FormConfig
-                    pageConfig.steps = steps
+                    const { pageConfig: currentPageConfig, activeTab: currentActiveTab } = this.state
+                    const { steps = [] } = currentPageConfig
+                    steps[currentActiveTab] = data as FormConfig
+                    currentPageConfig.steps = steps
                     this.setState({
-                      pageConfig
+                      pageConfig: currentPageConfig
                     })
                   }}
-                  loadDomain={this.props.loadDomain}
+                  loadDomain={loadDomain}
                   loadPageList={loadPageList}
-                  baseRoute={this.props.baseRoute}
-                /> */}
-              </>
+                  baseRoute={baseRoute}
+                />
+              </React.Suspense>
             )}
           </Card>
         </Drawer>

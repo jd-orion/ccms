@@ -12,17 +12,11 @@
     flex-direction: row;
     max-width: 100%;
     min-height: 1px;
-    // display: flex;
     margin-bottom: 15px;
-    flex-direction: row;
-    position: relative;
-    max-width: 100%;
-    flex: 0 0 100%;
-    min-height: 1px;
   }
 
   .detail-group-content {
-    &> :global(.ant-form-item) {
+    &> .@{ant-prefix}-form-item {
       margin-bottom: 0 !important;
     }
 
@@ -34,7 +28,7 @@
     }
   }
 
-  &>.detail-group-children {
+  & > .detail-group-children {
     display: flex;
     word-break: break-all;
   }

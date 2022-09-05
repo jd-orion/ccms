@@ -54,7 +54,7 @@ export default {
     }),
     terser()
   ],
-  external: ['axios', 'immer', 'lodash', 'marked', 'moment', 'qiankun', 'query-string', 'react'],
+  external: ['axios', 'immer', 'lodash', 'moment', 'qiankun', 'query-string', 'react'],
   watch: {
     include: 'src/**'
   }

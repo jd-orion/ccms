@@ -1,50 +1,51 @@
 .ccms-antd-mini-formField-object {
-  background-color: transparent !important;
   margin: 0 -8px !important;
+  background-color: transparent !important;
 
-  &:global(.ant-collapse) {
-    &>:global(.ant-collapse-item) {
-      &>:global(.ant-collapse-header) {
-        background-color: #00000008 !important;
+  &.@{ant-prefix}-collapse {
+    &>.@{ant-prefix}-collapse-item {
+      &>.@{ant-prefix}-collapse-header {
         padding: 2px !important;
-        padding-left: 24px !important;
         padding-right: 8px !important;
+        padding-left: 24px !important;
+        background-color: #00000008 !important;
 
-        &>:global(.ant-collapse-arrow) {
-          padding-top: 2px !important;
+        &>.@{ant-prefix}-collapse-arrow {
           left: 8px !important;
+          padding-top: 2px !important;
         }
       }
-      &>:global(.ant-collapse-content) {
-        &>:global(.ant-collapse-content-box) {
-          background: #00000004 !important;
+      &>.@{ant-prefix}-collapse-content {
+        &>.@{ant-prefix}-collapse-content-box {
           padding: 0 8px !important;
           padding-top: 12px !important;
+          background: #00000004 !important;
 
-          &>div {
+          & > div {
             padding-bottom: 1px;
 
-            &>.ccms-antd-mini-object-import_subform, &>.ccms-antd-mini-object-group {
+            & > .ccms-antd-mini-object-import_subform,
+            & > .ccms-antd-mini-object-group {
               margin-bottom: 0 !important;
-            
-              &>:global(.ant-form-item-label) {
+
+              &>.@{ant-prefix}-form-item-label {
+                flex: 0 0 auto !important;
                 width: calc(100% + 16px) !important;
                 max-width: calc(100% + 16px) !important;
                 margin-left: -8px !important;
                 padding: 2px 8px !important;
-                flex: 0 0 auto !important;
                 background-color: #00000004 !important;
               }
-              &>:global(.ant-form-item-control) {
-                margin-left: -8px !important;
-                margin-right: -8px !important;
-                padding: 8px !important;
+              &>.@{ant-prefix}-form-item-control {
                 max-width: calc(100% + 16px) !important;
+                margin-right: -8px !important;
+                margin-left: -8px !important;
+                padding: 8px !important;
                 background-color: #00000002 !important;
               }
-              &>:global(.ant-form-item-control):first-child {
+              &>.@{ant-prefix}-form-item-control:first-child {
                 padding-top: 0 !important;
-                background-color: #00000000 !important;
+                background-color: #0000 !important;
               }
             }
           }
@@ -54,10 +55,11 @@
   }
 }
 
-.ccms-antd-mini-object-form, &>.ccms-antd-mini-form-object {
-  &>:global(.ant-form-item-control) {
-    &>:global(.ant-form-item-control-input) {
-      &>:global(.ant-form-item-control-input-content) {
+.ccms-antd-mini-object-form,
+& > .ccms-antd-mini-form-object {
+  &>.@{ant-prefix}-form-item-control {
+    &>.@{ant-prefix}-form-item-control-input {
+      &>.@{ant-prefix}-form-item-control-input-content {
         min-height: 24px !important;
       }
     }
@@ -65,11 +67,12 @@
 }
 
 .ccms-antd-mini-formField-object-before-button {
-  text-align: right;
   margin-top: -32px;
   margin-right: -8px;
-}
-.ccms-antd-mini-formField-object-after-button {
   text-align: right;
+}
+
+.ccms-antd-mini-formField-object-after-button {
   margin-right: -8px;
+  text-align: right;
 }

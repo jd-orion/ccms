@@ -1,39 +1,23 @@
 import React from 'react'
 import { GroupField } from 'ccms'
-import { IGroupField, GroupFieldConfig } from 'ccms/dist/src/components/formFields/group'
-import { IFormItem } from 'ccms/dist/src/steps/form'
+import { IGroupField } from 'ccms/dist/components/formFields/group'
+import { IFormItem } from 'ccms/dist/steps/form'
 import { Form } from 'antd'
+import 'antd/lib/form/style'
 import { FormItemProps } from 'antd/lib/form'
-import getALLComponents from '../'
-import styles from './index.less'
-
-export const PropsType = (props: GroupFieldConfig) => { }
+import getALLComponents from '..'
+import './index.less'
 
 export default class GroupFieldComponent extends GroupField {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type) => getALLComponents[type]
 
   renderComponent = (props: IGroupField) => {
-    const {
-      children
-    } = props
-    return (
-      <div>
-        {children}
-      </div>
-    )
+    const { children } = props
+    return <div>{children}</div>
   }
 
   renderItemComponent = (props: IFormItem) => {
-    const {
-      key,
-      label,
-      visitable,
-      message,
-      extra,
-      required,
-      fieldType,
-      children
-    } = props
+    const { key, label, visitable, message, extra, required, fieldType, children, status } = props
 
     const formItemLayout: FormItemProps = { labelAlign: 'left' }
     if (fieldType === 'form' || fieldType === 'group' || fieldType === 'object' || fieldType === 'import_subform') {
@@ -44,6 +28,15 @@ export default class GroupFieldComponent extends GroupField {
       formItemLayout.wrapperCol = { span: 18 }
     }
 
+    let validateStatus: '' | 'error' | 'validating' | 'success' | 'warning' | undefined
+    if (status === 'normal') {
+      validateStatus = undefined
+    } else if (status === 'error') {
+      validateStatus = 'error'
+    } else {
+      validateStatus = 'validating'
+    }
+
     return (
       <Form.Item
         key={key}
@@ -51,9 +44,9 @@ export default class GroupFieldComponent extends GroupField {
         required={required}
         label={label}
         {...formItemLayout}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+        validateStatus={validateStatus}
         help={fieldType === 'import_subform' || fieldType === 'group' ? null : message}
-        className={styles[`ccms-antd-mini-form-${fieldType}`]}
+        className={`ccms-antd-mini-form-${fieldType}`}
         style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
       >
         {children}

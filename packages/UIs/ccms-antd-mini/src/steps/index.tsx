@@ -1,15 +1,9 @@
-import FetchStep from './fetch'
-import FormStep from './form'
-// import SkipStep from './skip'
-import TableStep from './table'
-import FilterStep from './filter'
-import DetailStep from './detail'
+import { lazy } from 'react'
 
 export default {
-  fetch: FetchStep,
-  form: FormStep,
-  // skip: SkipStep,
-  table: TableStep,
-  filter: FilterStep,
-  detail: DetailStep
+  fetch: lazy(() => import('./fetch')),
+  form: lazy(() => import('./form')),
+  table: lazy(() => import('./table')),
+  filter: lazy(() => import('./filter')),
+  detail: lazy(() => import('./detail'))
 }

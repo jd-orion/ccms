@@ -1,7 +1,6 @@
-import TextField from './text'
-import GroupField from './group'
+import { lazy } from 'react'
 
 export default {
-  text: TextField,
-  group: GroupField
+  text: lazy(() => import('./text')),
+  group: lazy(() => import('./group'))
 }
