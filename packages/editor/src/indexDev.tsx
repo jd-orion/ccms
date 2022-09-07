@@ -5,7 +5,8 @@ import 'antd/dist/antd.css'
 import { CCMSConfig } from 'ccms/dist/main'
 import DefaultConfig from './DefaultConfig'
 import App from './app'
-import appInfo from '../package.json'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const appInfo = require('../package.json')
 
 const sourceData = {
   text: 'text',
@@ -280,7 +281,7 @@ const render = () => {
       config={DefaultConfig}
       sourceData={sourceData}
       baseRoute="/"
-      configDomain={'/ccms/config/1.0.0/0' || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/dist/config`}
+      configDomain={'/ccms/config/1.0.0/0' || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/config`}
       onChange={(config) => {
         console.log('触发 onChange 事件', JSON.stringify(config, undefined, 2))
       }}

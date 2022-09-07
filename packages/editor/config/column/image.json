@@ -1,0 +1,4 @@
+[
+  { "field": "width", "type": "number", "label": "图片宽度" },
+  { "field": "height", "type": "number", "label": "图片高度" }
+]

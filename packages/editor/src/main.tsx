@@ -1,7 +1,8 @@
 import React from 'react'
 import App, { AppExternalProps } from './app'
 import DefaultConfig from './DefaultConfig'
-import appInfo from '../package.json'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const appInfo = require('../package.json')
 
 function CCMSEditor(props: AppExternalProps) {
   const {
@@ -32,7 +33,7 @@ function CCMSEditor(props: AppExternalProps) {
       config={config || DefaultConfig}
       sourceData={sourceData}
       baseRoute={baseRoute}
-      configDomain={customConfigCDN || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/dist/config`}
+      configDomain={customConfigCDN || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/config`}
       onChange={(val) => {
         onChange(val)
       }}
