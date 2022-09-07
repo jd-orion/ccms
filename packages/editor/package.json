@@ -9,8 +9,7 @@
     "config"
   ],
   "scripts": {
-    "build": "rm -rf dist && rollup -c && node scripts/config.js",
-    "dev": "node scripts/dev.js"
+    "build": "rm -rf dist && rollup -c && node scripts/config.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +22,9 @@
     "@monaco-editor/react": "^4.4.5",
     "antd": "^4.22.7",
     "axios": "^0.27.2",
+    "ccms": "^1.4.0-beta.7",
+    "ccms-antd": "^1.4.0-beta.6",
+    "ccms-antd-mini": "^1.4.0-beta.2",
     "copy-html-to-clipboard": "^4.0.1",
     "immer": "^9.0.15",
     "lodash": "^4.17.21",
@@ -31,10 +33,7 @@
     "qiankun": "^2.7.4",
     "query-string": "^7.1.1",
     "react-color": "^2.19.3",
-    "react-sortable-hoc": "^2.0.0",
-    "ccms": "1.4.0-beta.7",
-    "ccms-antd": "1.4.0-beta.6",
-    "ccms-antd-mini": "1.4.0-beta.2"
+    "react-sortable-hoc": "^2.0.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.168",

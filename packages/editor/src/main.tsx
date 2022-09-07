@@ -1,6 +1,5 @@
 import React from 'react'
 import App, { AppExternalProps } from './app'
-import DefaultConfig from './DefaultConfig'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const appInfo = require('../package.json')
 
@@ -30,7 +29,7 @@ function CCMSEditor(props: AppExternalProps) {
       type={type || 'application'}
       version={appInfo.version}
       subversion={subversion || '0'}
-      config={config || DefaultConfig}
+      config={config || {}}
       sourceData={sourceData}
       baseRoute={baseRoute}
       configDomain={customConfigCDN || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/config`}
@@ -46,20 +45,7 @@ function CCMSEditor(props: AppExternalProps) {
           if (pageConfig) return pageConfig
         }
         return {
-          steps: [
-            {
-              type: 'form',
-              fields: [
-                {
-                  field: 'text',
-                  label: 'text',
-                  type: 'text'
-                }
-              ],
-              actions: [],
-              rightTopActions: []
-            }
-          ]
+          steps: []
         }
       }}
       loadPageList={loadPageList}
