@@ -1,13 +1,17 @@
 import React from 'react'
 import { TextColumn } from 'ccms'
 import { ITextColumn } from 'ccms/dist/components/tableColumns/text'
-import { Modal, Button } from 'antd'
+import { Modal, Button, ConfigProvider } from 'antd'
 import 'antd/lib/modal/style'
 import 'antd/lib/button/style'
+import 'antd/lib/config-provider/style'
 import './index.less'
 
 export default class TextColumnComponent extends TextColumn {
   showMore = (value) => {
+    ConfigProvider.config({
+      prefixCls: 'ccms-antd-ant'
+    })
     Modal.info({
       getContainer: () => document.getElementById('ccms-antd') || document.body,
       content: <div style={{ overflow: 'auto', maxHeight: '400px' }}>{value}</div>,

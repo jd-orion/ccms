@@ -1,8 +1,9 @@
 import React from 'react'
 import { DetailInfoField } from 'ccms'
 import { IInfoProps } from 'ccms/dist/components/detail/detailInfo'
-import { Modal, Tooltip } from 'antd'
+import { ConfigProvider, Modal, Tooltip } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
+import 'antd/lib/config-provider/style'
 import 'antd/lib/modal/style'
 import 'antd/lib/tooltip/style'
 
@@ -39,6 +40,9 @@ export default class InfoDetailComponent extends DetailInfoField {
           description.label !== '' && (
             <span
               onClick={() => {
+                ConfigProvider.config({
+                  prefixCls: 'ccms-antd-ant'
+                })
                 Modal.info({
                   getContainer: () => document.getElementById('ccms-antd') || document.body,
                   content: <div style={{ overflow: 'hidden' }}>{description.content}</div>,

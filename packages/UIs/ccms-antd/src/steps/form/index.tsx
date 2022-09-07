@@ -1,13 +1,14 @@
 import React from 'react'
 import { FormStep } from 'ccms'
 import { IForm, IFormItem, IFormStepModal, IButtonProps } from 'ccms/dist/steps/form'
-import { Button, Form, Space, Modal, Collapse, Row } from 'antd'
+import { Button, Form, Space, Modal, Collapse, Row, ConfigProvider } from 'antd'
 import 'antd/lib/button/style'
 import 'antd/lib/form/style'
 import 'antd/lib/space/style'
 import 'antd/lib/modal/style'
 import 'antd/lib/collapse/style'
 import 'antd/lib/row/style'
+import 'antd/lib/config-provider/style'
 import { FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/formFields'
 import OperationHelper from '../../util/operation'
@@ -24,6 +25,9 @@ export default class FormStepComponent extends FormStep {
 
   renderModalComponent = (props: IFormStepModal) => {
     return new Promise<void>((resolve) => {
+      ConfigProvider.config({
+        prefixCls: 'ccms-antd-ant'
+      })
       Modal.error({
         getContainer: () => {
           return document.getElementById('ccms-antd') || document.body

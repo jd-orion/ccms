@@ -10,13 +10,14 @@ import {
   ITableDetailRowOperationGroup,
   ITableDetailRowOperationGroupItem
 } from 'ccms/dist/components/detail/table'
-import { Table, Dropdown, Menu, Modal, Space, Typography } from 'antd'
+import { Table, Dropdown, Menu, Modal, Space, Typography, ConfigProvider } from 'antd'
 import 'antd/lib/table/style'
 import 'antd/lib/dropdown/style'
 import 'antd/lib/menu/style'
 import 'antd/lib/modal/style'
 import 'antd/lib/space/style'
 import 'antd/lib/typography/style'
+import 'antd/lib/config-provider/style'
 import getALLComponents from '../../tableColumns'
 import CCMS from '../../../main'
 import InterfaceHelper from '../../../util/interface'
@@ -30,6 +31,9 @@ export default class TableFieldComponent extends DetailTableField {
   interfaceHelper = new InterfaceHelper()
 
   renderOperationConfirm = (props: ITableDetailOperationConfirm) => {
+    ConfigProvider.config({
+      prefixCls: 'ccms-antd-ant'
+    })
     Modal.confirm({
       getContainer: () => document.getElementById('ccms-antd') || document.body,
       title: props.title,

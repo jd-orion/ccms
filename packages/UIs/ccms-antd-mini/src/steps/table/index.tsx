@@ -14,7 +14,7 @@ import {
   ITableStepTableOperationGroup,
   ITableStepTableOperationGroupItem
 } from 'ccms/dist/steps/table'
-import { Table, Button, Dropdown, Menu, Modal, Space, Typography } from 'antd'
+import { Table, Button, Dropdown, Menu, Modal, Space, Typography, ConfigProvider } from 'antd'
 import 'antd/lib/table/style'
 import 'antd/lib/button/style'
 import 'antd/lib/dropdown/style'
@@ -22,6 +22,7 @@ import 'antd/lib/menu/style'
 import 'antd/lib/modal/style'
 import 'antd/lib/space/style'
 import 'antd/lib/typography/style'
+import 'antd/lib/config-provider/style'
 import { DownOutlined } from '@ant-design/icons'
 import { ButtonProps } from 'antd/lib/button'
 import getALLComponents from '../../components/tableColumns'
@@ -37,6 +38,9 @@ export default class TableStepComponent extends TableStep {
   interfaceHelper = new InterfaceHelper()
 
   renderOperationConfirm = (props: ITableStepOperationConfirm) => {
+    ConfigProvider.config({
+      prefixCls: 'ccms-antd-mini-ant'
+    })
     Modal.confirm({
       getContainer: () => document.getElementById('ccms-antd') || document.body,
       title: props.title,

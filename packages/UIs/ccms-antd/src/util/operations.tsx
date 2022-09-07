@@ -1,6 +1,7 @@
 import { DownOutlined } from '@ant-design/icons'
-import { Button, Dropdown, Menu, Modal, Space, Typography } from 'antd'
+import { Button, ConfigProvider, Dropdown, Menu, Modal, Space, Typography } from 'antd'
 import 'antd/lib/button/style'
+import 'antd/lib/config-provider/style'
 import 'antd/lib/dropdown/style'
 import 'antd/lib/menu/style'
 import 'antd/lib/modal/style'
@@ -202,6 +203,9 @@ export default class OperationsHelperComponent extends OperationsHelper {
   }
 
   renderOperationConfirm = (props: IOperationConfirm) => {
+    ConfigProvider.config({
+      prefixCls: 'ccms-antd-ant'
+    })
     Modal.confirm({
       getContainer: () => document.getElementById('ccms-antd') || document.body,
       title: props.title,

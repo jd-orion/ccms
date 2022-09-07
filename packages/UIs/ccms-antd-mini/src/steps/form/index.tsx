@@ -16,6 +16,9 @@ export default class FormStepComponent extends FormStep {
 
   renderModalComponent = (props: IFormStepModal) => {
     return new Promise<void>((resolve) => {
+      ConfigProvider.config({
+        prefixCls: 'ccms-antd-mini-ant'
+      })
       Modal.error({
         getContainer: () => {
           return document.getElementById('ccms-antd-mini') || document.body
