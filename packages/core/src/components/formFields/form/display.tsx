@@ -309,35 +309,41 @@ export default class FormField extends Display<FormFieldConfig, IFormField, { [k
                               label: formFieldConfig.label,
                               fieldType: formFieldConfig.type,
                               children: (
-                                <CurrentFormField
-                                  ref={(fieldRef: Display<FieldConfigs, unknown, unknown> | null) => {
-                                    if (fieldRef) {
-                                      if (!this.formFieldsList[index]) this.formFieldsList[index] = []
-                                      this.formFieldsList[index][fieldIndex] = fieldRef
-                                      this.handleMount(index, fieldIndex)
+                                <React.Suspense fallback={<>Loading</>}>
+                                  <CurrentFormField
+                                    ref={(fieldRef: Display<FieldConfigs, unknown, unknown> | null) => {
+                                      if (fieldRef) {
+                                        if (!this.formFieldsList[index]) this.formFieldsList[index] = []
+                                        this.formFieldsList[index][fieldIndex] = fieldRef
+                                        this.handleMount(index, fieldIndex)
+                                      }
+                                    }}
+                                    value={getValue(value[index], formFieldConfig.field)}
+                                    record={value[index]}
+                                    data={cloneDeep(data)}
+                                    step={step}
+                                    config={formFieldConfig}
+                                    onValueSet={async (path, valueSet, options) =>
+                                      this.handleValueSet(index, fieldIndex, path, valueSet, options)
                                     }
-                                  }}
-                                  value={getValue(value[index], formFieldConfig.field)}
-                                  record={value[index]}
-                                  data={cloneDeep(data)}
-                                  step={step}
-                                  config={formFieldConfig}
-                                  onValueSet={async (path, valueSet, options) =>
-                                    this.handleValueSet(index, fieldIndex, path, valueSet, options)
-                                  }
-                                  onValueUnset={async (path, options) =>
-                                    this.handleValueUnset(index, fieldIndex, path, options)
-                                  }
-                                  onValueListAppend={async (path, valueAppend, options) =>
-                                    this.handleValueListAppend(index, fieldIndex, path, valueAppend, options)
-                                  }
-                                  onValueListSplice={async (path, _index, count, options) =>
-                                    this.handleValueListSplice(index, fieldIndex, path, _index, count, options)
-                                  }
-                                  baseRoute={this.props.baseRoute}
-                                  loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                                  containerPath={getChainPath(this.props.containerPath, this.props.config.field, index)}
-                                />
+                                    onValueUnset={async (path, options) =>
+                                      this.handleValueUnset(index, fieldIndex, path, options)
+                                    }
+                                    onValueListAppend={async (path, valueAppend, options) =>
+                                      this.handleValueListAppend(index, fieldIndex, path, valueAppend, options)
+                                    }
+                                    onValueListSplice={async (path, _index, count, options) =>
+                                      this.handleValueListSplice(index, fieldIndex, path, _index, count, options)
+                                    }
+                                    baseRoute={this.props.baseRoute}
+                                    loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                                    containerPath={getChainPath(
+                                      this.props.containerPath,
+                                      this.props.config.field,
+                                      index
+                                    )}
+                                  />
+                                </React.Suspense>
                               )
                             })}
                           </div>

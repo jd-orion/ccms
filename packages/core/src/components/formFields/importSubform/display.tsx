@@ -245,31 +245,33 @@ export default class ImportSubformFieldDisplay
                   fieldType: formFieldConfig.type,
                   layout: 'horizontal' as const,
                   children: (
-                    <FormField
-                      key={formFieldIndex}
-                      ref={(formField: Display<FieldConfigs, unknown, unknown> | null) => {
-                        if (formField) {
-                          this.formFields[formFieldIndex] = formField
-                          this.handleMount(formFieldIndex)
+                    <React.Suspense fallback={<>Loading</>}>
+                      <FormField
+                        key={formFieldIndex}
+                        ref={(formField: Display<FieldConfigs, unknown, unknown> | null) => {
+                          if (formField) {
+                            this.formFields[formFieldIndex] = formField
+                            this.handleMount(formFieldIndex)
+                          }
+                        }}
+                        value={getValue(value, this.getFullpath(formFieldConfig.field))}
+                        record={record}
+                        data={cloneDeep(data)}
+                        step={step}
+                        config={formFieldConfig}
+                        onValueSet={async (path, valueSet) => this.handleValueSet(formFieldIndex, path, valueSet)}
+                        onValueUnset={async (path) => this.handleValueUnset(formFieldIndex, path)}
+                        onValueListAppend={async (path, valueAppend) =>
+                          this.handleValueListAppend(formFieldIndex, path, valueAppend)
                         }
-                      }}
-                      value={getValue(value, this.getFullpath(formFieldConfig.field))}
-                      record={record}
-                      data={cloneDeep(data)}
-                      step={step}
-                      config={formFieldConfig}
-                      onValueSet={async (path, valueSet) => this.handleValueSet(formFieldIndex, path, valueSet)}
-                      onValueUnset={async (path) => this.handleValueUnset(formFieldIndex, path)}
-                      onValueListAppend={async (path, valueAppend) =>
-                        this.handleValueListAppend(formFieldIndex, path, valueAppend)
-                      }
-                      onValueListSplice={async (path, index, count) =>
-                        this.handleValueListSplice(formFieldIndex, path, index, count)
-                      }
-                      baseRoute={this.props.baseRoute}
-                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                      containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
-                    />
+                        onValueListSplice={async (path, index, count) =>
+                          this.handleValueListSplice(formFieldIndex, path, index, count)
+                        }
+                        baseRoute={this.props.baseRoute}
+                        loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                        containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
+                      />
+                    </React.Suspense>
                   )
                 }
                 // 渲染表单项容器

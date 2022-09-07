@@ -207,33 +207,35 @@ export default class GroupField extends Display<
                   visitable: display,
                   fieldType: formFieldConfig.type,
                   children: (
-                    <FormField
-                      key={formFieldIndex}
-                      ref={(formField: Display<FieldConfigs, unknown, unknown> | null) => {
-                        if (formField) {
-                          this.formFields[formFieldIndex] = formField
-                          this.handleMount(formFieldIndex)
+                    <React.Suspense fallback={<>Loading</>}>
+                      <FormField
+                        key={formFieldIndex}
+                        ref={(formField: Display<FieldConfigs, unknown, unknown> | null) => {
+                          if (formField) {
+                            this.formFields[formFieldIndex] = formField
+                            this.handleMount(formFieldIndex)
+                          }
+                        }}
+                        value={getValue(value, formFieldConfig.field)}
+                        record={record}
+                        data={cloneDeep(data)}
+                        step={step}
+                        config={formFieldConfig}
+                        onValueSet={async (path, valueSet, options) =>
+                          this.handleValueSet(formFieldIndex, path, valueSet, options)
                         }
-                      }}
-                      value={getValue(value, formFieldConfig.field)}
-                      record={record}
-                      data={cloneDeep(data)}
-                      step={step}
-                      config={formFieldConfig}
-                      onValueSet={async (path, valueSet, options) =>
-                        this.handleValueSet(formFieldIndex, path, valueSet, options)
-                      }
-                      onValueUnset={async (path, options) => this.handleValueUnset(formFieldIndex, path, options)}
-                      onValueListAppend={async (path, valueAppend, options) =>
-                        this.handleValueListAppend(formFieldIndex, path, valueAppend, options)
-                      }
-                      onValueListSplice={async (path, index, count, options) =>
-                        this.handleValueListSplice(formFieldIndex, path, index, count, options)
-                      }
-                      baseRoute={this.props.baseRoute}
-                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                      containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
-                    />
+                        onValueUnset={async (path, options) => this.handleValueUnset(formFieldIndex, path, options)}
+                        onValueListAppend={async (path, valueAppend, options) =>
+                          this.handleValueListAppend(formFieldIndex, path, valueAppend, options)
+                        }
+                        onValueListSplice={async (path, index, count, options) =>
+                          this.handleValueListSplice(formFieldIndex, path, index, count, options)
+                        }
+                        baseRoute={this.props.baseRoute}
+                        loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                        containerPath={getChainPath(this.props.containerPath, this.props.config.field)}
+                      />
+                    </React.Suspense>
                   )
                 }
                 // 渲染表单项容器

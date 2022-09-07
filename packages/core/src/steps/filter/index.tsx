@@ -560,48 +560,50 @@ export default class FilterStep extends Step<FilterConfig, FilterState> {
               visitable: display,
               fieldType: formFieldConfig.type,
               children: (
-                <FormField
-                  key={formFieldIndex}
-                  ref={(formField: Field<FieldConfigs, unknown, unknown> | null) => {
-                    if (formFieldIndex !== null) {
-                      this.formFields = set(this.formFields, `[${formFieldIndex}]`, formField)
-                      this.handleFormFieldMount(formFieldIndex)
+                <React.Suspense fallback={<>Loading</>}>
+                  <FormField
+                    key={formFieldIndex}
+                    ref={(formField: Field<FieldConfigs, unknown, unknown> | null) => {
+                      if (formFieldIndex !== null) {
+                        this.formFields = set(this.formFields, `[${formFieldIndex}]`, formField)
+                        this.handleFormFieldMount(formFieldIndex)
+                      }
+                    }}
+                    form={this}
+                    formLayout="inline"
+                    value={formFieldConfig.field !== undefined ? get(formValue, formFieldConfig.field) : undefined}
+                    record={formValue}
+                    step={formValue}
+                    data={data}
+                    config={formFieldConfig}
+                    onChange={async (value: unknown) => {
+                      this.handleChange(formFieldIndex, value)
+                    }}
+                    onValueSet={async (path, value, validation, options) =>
+                      this.handleValueSet(formFieldIndex, path, value, validation, options)
                     }
-                  }}
-                  form={this}
-                  formLayout="inline"
-                  value={formFieldConfig.field !== undefined ? get(formValue, formFieldConfig.field) : undefined}
-                  record={formValue}
-                  step={formValue}
-                  data={data}
-                  config={formFieldConfig}
-                  onChange={async (value: unknown) => {
-                    this.handleChange(formFieldIndex, value)
-                  }}
-                  onValueSet={async (path, value, validation, options) =>
-                    this.handleValueSet(formFieldIndex, path, value, validation, options)
-                  }
-                  onValueUnset={async (path, validation, options) =>
-                    this.handleValueUnset(formFieldIndex, path, validation, options)
-                  }
-                  onValueListAppend={async (path, value, validation, options) =>
-                    this.handleValueListAppend(formFieldIndex, path, value, validation, options)
-                  }
-                  onValueListSplice={async (path, index, count, validation, options) =>
-                    this.handleValueListSplice(formFieldIndex, path, index, count, validation, options)
-                  }
-                  onValueListSort={async (path, index, sortType, validation, options) =>
-                    this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)
-                  }
-                  checkPageAuth={this.props.checkPageAuth}
-                  loadPageURL={this.props.loadPageURL}
-                  loadPageFrameURL={this.props.loadPageFrameURL}
-                  loadPageConfig={this.props.loadPageConfig}
-                  baseRoute={this.props.baseRoute}
-                  loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                  loadPageList={async () => this.props.loadPageList()}
-                  containerPath=""
-                />
+                    onValueUnset={async (path, validation, options) =>
+                      this.handleValueUnset(formFieldIndex, path, validation, options)
+                    }
+                    onValueListAppend={async (path, value, validation, options) =>
+                      this.handleValueListAppend(formFieldIndex, path, value, validation, options)
+                    }
+                    onValueListSplice={async (path, index, count, validation, options) =>
+                      this.handleValueListSplice(formFieldIndex, path, index, count, validation, options)
+                    }
+                    onValueListSort={async (path, index, sortType, validation, options) =>
+                      this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)
+                    }
+                    checkPageAuth={this.props.checkPageAuth}
+                    loadPageURL={this.props.loadPageURL}
+                    loadPageFrameURL={this.props.loadPageFrameURL}
+                    loadPageConfig={this.props.loadPageConfig}
+                    baseRoute={this.props.baseRoute}
+                    loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                    loadPageList={async () => this.props.loadPageList()}
+                    containerPath=""
+                  />
+                </React.Suspense>
               )
             }
 
