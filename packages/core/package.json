@@ -9,12 +9,8 @@
   ],
   "scripts": {
     "dev": "npm-watch build",
-    "build": "npm run clear && npm run build:rollup",
-    "build:rollup": "rollup -c",
-    "build:babel": "babel src -d lib -s -x '.ts,.tsx'",
-    "clear": "rm -rf dist && rm -rf lib",
-    "test": "jest",
-    "test:u": "npm test -- -u"
+    "build": "rm -rf dist && rollup -c",
+    "test": "jest"
   },
   "keywords": [
     "ccms"

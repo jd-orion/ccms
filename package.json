@@ -1,30 +1,15 @@
 {
   "private": true,
   "scripts": {
-    "lerna": "lerna bootstrap",
-    "list": "lerna ll",
-    "publish": "lerna publish",
-    "clean": "lerna clean",
-    "change": "lerna changed",
-    "link": "npm run link:core && npm run link:editor",
-    "relink": "lerna link",
-    "build": "lerna run --stream --sort build",
-    "link:editor": "lerna add ccms-antd packages/editor && lerna add ccms-antd-mini packages/editor",
-    "link:core": "lerna add ccms --scope=ccms-*",
+    "init": "npm install && lerna bootstrap",
+    "link": "lerna link",
+    "dev": "npm-watch",
+    "dev:demo": "cd packages/demo && npm run dev",
     "build:core": "cd packages/core && npm run build",
     "build:ccms-antd": "cd packages/UIs/ccms-antd && npm run build",
     "build:ccms-antd-mini": "cd packages/UIs/ccms-antd-mini && npm run build",
     "build:editor": "cd packages/editor && npm run build",
-    "publish:core": "cd packages/core && npm publish",
-    "publish:ccms-antd": "cd packages/UIs/ccms-antd && npm publish",
-    "publish:ccms-antd-mini": "cd packages/UIs/ccms-antd-mini && npm publish",
-    "publish:editor": "cd packages/editor && npm publish",
-    "publishBeta:editor": "cd packages/editor && npm publish --tag=beta",
-    "dev:editor": "cd packages/editor && npm run dev",
-    "dev": "npm-watch dev:editor",
-    "watch": "npm-watch",
     "commit": "git-cz",
-    "lint": "npm run lint:code && npm run lint:style && npm run prettier",
     "lint:code": "eslint --fix **/*.{js,ts,jsx,tsx}",
     "lint:style": "stylelint --fix **/*.less",
     "prettier": "prettier -c --write **/*.{json,html,md}"
@@ -103,6 +88,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.31.1",
+    "source-map-explorer": "^2.5.2",
     "stylelint": "^14.4.0",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^25.0.0",
@@ -112,19 +98,25 @@
     "webpack-bundle-analyzer": "^4.6.1"
   },
   "watch": {
-    "dev:editor": {
+    "dev:demo": {
       "patterns": [
-        "packages/core/dist"
+        "packages/demo/src",
+        "packages/core/dist",
+        "packages/UIs/ccms-antd/dist",
+        "packages/UIs/ccms-antd-mini/dist",
+        "packages/editor/dist",
+        "packages/editor/config"
       ],
-      "extensions": "js",
+      "extensions": "ts,tsx,js,jsx,less,css",
+      "ignore": "packages/demo/src/port.ts",
       "quiet": false,
       "delay": 2500
     },
-    "build:core": {
+    "build:editor": {
       "patterns": [
-        "packages/core/src"
+        "packages/editor/src"
       ],
-      "extensions": "ts,tsx",
+      "extensions": "ts,tsx,js,jsx,less",
       "quiet": false,
       "delay": 2500,
       "runOnChangeOnly": true
@@ -133,7 +125,7 @@
       "patterns": [
         "packages/UIs/ccms-antd/src"
       ],
-      "extensions": "ts,tsx,less",
+      "extensions": "ts,tsx,js,jsx,less",
       "quiet": false,
       "delay": 2500,
       "runOnChangeOnly": true
@@ -142,13 +134,23 @@
       "patterns": [
         "packages/UIs/ccms-antd-mini/src"
       ],
-      "extensions": "ts,tsx,less",
+      "extensions": "ts,tsx,js,jsx,less",
+      "quiet": false,
+      "delay": 2500,
+      "runOnChangeOnly": true
+    },
+    "build:core": {
+      "patterns": [
+        "packages/core/src"
+      ],
+      "extensions": "ts,tsx,js,jsx,less",
       "quiet": false,
       "delay": 2500,
       "runOnChangeOnly": true
     }
   },
   "dependencies": {
-    "react": "^16.14.0"
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
   }
 }

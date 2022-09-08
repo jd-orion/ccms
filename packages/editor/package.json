@@ -9,7 +9,9 @@
     "config"
   ],
   "scripts": {
-    "build": "rm -rf dist && rollup -c && node scripts/config.js"
+    "build": "npm run build:code && npm run build:config",
+    "build:code": "rm -rf dist && rollup -c",
+    "build:config": "node scripts/config.js"
   },
   "repository": {
     "type": "git",
