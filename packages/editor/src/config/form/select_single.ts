@@ -117,8 +117,9 @@ const config: FieldConfigs[] = [
       },
       {
         field: 'defaultSelect',
-        label: '默认选中项目',
-        type: 'number'
+        label: '默认选中项',
+        type: 'number',
+        min: 0
       }
     ]
   }

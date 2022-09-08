@@ -9,6 +9,7 @@ export default {
   import_subform: lazy(() => import('./importSubform')),
   custom: lazy(() => import('./custom')),
   table: lazy(() => import('./table')),
+  code: lazy(() => import('./code')),
   detail_info: lazy(() => import('./detailInfo')),
   detail_color: lazy(() => import('./detailColor')),
   iframe: lazy(() => import('./iframe')),

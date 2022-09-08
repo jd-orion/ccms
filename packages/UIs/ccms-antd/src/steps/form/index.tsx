@@ -137,7 +137,7 @@ export default class FormStepComponent extends FormStep {
   renderGroupUI = (label, children, message, collapsible?: 'header' | 'disabled') => {
     return (
       <>
-        <Collapse collapsible="header" defaultActiveKey={['1']}>
+        <Collapse className="form-group-parent" collapsible="header" defaultActiveKey={['1']}>
           <Panel header={label} key="1" collapsible={collapsible || 'header'}>
             <div className="form-group-content">{children}</div>
           </Panel>

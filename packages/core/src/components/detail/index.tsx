@@ -12,6 +12,7 @@ import { TableFieldConfig } from './table'
 import { IframeDetailConfig } from './iframe'
 import { LinkDetailConfig } from './link'
 import { OperationDetailConfig } from './operation'
+import { CodeDetailConfig } from './code'
 
 /**
  * 详情步骤内详情项配置文件格式定义 - 枚举
@@ -30,6 +31,7 @@ export type DetailFieldConfigs =
   | IframeDetailConfig
   | LinkDetailConfig
   | OperationDetailConfig
+  | CodeDetailConfig
 
 export type componentType =
   | 'text'
@@ -45,6 +47,7 @@ export type componentType =
   | 'iframe'
   | 'link'
   | 'operation'
+  | 'code'
 
 export default {
   group: lazy(() => import('./group')),
@@ -56,6 +59,7 @@ export default {
   detail_info: lazy(() => import('./detailInfo')),
   detail_color: lazy(() => import('./detailColor')),
   table: lazy(() => import('./table')),
+  code: lazy(() => import('./code')),
   custom: lazy(() => import('./custom')),
   iframe: lazy(() => import('./iframe')),
   link: lazy(() => import('./link')),

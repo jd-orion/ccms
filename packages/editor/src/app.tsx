@@ -106,12 +106,15 @@ class App extends React.Component<AppProps, CCMSConsigState> {
    * 强制刷新
    */
   handleRefreshPreview = () => {
+    const { activeTab } = this.state
     this.setState(
       {
+        activeTab: 0,
         ready: false
       },
       () => {
         this.setState({
+          activeTab,
           ready: true
         })
       }
@@ -688,19 +691,15 @@ class App extends React.Component<AppProps, CCMSConsigState> {
           </Drawer>
 
           {/* 编辑配置文件 */}
-          <Modal
-            title="编辑配置文件"
-            visible={configStringify}
-            footer={false}
+          <ConfigJSON
+            configStringify={configStringify}
+            defaultValue={JSON.stringify(pageConfig, undefined, 2)}
+            onOk={(pageConfigChange) => {
+              this.setState({ pageConfig: pageConfigChange, configStringify: false })
+              this.handleRefreshPreview()
+            }}
             onCancel={() => this.setState({ configStringify: false })}
-            getContainer={() => document.getElementById('ccms-config') || document.body}
-          >
-            <ConfigJSON
-              defaultValue={pageConfig}
-              onOk={(pageConfigChange) => this.setState({ pageConfig: pageConfigChange, configStringify: false })}
-              onCancel={() => this.setState({ configStringify: false })}
-            />
-          </Modal>
+          />
         </div>
       </ConfigProvider>
     )

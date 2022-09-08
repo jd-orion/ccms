@@ -1,0 +1,104 @@
+.editor-page {
+  flex: 1;
+
+  .header-wrapper {
+    padding: 5px 20px 5px 0;
+    text-align: right;
+  }
+
+  .header-wrapper-black {
+    color: #fff;
+    background-color: #474747;
+  }
+
+  .header-wrapper-white {
+    color: #000;
+    background-color: #f3f3f3;
+  }
+
+  .editor-fullscreen {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100000;
+    width: 100%;
+    height: 100%;
+  }
+
+  .sp-cube-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 4;
+    border-radius: 4px;
+    transform: translate(-50%, -50%);
+    animation: translate(-50%, -50%);
+  }
+
+  .sp-cube {
+    transform: scale(0.3);
+  }
+
+  .sp-cube * {
+    position: absolute;
+    box-sizing: border-box;
+    width: 96px;
+    height: 96px;
+  }
+
+  .sp-cube .sp-sides * {
+    background: rgb(246 249 251 / 80%);
+    border: 10px solid #757678;
+    border-radius: 8px;
+  }
+
+  .sp-cube .sp-sides {
+    transform-style: preserve-3d;
+    animation: sp-cube-rotate 2s linear infinite;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes sp-cube-rotate {
+    from {
+      transform: rotateX(-25.5deg) rotateY(45deg);
+      transform: rotateX(-25.5deg) rotateY(45deg);
+    }
+
+    to {
+      transform: rotateX(-25.5deg) rotateY(405deg);
+      transform: rotateX(-25.5deg) rotateY(405deg);
+    }
+  }
+
+  .sp-cube .sp-sides .sp-top {
+    transform: rotateX(90deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+
+  .sp-cube .sp-sides .sp-right {
+    transform: rotateY(90deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+
+  .sp-cube .sp-sides .sp-bottom {
+    transform: rotateX(-90deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+
+  .sp-cube .sp-sides .sp-left {
+    transform: rotateY(-90deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+
+  .sp-cube .sp-sides .sp-front {
+    transform: rotateY(0deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+
+  .sp-cube .sp-sides .sp-back {
+    transform: rotateY(-180deg) translateZ(44px);
+    transform-origin: 50% 50%;
+  }
+}

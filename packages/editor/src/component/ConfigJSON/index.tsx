@@ -1,44 +1,50 @@
-import React, { useEffect } from 'react'
-import { Button, ConfigProvider, Form, Input, Modal, Space } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Drawer, Button, Modal, Space } from 'antd'
+import 'antd/lib/drawer/style'
 import 'antd/lib/button/style'
-import 'antd/lib/form/style'
-import 'antd/lib/input/style'
 import 'antd/lib/modal/style'
 import 'antd/lib/space/style'
-import { PageConfig } from '../../app'
+import Editor, { loader } from '@monaco-editor/react'
+
+loader.config({ paths: { vs: 'https://storage.360buyimg.com/swm-plus/monaco-editor-0.28.1/min/vs' } })
 
 interface ConfigJSONProps {
-  defaultValue: PageConfig
-  onOk: (config: PageConfig) => void
+  configStringify: boolean
+  defaultValue: string
+  onOk: (config: string) => void
   onCancel: () => void
 }
 
 export default function ConfigJSON(props: ConfigJSONProps) {
-  const { defaultValue, onOk, onCancel } = props
-
-  const [form] = Form.useForm()
+  const { defaultValue, configStringify, onOk, onCancel } = props
 
   useEffect(() => {
-    form.setFieldsValue({ config: JSON.stringify(defaultValue, undefined, 2) })
+    setConfig(defaultValue)
   }, [defaultValue])
 
+  const [config, setConfig] = useState(defaultValue)
+
+  const handleEditorDidMount = (editor) => {
+    const _editor = editor
+    _editor.defaultCodeValue = editor.getValue()
+  }
+
   return (
-    <Form form={form}>
-      <Form.Item name="config" noStyle>
-        <Input.TextArea rows={20} />
-      </Form.Item>
-      <Form.Item noStyle>
+    <Drawer
+      width="50%"
+      title="编辑配置文件"
+      placement="right"
+      visible={configStringify}
+      getContainer={false}
+      closable
+      maskClosable
+      footer={
         <Space>
           <Button
             onClick={() => {
-              const config = form.getFieldValue('config')
               try {
                 onOk(JSON.parse(config))
               } catch (e) {
-                ConfigProvider.config({
-                  prefixCls: 'ccms-editor-ant'
-                })
-
                 Modal.error({
                   title: '配置文件解析失败',
                   content: (e as Error).message
@@ -51,7 +57,20 @@ export default function ConfigJSON(props: ConfigJSONProps) {
           </Button>
           <Button onClick={() => onCancel()}>取消</Button>
         </Space>
-      </Form.Item>
-    </Form>
+      }
+      onClose={() => onCancel()}
+    >
+      <Editor
+        height={document.body.clientHeight}
+        theme="vs-dark"
+        defaultLanguage="json"
+        language="json"
+        value={config}
+        onMount={handleEditorDidMount}
+        onChange={(v) => {
+          setConfig(v || '')
+        }}
+      />
+    </Drawer>
   )
 }

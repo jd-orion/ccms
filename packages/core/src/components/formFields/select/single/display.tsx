@@ -7,20 +7,19 @@ export interface ISelectSingleField {
   options: Array<ISelectFieldOption>
 }
 
-export default class SelectSingleDisplay extends SelectDisplay<SelectSingleFieldConfig, {}, string | number | boolean | undefined> {
-  renderSelectSingleComponent = (props: ISelectSingleField) => {
-    return <React.Fragment>
-      您当前使用的UI版本没有实现SelectSingleDisplay组件。
-    </React.Fragment>
+export default class SelectSingleDisplay extends SelectDisplay<
+  SelectSingleFieldConfig,
+  unknown,
+  string | number | boolean | undefined
+> {
+  renderSelectSingleComponent: (props: ISelectSingleField) => JSX.Element = () => {
+    return <>您当前使用的UI版本没有实现SelectSingleDisplay组件。</>
   }
 
   render = () => {
     const {
       value,
-      config: {
-        options: optionsConfig,
-        defaultSelect
-      }
+      config: { options: optionsConfig, defaultSelect }
     } = this.props
 
     const props: ISelectSingleField = {
@@ -32,26 +31,16 @@ export default class SelectSingleDisplay extends SelectDisplay<SelectSingleField
       if (props.options.map((option) => option.value).includes(value)) {
         props.value = value
       } else {
-        console.warn(`选择框的当前值${value}不在选项中。`)
         props.value = undefined
       }
     } else if (value !== undefined) {
       props.value = undefined
-      console.warn('单项选择框的值需要是字符串或数值。')
     } else if (value === undefined) {
       if (defaultSelect !== undefined && defaultSelect !== false && props.options.length) {
-        (async () => {
-          const value = props.options[defaultSelect === true ? 0 : defaultSelect].value
-          props.value = value
-        })()
+        const { value: valueChange } = props.options[defaultSelect === true || defaultSelect < 0 ? 0 : defaultSelect]
+        props.value = valueChange
       }
     }
-    return (
-      <React.Fragment>
-        {
-          this.renderSelectSingleComponent(props)
-        }
-      </React.Fragment>
-    )
+    return <>{this.renderSelectSingleComponent(props)}</>
   }
 }

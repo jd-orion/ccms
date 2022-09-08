@@ -145,7 +145,7 @@ export default class SelectSingleField<UIState = object> extends SelectField<
     }
     if (currentValue === undefined) {
       if (defaultSelect !== undefined && defaultSelect !== false && props.options.length) {
-        currentValue = props.options[defaultSelect === true ? 0 : defaultSelect]?.value
+        currentValue = props.options[defaultSelect === true || defaultSelect < 0 ? 0 : defaultSelect]?.value
         this.handleChange(currentValue, options)
       }
     } else if (
