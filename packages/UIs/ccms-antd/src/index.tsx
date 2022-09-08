@@ -1,6 +1,6 @@
 export { default as CCMS } from './main'
-// export { default as CCMSForm } from './steps/form'
-// export { default as Form } from './steps/form'
+export { default as CCMSForm } from './steps/form'
+export { default as Form } from './steps/form'
 export { default as TextField } from './components/formFields/text'
 export { default as FormField } from './components/formFields/form'
 export { default as RadioField } from './components/formFields/radio'
@@ -8,10 +8,10 @@ export { default as SelectSingleField } from './components/formFields/select/sin
 export { default as SelectMultipleField } from './components/formFields/select/multiple'
 export { default as TreeSelectField } from './components/formFields/treeSelect'
 
-// export { default as Table } from './steps/table/table'
+export { default as Table } from './steps/table'
 
-// export { default as Fetch } from './steps/fetch'
-// export { default as DetailStep } from './steps/detail'
+export { default as Fetch } from './steps/fetch'
+export { default as DetailStep } from './steps/detail'
 export { default as DetailGroupField } from './components/detail/group'
 export { default as DetailTextField } from './components/detail/text'
 export { default as DetailTableField } from './components/detail/table'
