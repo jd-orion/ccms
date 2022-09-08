@@ -1,42 +1,48 @@
+@ant-prefix: ant;
 
 .ccms-config {
   position: relative;
   height: calc(100vh - 20px);
   min-height: 478px;
   padding: 20px;
+
   & > .preview {
     width: calc(100% - 350px);
     height: 100%;
     overflow: auto;
   }
 
-  & > :nth-child(2) > .ant-drawer {
-    height: auto;
+  & > .@{ant-prefix}-drawer {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
+    height: auto;
 
-    & > .ant-drawer-content-wrapper > .ant-drawer-content > .ant-drawer-wrapper-body > .ant-drawer-body {
+    &
+    >.@{ant-prefix}-drawer-content-wrapper
+    >.@{ant-prefix}-drawer-content
+    >.@{ant-prefix}-drawer-wrapper-body
+    >.@{ant-prefix}-drawer-body {
       padding: 0;
 
-      & > .ant-card {
+      & > .@{ant-prefix}-card {
         height: 100%;
 
-        & > .ant-card-head {
-          & > .ant-tabs {
+        & > .@{ant-prefix}-card-head {
+          & > .@{ant-prefix}-tabs {
             margin-right: -23px;
           }
         }
 
-        & > .ant-card-body {
+        & > .@{ant-prefix}-card-body {
           height: calc(100% - 86px);
           overflow: auto;
 
-          .ant-form-item {
+          .@{ant-prefix}-form-item {
             margin-bottom: 0;
           }
 
-          .ant-radio-group-small {
-            .ant-radio-button-wrapper.ccms-page-template {
+          .@{ant-prefix}-radio-group-small {
+            .@{ant-prefix}-radio-button-wrapper.ccms-page-template {
               width: 75px;
               height: 60px;
               text-align: center;
@@ -48,15 +54,15 @@
                 margin-top: 7px;
                 margin-bottom: 0;
                 border: 1px solid black;
-                border-radius: 2px;
                 border-color: #666;
+                border-radius: 2px;
 
                 div {
                   border-color: #666 !important;
                 }
               }
 
-              &.ant-radio-button-wrapper-checked {
+              &.@{ant-prefix}-radio-button-wrapper-checked {
                 .ccms-page-template-icon {
                   border-color: #40a9ff;
 

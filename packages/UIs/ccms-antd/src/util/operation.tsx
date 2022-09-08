@@ -1,6 +1,7 @@
 import React from 'react'
 import { OperationHelper as _OperationHelper } from 'ccms'
 import { Modal } from 'antd'
+import 'antd/lib/modal/style'
 import CCMS from '../main'
 
 export default class OperationHelper extends _OperationHelper {

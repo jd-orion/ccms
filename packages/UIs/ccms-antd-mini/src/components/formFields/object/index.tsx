@@ -3,19 +3,24 @@ import { ObjectField } from 'ccms'
 import { Form, Button, Collapse, Input } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import { FormItemProps } from 'antd/lib/form'
-import { IObjectField, IObjectFieldItem, IObjectFieldItemField, ObjectFieldConfig, ObjectFieldState } from 'ccms/dist/src/components/formFields/object'
-import getALLComponents from '../'
-import styles from './index.less'
-import { FieldProps } from 'ccms/dist/src/components/formFields/common'
+import {
+  IObjectField,
+  IObjectFieldItem,
+  IObjectFieldItemField,
+  ObjectFieldConfig
+} from 'ccms/dist/components/formFields/object'
+import { FieldProps } from 'ccms/dist/components/formFields/common'
+import getALLComponents from '..'
+import './index.less'
 
 interface _ObjectFieldState {
   activeKey: string
 }
 
 export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState> {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type) => getALLComponents[type]
 
-  constructor (props: FieldProps<ObjectFieldConfig, any>) {
+  constructor(props: FieldProps<ObjectFieldConfig, { [key: string]: unknown }>) {
     super(props)
 
     this.state = {
@@ -26,19 +31,12 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
     }
   }
 
-  remove: () => Promise<void> = async () => { }
+  remove: () => Promise<void> = async () => {
+    /* none */
+  }
 
   renderItemFieldComponent = (props: IObjectFieldItemField) => {
-    const {
-      label,
-      status,
-      message,
-      extra,
-      required,
-      fieldType,
-      children,
-      layout = 'horizontal'
-    } = props
+    const { label, status, message, extra, required, fieldType, children, layout = 'horizontal' } = props
 
     const formItemLayout: FormItemProps = {}
     if (layout === 'horizontal') {
@@ -50,15 +48,25 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
       formItemLayout.labelCol = { span: 24 }
       formItemLayout.wrapperCol = { span: 24 }
     }
+
+    let validateStatus: '' | 'error' | 'validating' | 'success' | 'warning' | undefined
+    if (status === 'normal') {
+      validateStatus = undefined
+    } else if (status === 'error') {
+      validateStatus = 'error'
+    } else {
+      validateStatus = 'validating'
+    }
+
     return (
       <Form.Item
         extra={extra ? extra.trim() : ''}
         required={required}
         label={label}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+        validateStatus={validateStatus}
         help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
         {...formItemLayout}
-        className={styles[`ccms-antd-mini-object-${fieldType}`]}
+        className={`ccms-antd-mini-object-${fieldType}`}
       >
         {children}
       </Form.Item>
@@ -66,27 +74,11 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
   }
 
   renderItemComponent = (props: IObjectFieldItem) => {
-    const {
-      key,
-      onChange,
-      onRemove,
-      children
-    } = props
+    const { key, onChange, onRemove, children } = props
 
     return (
-      <Collapse.Panel
-        header={key}
-        key={key}
-        forceRender={true}
-        extra={(<DeleteOutlined onClick={() => onRemove()} />)}
-      >
-        <Form.Item
-          label="键名"
-          help=""
-          labelAlign="left"
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 18 }}
-        >
+      <Collapse.Panel header={key} key={key} forceRender extra={<DeleteOutlined onClick={() => onRemove()} />}>
+        <Form.Item label="键名" help="" labelAlign="left" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
           <Input
             defaultValue={key}
             onBlur={async (e) => {
@@ -105,27 +97,31 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
   }
 
   renderComponent = (props: IObjectField) => {
-    const {
-      insertText,
-      onInsert,
-      children
-    } = props
+    const { insertText, onInsert, children } = props
 
     return (
-      <React.Fragment>
-        <div className={styles['ccms-antd-mini-formField-object-before-button']}>
-          <Button type="link" icon={<PlusOutlined />} onClick={() => {
-            onInsert().then((key) => this.setState({
-              extra: {
-                activeKey: key
-              }
-            }))
-          }}>{insertText}</Button>
+      <>
+        <div className="ccms-antd-mini-formField-object-before-button">
+          <Button
+            type="link"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              onInsert().then((key) =>
+                this.setState({
+                  extra: {
+                    activeKey: key
+                  }
+                })
+              )
+            }}
+          >
+            {insertText}
+          </Button>
         </div>
         <Collapse
-          accordion={true}
+          accordion
           bordered={false}
-          className={styles['ccms-antd-mini-formField-object']}
+          className="ccms-antd-mini-formField-object"
           activeKey={this.state.extra?.activeKey}
           onChange={(key) => {
             if (Array.isArray(key)) {
@@ -138,17 +134,25 @@ export default class ObjectFieldComponent extends ObjectField<_ObjectFieldState>
           {children}
         </Collapse>
         {(Array.isArray(children) ? children : []).length > 0 && (
-          <div className={styles['ccms-antd-mini-formField-object-after-button']}>
-            <Button type="link" icon={<PlusOutlined />} onClick={() => {
-              onInsert().then((key) => this.setState({
-                extra: {
-                  activeKey: key
-                }
-              }))
-            }}>{insertText}</Button>
+          <div className="ccms-antd-mini-formField-object-after-button">
+            <Button
+              type="link"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                onInsert().then((key) =>
+                  this.setState({
+                    extra: {
+                      activeKey: key
+                    }
+                  })
+                )
+              }}
+            >
+              {insertText}
+            </Button>
           </div>
         )}
-      </React.Fragment>
+      </>
     )
   }
 }

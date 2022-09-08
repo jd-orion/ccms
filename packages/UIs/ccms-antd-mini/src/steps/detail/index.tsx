@@ -1,12 +1,16 @@
 import React from 'react'
 import { DetailStep } from 'ccms'
-import { IDetail, IDetailItem } from 'ccms/dist/src/steps/detail'
+import { IDetail, IDetailItem } from 'ccms/dist/steps/detail'
 import { Button, Form, Space } from 'antd'
+import 'antd/lib/button/style'
+import 'antd/lib/form/style'
+import 'antd/lib/space/style'
+import { FormItemProps, FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/detail'
-import { FormItemProps } from 'antd/lib/form'
-import styles from './index.less'
+import './index.less'
+
 export default class DetailStepComponent extends DetailStep {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type) => getALLComponents[type]
 
   renderComponent = (props: IDetail) => {
     const {
@@ -16,7 +20,7 @@ export default class DetailStepComponent extends DetailStep {
       children
     } = props
 
-    const formItemLayout: any | null =
+    const formItemLayout: FormProps | null =
       layout === 'horizontal'
         ? {
             labelAlign: 'left',
@@ -25,30 +29,21 @@ export default class DetailStepComponent extends DetailStep {
           }
         : null
     return (
-      <Form
-        layout={layout}
-        {...formItemLayout}
-        size="small">
+      <Form layout={layout} {...formItemLayout} size="small">
         {children}
-        {
-          onBack && <Form.Item>
+        {onBack && (
+          <Form.Item>
             <Space>
-              {<Button onClick={() => onBack()}>{backText || '返回'}</Button>}
+              <Button onClick={() => onBack()}>{backText || '返回'}</Button>
             </Space>
           </Form.Item>
-        }
+        )}
       </Form>
     )
   }
 
   renderItemComponent = (props: IDetailItem) => {
-    const {
-      key,
-      label,
-      visitable,
-      fieldType,
-      children
-    } = props
+    const { key, label, visitable, fieldType, children } = props
 
     const formItemLayout: FormItemProps = {}
     if (fieldType === 'form' || fieldType === 'group' || fieldType === 'import_subform') {
@@ -60,10 +55,10 @@ export default class DetailStepComponent extends DetailStep {
 
     return (
       <Form.Item
-        key = {key}
+        key={key}
         label={label}
         {...formItemLayout}
-        className={styles[`ccms-antd-mini-form-${fieldType}`]}
+        className={`ccms-antd-mini-form-${fieldType}`}
         style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
       >
         {children}

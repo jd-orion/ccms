@@ -1,4 +1,3 @@
-import { CustomField } from 'ccms';
+import { CustomField } from 'ccms'
 
-export default class CustomFieldComponent extends CustomField {
-}
+export default class CustomFieldComponent extends CustomField {}

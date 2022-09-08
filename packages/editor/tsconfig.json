@@ -1,25 +1,28 @@
 {
+  "include": ["./src/**/*"],
   "compilerOptions": {
     "target": "ES6",
     "module": "ESNext",
-    "allowJs": true,
     "sourceMap": true,
-    "outDir": "./lib/",
-    "moduleResolution": "node",
+    "outDir": "./dist",
     "esModuleInterop": true,
     "declaration": true,
     "jsx": "react",
     "strict": true,
     "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
+    "noEmit": true,
     "noImplicitAny": false,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "experimentalDecorators": true
+    "types": ["node", "jest"],
+    "experimentalDecorators": true,
+    "declarationDir": "./dist"
   }
 }

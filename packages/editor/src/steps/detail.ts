@@ -1,5 +1,5 @@
-import { FormConfig } from "ccms/dist/src/steps/form";
-import { DetailConfig } from "ccms/dist/src/steps/detail";
+import { FormConfig } from "ccms/dist/steps/form";
+import { DetailConfig } from "ccms/dist/steps/detail";
 
 export const Config: FormConfig = {
   "type": "form",

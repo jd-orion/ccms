@@ -1,43 +1,26 @@
 import React from 'react'
 import { ImportSubformField } from 'ccms'
-import { IImportSubformField, ImportSubformFieldConfig } from 'ccms/dist/src/components/formFields/importSubform'
-import { IFormItem } from 'ccms/dist/src/steps/form'
+import { IImportSubformField } from 'ccms/dist/components/formFields/importSubform'
+import { IFormItem } from 'ccms/dist/steps/form'
 import { Form } from 'antd'
+import 'antd/lib/form/style'
 import { FormItemProps } from 'antd/lib/form'
-import getALLComponents from '../'
-import styles from './index.less'
+import getALLComponents from '..'
+import './index.less'
 import InterfaceHelper from '../../../util/interface'
 
-export const PropsType = (props: ImportSubformFieldConfig) => { }
-
 export default class ImportSubformFieldComponent extends ImportSubformField {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type) => getALLComponents[type]
 
   interfaceHelper = new InterfaceHelper()
 
   renderComponent = (props: IImportSubformField) => {
-    const {
-      children
-    } = props
-    return (
-      <div>
-        {children}
-      </div>
-    )
+    const { children } = props
+    return <div>{children}</div>
   }
 
   renderItemComponent = (props: IFormItem) => {
-    const {
-      key,
-      label,
-      visitable,
-      status,
-      extra,
-      required,
-      message,
-      fieldType,
-      children
-    } = props
+    const { key, label, visitable, status, extra, required, message, fieldType, children } = props
 
     const formItemLayout: FormItemProps = { labelAlign: 'left' }
     if (fieldType === 'form' || fieldType === 'group' || fieldType === 'object' || fieldType === 'import_subform') {
@@ -48,6 +31,15 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
       formItemLayout.wrapperCol = { span: 18 }
     }
 
+    let validateStatus: '' | 'error' | 'validating' | 'success' | 'warning' | undefined
+    if (status === 'normal') {
+      validateStatus = undefined
+    } else if (status === 'error') {
+      validateStatus = 'error'
+    } else {
+      validateStatus = 'validating'
+    }
+
     return (
       <Form.Item
         key={key}
@@ -55,9 +47,9 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
         required={required}
         label={label}
         {...formItemLayout}
-        validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+        validateStatus={validateStatus}
         help={fieldType === 'group' || fieldType === 'import_subform' ? null : message}
-        className={styles[`ccms-antd-mini-form-${fieldType}`]}
+        className={`ccms-antd-mini-form-${fieldType}`}
         style={visitable ? {} : { overflow: 'hidden', width: 0, height: 0 }}
       >
         {children}

@@ -1,16 +1,17 @@
 import React from 'react'
 import { ImportSubformDisplay } from 'ccms'
-import { IImportSubformField } from 'ccms/dist/src/components/detail/importSubform'
-import { Display } from 'ccms/dist/src/components/formFields/common'
-import { IDetailItem } from 'ccms/dist/src/steps/detail'
+import { IImportSubformField } from 'ccms/dist/components/detail/importSubform'
+import { Display } from 'ccms/dist/components/formFields/common'
+import { IDetailItem } from 'ccms/dist/steps/detail'
 import { Form } from 'antd'
+import 'antd/lib/form/style'
 import { display as getALLComponents } from '..'
 import InterfaceHelper from '../../../util/interface'
-import styles from './index.less'
+import './index.less'
 import { computedItemStyle, computedGapStyle } from '../common'
 
 export default class ImportSubformDisplayComponent extends ImportSubformDisplay {
-  getALLComponents = (type: any): typeof Display => getALLComponents[type]
+  getALLComponents = (type): typeof Display => getALLComponents[type]
 
   interfaceHelper = new InterfaceHelper()
 
@@ -23,7 +24,7 @@ export default class ImportSubformDisplayComponent extends ImportSubformDisplay 
         style={{
           ...gap
         }}
-        className={styles['ccms-antd-mini-form-group-row']}
+        className="ccms-antd-mini-form-group-row"
       >
         {children}
       </div>
@@ -45,12 +46,8 @@ export default class ImportSubformDisplayComponent extends ImportSubformDisplay 
     }
 
     return (
-      <div
-        style={colStyle}
-        key={key}
-        className={[styles['form-group-col'], styles[`form-group-col-${fieldType}`]].join(' ')}
-      >
-        <Form.Item key={key} label={label} className={styles[`ccms-antd-mini-form-${fieldType}`]} style={itemStyle}>
+      <div style={colStyle} key={key} className={`form-group-col form-group-col-${fieldType}`}>
+        <Form.Item key={key} label={label} className={`ccms-antd-mini-form-${fieldType}`} style={itemStyle}>
           {children}
         </Form.Item>
       </div>

@@ -6,17 +6,17 @@ export function formItemLayout(
   fieldType: string,
   label: string | undefined
 ) {
-  const formItemLayout: FormItemProps = { labelAlign: 'left' }
+  const currentFormItemLayout: FormItemProps = { labelAlign: 'left' }
   if (label) {
-    formItemLayout.labelCol = { span: 24 }
-    formItemLayout.wrapperCol = { span: 24 }
+    currentFormItemLayout.labelCol = { span: 24 }
+    currentFormItemLayout.wrapperCol = { span: 24 }
   } else {
-    formItemLayout.wrapperCol = { span: 24 }
+    currentFormItemLayout.wrapperCol = { span: 24 }
   }
-  return formItemLayout
+  return currentFormItemLayout
 }
 
-export function computedItemStyle(columns: any, layout: string, visitable: boolean) {
+export function computedItemStyle(columns, layout, visitable) {
   const setStyle = {}
   if (!visitable) {
     Object.assign(setStyle, {
@@ -59,7 +59,7 @@ export function computedItemStyle(columns: any, layout: string, visitable: boole
   return setStyle
 }
 
-export function computedGapStyle(columns: any, type: string) {
+export function computedGapStyle(columns, type) {
   const setStyle = {}
   const gap = (Number(columns?.gap) || 0) / 2
   const rowgap = (Number(columns?.rowGap) || 0) / 2

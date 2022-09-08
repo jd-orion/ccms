@@ -1,13 +1,10 @@
 import React from 'react'
 import { ImageColumn } from 'ccms'
-import { IImageColumn, ImageColumnConfig } from 'ccms/dist/src/components/tableColumns/image'
-export const PropsType = (props: ImageColumnConfig) => { }
+import { IImageColumn } from 'ccms/dist/components/tableColumns/image'
 
 export default class ImageColumnComponent extends ImageColumn {
   renderComponent = (props: IImageColumn) => {
     const { value, width, height } = props
-    return (
-      value ? <img src={value} style={{ width, height }} /> : <></>
-    )
+    return value ? <img alt="" src={value} style={{ width, height }} /> : <></>
   }
 }

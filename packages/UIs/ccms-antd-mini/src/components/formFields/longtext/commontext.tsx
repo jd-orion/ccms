@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react'
 import { Input } from 'antd'
-const { TextArea } = Input;
+import 'antd/lib/input/style'
+
+const { TextArea } = Input
 type Props = {
   defaultValue?: string
   value: string
@@ -8,21 +10,30 @@ type Props = {
   disabled?: boolean
   placeholder?: string
   onChange: (value: string) => Promise<void>
-};
+}
+type State = {
+  flag: boolean
+  input: string
+}
 
-export default class TextComponent extends PureComponent<Props, {}> {
+export default class TextComponent extends PureComponent<Props, State> {
   isOnComposition = false
-  selectionStart: number = 0
-  selectionEnd: number = 0
 
-  state = {
-    flag: false,
-    input: ''
+  selectionStart = 0
+
+  selectionEnd = 0
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      flag: false,
+      input: ''
+    }
   }
 
-  handleComposition = (e: any) => {
+  handleComposition = (e) => {
     const { flag } = this.state
-    if ('compositionend' === e.type) {
+    if (e.type === 'compositionend') {
       this.isOnComposition = false
       this.handleChange(e)
     } else {
@@ -33,9 +44,9 @@ export default class TextComponent extends PureComponent<Props, {}> {
     }
   }
 
-  setFlag = (flag: boolean) => {
+  setFlag = (flag) => {
     this.setState({
-      flag: this.isOnComposition
+      flag
     })
   }
 
@@ -44,7 +55,8 @@ export default class TextComponent extends PureComponent<Props, {}> {
       input: value
     })
   }
-  handleChange = (e: any) => {
+
+  handleChange = (e) => {
     const { onChange } = this.props
     this.setInput(e.target.value)
     if (this.isOnComposition) return
@@ -55,26 +67,27 @@ export default class TextComponent extends PureComponent<Props, {}> {
     const { value, readonly, disabled, placeholder } = this.props
     const { flag, input } = this.state
 
-    let Component = TextArea
+    const Component = TextArea
 
-    return <Component
-      readOnly={readonly}
-      disabled={disabled}
-      placeholder={placeholder}
-      value={!flag ? value : input}
-      onCompositionStart={this.handleComposition}
-      onCompositionUpdate={this.handleComposition}
-      onCompositionEnd={this.handleComposition}
-      onChange={(e) => {
-        this.selectionStart = e.target.selectionStart
-        this.selectionEnd = e.target.selectionEnd
-        this.handleChange(e)
-        setTimeout(() => {
-          e.target.selectionStart = this.selectionStart
-          e.target.selectionEnd = this.selectionEnd
-        })
-      }}
-    />
+    return (
+      <Component
+        readOnly={readonly}
+        disabled={disabled}
+        placeholder={placeholder}
+        value={!flag ? value : input}
+        onCompositionStart={this.handleComposition}
+        onCompositionUpdate={this.handleComposition}
+        onCompositionEnd={this.handleComposition}
+        onChange={(e) => {
+          this.selectionStart = e.target.selectionStart
+          this.selectionEnd = e.target.selectionEnd
+          this.handleChange(e)
+          setTimeout(() => {
+            e.target.selectionStart = this.selectionStart
+            e.target.selectionEnd = this.selectionEnd
+          })
+        }}
+      />
+    )
   }
 }
-

@@ -546,25 +546,27 @@ export default class TableField
                 const addfix = ['multirowText'].some((val) => val !== column.field)
                 return (
                   <ColumnStyleComponent key={index} style={column.style} addfix={addfix}>
-                    <CurrentColumn
-                      ref={() => {
-                        /* 无逻辑 */
-                      }}
-                      record={record}
-                      value={tempValue}
-                      data={data}
-                      step={step}
-                      config={column}
-                      table={this}
-                      baseRoute={this.props.baseRoute}
-                      onUnmount={this.props.onUnmount}
-                      checkPageAuth={this.props.checkPageAuth}
-                      loadPageURL={this.props.loadPageURL}
-                      loadPageFrameURL={this.props.loadPageFrameURL}
-                      loadPageConfig={this.props.loadPageConfig}
-                      loadPageList={this.props.loadPageList}
-                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                    />
+                    <React.Suspense fallback={<>Loading</>}>
+                      <CurrentColumn
+                        ref={() => {
+                          /* 无逻辑 */
+                        }}
+                        record={record}
+                        value={tempValue}
+                        data={data}
+                        step={step}
+                        config={column}
+                        table={this}
+                        baseRoute={this.props.baseRoute}
+                        onUnmount={this.props.onUnmount}
+                        checkPageAuth={this.props.checkPageAuth}
+                        loadPageURL={this.props.loadPageURL}
+                        loadPageFrameURL={this.props.loadPageFrameURL}
+                        loadPageConfig={this.props.loadPageConfig}
+                        loadPageList={this.props.loadPageList}
+                        loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                      />
+                    </React.Suspense>
                   </ColumnStyleComponent>
                 )
               }

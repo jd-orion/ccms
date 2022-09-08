@@ -1,20 +1,11 @@
 import React from 'react'
 import { ImageUrlField } from 'ccms'
-import { IImageUrlField, ImageUrlFieldConfig } from 'ccms/dist/src/components/formFields/imageurl'
+import { IImageUrlField } from 'ccms/dist/components/formFields/imageurl'
 import TextCompnent from './commontext'
-
-export const PropsType = (props: ImageUrlFieldConfig) => { }
 
 export default class ImageUrlFieldComponent extends ImageUrlField {
   renderComponent = (props: IImageUrlField) => {
-    const {
-      readonly,
-      disabled,
-      placeholder,
-      value,
-      onChange,
-      width, height
-    } = props
+    const { readonly, disabled, placeholder, value, onChange, width, height } = props
     return (
       <div>
         <TextCompnent
@@ -24,7 +15,7 @@ export default class ImageUrlFieldComponent extends ImageUrlField {
           value={value}
           onChange={onChange}
         />
-        {value ? <img src={value} style={{ width, height, marginTop: '10px' }} /> : null}
+        {value ? <img alt="" src={value} style={{ width, height, marginTop: '10px' }} /> : null}
       </div>
     )
   }

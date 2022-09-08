@@ -1,18 +1,15 @@
-import React from "react";
-import { TreeSelectField } from 'ccms';
-import { ITreeSelectField, TreeSelectFieldConfig } from "ccms/dist/src/components/formFields/treeSelect";
-import { TreeSelect } from 'antd';
-import InterfaceHelper from "../../../util/interface";
+import React from 'react'
+import { TreeSelectField } from 'ccms'
+import { ITreeSelectField } from 'ccms/dist/components/formFields/treeSelect'
+import { TreeSelect } from 'antd'
+import 'antd/lib/tree-select/style'
+import InterfaceHelper from '../../../util/interface'
 
 export default class TreeSelectComponent extends TreeSelectField {
   interfaceHelper = new InterfaceHelper()
 
   renderComponent = (props: ITreeSelectField) => {
-    const {
-      treeData,
-      value,
-      onChange
-    } = props
+    const { treeData, value, onChange } = props
 
     return (
       <div>

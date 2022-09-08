@@ -1,30 +1,33 @@
 import React from 'react'
 import { FormStep } from 'ccms'
-import {
-  IForm,
-  IFormItem,
-  IFormStepModal,
-  FormConfig,
-  IButtonProps
-} from 'ccms/dist/src/steps/form'
-import { Button, Form, Space, Modal, Collapse, Row } from 'antd'
-
+import { IForm, IFormItem, IFormStepModal, IButtonProps } from 'ccms/dist/steps/form'
+import { Button, Form, Space, Modal, Collapse, Row, ConfigProvider } from 'antd'
+import 'antd/lib/button/style'
+import 'antd/lib/form/style'
+import 'antd/lib/space/style'
+import 'antd/lib/modal/style'
+import 'antd/lib/collapse/style'
+import 'antd/lib/row/style'
+import 'antd/lib/config-provider/style'
 import { FormProps } from 'antd/lib/form'
 import getALLComponents from '../../components/formFields'
 import OperationHelper from '../../util/operation'
-import styles from './index.less'
+import './index.less'
 import { formItemLayout, computedItemStyle, computedGapStyle } from '../../components/formFields/common'
-import newstyles from '../../main.less'
+import '../../main.less'
 
 const { Panel } = Collapse
 
 export default class FormStepComponent extends FormStep {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type) => getALLComponents[type]
 
   OperationHelper = OperationHelper
 
   renderModalComponent = (props: IFormStepModal) => {
     return new Promise<void>((resolve) => {
+      ConfigProvider.config({
+        prefixCls: 'ccms-antd-ant'
+      })
       Modal.error({
         getContainer: () => {
           return document.getElementById('ccms-antd') || document.body
@@ -39,26 +42,26 @@ export default class FormStepComponent extends FormStep {
   }
 
   renderComponent = (props: IForm) => {
-    const { layout, columns, actions, rightTopActions, onSubmit, onCancel, submitText, cancelText, children } = props
+    const { layout, columns, actions, rightTopActions, children } = props
 
-    const formItemLayout: FormProps | null =
+    const currentFormItemLayout: FormProps | null =
       layout === 'horizontal'
         ? {
-          labelAlign: 'left',
-          labelCol: { span: 6 },
-          wrapperCol: { span: 18 }
-        }
+            labelAlign: 'left',
+            labelCol: { span: 6 },
+            wrapperCol: { span: 18 }
+          }
         : null
 
     const gapStyle = computedGapStyle(columns, 'row')
 
     return (
       <Form
-        {...formItemLayout}
+        {...currentFormItemLayout}
         // layout={layout}
         // layout="horizontal"
         layout="vertical" // 和drip同步 改为竖排
-        className={newstyles.content}
+        className="content"
       >
         {Array.isArray(rightTopActions) && rightTopActions.length > 0 && (
           <Row justify="end">
@@ -67,7 +70,7 @@ export default class FormStepComponent extends FormStep {
             </Form.Item>
           </Row>
         )}
-        <div style={gapStyle} className={styles['ccms-antd-mini-form-row']}>
+        <div style={gapStyle} className="ccms-antd-mini-form-row">
           {children}
         </div>
         {Array.isArray(actions) && actions.length > 0 && (
@@ -97,16 +100,17 @@ export default class FormStepComponent extends FormStep {
       Object.assign(itemStyle, { width: columns.value })
     }
 
+    let validateStatus: '' | 'error' | 'success' | 'warning' | 'validating' | undefined
+    if (status === 'normal') {
+      validateStatus = undefined
+    } else if (status === 'error') {
+      validateStatus = 'error'
+    } else {
+      validateStatus = 'validating'
+    }
+
     return (
-      <div
-        style={colStyle}
-        key={key}
-        className={[
-          styles['form-col'],
-          styles[`form-col-${fieldType}`],
-          styles[`form-col-${columns?.type || 'span'}`]
-        ].join(' ')}
-      >
+      <div style={colStyle} key={key} className={`form-col form-col-${fieldType} form-col-${columns?.type || 'span'}`}>
         {fieldType === 'group' ? (
           this.renderGroupUI(label, children, message, 'header')
         ) : (
@@ -116,11 +120,10 @@ export default class FormStepComponent extends FormStep {
             key={key}
             label={label}
             {...formItemLayout(layout, fieldType, label)}
-            validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+            validateStatus={validateStatus}
             help={message === '' ? null : <div style={{ color: 'red' }}>{message}</div>}
             style={itemStyle}
-            className={styles[`ccms-antd-mini-form-${fieldType}`]}
-            // className={ [styles[`ccms-antd-mini-form-${fieldType}`], layout === 'horizontal' && subLabel ? styles['ccms-antd-label-vertical-flex-start']: null].join(' ') } // 预留layout配置项启用时所需label css代码
+            className={`ccms-antd-mini-form-${fieldType}`}
           >
             {subLabel || null}
             {children}
@@ -131,12 +134,12 @@ export default class FormStepComponent extends FormStep {
   }
 
   // group UI
-  renderGroupUI = (label: string, children: any, message, collapsible?: 'header' | 'disabled') => {
+  renderGroupUI = (label, children, message, collapsible?: 'header' | 'disabled') => {
     return (
       <>
-        <Collapse className={styles['form-group-parent']} collapsible="header" defaultActiveKey={['1']}>
+        <Collapse className="form-group-parent" collapsible="header" defaultActiveKey={['1']}>
           <Panel header={label} key="1" collapsible={collapsible || 'header'}>
-            <div className={styles['form-group-content']}>{children}</div>
+            <div className="form-group-content">{children}</div>
           </Panel>
         </Collapse>
         <div style={{ color: 'red' }}>{message}</div>
@@ -144,8 +147,3 @@ export default class FormStepComponent extends FormStep {
     )
   }
 }
-// <FormConfig, IForm>
-export const PropsType = (props: IForm) => { }
-
-export const PropsTypeFormConfig = (props: FormConfig) => { }
-export const PropsTypeStep = (props: FormStep) => { }

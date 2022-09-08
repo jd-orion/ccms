@@ -1,23 +1,33 @@
 import React, { PureComponent } from 'react'
 import { Input } from 'antd'
+import 'antd/lib/input/style'
+
 type Props = {
-  defaultValue?: string,
-  value: string,
+  defaultValue?: string
+  value: string
   readonly?: boolean
   disabled?: boolean
   placeholder?: string
   onChange: (value: string) => Promise<void>
-};
+}
 
-export default class TextComponent extends PureComponent<Props, {}> {
+type State = {
+  flag: boolean
+  input: string
+}
+
+export default class TextComponent extends PureComponent<Props, State> {
   isOnComposition = false
 
-  state = {
-    flag: false,
-    input: ''
+  constructor(props) {
+    super(props)
+    this.state = {
+      flag: false,
+      input: ''
+    }
   }
 
-  handleComposition = (e: any) => {
+  handleComposition = (e) => {
     const { flag } = this.state
     if (e.type === 'compositionend') {
       this.isOnComposition = false
@@ -32,7 +42,7 @@ export default class TextComponent extends PureComponent<Props, {}> {
 
   setFlag = (flag: boolean) => {
     this.setState({
-      flag: this.isOnComposition
+      flag
     })
   }
 
@@ -42,28 +52,30 @@ export default class TextComponent extends PureComponent<Props, {}> {
     })
   }
 
-  handleChange = (e: any) => {
+  handleChange = (e) => {
     const { onChange } = this.props
     this.setInput(e.target.value)
     if (this.isOnComposition) return
     onChange && onChange(e.target.value)
   }
 
-  render () {
+  render() {
     const { value, readonly, disabled, placeholder } = this.props
     const { flag, input } = this.state
 
     const Component = Input
 
-    return <Component
-      readOnly={readonly}
-      disabled={disabled}
-      placeholder={placeholder}
-      value={!flag ? value : input}
-      onCompositionStart={this.handleComposition}
-      onCompositionUpdate={this.handleComposition}
-      onCompositionEnd={this.handleComposition}
-      onChange={this.handleChange}
-    />
+    return (
+      <Component
+        readOnly={readonly}
+        disabled={disabled}
+        placeholder={placeholder}
+        value={!flag ? value : input}
+        onCompositionStart={this.handleComposition}
+        onCompositionUpdate={this.handleComposition}
+        onCompositionEnd={this.handleComposition}
+        onChange={this.handleChange}
+      />
+    )
   }
 }

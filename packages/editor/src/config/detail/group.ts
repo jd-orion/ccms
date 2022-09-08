@@ -1,4 +1,4 @@
-import { FieldConfigs } from "ccms/dist/src/components/formFields";
+import { FieldConfigs } from "ccms/dist/components/formFields";
 
 const config: FieldConfigs[] = [{
   "field": "fields",

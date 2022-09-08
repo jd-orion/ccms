@@ -1,52 +1,51 @@
 import React, { PureComponent } from 'react'
 import { Input } from 'antd'
+import 'antd/lib/input/style'
 import { SketchPicker } from 'react-color'
-import styles from './index.less'
+import './index.less'
 
 type Props = {
-  defaultValue?: string,
-  value: string,
+  defaultValue?: string
+  value: string
   readonly?: boolean
   disabled?: boolean
   placeholder?: string
   onChange: (value: string) => Promise<void>
-};
+}
 
-export default class ColorComponent extends PureComponent<Props, {}> {
+type State = {
+  flag: boolean
+  show: boolean
+  color: string
+}
+
+export default class ColorComponent extends PureComponent<Props, State> {
   isOnComposition = false
+
   selectionStart: number | null = null
+
   selectionEnd: number | null = null
 
-  state = {
-    flag: false,
-    show: false,
-    color: this.props.value || '#ffffff',
-    position: { top: '10', left: '50' }
+  constructor(props) {
+    super(props)
+    this.state = {
+      flag: false,
+      show: false,
+      color: props.value || '#ffffff'
+    }
   }
 
   showPicker = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { readonly, disabled } = this.props
     if (readonly || disabled) return
     if (e) {
-      let position;
-      if (document.body.clientHeight - e.clientY > 421) {
-        position = {
-          top: `${e.clientY}px`,
-          left: `${e.clientX}px`
-        }
-      } else {
-        position = {
-          bottom: `0px`,
-          left: `${e.clientX}px`
-        }
-      }
       this.setState({
-        position,
-        show: true 
+        show: true
       })
     }
   }
-  handleComposition = (e: any) => {
+
+  handleComposition = (e) => {
     const { flag } = this.state
     if (e.type === 'compositionend') {
       this.isOnComposition = false
@@ -61,7 +60,7 @@ export default class ColorComponent extends PureComponent<Props, {}> {
     }
   }
 
-  handleChange = (e: any) => {
+  handleChange = (e) => {
     const { onChange } = this.props
     this.setState({
       color: e.target.value
@@ -71,17 +70,19 @@ export default class ColorComponent extends PureComponent<Props, {}> {
   }
 
   render() {
+    const { flag, color, show } = this.state
+    const { value, onChange } = this.props
     return (
-      <React.Fragment>
+      <>
         <Input
-          prefix={(
+          prefix={
             <div
-              className={styles['ccms-antd-color-preview']}
-              style={{ background: this.state.flag ? this.state.color : this.props.value }}
+              className="ccms-antd-color-preview"
+              style={{ background: flag ? color : value }}
               onClick={(e) => this.showPicker(e)}
-            ></div>
-          )}
-          value={this.state.flag ? this.state.color : this.props.value}
+            />
+          }
+          value={flag ? color : value}
           onCompositionStart={this.handleComposition}
           onCompositionUpdate={this.handleComposition}
           onCompositionEnd={this.handleComposition}
@@ -96,43 +97,41 @@ export default class ColorComponent extends PureComponent<Props, {}> {
             })
           }}
         />
-        {
-          this.state.show && (
-            <div
-              className={styles['ccms-antd-color-picker']}
-              ref={(node) => {
-                if (node) {
-                  const picker = node.children[1] as HTMLDivElement
-                  const handle = node.parentElement
-                  if (picker && handle) {
-                    const { bottom, height } = picker.getBoundingClientRect()
-                    if (bottom > window.innerHeight) {
-                      picker.style.marginTop = `${0 - handle.clientHeight - height}px`
-                    }
+        {show && (
+          <div
+            className="ccms-antd-color-picker"
+            ref={(node) => {
+              if (node) {
+                const picker = node.children[1] as HTMLDivElement
+                const handle = node.parentElement
+                if (picker && handle) {
+                  const { bottom, height } = picker.getBoundingClientRect()
+                  if (bottom > window.innerHeight) {
+                    picker.style.marginTop = `${0 - handle.clientHeight - height}px`
                   }
                 }
+              }
+            }}
+          >
+            <div
+              className="mask"
+              onClick={() => {
+                this.setState({
+                  show: false
+                })
               }}
-            >
-              <div
-                className={styles['mask']}
-                onClick={() => {
-                  this.setState({
-                    show: false
-                  })
+            />
+            <div className="picker">
+              <SketchPicker
+                color={flag ? color : value}
+                onChange={(colorChange) => {
+                  onChange(colorChange.hex)
                 }}
-              ></div>
-              <div className={styles['picker']}>
-                <SketchPicker
-                  color={this.state.flag ? this.state.color : this.props.value}
-                  onChange={(color) => {
-                    this.props.onChange(color.hex)
-                  }}
-                />
-              </div>
+              />
             </div>
-          )
-        }
-      </React.Fragment>
+          </div>
+        )}
+      </>
     )
   }
 }

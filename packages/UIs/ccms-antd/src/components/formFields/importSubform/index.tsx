@@ -1,19 +1,16 @@
 import React from 'react'
 import { ImportSubformField } from 'ccms'
-import { IImportSubformField, ImportSubformFieldConfig } from 'ccms/dist/src/components/formFields/importSubform'
-import { IFormItem } from 'ccms/dist/src/steps/form'
+import { IImportSubformField } from 'ccms/dist/components/formFields/importSubform'
+import { IFormItem } from 'ccms/dist/steps/form'
 import { Form } from 'antd'
-import { FormItemProps } from 'antd/lib/form'
+import 'antd/lib/form/style'
 import getALLComponents from '..'
-import commonStyles from '../common.less'
-import styles from './index.less'
+import './index.less'
 import { computedItemStyle, computedGapStyle, FiledErrMsg } from '../common'
 import InterfaceHelper from '../../../util/interface'
 
-export const PropsType = (props: ImportSubformFieldConfig) => { }
-
 export default class ImportSubformFieldComponent extends ImportSubformField {
-  getALLComponents = (type: any) => getALLComponents[type]
+  getALLComponents = (type) => getALLComponents[type]
 
   interfaceHelper = new InterfaceHelper()
 
@@ -25,7 +22,7 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
         style={{
           ...gap
         }}
-        className={styles['ccms-antd-mini-form-group-row']}
+        className="ccms-antd-mini-form-group-row"
       >
         {children}
       </div>
@@ -42,21 +39,25 @@ export default class ImportSubformFieldComponent extends ImportSubformField {
       Object.assign(itemStyle, { width: columns.value })
     }
 
+    let validateStatus: '' | 'error' | 'validating' | 'success' | 'warning' | undefined
+    if (status === 'normal') {
+      validateStatus = undefined
+    } else if (status === 'error') {
+      validateStatus = 'error'
+    } else {
+      validateStatus = 'validating'
+    }
+
     return (
-      <div
-        style={colStyle}
-        key={key}
-        className={[styles['form-group-col'], styles[`form-group-col-${fieldType}`]].join(' ')}
-      >
+      <div style={colStyle} key={key} className={`form-group-col form-group-col-${fieldType}`}>
         <Form.Item
           extra={extra ? extra.trim() : ''}
           key={key}
           required={required}
           label={label}
-          validateStatus={status === 'normal' ? undefined : status === 'error' ? 'error' : 'validating'}
+          validateStatus={validateStatus}
           help={FiledErrMsg({ message, fieldType })}
-          className={styles[`ccms-antd-mini-form-${fieldType}`]}
-          // className={ [styles[`ccms-antd-mini-form-${fieldType}`], layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null].join(' ') }
+          className={`ccms-antd-mini-form-${fieldType}`}
           style={itemStyle}
         >
           {subLabel || null}

@@ -1,16 +1,10 @@
 import React from 'react'
 import { DetailTextField } from 'ccms'
-import { ITextField, TextFieldConfig } from 'ccms/dist/src/components/detail/text'
-
-export const PropsType = (props: TextFieldConfig) => { }
+import { ITextField } from 'ccms/dist/components/detail/text'
 
 export default class TextFieldComponent extends DetailTextField {
   renderComponent = (props: ITextField) => {
-    const {
-      value
-    } = props
-    return (
-      <>{value}</>
-    )
+    const { value } = props
+    return <>{value}</>
   }
 }

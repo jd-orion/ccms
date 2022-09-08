@@ -1,30 +1,15 @@
 {
   "private": true,
   "scripts": {
-    "lerna": "lerna bootstrap",
-    "list": "lerna ll",
-    "publish": "lerna publish",
-    "clean": "lerna clean",
-    "change": "lerna changed",
-    "link": "npm run link:core && npm run link:editor",
-    "relink": "lerna link",
-    "build": "lerna run --stream --sort build",
-    "link:editor": "lerna add ccms-antd packages/editor && lerna add ccms-antd-mini packages/editor",
-    "link:core": "lerna add ccms --scope=ccms-*",
+    "init": "npm install && lerna bootstrap",
+    "link": "lerna link",
+    "dev": "npm-watch",
+    "dev:demo": "cd packages/demo && npm run dev",
     "build:core": "cd packages/core && npm run build",
     "build:ccms-antd": "cd packages/UIs/ccms-antd && npm run build",
     "build:ccms-antd-mini": "cd packages/UIs/ccms-antd-mini && npm run build",
     "build:editor": "cd packages/editor && npm run build",
-    "publish:core": "cd packages/core && npm publish",
-    "publish:ccms-antd": "cd packages/UIs/ccms-antd && npm publish",
-    "publish:ccms-antd-mini": "cd packages/UIs/ccms-antd-mini && npm publish",
-    "publish:editor": "cd packages/editor && npm publish",
-    "publishBeta:editor": "cd packages/editor && npm publish --tag=beta",
-    "dev:editor": "cd packages/editor && npm run dev",
-    "dev": "npm-watch dev:editor",
-    "watch": "npm-watch",
     "commit": "git-cz",
-    "lint": "npm run lint:code && npm run lint:style && npm run prettier",
     "lint:code": "eslint --fix **/*.{js,ts,jsx,tsx}",
     "lint:style": "stylelint --fix **/*.less",
     "prettier": "prettier -c --write **/*.{json,html,md}"
@@ -55,10 +40,25 @@
     }
   },
   "devDependencies": {
+    "@babel/cli": "^7.16.8",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.11.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
     "@commitlint/cli": "^9.0.1",
     "@commitlint/config-conventional": "^9.0.1",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@testing-library/react": "^11.0.4",
+    "@types/jest": "^27.4.0",
+    "@types/react": "^16.14.0",
+    "@types/react-test-renderer": "^16.9.3",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
+    "babel-plugin-import": "^1.13.5",
     "commitizen": "^4.2.4",
     "commitlint-config-cz": "^0.13.2",
     "cz-customizable": "^6.3.0",
@@ -76,34 +76,47 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^4.2.5",
+    "jest": "^27.4.7",
     "lerna": "^4.0.0",
+    "less": "^4.1.2",
     "lint-staged": "^10.2.11",
     "npm-watch": "^0.11.0",
     "postcss": "^8.4.5",
     "postcss-less": "^6.0.0",
     "prettier": "^2.5.1",
-    "react": "^16.14.0",
+    "rollup": "^2.66.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "source-map-explorer": "^2.5.2",
     "stylelint": "^14.4.0",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^25.0.0",
     "stylelint-order": "^5.0.0",
-    "jest": "^27.4.7",
-    "typescript": "^4.6.3"
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.5.5",
+    "webpack-bundle-analyzer": "^4.6.1"
   },
   "watch": {
-    "dev:editor": {
+    "dev:demo": {
       "patterns": [
-        "packages/core/dist"
+        "packages/demo/src",
+        "packages/core/dist",
+        "packages/UIs/ccms-antd/dist",
+        "packages/UIs/ccms-antd-mini/dist",
+        "packages/editor/dist",
+        "packages/editor/config"
       ],
-      "extensions": "js",
+      "extensions": "ts,tsx,js,jsx,less,css",
+      "ignore": "packages/demo/src/port.ts",
       "quiet": false,
       "delay": 2500
     },
-    "build:core": {
+    "build:editor": {
       "patterns": [
-        "packages/core/src"
+        "packages/editor/src"
       ],
-      "extensions": "ts,tsx",
+      "extensions": "ts,tsx,js,jsx,less",
       "quiet": false,
       "delay": 2500,
       "runOnChangeOnly": true
@@ -112,7 +125,7 @@
       "patterns": [
         "packages/UIs/ccms-antd/src"
       ],
-      "extensions": "ts,tsx,less",
+      "extensions": "ts,tsx,js,jsx,less",
       "quiet": false,
       "delay": 2500,
       "runOnChangeOnly": true
@@ -121,11 +134,23 @@
       "patterns": [
         "packages/UIs/ccms-antd-mini/src"
       ],
-      "extensions": "ts,tsx,less",
+      "extensions": "ts,tsx,js,jsx,less",
+      "quiet": false,
+      "delay": 2500,
+      "runOnChangeOnly": true
+    },
+    "build:core": {
+      "patterns": [
+        "packages/core/src"
+      ],
+      "extensions": "ts,tsx,js,jsx,less",
       "quiet": false,
       "delay": 2500,
       "runOnChangeOnly": true
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  }
 }

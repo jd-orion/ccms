@@ -869,52 +869,60 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 visitable: display,
                 fieldType: formFieldConfig.type,
                 children: (
-                  <FormField
-                    key={formFieldIndex}
-                    ref={(formField: Field<FieldConfigs, unknown, unknown> | null) => {
-                      if (formField !== null) {
-                        this.formFields = set(this.formFields, `[${formFieldIndex}]`, formField)
-                        this.handleFormFieldMount(formFieldIndex)
+                  <React.Suspense fallback={<>Loading</>}>
+                    <FormField
+                      key={formFieldIndex}
+                      ref={(formField: Field<FieldConfigs, unknown, unknown> | null) => {
+                        if (formField !== null) {
+                          this.formFields = set(this.formFields, `[${formFieldIndex}]`, formField)
+                          this.handleFormFieldMount(formFieldIndex)
+                        }
+                      }}
+                      formLayout={layout}
+                      value={
+                        formFieldConfig.field !== undefined ? getValue(formValue, formFieldConfig.field) : undefined
                       }
-                    }}
-                    formLayout={layout}
-                    value={formFieldConfig.field !== undefined ? getValue(formValue, formFieldConfig.field) : undefined}
-                    record={formValue}
-                    form={this}
-                    data={data}
-                    step={formValue}
-                    config={formFieldConfig}
-                    onChange={async (value: unknown) => {
-                      this.handleChange(formFieldIndex, value)
-                    }}
-                    onValueSet={async (path, value, validation, options) =>
-                      this.handleValueSet(formFieldIndex, path, value, validation, options)
-                    }
-                    onValueUnset={async (path, validation, options) =>
-                      this.handleValueUnset(formFieldIndex, path, validation, options)
-                    }
-                    onValueListAppend={async (path, value, validation, options) =>
-                      this.handleValueListAppend(formFieldIndex, path, value, validation, options)
-                    }
-                    onValueListSplice={async (path, index, count, validation, options) =>
-                      this.handleValueListSplice(formFieldIndex, path, index, count, validation, options)
-                    }
-                    onValueListSort={async (path, index, sortType, validation, options) =>
-                      this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)
-                    }
-                    checkPageAuth={async (pageID) => this.props.checkPageAuth(pageID)}
-                    loadPageURL={async (pageID) => this.props.loadPageURL(pageID)}
-                    loadPageFrameURL={async (pageID) => this.props.loadPageFrameURL(pageID)}
-                    loadPageConfig={async (pageID) => this.props.loadPageConfig(pageID)}
-                    loadPageList={async () => this.props.loadPageList()}
-                    baseRoute={this.props.baseRoute}
-                    loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                    containerPath=""
-                  />
+                      record={formValue}
+                      form={this}
+                      data={data}
+                      step={formValue}
+                      config={formFieldConfig}
+                      onChange={async (value: unknown) => {
+                        this.handleChange(formFieldIndex, value)
+                      }}
+                      onValueSet={async (path, value, validation, options) =>
+                        this.handleValueSet(formFieldIndex, path, value, validation, options)
+                      }
+                      onValueUnset={async (path, validation, options) =>
+                        this.handleValueUnset(formFieldIndex, path, validation, options)
+                      }
+                      onValueListAppend={async (path, value, validation, options) =>
+                        this.handleValueListAppend(formFieldIndex, path, value, validation, options)
+                      }
+                      onValueListSplice={async (path, index, count, validation, options) =>
+                        this.handleValueListSplice(formFieldIndex, path, index, count, validation, options)
+                      }
+                      onValueListSort={async (path, index, sortType, validation, options) =>
+                        this.handleValueListSort(formFieldIndex, path, index, sortType, validation, options)
+                      }
+                      checkPageAuth={async (pageID) => this.props.checkPageAuth(pageID)}
+                      loadPageURL={async (pageID) => this.props.loadPageURL(pageID)}
+                      loadPageFrameURL={async (pageID) => this.props.loadPageFrameURL(pageID)}
+                      loadPageConfig={async (pageID) => this.props.loadPageConfig(pageID)}
+                      loadPageList={async () => this.props.loadPageList()}
+                      baseRoute={this.props.baseRoute}
+                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                      containerPath=""
+                    />
+                  </React.Suspense>
                 )
               }
               // 渲染表单项容器
-              return hidden ? this.renderItemComponent(renderData) : <React.Fragment key={formFieldIndex} />
+              return hidden ? (
+                <React.Fragment key={formFieldIndex}>{this.renderItemComponent(renderData)}</React.Fragment>
+              ) : (
+                <React.Fragment key={formFieldIndex} />
+              )
             })
           })}
         </>

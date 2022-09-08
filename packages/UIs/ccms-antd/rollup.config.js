@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import fs from 'fs'
 import path from 'path'
 import ts from 'rollup-plugin-typescript2'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
@@ -8,24 +10,36 @@ import json from '@rollup/plugin-json'
 import postcss from 'rollup-plugin-postcss'
 import { terser } from 'rollup-plugin-terser'
 
+const input = {}
+const loadInput = (pathPrefix) => {
+  const sources = fs.readdirSync(path.resolve(__dirname, 'src', ...pathPrefix), { withFileTypes: true })
+  for (const source of sources) {
+    if (source.isDirectory()) {
+      loadInput([...pathPrefix, source.name])
+    } else {
+      const extIndex = source.name.indexOf('.')
+      const name = source.name.substring(0, extIndex)
+      const exts = source.name.substring(extIndex + 1)
+      if (exts === 'ts' || exts === 'tsx') {
+        input[[...pathPrefix, name].join('/')] = ['src', ...pathPrefix, source.name].join('/')
+      }
+    }
+  }
+}
+loadInput([])
+
 export default {
-  input: 'src/index.tsx',
+  input,
   output: [
     {
-      format: 'cjs',
-      file: path.resolve('dist/index.js')
+      format: 'esm',
+      dir: 'dist'
     }
   ],
-  onwarn(warning) {
-    if (warning.code === 'THIS_IS_UNDEFINED') {
-      return
-    }
-    console.error(warning.message)
-  },
   plugins: [
     postcss({
-      extensions: ['.css', '.less'],
-      modules: true // 启用CSS模块
+      use: [['less', { javascriptEnabled: true, modifyVars: { '@ant-prefix': 'ccms-antd-ant' } }]],
+      extensions: ['.css', '.less']
     }),
     json(),
     ts({
@@ -34,7 +48,16 @@ export default {
     babel({
       babelHelpers: 'runtime',
       exclude: 'node_modules/**', // 只编译我们的源代码
-      plugins: ['@babel/plugin-transform-runtime']
+      plugins: [
+        [
+          'import',
+          {
+            libraryName: 'antd',
+            style: true
+          }
+        ],
+        '@babel/plugin-transform-runtime'
+      ]
     }),
     commonjs(),
     nodeResolve({
@@ -42,7 +65,7 @@ export default {
     }),
     terser()
   ],
-  external: ['react', 'react-dom', 'ccms', '@ant-design/icons', 'react-color', 'antd'],
+  external: ['@monaco-editor/react', 'ccms', 'react', 'react-color', 'react-sortable-hoc'],
   watch: {
     include: 'src/**'
   }

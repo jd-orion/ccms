@@ -1,20 +1,12 @@
 import React from 'react'
 import { NumberField } from 'ccms'
 import { InputNumber } from 'antd'
-import { INumberField, NumberFieldConfig } from 'ccms/dist/src/components/formFields/number'
-
-export const PropsType = (props: NumberFieldConfig) => { }
+import 'antd/lib/input-number/style'
+import { INumberField } from 'ccms/dist/components/formFields/number'
 
 export default class NumberFieldComponent extends NumberField {
   renderComponent = (props: INumberField) => {
-    const {
-      value,
-      onChange,
-      step,
-      readonly,
-      precision,
-      disabled
-    } = props
+    const { value, onChange, step, readonly, precision, disabled } = props
     return (
       <InputNumber
         style={{ width: '100%' }}

@@ -316,38 +316,47 @@ export default class TabsField<S> extends Display<
                                 required: getBoolean(formFieldConfig.required),
                                 fieldType: formFieldConfig.type,
                                 children: (
-                                  <FormField
-                                    key={formFieldIndex}
-                                    ref={(formField: Display<FieldConfigs, unknown, unknown> | null) => {
-                                      if (!this.formFieldsList[index]) this.formFieldsList[index] = []
-                                      this.formFieldsList[index][formFieldIndex] = formField
-                                      this.handleMount(index, formFieldIndex)
-                                    }}
-                                    value={getValue(getValue(value, tab.field), formFieldConfig.field)}
-                                    record={getValue(value, tab.field)}
-                                    data={cloneDeep(this.props.data)}
-                                    step={this.props.step}
-                                    config={formFieldConfig}
-                                    onValueSet={async (path, valueSet, validation) =>
-                                      this.handleValueSet(index, formFieldIndex, path, valueSet, validation)
-                                    }
-                                    onValueUnset={async (path, validation) =>
-                                      this.handleValueUnset(index, formFieldIndex, path, validation)
-                                    }
-                                    onValueListAppend={async (path, valueAppend, validation) =>
-                                      this.handleValueListAppend(index, formFieldIndex, path, valueAppend, validation)
-                                    }
-                                    onValueListSplice={async (path, _index, count, validation) =>
-                                      this.handleValueListSplice(index, formFieldIndex, path, _index, count, validation)
-                                    }
-                                    baseRoute={this.props.baseRoute}
-                                    loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                                    containerPath={getChainPath(
-                                      this.props.containerPath,
-                                      this.props.config.field,
-                                      tab.field
-                                    )}
-                                  />
+                                  <React.Suspense fallback={<>Loading</>}>
+                                    <FormField
+                                      key={formFieldIndex}
+                                      ref={(formField: Display<FieldConfigs, unknown, unknown> | null) => {
+                                        if (!this.formFieldsList[index]) this.formFieldsList[index] = []
+                                        this.formFieldsList[index][formFieldIndex] = formField
+                                        this.handleMount(index, formFieldIndex)
+                                      }}
+                                      value={getValue(getValue(value, tab.field), formFieldConfig.field)}
+                                      record={getValue(value, tab.field)}
+                                      data={cloneDeep(this.props.data)}
+                                      step={this.props.step}
+                                      config={formFieldConfig}
+                                      onValueSet={async (path, valueSet, validation) =>
+                                        this.handleValueSet(index, formFieldIndex, path, valueSet, validation)
+                                      }
+                                      onValueUnset={async (path, validation) =>
+                                        this.handleValueUnset(index, formFieldIndex, path, validation)
+                                      }
+                                      onValueListAppend={async (path, valueAppend, validation) =>
+                                        this.handleValueListAppend(index, formFieldIndex, path, valueAppend, validation)
+                                      }
+                                      onValueListSplice={async (path, _index, count, validation) =>
+                                        this.handleValueListSplice(
+                                          index,
+                                          formFieldIndex,
+                                          path,
+                                          _index,
+                                          count,
+                                          validation
+                                        )
+                                      }
+                                      baseRoute={this.props.baseRoute}
+                                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                                      containerPath={getChainPath(
+                                        this.props.containerPath,
+                                        this.props.config.field,
+                                        tab.field
+                                      )}
+                                    />
+                                  </React.Suspense>
                                 )
                               })}
                             </div>

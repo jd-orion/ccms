@@ -226,45 +226,47 @@ export default class GroupField
               visitable: display,
               fieldType: detailFieldConfig.type,
               children: (
-                <DetailFieldComponent
-                  checkPageAuth={this.props.checkPageAuth}
-                  loadPageURL={this.props.loadPageURL}
-                  loadPageFrameURL={this.props.loadPageFrameURL}
-                  loadPageConfig={this.props.loadPageConfig}
-                  loadPageList={this.props.loadPageList}
-                  handlePageRedirect={this.props.handlePageRedirect}
-                  onUnmount={this.props.onUnmount}
-                  key={detailFieldIndex}
-                  ref={(detailField: DetailField<DetailFieldConfigs, unknown, unknown> | null) => {
-                    if (detailFieldIndex !== null) {
-                      this.detailFields[detailFieldIndex] = detailField
-                      this.handleMount(detailFieldIndex)
+                <React.Suspense fallback={<>Loading</>}>
+                  <DetailFieldComponent
+                    checkPageAuth={this.props.checkPageAuth}
+                    loadPageURL={this.props.loadPageURL}
+                    loadPageFrameURL={this.props.loadPageFrameURL}
+                    loadPageConfig={this.props.loadPageConfig}
+                    loadPageList={this.props.loadPageList}
+                    handlePageRedirect={this.props.handlePageRedirect}
+                    onUnmount={this.props.onUnmount}
+                    key={detailFieldIndex}
+                    ref={(detailField: DetailField<DetailFieldConfigs, unknown, unknown> | null) => {
+                      if (detailFieldIndex !== null) {
+                        this.detailFields[detailFieldIndex] = detailField
+                        this.handleMount(detailFieldIndex)
+                      }
+                    }}
+                    formLayout={formLayout}
+                    value={getValue(value, detailFieldConfig.field)}
+                    record={record}
+                    data={cloneDeep(data)}
+                    step={step}
+                    config={detailFieldConfig}
+                    detail={this.props.detail}
+                    onChange={async (valueChange: unknown) => {
+                      await this.handleChange(detailFieldIndex, valueChange)
+                    }}
+                    onValueSet={async (path, valueSet, options) =>
+                      this.handleValueSet(detailFieldIndex, path, valueSet, options)
                     }
-                  }}
-                  formLayout={formLayout}
-                  value={getValue(value, detailFieldConfig.field)}
-                  record={record}
-                  data={cloneDeep(data)}
-                  step={step}
-                  config={detailFieldConfig}
-                  detail={this.props.detail}
-                  onChange={async (valueChange: unknown) => {
-                    await this.handleChange(detailFieldIndex, valueChange)
-                  }}
-                  onValueSet={async (path, valueSet, options) =>
-                    this.handleValueSet(detailFieldIndex, path, valueSet, options)
-                  }
-                  onValueUnset={async (path, options) => this.handleValueUnset(detailFieldIndex, path, options)}
-                  onValueListAppend={async (path, valueAppend, options) =>
-                    this.handleValueListAppend(detailFieldIndex, path, valueAppend, options)
-                  }
-                  onValueListSplice={async (path, index, count, options) =>
-                    this.handleValueListSplice(detailFieldIndex, path, index, count, options)
-                  }
-                  baseRoute={this.props.baseRoute}
-                  loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                  containerPath={getChainPath(this.props.containerPath, config.field)}
-                />
+                    onValueUnset={async (path, options) => this.handleValueUnset(detailFieldIndex, path, options)}
+                    onValueListAppend={async (path, valueAppend, options) =>
+                      this.handleValueListAppend(detailFieldIndex, path, valueAppend, options)
+                    }
+                    onValueListSplice={async (path, index, count, options) =>
+                      this.handleValueListSplice(detailFieldIndex, path, index, count, options)
+                    }
+                    baseRoute={this.props.baseRoute}
+                    loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                    containerPath={getChainPath(this.props.containerPath, config.field)}
+                  />
+                </React.Suspense>
               )
             }
             // 渲染表单项容器

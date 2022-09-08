@@ -588,64 +588,70 @@ export default class FormField
                           visitable: display,
                           fieldType: formFieldConfig.type,
                           children: (
-                            <SubFormField
-                              ref={(fieldRef: Field<FieldConfigs, unknown, unknown> | null) => {
-                                if (fieldRef) {
-                                  if (!this.formFieldsList[index])
-                                    this.formFieldsList = set(this.formFieldsList, `[${index}]`, [])
-                                  this.formFieldsList = set(this.formFieldsList, `[${index}][${fieldIndex}]`, fieldRef)
-                                  this.handleMount(index, fieldIndex)
+                            <React.Suspense fallback={<>Loading</>}>
+                              <SubFormField
+                                ref={(fieldRef: Field<FieldConfigs, unknown, unknown> | null) => {
+                                  if (fieldRef) {
+                                    if (!this.formFieldsList[index])
+                                      this.formFieldsList = set(this.formFieldsList, `[${index}]`, [])
+                                    this.formFieldsList = set(
+                                      this.formFieldsList,
+                                      `[${index}][${fieldIndex}]`,
+                                      fieldRef
+                                    )
+                                    this.handleMount(index, fieldIndex)
+                                  }
+                                }}
+                                form={this.props.form}
+                                formLayout={formLayout}
+                                value={getValue(value[index], formFieldConfig.field)}
+                                record={value[index]}
+                                step={this.props.step}
+                                data={data}
+                                config={formFieldConfig}
+                                onChange={(valueChange: unknown) => this.handleChange(index, fieldIndex, valueChange)}
+                                onValueSet={async (path, valueSet, validation, options) =>
+                                  this.handleValueSet(index, fieldIndex, path, valueSet, validation, options)
                                 }
-                              }}
-                              form={this.props.form}
-                              formLayout={formLayout}
-                              value={getValue(value[index], formFieldConfig.field)}
-                              record={value[index]}
-                              step={this.props.step}
-                              data={data}
-                              config={formFieldConfig}
-                              onChange={(valueChange: unknown) => this.handleChange(index, fieldIndex, valueChange)}
-                              onValueSet={async (path, valueSet, validation, options) =>
-                                this.handleValueSet(index, fieldIndex, path, valueSet, validation, options)
-                              }
-                              onValueUnset={async (path, validation, options) =>
-                                this.handleValueUnset(index, fieldIndex, path, validation, options)
-                              }
-                              onValueListAppend={async (path, valueAppend, validation, options) =>
-                                this.handleValueListAppend(index, fieldIndex, path, valueAppend, validation, options)
-                              }
-                              onValueListSplice={async (path, indexSplict, count, validation, options) =>
-                                this.handleValueListSplice(
-                                  index,
-                                  fieldIndex,
-                                  path,
-                                  indexSplict,
-                                  count,
-                                  validation,
-                                  options
-                                )
-                              }
-                              onValueListSort={async (path, indexSort, sortType, validation, options) =>
-                                this.handleValueListSort(
-                                  index,
-                                  fieldIndex,
-                                  path,
-                                  indexSort,
-                                  sortType,
-                                  validation,
-                                  options
-                                )
-                              }
-                              checkPageAuth={async (pageID) => this.props.checkPageAuth(pageID)}
-                              loadPageURL={async (pageID) => this.props.loadPageURL(pageID)}
-                              loadPageFrameURL={async (pageID) => this.props.loadPageFrameURL(pageID)}
-                              loadPageConfig={async (pageID) => this.props.loadPageConfig(pageID)}
-                              loadPageList={async () => this.props.loadPageList()}
-                              baseRoute={this.props.baseRoute}
-                              loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                              containerPath={getChainPath(this.props.containerPath, this.props.config.field, index)}
-                              onReportFields={async (field: string) => this.handleReportFields(field)}
-                            />
+                                onValueUnset={async (path, validation, options) =>
+                                  this.handleValueUnset(index, fieldIndex, path, validation, options)
+                                }
+                                onValueListAppend={async (path, valueAppend, validation, options) =>
+                                  this.handleValueListAppend(index, fieldIndex, path, valueAppend, validation, options)
+                                }
+                                onValueListSplice={async (path, indexSplict, count, validation, options) =>
+                                  this.handleValueListSplice(
+                                    index,
+                                    fieldIndex,
+                                    path,
+                                    indexSplict,
+                                    count,
+                                    validation,
+                                    options
+                                  )
+                                }
+                                onValueListSort={async (path, indexSort, sortType, validation, options) =>
+                                  this.handleValueListSort(
+                                    index,
+                                    fieldIndex,
+                                    path,
+                                    indexSort,
+                                    sortType,
+                                    validation,
+                                    options
+                                  )
+                                }
+                                checkPageAuth={async (pageID) => this.props.checkPageAuth(pageID)}
+                                loadPageURL={async (pageID) => this.props.loadPageURL(pageID)}
+                                loadPageFrameURL={async (pageID) => this.props.loadPageFrameURL(pageID)}
+                                loadPageConfig={async (pageID) => this.props.loadPageConfig(pageID)}
+                                loadPageList={async () => this.props.loadPageList()}
+                                baseRoute={this.props.baseRoute}
+                                loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                                containerPath={getChainPath(this.props.containerPath, this.props.config.field, index)}
+                                onReportFields={async (field: string) => this.handleReportFields(field)}
+                              />
+                            </React.Suspense>
                           )
                         }
                         // 渲染表单项容器

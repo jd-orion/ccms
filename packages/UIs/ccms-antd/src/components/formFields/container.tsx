@@ -1,8 +1,9 @@
 import React from 'react'
 import { FormContainer } from 'ccms'
 import { Form } from 'antd'
-import { IFormItem } from 'ccms/dist/src/steps/form'
-import { IFormContainer } from 'ccms/dist/src/components/formFields/container'
+import 'antd/lib/form/style'
+import { IFormItem } from 'ccms/dist/steps/form'
+import { IFormContainer } from 'ccms/dist/components/formFields/container'
 import getALLComponents from '.'
 import { formItemLayout } from './common'
 
@@ -28,7 +29,6 @@ export default class FormContainerComponent extends FormContainer {
         validateStatus={validateStatus}
         help={message === '' ? null : message}
         {...formItemLayout(layout, fieldType, label)}
-        // className={ layout === 'horizontal' && subLabel ? commonStyles['ccms-antd-label-vertical-flex-start']: null }
         style={itemStyle}
       >
         {subLabel || null}

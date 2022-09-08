@@ -1,43 +1,54 @@
 import React, { PureComponent } from 'react'
-import { Input } from 'antd'
+import { Input, InputRef } from 'antd'
+import 'antd/lib/input/style'
+
 type Props = {
-  defaultValue?: string,
-  value: string,
+  defaultValue?: string
+  value: string
   readonly?: boolean
   disabled?: boolean
   placeholder?: string
   onChange: (value: string) => Promise<void>
-};
+}
 
 type State = {
   wait: boolean
   flag: boolean
   input: string
-  firstComposition: boolean
 }
-export default class TextComponent extends PureComponent<Props, {}> {
+export default class TextComponent extends PureComponent<Props, State> {
   isOnComposition = false
+
   selectionStart: number | null = null
+
   selectionEnd: number | null = null
+
   timer: NodeJS.Timeout | null = null
 
-  state = {
-    wait: false,
-    flag: false,
-    input: ''
-  }
-  ref: any
+  ref = React.createRef<InputRef>()
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevProps.value != this.props.value && prevState.wait === false) {
-      this.ref.input.selectionStart = this.selectionStart
-      this.ref.input.selectionEnd = this.selectionEnd
+  constructor(props) {
+    super(props)
+    this.state = {
+      wait: false,
+      flag: false,
+      input: ''
     }
   }
 
-  handleComposition = (e: any) => {
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const { value } = this.props
+    if (prevProps.value !== value && prevState.wait === false) {
+      if (this.ref && this.ref.current && this.ref.current.input)
+        this.ref.current.input.selectionStart = this.selectionStart
+      if (this.ref && this.ref.current && this.ref.current.input)
+        this.ref.current.input.selectionEnd = this.selectionEnd
+    }
+  }
+
+  handleComposition = (e) => {
     const { flag } = this.state
-    if ('compositionend' === e.type) {
+    if (e.type === 'compositionend') {
       this.isOnComposition = false
       this.handleChange(e)
     } else {
@@ -48,14 +59,15 @@ export default class TextComponent extends PureComponent<Props, {}> {
     }
   }
 
-  setFlag = (flag: boolean) => {
+  setFlag = (flag) => {
     this.setState({
-      flag: this.isOnComposition
+      flag
     })
   }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
+    const { onChange } = this.props
+    const { value } = e.target
 
     this.setState({
       input: value,
@@ -69,10 +81,9 @@ export default class TextComponent extends PureComponent<Props, {}> {
       this.setState({
         wait: false
       })
-      if (this.props.onChange) {
-        this.props.onChange(value)
+      if (onChange) {
+        onChange(value)
       }
-
     }, 500)
   }
 
@@ -80,27 +91,29 @@ export default class TextComponent extends PureComponent<Props, {}> {
     const { value, readonly, disabled, placeholder } = this.props
     const { wait, flag, input } = this.state
 
-    let Component = Input
+    const Component = Input
 
-    return <Component
-      ref={(e) => { this.ref = e }}
-      readOnly={readonly}
-      disabled={disabled}
-      placeholder={placeholder}
-      value={!flag && !wait ? value : input}
-      onCompositionStart={this.handleComposition}
-      onCompositionUpdate={this.handleComposition}
-      onCompositionEnd={this.handleComposition}
-      onChange={(e) => {
-        this.selectionStart = e.target.selectionStart
-        this.selectionEnd = e.target.selectionEnd
-        this.handleChange(e)
-        setTimeout(() => {
-          e.target.selectionStart = this.selectionStart
-          e.target.selectionEnd = this.selectionEnd
-        })
-      }}
-    />
+    return (
+      <Component
+        ref={this.ref}
+        readOnly={readonly}
+        disabled={disabled}
+        placeholder={placeholder}
+        value={!flag && !wait ? value : input}
+        onCompositionStart={this.handleComposition}
+        onCompositionUpdate={this.handleComposition}
+        onCompositionEnd={this.handleComposition}
+        onChange={(e) => {
+          const { target } = e
+          this.selectionStart = target.selectionStart
+          this.selectionEnd = target.selectionEnd
+          this.handleChange(e)
+          setTimeout(() => {
+            target.selectionStart = this.selectionStart
+            target.selectionEnd = this.selectionEnd
+          })
+        }}
+      />
+    )
   }
 }
-

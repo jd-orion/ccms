@@ -1,16 +1,10 @@
 import React from 'react'
 import { DetailStatementField } from 'ccms'
-import { IStatementProps, StatementDetailConfig } from 'ccms/dist/src/components/detail/statement'
-
-export const PropsType = (props: StatementDetailConfig) => {}
+import { IStatementProps } from 'ccms/dist/components/detail/statement'
 
 export default class StatementDetailComponent extends DetailStatementField {
   renderComponent = (props: IStatementProps) => {
-    const {
-      content
-    } = props
-    return (
-      <>{content}</>
-    )
+    const { content } = props
+    return <>{content}</>
   }
 }

@@ -1,28 +1,32 @@
 import React, { useEffect, useState } from 'react'
 import { Drawer, Button, Modal, Space } from 'antd'
+import 'antd/lib/drawer/style'
+import 'antd/lib/button/style'
+import 'antd/lib/modal/style'
+import 'antd/lib/space/style'
 import Editor, { loader } from '@monaco-editor/react'
 
 loader.config({ paths: { vs: 'https://storage.360buyimg.com/swm-plus/monaco-editor-0.28.1/min/vs' } })
 
 interface ConfigJSONProps {
   configStringify: boolean
-  defaultValue: any
-  onOk: (config: any) => void
+  defaultValue: string
+  onOk: (config: string) => void
   onCancel: () => void
 }
 
 export default function ConfigJSON(props: ConfigJSONProps) {
-  let editorInstance: any = ''
+  const { defaultValue, configStringify, onOk, onCancel } = props
 
   useEffect(() => {
-    setConfig(props.defaultValue)
-  }, [props.defaultValue])
+    setConfig(defaultValue)
+  }, [defaultValue])
 
-  const [config, setConfig] = useState(props.defaultValue)
+  const [config, setConfig] = useState(defaultValue)
 
-  const handleEditorDidMount = (editor, monaco) => {
-    editorInstance = editor
-    editorInstance.defaultCodeValue = editor.getValue()
+  const handleEditorDidMount = (editor) => {
+    const _editor = editor
+    _editor.defaultCodeValue = editor.getValue()
   }
 
   return (
@@ -30,7 +34,7 @@ export default function ConfigJSON(props: ConfigJSONProps) {
       width="50%"
       title="编辑配置文件"
       placement="right"
-      visible={props.configStringify}
+      visible={configStringify}
       getContainer={false}
       closable
       maskClosable
@@ -39,11 +43,11 @@ export default function ConfigJSON(props: ConfigJSONProps) {
           <Button
             onClick={() => {
               try {
-                props.onOk(JSON.parse(config))
-              } catch (e: any) {
+                onOk(config)
+              } catch (e) {
                 Modal.error({
                   title: '配置文件解析失败',
-                  content: e.message
+                  content: (e as Error).message
                 })
               }
             }}
@@ -51,10 +55,10 @@ export default function ConfigJSON(props: ConfigJSONProps) {
           >
             确定
           </Button>
-          <Button onClick={() => props.onCancel()}>取消</Button>
+          <Button onClick={() => onCancel()}>取消</Button>
         </Space>
       }
-      onClose={() => props.onCancel()}
+      onClose={() => onCancel()}
     >
       <Editor
         height={document.body.clientHeight}
@@ -64,7 +68,7 @@ export default function ConfigJSON(props: ConfigJSONProps) {
         value={config}
         onMount={handleEditorDidMount}
         onChange={(v) => {
-          setConfig(v)
+          setConfig(v || '')
         }}
       />
     </Drawer>

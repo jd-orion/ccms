@@ -287,68 +287,70 @@ export default class FormContainer extends React.Component<FormContainerProps, F
             const FormField = this.getALLComponents(fieldConfig.type) || Field
 
             renderItemConfig.children = (
-              <FormField
-                key={fieldIndex}
-                ref={async (fieldInstance: Field<FieldConfigs, unknown, unknown> | null) => {
-                  if (fieldInstance) {
-                    this.fieldsInstance = set(this.fieldsInstance, `[${fieldIndex}]`, fieldInstance)
+              <React.Suspense fallback={<>Loading</>}>
+                <FormField
+                  key={fieldIndex}
+                  ref={async (fieldInstance: Field<FieldConfigs, unknown, unknown> | null) => {
+                    if (fieldInstance) {
+                      this.fieldsInstance = set(this.fieldsInstance, `[${fieldIndex}]`, fieldInstance)
 
-                    if (this.fieldsMounted[fieldIndex]) return true
-                    this.fieldsMounted = set(this.fieldsMounted, `[${fieldIndex}]`, true)
+                      if (this.fieldsMounted[fieldIndex]) return true
+                      this.fieldsMounted = set(this.fieldsMounted, `[${fieldIndex}]`, true)
 
-                    const currentFieldConfig = fieldsConfig[fieldIndex]
-                    if (currentFieldConfig) {
-                      const sourceValue = getValue(value, currentFieldConfig.field)
-                      const targetValue = await fieldInstance.set(
-                        currentFieldConfig.defaultValue && sourceValue === undefined
-                          ? await fieldInstance.reset()
-                          : sourceValue
-                      )
-                      if (sourceValue !== targetValue) {
-                        onValueSet(currentFieldConfig.field, targetValue, true)
+                      const currentFieldConfig = fieldsConfig[fieldIndex]
+                      if (currentFieldConfig) {
+                        const sourceValue = getValue(value, currentFieldConfig.field)
+                        const targetValue = await fieldInstance.set(
+                          currentFieldConfig.defaultValue && sourceValue === undefined
+                            ? await fieldInstance.reset()
+                            : sourceValue
+                        )
+                        if (sourceValue !== targetValue) {
+                          onValueSet(currentFieldConfig.field, targetValue, true)
+                        }
+                        if (undefined !== targetValue) {
+                          this.handleValidation(fieldIndex, await fieldInstance.validate(targetValue))
+                        }
+                        await fieldInstance.didMount()
                       }
-                      if (undefined !== targetValue) {
-                        this.handleValidation(fieldIndex, await fieldInstance.validate(targetValue))
-                      }
-                      await fieldInstance.didMount()
                     }
+                  }}
+                  form={form}
+                  formLayout={formLayout}
+                  value={getValue(value, fieldConfig.field)}
+                  record={datas.record}
+                  data={datas.data}
+                  step={datas.step}
+                  containerPath={getChainPath(datas.containerPath, fieldConfig.field)}
+                  config={fieldConfig}
+                  onChange={async () => {
+                    /* 无逻辑 */
+                  }}
+                  onValueSet={async (path, valueSet, validation, options) =>
+                    this.handleValueSet(fieldIndex, path, valueSet, validation, options)
                   }
-                }}
-                form={form}
-                formLayout={formLayout}
-                value={getValue(value, fieldConfig.field)}
-                record={datas.record}
-                data={datas.data}
-                step={datas.step}
-                containerPath={getChainPath(datas.containerPath, fieldConfig.field)}
-                config={fieldConfig}
-                onChange={async () => {
-                  /* 无逻辑 */
-                }}
-                onValueSet={async (path, valueSet, validation, options) =>
-                  this.handleValueSet(fieldIndex, path, valueSet, validation, options)
-                }
-                onValueUnset={async (path, validation, options) =>
-                  this.handleValueUnset(fieldIndex, path, validation, options)
-                }
-                onValueListAppend={async (path, valueAppend, validation, options) =>
-                  this.handleValueListAppend(fieldIndex, path, valueAppend, validation, options)
-                }
-                onValueListSplice={async (path, index, count, validation, options) =>
-                  this.handleValueListSplice(fieldIndex, path, index, count, validation, options)
-                }
-                onValueListSort={async (path, index, sortType, validation, options) =>
-                  this.handleValueListSort(fieldIndex, path, index, sortType, validation, options)
-                }
-                checkPageAuth={async (pageID) => checkPageAuth(pageID)}
-                loadPageURL={async (pageID) => loadPageURL(pageID)}
-                loadPageFrameURL={async (pageID) => loadPageFrameURL(pageID)}
-                loadPageConfig={async (pageID) => loadPageConfig(pageID)}
-                loadPageList={async () => loadPageList()}
-                baseRoute={baseRoute}
-                loadDomain={async (domain: string) => loadDomain(domain)}
-                onReportFields={async (field: string) => this.handleReportFields(field)}
-              />
+                  onValueUnset={async (path, validation, options) =>
+                    this.handleValueUnset(fieldIndex, path, validation, options)
+                  }
+                  onValueListAppend={async (path, valueAppend, validation, options) =>
+                    this.handleValueListAppend(fieldIndex, path, valueAppend, validation, options)
+                  }
+                  onValueListSplice={async (path, index, count, validation, options) =>
+                    this.handleValueListSplice(fieldIndex, path, index, count, validation, options)
+                  }
+                  onValueListSort={async (path, index, sortType, validation, options) =>
+                    this.handleValueListSort(fieldIndex, path, index, sortType, validation, options)
+                  }
+                  checkPageAuth={async (pageID) => checkPageAuth(pageID)}
+                  loadPageURL={async (pageID) => loadPageURL(pageID)}
+                  loadPageFrameURL={async (pageID) => loadPageFrameURL(pageID)}
+                  loadPageConfig={async (pageID) => loadPageConfig(pageID)}
+                  loadPageList={async () => loadPageList()}
+                  baseRoute={baseRoute}
+                  loadDomain={async (domain: string) => loadDomain(domain)}
+                  onReportFields={async (field: string) => this.handleReportFields(field)}
+                />
+              </React.Suspense>
             )
 
             // 渲染表单项容器

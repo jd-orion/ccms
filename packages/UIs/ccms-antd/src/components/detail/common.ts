@@ -5,30 +5,30 @@ export function formItemLayout(
   fieldType: string,
   label: string | undefined
 ) {
-  const formItemLayout: FormItemProps = { labelAlign: 'left' }
+  const currentFormItemLayout: FormItemProps = { labelAlign: 'left' }
   if (layout === 'vertical') {
     if (label) {
-      formItemLayout.labelCol = { span: 24 }
-      formItemLayout.wrapperCol = { span: 24 }
+      currentFormItemLayout.labelCol = { span: 24 }
+      currentFormItemLayout.wrapperCol = { span: 24 }
     } else {
-      formItemLayout.wrapperCol = { span: 24 }
+      currentFormItemLayout.wrapperCol = { span: 24 }
     }
   } else if (['form', 'group', 'object', 'import_subform', 'tabs'].includes(fieldType)) {
     if (label) {
-      formItemLayout.labelCol = { span: 24 }
+      currentFormItemLayout.labelCol = { span: 24 }
     }
-    formItemLayout.wrapperCol = { span: 24 }
+    currentFormItemLayout.wrapperCol = { span: 24 }
   } else if (label) {
-    formItemLayout.labelCol = { span: 6 }
-    formItemLayout.wrapperCol = { span: 18 }
+    currentFormItemLayout.labelCol = { span: 6 }
+    currentFormItemLayout.wrapperCol = { span: 18 }
   } else {
-    formItemLayout.wrapperCol = { span: 24 }
+    currentFormItemLayout.wrapperCol = { span: 24 }
   }
 
-  return formItemLayout
+  return currentFormItemLayout
 }
 
-export function computedItemStyle(columns: any, layout: string) {
+export function computedItemStyle(columns, layout: string) {
   const setStyle = {}
   if (!columns) return {}
   Object.assign(
@@ -65,7 +65,7 @@ export function computedItemStyle(columns: any, layout: string) {
   return setStyle
 }
 
-export function computedGapStyle(columns: any, type: string) {
+export function computedGapStyle(columns, type: string) {
   const setStyle = {}
 
   const gap = (Number(columns?.gap || columns?.rowGap) || 0) / 2

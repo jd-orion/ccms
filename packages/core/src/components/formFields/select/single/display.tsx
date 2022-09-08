@@ -9,10 +9,10 @@ export interface ISelectSingleField {
 
 export default class SelectSingleDisplay extends SelectDisplay<
   SelectSingleFieldConfig,
-  {},
+  unknown,
   string | number | boolean | undefined
 > {
-  renderSelectSingleComponent = (props: ISelectSingleField) => {
+  renderSelectSingleComponent: (props: ISelectSingleField) => JSX.Element = () => {
     return <>您当前使用的UI版本没有实现SelectSingleDisplay组件。</>
   }
 
@@ -31,18 +31,14 @@ export default class SelectSingleDisplay extends SelectDisplay<
       if (props.options.map((option) => option.value).includes(value)) {
         props.value = value
       } else {
-        console.warn(`选择框的当前值${value}不在选项中。`)
         props.value = undefined
       }
     } else if (value !== undefined) {
       props.value = undefined
-      console.warn('单项选择框的值需要是字符串或数值。')
     } else if (value === undefined) {
       if (defaultSelect !== undefined && defaultSelect !== false && props.options.length) {
-        ;(async () => {
-          const { value } = props.options[defaultSelect === true || defaultSelect < 0 ? 0 : defaultSelect]
-          props.value = value
-        })()
+        const { value: valueChange } = props.options[defaultSelect === true || defaultSelect < 0 ? 0 : defaultSelect]
+        props.value = valueChange
       }
     }
     return <>{this.renderSelectSingleComponent(props)}</>

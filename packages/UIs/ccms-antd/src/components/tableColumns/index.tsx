@@ -1,25 +1,15 @@
-import TextColumns from './text'
-import DatetimeColumns from './datetime'
-import DatetimeRangeColumns from './datetimeRange'
-import NumberColumn from './number'
-import NumberRangeColumn from './numberRange'
-import MultirowColumn from './multirowText'
-import EnumColumn from './enum'
-import ImageColumn from './image'
-import CustomColumn from './custom'
-import OperationColumn from './operation'
-import FormattedTextColumn from './formattedText'
+import { lazy } from 'react'
 
 export default {
-  text: TextColumns,
-  datetime: DatetimeColumns,
-  datetimeRange: DatetimeRangeColumns,
-  number: NumberColumn,
-  numberRange: NumberRangeColumn,
-  multirowText: MultirowColumn,
-  Aenum: EnumColumn,
-  image: ImageColumn,
-  custom: CustomColumn,
-  operation: OperationColumn,
-  formatted_text: FormattedTextColumn
+  text: lazy(() => import('./text')),
+  datetime: lazy(() => import('./datetime')),
+  datetimeRange: lazy(() => import('./datetimeRange')),
+  number: lazy(() => import('./number')),
+  numberRange: lazy(() => import('./numberRange')),
+  multirowText: lazy(() => import('./multirowText')),
+  Aenum: lazy(() => import('./enum')),
+  image: lazy(() => import('./image')),
+  custom: lazy(() => import('./custom')),
+  operation: lazy(() => import('./operation')),
+  formatted_text: lazy(() => import('./formattedText'))
 }

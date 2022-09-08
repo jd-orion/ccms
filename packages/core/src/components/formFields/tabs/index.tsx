@@ -544,80 +544,89 @@ export default class TabsField<S>
                                   layout: this.props.formLayout,
                                   fieldType: formFieldConfig.type,
                                   children: (
-                                    <FormField
-                                      key={formFieldIndex}
-                                      ref={(formField: Field<FieldConfigs, unknown, unknown> | null) => {
-                                        if (!this.formFieldsList[index])
-                                          this.formFieldsList = set(this.formFieldsList, `[${index}]`, [])
-                                        this.formFieldsList = set(
-                                          this.formFieldsList,
-                                          `[${index}][${formFieldIndex}]`,
-                                          formField
-                                        )
-                                        this.handleMount(index, formFieldIndex)
-                                      }}
-                                      form={this.props.form}
-                                      formLayout={this.props.formLayout}
-                                      value={getValue(value, getChainPath(tab.field, formFieldConfig.field))}
-                                      record={getValue(value, tab.field)}
-                                      data={this.props.data}
-                                      step={this.props.step}
-                                      config={formFieldConfig}
-                                      onChange={(changeValue: unknown) =>
-                                        this.handleChange(index, formFieldIndex, changeValue)
-                                      }
-                                      onValueSet={async (path, valueSet, validation, options) =>
-                                        this.handleValueSet(index, formFieldIndex, path, valueSet, validation, options)
-                                      }
-                                      onValueUnset={async (path, validation, options) =>
-                                        this.handleValueUnset(index, formFieldIndex, path, validation, options)
-                                      }
-                                      onValueListAppend={async (path, valueAppend, validation, options) =>
-                                        this.handleValueListAppend(
-                                          index,
-                                          formFieldIndex,
-                                          path,
-                                          valueAppend,
-                                          validation,
-                                          options
-                                        )
-                                      }
-                                      onValueListSplice={async (path, _index, count, validation, options) =>
-                                        this.handleValueListSplice(
-                                          index,
-                                          formFieldIndex,
-                                          path,
-                                          _index,
-                                          count,
-                                          validation,
-                                          options
-                                        )
-                                      }
-                                      onValueListSort={async (path, _index, sortType, validation, options) =>
-                                        this.handleValueListSort(
-                                          index,
-                                          formFieldIndex,
-                                          path,
-                                          _index,
-                                          sortType,
-                                          validation,
-                                          options
-                                        )
-                                      }
-                                      checkPageAuth={async (pageID) => this.props.checkPageAuth(pageID)}
-                                      loadPageURL={async (pageID) => this.props.loadPageURL(pageID)}
-                                      loadPageFrameURL={async (pageID) => this.props.loadPageFrameURL(pageID)}
-                                      loadPageConfig={async (pageID) => this.props.loadPageConfig(pageID)}
-                                      loadPageList={async () => this.props.loadPageList()}
-                                      baseRoute={this.props.baseRoute}
-                                      loadDomain={async (domain: string) => this.props.loadDomain(domain)}
-                                      containerPath={getChainPath(
-                                        this.props.containerPath,
-                                        this.props.config.field,
-                                        tab.field
-                                      )}
-                                      onReportFields={async (field: string) => this.handleReportFields(field)}
-                                    />
+                                    <React.Suspense fallback={<>Loading</>}>
+                                      <FormField
+                                        key={formFieldIndex}
+                                        ref={(formField: Field<FieldConfigs, unknown, unknown> | null) => {
+                                          if (!this.formFieldsList[index])
+                                            this.formFieldsList = set(this.formFieldsList, `[${index}]`, [])
+                                          this.formFieldsList = set(
+                                            this.formFieldsList,
+                                            `[${index}][${formFieldIndex}]`,
+                                            formField
+                                          )
+                                          this.handleMount(index, formFieldIndex)
+                                        }}
+                                        form={this.props.form}
+                                        formLayout={this.props.formLayout}
+                                        value={getValue(value, getChainPath(tab.field, formFieldConfig.field))}
+                                        record={getValue(value, tab.field)}
+                                        data={this.props.data}
+                                        step={this.props.step}
+                                        config={formFieldConfig}
+                                        onChange={(changeValue: unknown) =>
+                                          this.handleChange(index, formFieldIndex, changeValue)
+                                        }
+                                        onValueSet={async (path, valueSet, validation, options) =>
+                                          this.handleValueSet(
+                                            index,
+                                            formFieldIndex,
+                                            path,
+                                            valueSet,
+                                            validation,
+                                            options
+                                          )
+                                        }
+                                        onValueUnset={async (path, validation, options) =>
+                                          this.handleValueUnset(index, formFieldIndex, path, validation, options)
+                                        }
+                                        onValueListAppend={async (path, valueAppend, validation, options) =>
+                                          this.handleValueListAppend(
+                                            index,
+                                            formFieldIndex,
+                                            path,
+                                            valueAppend,
+                                            validation,
+                                            options
+                                          )
+                                        }
+                                        onValueListSplice={async (path, _index, count, validation, options) =>
+                                          this.handleValueListSplice(
+                                            index,
+                                            formFieldIndex,
+                                            path,
+                                            _index,
+                                            count,
+                                            validation,
+                                            options
+                                          )
+                                        }
+                                        onValueListSort={async (path, _index, sortType, validation, options) =>
+                                          this.handleValueListSort(
+                                            index,
+                                            formFieldIndex,
+                                            path,
+                                            _index,
+                                            sortType,
+                                            validation,
+                                            options
+                                          )
+                                        }
+                                        checkPageAuth={async (pageID) => this.props.checkPageAuth(pageID)}
+                                        loadPageURL={async (pageID) => this.props.loadPageURL(pageID)}
+                                        loadPageFrameURL={async (pageID) => this.props.loadPageFrameURL(pageID)}
+                                        loadPageConfig={async (pageID) => this.props.loadPageConfig(pageID)}
+                                        loadPageList={async () => this.props.loadPageList()}
+                                        baseRoute={this.props.baseRoute}
+                                        loadDomain={async (domain: string) => this.props.loadDomain(domain)}
+                                        containerPath={getChainPath(
+                                          this.props.containerPath,
+                                          this.props.config.field,
+                                          tab.field
+                                        )}
+                                        onReportFields={async (field: string) => this.handleReportFields(field)}
+                                      />
+                                    </React.Suspense>
                                   )
                                 })}
                               </div>

@@ -1,1 +1,1 @@
-declare module 'copy-html-to-clipboard';
+declare module 'copy-html-to-clipboard'

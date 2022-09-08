@@ -1,13 +1,9 @@
-import TextColumn from './text'
-import DatetimeColumn from './datetime'
-import EnumColumn from './enum'
-import ImageColumn from './image'
-import FormattedTextColumn from './formattedText'
+import { lazy } from 'react'
 
 export default {
-  text: TextColumn,
-  datetime: DatetimeColumn,
-  enum: EnumColumn,
-  image: ImageColumn,
-  formatted_text: FormattedTextColumn
+  text: lazy(() => import('./text')),
+  datetime: lazy(() => import('./datetime')),
+  enum: lazy(() => import('./enum')),
+  image: lazy(() => import('./image')),
+  formatted_text: lazy(() => import('./formattedText'))
 }

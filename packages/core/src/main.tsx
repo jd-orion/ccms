@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { Suspense } from 'react'
 import marked from 'marked'
 import Step, { StepProps } from './steps/common'
 import StepComponents, { StepConfigs } from './steps'
@@ -38,7 +38,7 @@ export interface ICCMS {
  * - config: 页面配置文件
  * - sourceData: 传入数据
  */
-export interface CCMSProps  {
+export interface CCMSProps {
   config: CCMSConfig
   sourceData: any
   baseRoute: string
@@ -73,7 +73,7 @@ export interface CCMSState {
  * - title: 树节点显示的内容
  * - children: 子节点
  */
- export interface PageListItem {
+export interface PageListItem {
   key: string | number
   value: string | number
   title: string
@@ -84,17 +84,20 @@ export interface CCMSState {
  * 页面组件
  */
 export default class CCMS extends React.Component<CCMSProps, CCMSState> {
-  getStepComponent = (key: string) => StepComponents[key]
-
   /**
    * 各步骤所使用的UI组件的实例
    */
   steps: (Step<any> | null)[] = []
 
   /**
+   * 待挂载步骤
+   */
+  willMountSteps: { [index: number]: boolean } = {}
+
+  /**
    * 是否已经首次挂载
    */
-  mounted: boolean = false
+  mounted = false
 
   /**
    * 初始化
@@ -104,7 +107,7 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
    * 界面当前所在步骤 初始为 -1 - 界面0需要在数据0执行结束（componentDidMount）后展示
    * 各步骤数据 初始为 sourceData
    */
-  constructor (props: CCMSProps) {
+  constructor(props: CCMSProps) {
     super(props)
     this.state = {
       realStep: 0,
@@ -116,31 +119,32 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
   /**
    * 执行界面0的挂载
    */
-  componentDidMount () {
-    this.steps[0]?.stepPush()
+  componentDidMount() {
+    if (this.steps[0]) {
+      this.willMountSteps[0] = false
+      this.steps[0].stepPush()
+    } else {
+      this.willMountSteps[0] = true
+    }
   }
+
+  getStepComponent = (key: string) => StepComponents[key]
 
   /**
    * 处理页面步骤的提交事件
    * @param step 当前页面所在步骤
    * @param result 当前页面所在步骤所提交的数据
    */
-  handleSubmit = async (step: number, result: any, unmountView: boolean = true) => {
+  handleSubmit = async (step: number, result: any, unmountView = true) => {
     const {
-      config: {
-        steps = []
-      },
+      config: { steps = [] },
       callback
     } = this.props
 
-    const {
-      viewStep
-    } = this.state
+    const { viewStep } = this.state
 
     if (step < steps.length - 1) {
-      const {
-        data
-      } = this.state
+      const { data } = this.state
 
       data[step + 1] = result
 
@@ -153,7 +157,10 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
 
       const nextStep = this.steps[step + 1]
       if (nextStep) {
+        this.willMountSteps[step + 1] = false
         nextStep.stepPush()
+      } else {
+        this.willMountSteps[step + 1] = true
       }
     } else {
       callback(true)
@@ -166,14 +173,10 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
    */
   handleMount = async (step: number) => {
     const {
-      config: {
-        steps = []
-      },
+      config: { steps = [] },
       callback
     } = this.props
-    const {
-      viewStep
-    } = this.state
+    const { viewStep } = this.state
     if (step >= 0 && step < steps.length) {
       viewStep.push(step)
       this.setState({
@@ -192,17 +195,13 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
   /**
    * 处理页面步骤的界面后退时间
    */
-  handleUnmount = async (step: number, reload: boolean = false, data?: any) => {
+  handleUnmount = async (step: number, reload = false, data?: any) => {
     const {
-      config: {
-        steps = []
-      },
+      config: { steps = [] },
       callback
     } = this.props
 
-    const {
-      viewStep
-    } = this.state
+    const { viewStep } = this.state
 
     const _viewStep = viewStep.filter((_step) => _step !== step)
 
@@ -226,21 +225,16 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
    * @param props 页面组件 - UI渲染方法 - 入参
    */
   renderComponent = (props: ICCMS) => {
-    return (
-      <React.Fragment>您当前使用的UI版本没有实现CCMS组件。</React.Fragment>
-    )
+    return <>您当前使用的UI版本没有实现CCMS组件（来自local）。</>
   }
 
-  render () {
+  render() {
     // 处理配置文件默认值
     const {
       config: {
         basic: {
           title = '',
-          description: {
-            type: descriptionType = 'none',
-            content: descriptionContent = ''
-          } = {}
+          description: { type: descriptionType = 'none', content: descriptionContent = '' } = {}
         } = {},
         steps = []
       },
@@ -253,39 +247,41 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
       loadDomain,
       handlePageRedirect
     } = this.props
-   const handleFormValue = this.props.handleFormValue ? this.props.handleFormValue : (payload: object) => ({})
-    const {
-      realStep,
-      viewStep,
-      data
-    } = this.state
+    const handleFormValue = this.props.handleFormValue ? this.props.handleFormValue : (payload: object) => ({})
+    const { realStep, viewStep, data } = this.state
 
     // 处理页面描述
     let description: React.ReactNode = descriptionContent
     switch (descriptionType) {
       case 'markdown':
-        description = <div dangerouslySetInnerHTML={{ __html: marked(descriptionContent) }}></div>
+        description = <div dangerouslySetInnerHTML={{ __html: marked(descriptionContent) }} />
         break
       case 'html':
-        description = <div dangerouslySetInnerHTML={{ __html: descriptionContent }}></div>
+        description = <div dangerouslySetInnerHTML={{ __html: descriptionContent }} />
         break
     }
 
     // 调用UI渲染方法
     return (
-      <React.Fragment>
+      <>
         {this.renderComponent({
           title,
           description,
-          children: (steps.map((currentStep, index) => {
+          children: steps.map((currentStep, index) => {
             if (index <= realStep) {
               const props: StepProps<any> = {
-                ref: (e) => { this.steps[index] = e },
+                ref: (e) => {
+                  this.steps[index] = e
+                  if (this.willMountSteps[index] === true && e) {
+                    this.willMountSteps[index] = false
+                    e.stepPush()
+                  }
+                },
                 data,
                 step: data[index],
-                onSubmit: (data: any, unmountView: boolean = true) => this.handleSubmit(index, data, unmountView),
+                onSubmit: (data: any, unmountView = true) => this.handleSubmit(index, data, unmountView),
                 onMount: () => this.handleMount(index),
-                onUnmount: (reload: boolean = false, data?: any) => this.handleUnmount(index, reload, data),
+                onUnmount: (reload = false, data?: any) => this.handleUnmount(index, reload, data),
                 config: currentStep,
                 baseRoute,
                 checkPageAuth,
@@ -297,20 +293,26 @@ export default class CCMS extends React.Component<CCMSProps, CCMSState> {
                 handlePageRedirect,
                 handleFormValue
               }
-              
+
               const StepComponent = this.getStepComponent(currentStep.type)
-              const children = (
-                StepComponent ? <StepComponent {...props}/> : <React.Fragment>您当前使用的UI版本没有实现{currentStep.type}步骤组件。</React.Fragment>
+              const children = StepComponent ? (
+                <Suspense fallback={<>Loading</>}>
+                  <StepComponent {...props} />
+                </Suspense>
+              ) : (
+                <>您当前使用的UI版本没有实现{currentStep.type}步骤组件。</>
               )
               return (
-                <div key={index} style={{ display: viewStep.includes(index) ? 'block' : 'none' }}>{children}</div>
+                <div key={index} style={{ display: viewStep.includes(index) ? 'block' : 'none' }}>
+                  {children}
+                </div>
               )
             } else {
-              return <React.Fragment key={index}></React.Fragment>
+              return <React.Fragment key={index} />
             }
-          }))
+          })
         })}
-      </React.Fragment>
+      </>
     )
   }
 }

@@ -1,20 +1,20 @@
 import React from 'react'
 import { DetailImageField } from 'ccms'
-import { IImageDetail, IImageItemDetail, ImageDetailConfig } from 'ccms/dist/src/components/detail/image'
+import { IImageDetail, IImageItemDetail } from 'ccms/dist/components/detail/image'
 import { EyeOutlined } from '@ant-design/icons'
 import { Space, Tooltip } from 'antd'
-import styles from './index.less'
-
-export const PropsType = (props: ImageDetailConfig) => {}
+import 'antd/lib/space/style'
+import 'antd/lib/tooltip/style'
+import './index.less'
 
 export default class ImageDetailComponent extends DetailImageField {
   renderComponent = (props: IImageDetail) => {
     const { value, width, height, preview } = props
     return value ? (
-      <div className={styles['ccms-antd-detail-image']}>
-        <img className={styles.image} height={height} width={width} src={value} alt={value} />
+      <div className="ccms-antd-detail-image">
+        <img className="image" height={height} width={width} src={value} alt={value} />
         {preview && (
-          <div className={styles.mask}>
+          <div className="mask">
             <Space>
               <Tooltip getPopupContainer={(ele) => ele.parentElement || document.body} overlay="查看">
                 <EyeOutlined
@@ -36,13 +36,13 @@ export default class ImageDetailComponent extends DetailImageField {
   renderItemComponent = (props: IImageItemDetail) => {
     const { value, width, height, preview } = props
     return value ? (
-      <div className={styles['ccms-antd-detail-image-item']}>
+      <div className="ccms-antd-detail-image-item">
         {value.map((image) => {
           return image ? (
-            <div key={Math.random()} className={styles['ccms-antd-detail-image']}>
-              <img className={styles.image} height={height} width={width} src={image} alt={image} />
+            <div key={Math.random()} className="ccms-antd-detail-image">
+              <img className="image" height={height} width={width} src={image} alt={image} />
               {preview && (
-                <div className={styles.mask}>
+                <div className="mask">
                   <Space>
                     <Tooltip getPopupContainer={(ele) => ele.parentElement || document.body} overlay="查看">
                       <EyeOutlined
