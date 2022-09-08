@@ -11,6 +11,7 @@ import TableField, { TableFieldConfig } from './table'
 import FrameDetail, { IframeDetailConfig } from './iframe'
 import LinkDetail, { LinkDetailConfig } from './link'
 import OperationDetail, { OperationDetailConfig } from './operation'
+import CodeDetail, { CodeDetailConfig } from './code'
 
 /**
  * 详情步骤内详情项配置文件格式定义 - 枚举
@@ -29,6 +30,7 @@ export type DetailFieldConfigs =
   | IframeDetailConfig
   | LinkDetailConfig
   | OperationDetailConfig
+  | CodeDetailConfig
 
 export type componentType =
   | 'text'
@@ -44,6 +46,7 @@ export type componentType =
   | 'iframe'
   | 'link'
   | 'operation'
+  | 'code'
 
 export default {
   group: GroupField,
@@ -58,5 +61,6 @@ export default {
   custom: CustomDetail,
   iframe: FrameDetail,
   link: LinkDetail,
-  operation: OperationDetail
+  operation: OperationDetail,
+  code: CodeDetail
 }
