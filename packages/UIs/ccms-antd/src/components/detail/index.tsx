@@ -11,6 +11,7 @@ import TableFieldComponent from './table'
 import IframeDetailComponent from './iframe'
 import LinkDetailComponent from './link'
 import OperationDetailComponent from './operation'
+import CodeDetail from './code'
 
 export default {
   text: TextField,
@@ -23,6 +24,7 @@ export default {
   table: TableFieldComponent,
   detail_info: InfoDetail,
   detail_color: ColorDetail,
+  code: CodeDetail,
   iframe: IframeDetailComponent,
   link: LinkDetailComponent,
   operation: OperationDetailComponent
