@@ -56,7 +56,7 @@ export interface CCMSConsigState {
   ready: boolean
   pageConfig: PageConfig
   activeTab: number
-  pageTemplate: PageTemplate
+  pageTemplate?: PageTemplate
   configStringify: boolean
 }
 
@@ -66,7 +66,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
     this.state = {
       pageConfig: cloneDeep(props.config) as PageConfig, // 页面配置
       activeTab: -1, // 活跃tab
-      pageTemplate: 'normal-form', // 页面类型
+      pageTemplate: undefined, // 页面类型
       ready: true, // 是否展示，用于刷新
       configStringify: false
     }
@@ -167,10 +167,13 @@ class App extends React.Component<AppProps, CCMSConsigState> {
           pageConfig.steps.push(StepTemplates[step.step])
         }
 
-        this.setState({
-          pageTemplate,
-          pageConfig
-        })
+        this.setState({ ready: false }, () =>
+          this.setState({
+            ready: true,
+            pageTemplate,
+            pageConfig
+          })
+        )
       },
       getContainer: () => document.getElementById('ccms-config') || document.body
     })
@@ -202,8 +205,8 @@ class App extends React.Component<AppProps, CCMSConsigState> {
         <div id="ccms-config" className="ccms-config">
           {/* 预览CCMS */}
           <div className="preview">
-            {ready && (
-              <React.Suspense fallback={<>Loading</>}>
+            <React.Suspense fallback={<>Loading</>}>
+              {ready && (
                 <CCMSPreview
                   checkPageAuth={checkPageAuth}
                   loadPageURL={loadPageURL}
@@ -216,8 +219,8 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                   baseRoute={baseRoute}
                   pageConfig={pageConfig}
                 />
-              </React.Suspense>
-            )}
+              )}
+            </React.Suspense>
           </div>
 
           {/* 配置化步骤内容 */}
@@ -260,10 +263,12 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                   key: '-1',
                   tab: '基本信息'
                 },
-                ...PageTemplates[pageTemplate].map(({ label }, index) => ({
-                  key: index.toString(),
-                  tab: label
-                }))
+                ...(pageTemplate
+                  ? PageTemplates[pageTemplate].map(({ label }, index) => ({
+                      key: index.toString(),
+                      tab: label
+                    }))
+                  : [])
               ]}
               activeTabKey={activeTab.toString()}
               onTabChange={(activeTabChange) => this.setState({ activeTab: Number(activeTabChange) })}
@@ -695,7 +700,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
             configStringify={configStringify}
             defaultValue={JSON.stringify(pageConfig, undefined, 2)}
             onOk={(pageConfigChange) => {
-              this.setState({ pageConfig: pageConfigChange, configStringify: false })
+              this.setState({ pageConfig: JSON.parse(pageConfigChange), configStringify: false })
               this.handleRefreshPreview()
             }}
             onCancel={() => this.setState({ configStringify: false })}

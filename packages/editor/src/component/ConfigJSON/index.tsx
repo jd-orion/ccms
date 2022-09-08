@@ -43,7 +43,7 @@ export default function ConfigJSON(props: ConfigJSONProps) {
           <Button
             onClick={() => {
               try {
-                onOk(JSON.parse(config))
+                onOk(config)
               } catch (e) {
                 Modal.error({
                   title: '配置文件解析失败',

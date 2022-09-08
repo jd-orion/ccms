@@ -918,7 +918,11 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 )
               }
               // 渲染表单项容器
-              return hidden ? this.renderItemComponent(renderData) : <React.Fragment key={formFieldIndex} />
+              return hidden ? (
+                <React.Fragment key={formFieldIndex}>{this.renderItemComponent(renderData)}</React.Fragment>
+              ) : (
+                <React.Fragment key={formFieldIndex} />
+              )
             })
           })}
         </>

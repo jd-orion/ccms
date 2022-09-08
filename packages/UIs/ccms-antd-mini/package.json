@@ -1,6 +1,6 @@
 {
   "name": "ccms-antd-mini",
-  "version": "1.4.0-beta.2",
+  "version": "1.5.0-beta.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.3.0",
     "antd": "^4.8.5",
-    "ccms": "^1.4.0-beta.7",
+    "ccms": "1.5.0-beta.0",
     "react-color": "^2.19.3"
   },
   "devDependencies": {

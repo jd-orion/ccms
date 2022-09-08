@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "ccms": "1.4.0-beta.7",
-    "ccms-antd": "1.4.0-beta.6",
-    "ccms-antd-mini": "1.4.0-beta.2",
-    "ccms-editor": "1.4.0-beta.13"
+    "ccms": "1.5.0-beta.0",
+    "ccms-antd": "1.5.0-beta.0",
+    "ccms-antd-mini": "1.5.0-beta.0",
+    "ccms-editor": "1.5.0-beta.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

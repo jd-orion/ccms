@@ -25,7 +25,7 @@ export default class TextComponent extends PureComponent<Props, State> {
 
   timer: NodeJS.Timeout | null = null
 
-  ref: InputRef | undefined
+  ref = React.createRef<InputRef>()
 
   constructor(props) {
     super(props)
@@ -39,8 +39,10 @@ export default class TextComponent extends PureComponent<Props, State> {
   componentDidUpdate(prevProps: Props, prevState: State) {
     const { value } = this.props
     if (prevProps.value !== value && prevState.wait === false) {
-      if (this.ref && this.ref.input) this.ref.input.selectionStart = this.selectionStart
-      if (this.ref && this.ref.input) this.ref.input.selectionEnd = this.selectionEnd
+      if (this.ref && this.ref.current && this.ref.current.input)
+        this.ref.current.input.selectionStart = this.selectionStart
+      if (this.ref && this.ref.current && this.ref.current.input)
+        this.ref.current.input.selectionEnd = this.selectionEnd
     }
   }
 
@@ -93,11 +95,7 @@ export default class TextComponent extends PureComponent<Props, State> {
 
     return (
       <Component
-        ref={(e) => {
-          if (e) {
-            this.ref = e
-          }
-        }}
+        ref={this.ref}
         readOnly={readonly}
         disabled={disabled}
         placeholder={placeholder}
@@ -106,12 +104,13 @@ export default class TextComponent extends PureComponent<Props, State> {
         onCompositionUpdate={this.handleComposition}
         onCompositionEnd={this.handleComposition}
         onChange={(e) => {
-          this.selectionStart = e.target.selectionStart
-          this.selectionEnd = e.target.selectionEnd
+          const { target } = e
+          this.selectionStart = target.selectionStart
+          this.selectionEnd = target.selectionEnd
           this.handleChange(e)
           setTimeout(() => {
-            e.target.selectionStart = this.selectionStart
-            e.target.selectionEnd = this.selectionEnd
+            target.selectionStart = this.selectionStart
+            target.selectionEnd = this.selectionEnd
           })
         }}
       />

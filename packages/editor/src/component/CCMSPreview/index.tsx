@@ -15,36 +15,34 @@ export interface CCMSPreviewProps {
   pageConfig: CCMSConfig
 }
 
-export default class CCMSPreview extends React.PureComponent<CCMSPreviewProps> {
-  render() {
-    const {
-      checkPageAuth,
-      loadPageURL,
-      loadPageFrameURL,
-      loadPageConfig,
-      loadPageList,
-      loadDomain,
-      handlePageRedirect,
-      sourceData,
-      baseRoute,
-      pageConfig
-    } = this.props
-    return (
-      <CCMS
-        checkPageAuth={checkPageAuth}
-        loadPageURL={loadPageURL}
-        loadPageFrameURL={loadPageFrameURL}
-        loadPageConfig={loadPageConfig}
-        loadPageList={loadPageList}
-        loadDomain={loadDomain}
-        handlePageRedirect={handlePageRedirect}
-        sourceData={sourceData}
-        baseRoute={baseRoute}
-        callback={() => {
-          /** none */
-        }}
-        config={pageConfig}
-      />
-    )
-  }
+export default function CCMSPreview(props: CCMSPreviewProps) {
+  const {
+    checkPageAuth,
+    loadPageURL,
+    loadPageFrameURL,
+    loadPageConfig,
+    loadPageList,
+    loadDomain,
+    handlePageRedirect,
+    sourceData,
+    baseRoute,
+    pageConfig
+  } = props
+  return (
+    <CCMS
+      checkPageAuth={checkPageAuth}
+      loadPageURL={loadPageURL}
+      loadPageFrameURL={loadPageFrameURL}
+      loadPageConfig={loadPageConfig}
+      loadPageList={loadPageList}
+      loadDomain={loadDomain}
+      handlePageRedirect={handlePageRedirect}
+      sourceData={sourceData}
+      baseRoute={baseRoute}
+      callback={() => {
+        /** none */
+      }}
+      config={pageConfig}
+    />
+  )
 }
