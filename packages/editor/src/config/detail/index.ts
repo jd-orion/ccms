@@ -61,6 +61,10 @@ const config: FieldConfigs[] = [
         {
           value: 'iframe',
           label: 'iframe嵌入'
+        },
+        {
+          value: 'code',
+          label: '代码编辑器'
         }
       ]
     }
@@ -853,34 +857,6 @@ const config: FieldConfigs[] = [
     }
   },
   {
-    field: 'defaultValue',
-    label: '默认值',
-    type: 'import_subform',
-    interface: {
-      url: '${configDomain}/common/ParamConfig.json',
-      urlParams: [
-        {
-          field: 'version',
-          data: {
-            source: 'source',
-            field: 'version'
-          }
-        },
-        {
-          field: 'configDomain',
-          data: {
-            source: 'source',
-            field: 'configDomain'
-          }
-        }
-      ],
-      method: 'GET',
-      cache: {
-        global: 'CCMS_CONFIG_common_ParamConfig'
-      }
-    }
-  },
-  {
     field: '',
     label: '',
     type: 'import_subform',
@@ -958,6 +934,74 @@ const config: FieldConfigs[] = [
           }
         }
       ]
+    }
+  },
+  {
+    field: '',
+    label: '',
+    type: 'import_subform',
+    interface: {
+      url: '${configDomain}/detail/code.json',
+      urlParams: [
+        {
+          field: 'version',
+          data: {
+            source: 'source',
+            field: 'version'
+          }
+        },
+        {
+          field: 'configDomain',
+          data: {
+            source: 'source',
+            field: 'configDomain'
+          }
+        }
+      ],
+      method: 'GET',
+      cache: {
+        global: 'CCMS_CONFIG_detail_code'
+      }
+    },
+    condition: {
+      template: "${type} === 'code'",
+      params: [
+        {
+          field: 'type',
+          data: {
+            source: 'record',
+            field: 'type'
+          }
+        }
+      ]
+    }
+  },
+  {
+    field: 'defaultValue',
+    label: '默认值',
+    type: 'import_subform',
+    interface: {
+      url: '${configDomain}/common/ParamConfig.json',
+      urlParams: [
+        {
+          field: 'version',
+          data: {
+            source: 'source',
+            field: 'version'
+          }
+        },
+        {
+          field: 'configDomain',
+          data: {
+            source: 'source',
+            field: 'configDomain'
+          }
+        }
+      ],
+      method: 'GET',
+      cache: {
+        global: 'CCMS_CONFIG_common_ParamConfig'
+      }
     }
   },
   {
