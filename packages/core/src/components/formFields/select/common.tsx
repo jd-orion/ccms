@@ -16,6 +16,7 @@ export interface SelectFieldConfig extends FieldConfig {
 export interface ISelectFieldOption {
   value: string | number | boolean
   label: ReactNode
+  disabled: boolean
   children?: Array<ISelectFieldOption>
 }
 
@@ -24,6 +25,7 @@ interface SelectSingleFieldState {
     value: string | number | boolean
     label: string
     extra?: { [key: string]: unknown }
+    disabled: boolean
   }>
 }
 
@@ -70,7 +72,8 @@ export default class SelectField<C extends SelectFieldConfig, E, T>
             options: options.map((option) => ({
               value: option.value as string | number | boolean,
               label: option.label,
-              extra: option.extra
+              extra: option.extra,
+              disabled: option.disabled
             }))
           })
         }
@@ -121,7 +124,8 @@ export class SelectDisplay<C extends SelectFieldConfig, E, T> extends Display<C,
             options: options.map((option) => ({
               value: option.value as string | number | boolean,
               label: option.label,
-              extra: option.extra
+              extra: option.extra,
+              disabled: option.disabled
             }))
           })
         }
