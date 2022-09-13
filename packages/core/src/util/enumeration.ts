@@ -4,6 +4,7 @@ import { getValue } from './value'
 import { ParamConfig } from '../interface'
 import ParamHelper from './param'
 import { set } from './produce'
+import ConditionHelper, { ConditionConfig } from './condition'
 
 export type EnumerationOptionsConfig =
   | ManualEnumerationOptionsConfig
@@ -19,6 +20,7 @@ interface ManualEnumerationOptionsConfig {
       field: string
       value: unknown
     }[]
+    disabled?: ConditionConfig
   }>
 }
 
@@ -77,21 +79,25 @@ export default class EnumerationHelper {
       step: { [field: string]: unknown }
       containerPath: string
     }
-  ): Promise<{ value: unknown; label: string; extra?: { [key: string]: unknown } }[]> {
+  ): Promise<{ value: unknown; label: string; extra?: { [key: string]: unknown }; disabled: boolean }[]> {
     if (config) {
       if (config.from === 'manual') {
         if (config.data) {
           return config.data.map((option) => {
-            const { value, label, extra } = option
-            const result: { value: unknown; label: string; extra?: { [key: string]: unknown } } = {
+            const { value, label, extra, disabled } = option
+            const result: { value: unknown; label: string; extra?: { [key: string]: unknown }; disabled: boolean } = {
               value,
-              label
+              label,
+              disabled: false
             }
             if (extra) {
               result.extra = {}
               for (const { field: extraField, value: extraValue } of extra || []) {
                 result.extra[extraField] = extraValue
               }
+            }
+            if (disabled) {
+              result.disabled = ConditionHelper(disabled, datas)
             }
             return result
           })
@@ -103,7 +109,8 @@ export default class EnumerationHelper {
             if (config.format.type === 'kv') {
               return Object.keys(data as object).map((key) => ({
                 value: key,
-                label: (data as object)[key]
+                label: (data as object)[key],
+                disabled: false
               }))
             }
             if (config.format.type === 'list') {
@@ -121,7 +128,8 @@ export default class EnumerationHelper {
                 return {
                   value: getValue(item, formatConfig.keyField),
                   label: getValue(item, formatConfig.labelField),
-                  extra
+                  extra,
+                  disabled: false
                 }
               })
             }
@@ -134,7 +142,8 @@ export default class EnumerationHelper {
             if (config.format.type === 'kv') {
               return Object.keys(data).map((key) => ({
                 value: key,
-                label: data[key]
+                label: data[key],
+                disabled: false
               }))
             }
             if (config.format.type === 'list') {
@@ -153,7 +162,8 @@ export default class EnumerationHelper {
                   return {
                     value: getValue(item, formatConfig.keyField),
                     label: getValue(item, formatConfig.labelField),
-                    extra
+                    extra,
+                    disabled: false
                   }
                 })
               }

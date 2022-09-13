@@ -26,17 +26,31 @@ export default class SelectSingleField<UIState = object> extends SelectField<
   string | number | boolean | { [key: string]: unknown } | undefined
 > {
   validate = async (
-    _value: string | number | boolean | { [key: string]: unknown } | undefined
+    value: string | number | boolean | { [key: string]: unknown } | undefined
   ): Promise<true | FieldError[]> => {
     const {
-      config: { label, required }
+      config: { label, required, moreSubmit, options: optionsConfig }
     } = this.props
 
     const errors: FieldError[] = []
 
+    let _value = value
+
+    if (moreSubmit && moreSubmit.valueField) {
+      _value = getValue(_value, moreSubmit.valueField)
+    }
+
     if (getBoolean(required)) {
       if (_value === '' || _value === undefined || (_value && _value.toString().length === 0)) {
         errors.push(new FieldError(`请选择${label}`))
+      }
+    }
+
+    const options = this.options(optionsConfig)
+    const option = options.find((optionItem) => optionItem.value === _value)
+    if (option) {
+      if (option.disabled) {
+        errors.push(new FieldError(`选项${option.label}不可选。`))
       }
     }
 
