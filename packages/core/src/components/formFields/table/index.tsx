@@ -5,7 +5,7 @@ import getALLComponents, { display } from '..'
 import OperationsHelper, { OperationsConfig } from '../../../util/operations'
 import OperationHelper, { OperationConfig } from '../../../util/operation'
 import TableFieldForm from './common/form'
-import { getChainPath } from '../../../util/value'
+import { getChainPath, getValue } from '../../../util/value'
 import ConditionHelper, { ConditionConfig } from '../../../util/condition'
 import FormContainer from '../container'
 
@@ -97,6 +97,10 @@ export interface ITableField {
     content: React.ReactNode
     showIcon: boolean
   }
+}
+
+export interface IRenderModal {
+  message: string
 }
 
 export default class TableField<UIState = object>
@@ -248,6 +252,25 @@ export default class TableField<UIState = object>
     }
   }
 
+  renderModal: (props: IRenderModal) => Promise<void> = () => {
+    return new Promise((resolve) => {
+      const mask = document.createElement('DIV')
+      mask.style.position = 'fixed'
+      mask.style.left = '0px'
+      mask.style.top = '0px'
+      mask.style.width = '100%'
+      mask.style.height = '100%'
+      mask.style.backgroundColor = 'white'
+      mask.innerText = '您当前使用的UI版本没有实现TableForm的SuccessModal组件。'
+      mask.onclick = () => {
+        mask.remove()
+        resolve()
+      }
+
+      document.body.appendChild(mask)
+    })
+  }
+
   /**
    * 渲染 表格
    * @param props
@@ -267,6 +290,7 @@ export default class TableField<UIState = object>
       form,
       formLayout,
       config,
+      value,
       data,
       step,
       onValueSet,
@@ -298,7 +322,10 @@ export default class TableField<UIState = object>
           field,
           label: column.label,
           align: 'left',
-          render: (value: unknown, record: { [field: string]: unknown }, index) => {
+          render: (cell: unknown, record: { [field: string]: unknown }, index) => {
+            if (!ConditionHelper(column.condition, { data, step, record, containerPath })) {
+              return null
+            }
             const Column = this.display(column.type)
             if (Column) {
               return (
@@ -306,7 +333,7 @@ export default class TableField<UIState = object>
                   ref={() => {
                     /* TODO */
                   }}
-                  value={value}
+                  value={cell}
                   record={record}
                   data={data}
                   step={step}
@@ -341,7 +368,7 @@ export default class TableField<UIState = object>
             <CurrentOperationsHelper
               config={config.operations?.rowOperations || []}
               onClick={(operationConfig, datas) => {
-                return function operationRender(children) {
+                const operationRender = (children) => {
                   if (operationConfig) {
                     if (operationConfig.type === 'ccms') {
                       return (
@@ -368,7 +395,26 @@ export default class TableField<UIState = object>
                           config={operationConfig}
                           data={record}
                           datas={datas}
-                          onSubmit={(value) => onValueSet(`[${index}]`, value, true)}
+                          onSubmit={async (valueSubmit) => {
+                            const primaryValue = getValue(valueSubmit, config.primary)
+                            const primaryExists = (Array.isArray(value) ? value : []).find(
+                              (item, indexSubmit) =>
+                                getValue(item, config.primary) === primaryValue && index !== indexSubmit
+                            )
+                            if (primaryExists) {
+                              const primaryField = operationConfig.fields.find(
+                                (field) => field.field === config.primary
+                              )
+                              await this.renderModal({
+                                message: `唯一字段【${
+                                  primaryField && primaryField.label ? primaryField.label : config.primary
+                                }】重复`
+                              })
+                              return false
+                            }
+                            onValueSet(`[${index}]`, valueSubmit, true)
+                            return true
+                          }}
                           checkPageAuth={checkPageAuth}
                           loadPageURL={loadPageURL}
                           loadPageFrameURL={loadPageFrameURL}
@@ -393,6 +439,7 @@ export default class TableField<UIState = object>
                     /* 无逻辑 */
                   })
                 }
+                return operationRender
               }}
               datas={{
                 data: this.props.data,
@@ -432,12 +479,12 @@ export default class TableField<UIState = object>
               form={form}
               formLayout={formLayout}
               datas={{ record, data, step, containerPath }}
-              onValueSet={(path, value, validation, options) =>
-                onValueSet(getChainPath(index, path), value, validation, options)
+              onValueSet={(path, valueSet, validation, options) =>
+                onValueSet(getChainPath(index, path), valueSet, validation, options)
               }
               onValueUnset={(path, validation, options) => onValueUnset(getChainPath(index, path), validation, options)}
-              onValueListAppend={(path, value, validation, options) =>
-                onValueListAppend(getChainPath(index, path), value, validation, options)
+              onValueListAppend={(path, valueAppend, validation, options) =>
+                onValueListAppend(getChainPath(index, path), valueAppend, validation, options)
               }
               onValueListSplice={(path, indexSplice, count, validation, options) =>
                 onValueListSplice(getChainPath(index, path), indexSplice, count, validation, options)
@@ -466,7 +513,7 @@ export default class TableField<UIState = object>
             <CurrentOperationsHelper<OperationConfig | TableFieldCreateConfig>
               config={config.operations.tableOperations[position]}
               onClick={(operationConfig, datas) => {
-                return function operationRender(children) {
+                const operationRender = (children) => {
                   if (operationConfig) {
                     if (operationConfig.type === 'ccms') {
                       return (
@@ -493,7 +540,25 @@ export default class TableField<UIState = object>
                           config={operationConfig}
                           data={{}}
                           datas={datas}
-                          onSubmit={(value) => onValueListAppend(``, value, true)}
+                          onSubmit={async (valueSubmit) => {
+                            const primaryValue = getValue(valueSubmit, config.primary)
+                            const primaryExists = (Array.isArray(value) ? value : []).find(
+                              (item) => getValue(item, config.primary) === primaryValue
+                            )
+                            if (primaryExists) {
+                              const primaryField = operationConfig.fields.find(
+                                (field) => field.field === config.primary
+                              )
+                              await this.renderModal({
+                                message: `唯一字段【${
+                                  primaryField && primaryField.label ? primaryField.label : config.primary
+                                }】重复`
+                              })
+                              return false
+                            }
+                            onValueListAppend(``, valueSubmit, true)
+                            return true
+                          }}
                           checkPageAuth={checkPageAuth}
                           loadPageURL={loadPageURL}
                           loadPageFrameURL={loadPageFrameURL}
@@ -512,6 +577,7 @@ export default class TableField<UIState = object>
                     /* 无逻辑 */
                   })
                 }
+                return operationRender
               }}
               datas={{
                 data: this.props.data,
