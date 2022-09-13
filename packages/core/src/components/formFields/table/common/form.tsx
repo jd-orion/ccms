@@ -34,7 +34,7 @@ export interface TableFieldFormProps {
   onReportFields?: (field: string) => Promise<void> // 向父组件上报依赖字段  1.3.0新增
 
   children: (onClick: () => void) => JSX.Element | JSX.Element[]
-  onSubmit: (value: { [key: string]: unknown }) => void
+  onSubmit: (value: { [key: string]: unknown }) => Promise<boolean>
 }
 
 interface TableFieldFormState {
@@ -54,6 +54,8 @@ export default class TableFieldForm extends React.Component<TableFieldFormProps,
   dependentFields: string[] = []
 
   FormContainer = FormContainer
+
+  formContainer = React.createRef<FormContainer>()
 
   formFieldsMounted: Array<boolean> = []
 
@@ -221,11 +223,12 @@ export default class TableFieldForm extends React.Component<TableFieldFormProps,
             title: 'title',
             content: (
               <this.FormContainer
+                ref={this.formContainer}
                 fieldsConfig={config.fields || []}
                 value={formValue}
                 form={form}
                 formLayout={formLayout}
-                datas={datas}
+                datas={{ ...datas, record: formValue }}
                 onValueSet={async (path, valueSet) => this.handleValueSet(path, valueSet)}
                 onValueUnset={async (path) => this.handleValueUnset(path)}
                 onValueListAppend={async (path, valueAppend) => this.handleValueListAppend(path, valueAppend)}
@@ -241,12 +244,19 @@ export default class TableFieldForm extends React.Component<TableFieldFormProps,
                 loadDomain={async (domain: string) => loadDomain(domain)}
               />
             ),
-            onOk: () => {
-              const { onSubmit } = this.props
-              onSubmit(formValue)
-              this.setState({
-                visible: false
-              })
+            onOk: async () => {
+              if (this.formContainer.current) {
+                const validations = await this.formContainer.current.validate(formValue)
+                if (validations === true) {
+                  const { onSubmit } = this.props
+                  const success = await onSubmit(formValue)
+                  if (success) {
+                    this.setState({
+                      visible: false
+                    })
+                  }
+                }
+              }
             },
             onClose: () => {
               this.setState({

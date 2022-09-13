@@ -1,7 +1,7 @@
 import React from 'react'
 import { TableField } from 'ccms'
 import { ITableField, ITableColumn } from 'ccms/dist/src/components/formFields/table'
-import { Table, Tooltip } from 'antd'
+import { Modal, Table, Tooltip } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import { SortableContainer, SortableContainerProps, SortableElement, SortableHandle } from 'react-sortable-hoc'
 import { MenuOutlined } from '@ant-design/icons'
@@ -48,6 +48,19 @@ export default class TableFieldComponent extends TableField<TableFieldComponentS
   FormContainer = FormContainerComponent
 
   TableFieldForm = TableFieldForm
+
+  renderModal: (props) => Promise<void> = (props) => {
+    return new Promise((resolve) => {
+      Modal.info({
+        getContainer: () => document.getElementById('ccms-antd') || document.body,
+        content: props.message,
+        okText: '知道了',
+        onOk: () => {
+          resolve()
+        }
+      })
+    })
+  }
 
   renderComponent = (props: ITableField) => {
     const { width, primary, tableColumns, tableSort, tableExpand, tableOperations, data } = props

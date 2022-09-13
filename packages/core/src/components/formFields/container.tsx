@@ -92,6 +92,39 @@ export default class FormContainer extends React.Component<FormContainerProps, F
 
   getALLComponents = (type: string): typeof Field => getALLComponents[type]
 
+  validate = async (value: unknown): Promise<true | FieldError[]> => {
+    const { fieldsConfig } = this.props
+    const errors: FieldError[] = []
+
+    let { fieldsData } = this.state
+
+    for (let fieldIndex = 0; fieldIndex < this.fieldsInstance.length; fieldIndex++) {
+      const fieldItem = this.fieldsInstance[fieldIndex]
+      if (fieldItem !== null && fieldItem !== undefined && !fieldItem.props.config.disabled) {
+        const validations = await fieldItem.validate(getValue(value, fieldsConfig[fieldIndex].field))
+
+        if (validations === true) {
+          fieldsData = set(fieldsData, `${fieldIndex}`, { status: 'normal' })
+        } else {
+          const validation = validations[0]
+          if (validation) {
+            fieldsData = set(fieldsData, `${fieldIndex}`, {
+              status: 'error',
+              message: validation.message
+            })
+            errors[fieldIndex] = validation
+          }
+        }
+      }
+    }
+
+    await this.setState({
+      fieldsData
+    })
+
+    return errors.length ? errors : true
+  }
+
   handleValidation = async (fieldIndex: number, validation: true | FieldError[]) => {
     const { fieldsData } = this.state
     await this.setState({
