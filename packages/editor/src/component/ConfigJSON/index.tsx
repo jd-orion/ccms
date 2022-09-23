@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Drawer, Button, Modal, Space } from 'antd'
-import Editor, { loader } from '@monaco-editor/react'
-
-loader.config({ paths: { vs: 'https://storage.360buyimg.com/swm-plus/monaco-editor-0.28.1/min/vs' } })
+import MonacoEditor from 'react-monaco-editor'
 
 interface ConfigJSONProps {
   configStringify: boolean
@@ -27,7 +25,7 @@ export default function ConfigJSON(props: ConfigJSONProps) {
 
   return (
     <Drawer
-      width="50%"
+      width="700"
       title="编辑配置文件"
       placement="right"
       visible={props.configStringify}
@@ -56,17 +54,18 @@ export default function ConfigJSON(props: ConfigJSONProps) {
       }
       onClose={() => props.onCancel()}
     >
-      <Editor
-        height={document.body.clientHeight}
-        theme="vs-dark"
-        defaultLanguage="json"
-        language="json"
-        value={config}
-        onMount={handleEditorDidMount}
-        onChange={(v) => {
-          setConfig(v)
-        }}
-      />
+      <div style={{ width: 660 }}>
+        <MonacoEditor
+          height={document.body.clientHeight}
+          theme="vs-dark"
+          language="json"
+          value={config}
+          editorDidMount={handleEditorDidMount}
+          onChange={(v) => {
+            setConfig(v)
+          }}
+        />
+      </div>
     </Drawer>
   )
 }

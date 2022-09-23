@@ -1,9 +1,10 @@
-const path = require('path');
+const path = require('path')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 
 module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js', 'jsx'],
-    modules: [path.resolve("./node_modules")]
+    modules: [path.resolve('./node_modules')]
   },
   module: {
     rules: [
@@ -19,11 +20,9 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          "style-loader",
-          "css-loader"
-        ]
-      }, {
+        use: ['style-loader', 'css-loader']
+      },
+      {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
         use: {
           loader: 'file-loader',
@@ -41,12 +40,18 @@ module.exports = {
             loader: 'less-loader',
             options: {
               lessOptions: {
-                javascriptEnabled: true,
+                javascriptEnabled: true
               }
-            },
+            }
           }
         ]
       }
     ]
   },
+
+  plugins: [
+    new MonacoWebpackPlugin({
+      languages: ['json']
+    })
+  ]
 }
