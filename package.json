@@ -29,6 +29,12 @@
     "lint:style": "stylelint --fix **/*.less",
     "prettier": "prettier -c --write **/*.{json,html,md}"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint --env HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
