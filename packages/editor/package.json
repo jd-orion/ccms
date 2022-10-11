@@ -43,6 +43,7 @@
     "immer": "^9.0.7",
     "lodash": "^4.17.21",
     "marked": "^2.0.1",
+    "monaco-editor": "^0.34.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "qiankun": "^2.7.0",
     "query-string": "^7.0.0",

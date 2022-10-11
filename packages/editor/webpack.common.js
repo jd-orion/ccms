@@ -47,11 +47,11 @@ module.exports = {
         ]
       }
     ]
-  },
+  }
 
-  plugins: [
-    new MonacoWebpackPlugin({
-      languages: ['json']
-    })
-  ]
+  // plugins: [
+  //   new MonacoWebpackPlugin({
+  //     languages: ['json']
+  //   })
+  // ]
 }
