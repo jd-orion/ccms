@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Drawer, Button, Modal, Space } from 'antd'
 import MonacoEditor from 'react-monaco-editor'
+import 'monaco-editor/esm/vs/language/json/monaco.contribution'
+import 'monaco-editor/esm/vs/editor/contrib/find/browser/findController'
+import 'monaco-editor/esm/vs/editor/contrib/folding/browser/folding'
 
 interface ConfigJSONProps {
   configStringify: boolean
@@ -57,6 +60,10 @@ export default function ConfigJSON(props: ConfigJSONProps) {
       <div style={{ width: 660 }}>
         <MonacoEditor
           height={document.body.clientHeight}
+          options={{
+            foldingStrategy: 'indentation',
+            folding: true
+          }}
           theme="vs-dark"
           language="json"
           value={config}
