@@ -1,18 +1,16 @@
-import React from 'react';
+import React from 'react'
 import { Drawer, Button, Modal, message, Card, Space, Radio, Dropdown, Menu } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import { CCMS as CCMSAntDesign } from 'ccms-antd'
-import { CCMSConfig, BasicConfig, PageListItem } from "ccms/dist/src/main";
-import { FormConfig } from 'ccms/dist/src/steps/form';
-import { cloneDeep } from "lodash";
+import { CCMSConfig, BasicConfig, PageListItem } from 'ccms/dist/src/main'
+import { FormConfig } from 'ccms/dist/src/steps/form'
+import { cloneDeep } from 'lodash'
+import copy from 'copy-html-to-clipboard'
 import { PageTemplate, PageTemplates, StepConfigs, StepTemplates } from './steps'
-import copy from 'copy-html-to-clipboard';
-import CCMSForm from './component/CCMSForm';
-import './antd.less'; // 加载antd样式（用于样式隔离）
-import './app.less';
-import ConfigJSON from './component/ConfigJSON';
-import { StepConfigs as IStepConfigs } from 'ccms/dist/src/steps';
-import { TreeSelectFieldOption } from "ccms/dist/src/components/formFields/treeSelect";
+import CCMSForm from './component/CCMSForm'
+import './antd.less' // 加载antd样式（用于样式隔离）
+import './app.less'
+import ConfigJSON from './component/ConfigJSON'
 
 /**
  * 页面配置
@@ -21,54 +19,54 @@ const basicForm: FormConfig = {
   type: 'form',
   layout: 'horizontal',
   defaultValue: {
-    "source": "data",
-    "field": ""
+    source: 'data',
+    field: ''
   },
   fields: [
     {
-      label: "页面标题",
-      field: "title",
-      type: "text",
+      label: '页面标题',
+      field: 'title',
+      type: 'text',
       defaultValue: {
-        source: "static",
-        value: ""
+        source: 'static',
+        value: ''
       }
     },
     {
-      label: "页面描述",
-      field: "description",
-      type: "group",
+      label: '页面描述',
+      field: 'description',
+      type: 'group',
       fields: [
         {
-          label: "内容格式",
-          field: "type",
-          type: "select_single",
-          mode: "button",
+          label: '内容格式',
+          field: 'type',
+          type: 'select_single',
+          mode: 'button',
           options: {
-            from: "manual",
+            from: 'manual',
             data: [
               {
-                value: "plain",
-                label: "纯文本"
+                value: 'plain',
+                label: '纯文本'
               },
               {
-                value: "markdown",
-                label: "MarkDown"
+                value: 'markdown',
+                label: 'MarkDown'
               },
               {
-                value: "html",
-                label: "HTML"
+                value: 'html',
+                label: 'HTML'
               }
             ]
           }
         },
         {
-          label: "内容",
-          field: "content",
-          type: "longtext",
+          label: '内容',
+          field: 'content',
+          type: 'longtext',
           defaultValue: {
-            source: "static",
-            value: ""
+            source: 'static',
+            value: ''
           }
         }
       ]
@@ -78,20 +76,20 @@ const basicForm: FormConfig = {
   rightTopActions: []
 }
 
-
 export interface AppPropsInterface {
-  config: CCMSConfig,
-  sourceData: { [field:string]: unknown },
-  applicationName?: string,
-  type?: 'application' | 'business',
-  version?: string,
-  subversion?: string,
-  baseRoute: string,
+  config: CCMSConfig
+  sourceData: { [field: string]: unknown }
+  applicationName?: string
+  type?: 'application' | 'business'
+  version?: string
+  subversion?: string
+  baseRoute: string
   checkPageAuth: (pageID: any) => Promise<boolean>
   loadPageURL: (pageID: any) => Promise<string>
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageConfig: (pageID: any) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
+  loadCustomSource: (customName: string, version: string) => string
   loadDomain: (name: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
   onChange: (value: any) => void
@@ -102,7 +100,7 @@ export interface AppPropsInterface {
 export interface AppExternalProps extends AppPropsInterface {
   customConfigCDN?: string
 }
-export interface AppProps  extends AppPropsInterface {
+export interface AppProps extends AppPropsInterface {
   configDomain?: string
 }
 
@@ -111,7 +109,7 @@ interface PageConfig extends CCMSConfig {
 }
 
 export interface CCMSConsigState {
-  ready: boolean,
+  ready: boolean
   pageConfig: PageConfig
   activeTab: number
   pageTemplate: PageTemplate
@@ -119,12 +117,11 @@ export interface CCMSConsigState {
 }
 
 class App extends React.Component<AppProps, CCMSConsigState> {
-
   state: CCMSConsigState = {
     pageConfig: cloneDeep(this.props.config) as PageConfig, // 页面配置
     activeTab: -1, // 活跃tab
     pageTemplate: 'normal-form', // 页面类型
-    ready: true,  // 是否展示，用于刷新
+    ready: true, // 是否展示，用于刷新
     configStringify: false
   }
 
@@ -132,7 +129,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
     const { pageConfig } = this.state
     const steps = pageConfig.steps || []
 
-    for (const [ pageTemplate, stepTemplates ] of Object.entries(PageTemplates)) {
+    for (const [pageTemplate, stepTemplates] of Object.entries(PageTemplates)) {
       if (stepTemplates.length === steps.length) {
         let match = true
         for (let i = 0; i < steps.length; i++) {
@@ -188,7 +185,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 
   /**
    * 修改页面配置
-   * @param basic 
+   * @param basic
    */
   handleChangeBasic = (basic: BasicConfig) => {
     const { pageConfig } = this.state
@@ -200,7 +197,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 
   /**
    * 修改页面模板
-   * @param pageTemplate 
+   * @param pageTemplate
    */
   handleChangePageMode = (pageTemplate: PageTemplate) => {
     Modal.confirm({
@@ -239,6 +236,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
       loadPageList,
       loadDomain,
       handlePageRedirect,
+      loadCustomSource,
       onCancel
     } = this.props
 
@@ -255,6 +253,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
               loadPageFrameURL={loadPageFrameURL}
               loadPageConfig={loadPageConfig}
               loadPageList={loadPageList}
+              loadCustomSource={loadCustomSource}
               loadDomain={loadDomain}
               handlePageRedirect={handlePageRedirect}
               sourceData={this.props.sourceData}
@@ -272,45 +271,49 @@ class App extends React.Component<AppProps, CCMSConsigState> {
         </div>
 
         {/* 配置化步骤内容 */}
-        <Drawer
-          width={350}
-          mask={false}
-          placement="right"
-          closable={false}
-          visible={true}
-          getContainer={false}
-        >
+        <Drawer width={350} mask={false} placement="right" closable={false} visible getContainer={false}>
           <Card
             title="页面配置"
-            extra={(
+            extra={
               <Space>
                 <Button.Group>
-                  <Button type="primary" onClick={() => this.handleSave()}>保存</Button>
+                  <Button type="primary" onClick={() => this.handleSave()}>
+                    保存
+                  </Button>
                   <Button onClick={() => onCancel && onCancel()}>取消</Button>
                   <Dropdown
-                    overlay={(
+                    overlay={
                       <Menu>
                         <Menu.Item onClick={() => this.handleRefreshPreview()}>强制刷新</Menu.Item>
-                        <Menu.Item onClick={() => {
-                          copy(JSON.stringify(pageConfig))
-                          message.info("复制成功")
-                        }}>复制配置</Menu.Item>
+                        <Menu.Item
+                          onClick={() => {
+                            copy(JSON.stringify(pageConfig))
+                            message.info('复制成功')
+                          }}
+                        >
+                          复制配置
+                        </Menu.Item>
                         <Menu.Item onClick={() => this.setState({ configStringify: true })}>配置文件</Menu.Item>
                       </Menu>
-                    )}
-                    getPopupContainer={(ele) => document.getElementById('ccms-config') || ele.parentElement || document.body}
+                    }
+                    getPopupContainer={(ele) =>
+                      document.getElementById('ccms-config') || ele.parentElement || document.body
+                    }
                   >
-                    <Button icon={(<DownOutlined />)}></Button>
+                    <Button icon={<DownOutlined />} />
                   </Dropdown>
                 </Button.Group>
               </Space>
-            )}
+            }
             tabList={[
               {
                 key: '-1',
                 tab: '基本信息'
               },
-              ...PageTemplates[this.state.pageTemplate].map(({ label, step }, index) => ({ key: index.toString(), tab: label }))
+              ...PageTemplates[this.state.pageTemplate].map(({ label, step }, index) => ({
+                key: index.toString(),
+                tab: label
+              }))
             ]}
             activeTabKey={activeTab.toString()}
             onTabChange={(activeTab) => this.setState({ activeTab: Number(activeTab) })}
@@ -342,109 +345,362 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                 <div style={{ marginTop: 16 }}>
                   <div>页面类型：</div>
                   <div>
-                    <Radio.Group size="small" value={pageTemplate} style={{ display: 'block', marginTop: 8 }} onChange={(e) => this.handleChangePageMode(e.target.value)}>
+                    <Radio.Group
+                      size="small"
+                      value={pageTemplate}
+                      style={{ display: 'block', marginTop: 8 }}
+                      onChange={(e) => this.handleChangePageMode(e.target.value)}
+                    >
                       <Radio.Button className="ccms-page-template" value="normal-table">
                         <div className="ccms-page-template-icon">
-                          <div style={{ width: 18, height: 0, borderTop: '3px solid black', marginLeft: 4, marginBottom: 2, marginTop: 4 }}></div>
-                          <div style={{ width: 18, height: 0, borderTop: '1px solid black', marginLeft: 4, marginBottom: 2 }}></div>
-                          <div style={{ width: 18, height: 0, borderTop: '1px solid black', marginLeft: 4, marginBottom: 2 }}></div>
-                          <div style={{ width: 18, height: 0, borderTop: '1px solid black', marginLeft: 4, marginBottom: 2 }}></div>
-                          <div style={{ width: 18, height: 0, borderTop: '1px solid black', marginLeft: 4, marginBottom: 2 }}></div>
-                          <div style={{ width: 18, height: 0, borderTop: '1px solid black', marginLeft: 4, marginBottom: 2 }}></div>
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '3px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2,
+                              marginTop: 4
+                            }}
+                          />
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '1px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2
+                            }}
+                          />
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '1px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2
+                            }}
+                          />
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '1px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2
+                            }}
+                          />
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '1px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2
+                            }}
+                          />
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '1px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2
+                            }}
+                          />
                         </div>
                         <span>普通列表</span>
                       </Radio.Button>
                       <Radio.Button className="ccms-page-template" value="filter-table">
                         <div className="ccms-page-template-icon">
-                          <div style={{ width: 18, height: 3, marginLeft: 4, marginBottom: 3, marginTop: 4, display: 'flex' }}>
-                            <div style={{ width: 10, height: 3, border: '1px solid black', marginRight: 2 }}></div>
-                            <div style={{ width: 6, height: 0, borderTop: '3px solid black' }}></div>
+                          <div
+                            style={{
+                              width: 18,
+                              height: 3,
+                              marginLeft: 4,
+                              marginBottom: 3,
+                              marginTop: 4,
+                              display: 'flex'
+                            }}
+                          >
+                            <div style={{ width: 10, height: 3, border: '1px solid black', marginRight: 2 }} />
+                            <div style={{ width: 6, height: 0, borderTop: '3px solid black' }} />
                           </div>
-                          <div style={{ width: 18, height: 0, borderTop: '3px solid black', marginLeft: 4, marginBottom: 2 }}></div>
-                          <div style={{ width: 18, height: 0, borderTop: '1px solid black', marginLeft: 4, marginBottom: 2 }}></div>
-                          <div style={{ width: 18, height: 0, borderTop: '1px solid black', marginLeft: 4, marginBottom: 2 }}></div>
-                          <div style={{ width: 18, height: 0, borderTop: '1px solid black', marginLeft: 4, marginBottom: 2 }}></div>
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '3px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2
+                            }}
+                          />
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '1px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2
+                            }}
+                          />
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '1px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2
+                            }}
+                          />
+                          <div
+                            style={{
+                              width: 18,
+                              height: 0,
+                              borderTop: '1px solid black',
+                              marginLeft: 4,
+                              marginBottom: 2
+                            }}
+                          />
                         </div>
                         <span>筛选列表</span>
                       </Radio.Button>
                       <Radio.Button className="ccms-page-template" value="normal-form">
                         <div className="ccms-page-template-icon">
-                          <div style={{ width: 19, height: 5, display: 'flex', marginLeft: 4, marginBottom: 2, marginTop: 4 }}>
-                            <div style={{ width: 4, height: 2, borderBottom: '1px solid black', marginRight: 1, opacity: 0.5 }}></div>
-                            <div style={{ width: 13, height: 5, border: '1px solid black' }}></div>
+                          <div
+                            style={{
+                              width: 19,
+                              height: 5,
+                              display: 'flex',
+                              marginLeft: 4,
+                              marginBottom: 2,
+                              marginTop: 4
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: 4,
+                                height: 2,
+                                borderBottom: '1px solid black',
+                                marginRight: 1,
+                                opacity: 0.5
+                              }}
+                            />
+                            <div style={{ width: 13, height: 5, border: '1px solid black' }} />
                           </div>
-                          <div style={{ width: 19, height: 7, display: 'flex', marginLeft: 4, marginBottom: 2}}>
-                            <div style={{ width: 4, height: 2, borderBottom: '1px solid black', marginRight: 1, opacity: 0.5  }}></div>
-                            <div style={{ width: 13, height: 7, border: '1px solid black' }}></div>
+                          <div style={{ width: 19, height: 7, display: 'flex', marginLeft: 4, marginBottom: 2 }}>
+                            <div
+                              style={{
+                                width: 4,
+                                height: 2,
+                                borderBottom: '1px solid black',
+                                marginRight: 1,
+                                opacity: 0.5
+                              }}
+                            />
+                            <div style={{ width: 13, height: 7, border: '1px solid black' }} />
                           </div>
                           <div style={{ width: 19, height: 3, marginLeft: 9, display: 'flex' }}>
-                            <div style={{ width: 6, height: 3, border: '1px solid black', marginRight: 1 }}></div>
-                            <div style={{ width: 6, height: 3, border: '1px solid black' }}></div>
+                            <div style={{ width: 6, height: 3, border: '1px solid black', marginRight: 1 }} />
+                            <div style={{ width: 6, height: 3, border: '1px solid black' }} />
                           </div>
                         </div>
                         <span>普通表单</span>
                       </Radio.Button>
                       <Radio.Button className="ccms-page-template" value="edit-form">
                         <div className="ccms-page-template-icon">
-                          <div style={{ width: 19, height: 5, display: 'flex', marginLeft: 4, marginBottom: 2, marginTop: 4 }}>
-                            <div style={{ width: 4, height: 2, borderBottom: '1px solid black', marginRight: 1, opacity: 0.5 }}></div>
+                          <div
+                            style={{
+                              width: 19,
+                              height: 5,
+                              display: 'flex',
+                              marginLeft: 4,
+                              marginBottom: 2,
+                              marginTop: 4
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: 4,
+                                height: 2,
+                                borderBottom: '1px solid black',
+                                marginRight: 1,
+                                opacity: 0.5
+                              }}
+                            />
                             <div style={{ width: 13, height: 5, border: '1px solid black' }}>
-                              <div style={{ width: 9, height: 0, borderTop: '1px solid black', marginLeft: 1, marginTop: 1 }}></div>
+                              <div
+                                style={{
+                                  width: 9,
+                                  height: 0,
+                                  borderTop: '1px solid black',
+                                  marginLeft: 1,
+                                  marginTop: 1
+                                }}
+                              />
                             </div>
                           </div>
                           <div style={{ width: 19, height: 7, display: 'flex', marginLeft: 4, marginBottom: 2 }}>
-                            <div style={{ width: 4, height: 2, borderBottom: '1px solid black', marginRight: 1, opacity: 0.5 }}></div>
+                            <div
+                              style={{
+                                width: 4,
+                                height: 2,
+                                borderBottom: '1px solid black',
+                                marginRight: 1,
+                                opacity: 0.5
+                              }}
+                            />
                             <div style={{ width: 13, height: 7, border: '1px solid black' }}>
-                              <div style={{ width: 9, height: 0, borderTop: '1px solid black', marginLeft: 1, marginTop: 1 }}></div>
-                              <div style={{ width: 4, height: 0, borderTop: '1px solid black', marginLeft: 1, marginTop: 1 }}></div>
+                              <div
+                                style={{
+                                  width: 9,
+                                  height: 0,
+                                  borderTop: '1px solid black',
+                                  marginLeft: 1,
+                                  marginTop: 1
+                                }}
+                              />
+                              <div
+                                style={{
+                                  width: 4,
+                                  height: 0,
+                                  borderTop: '1px solid black',
+                                  marginLeft: 1,
+                                  marginTop: 1
+                                }}
+                              />
                             </div>
                           </div>
                           <div style={{ width: 19, height: 3, marginLeft: 9, display: 'flex' }}>
-                            <div style={{ width: 6, height: 3, border: '1px solid black', marginRight: 1 }}></div>
-                            <div style={{ width: 6, height: 3, border: '1px solid black' }}></div>
+                            <div style={{ width: 6, height: 3, border: '1px solid black', marginRight: 1 }} />
+                            <div style={{ width: 6, height: 3, border: '1px solid black' }} />
                           </div>
                         </div>
                         <span>编辑表单</span>
                       </Radio.Button>
                     </Radio.Group>
-                    <Radio.Group size="small" value={pageTemplate} style={{ display: 'block', marginTop: 8 }} onChange={(e) => this.handleChangePageMode(e.target.value)}>
+                    <Radio.Group
+                      size="small"
+                      value={pageTemplate}
+                      style={{ display: 'block', marginTop: 8 }}
+                      onChange={(e) => this.handleChangePageMode(e.target.value)}
+                    >
                       <Radio.Button className="ccms-page-template" value="detail">
                         <div className="ccms-page-template-icon">
                           <div style={{ width: 19, display: 'flex', marginLeft: 4, marginBottom: 2, marginTop: 4 }}>
-                            <div style={{ width: 4, height: 2, borderBottom: '1px solid black', marginRight: 1, opacity: 0.5 }}></div>
+                            <div
+                              style={{
+                                width: 4,
+                                height: 2,
+                                borderBottom: '1px solid black',
+                                marginRight: 1,
+                                opacity: 0.5
+                              }}
+                            />
                             <div>
-                              <div style={{ width: 9, height: 0, borderTop: '1px solid black', marginTop: 1 }}></div>
+                              <div style={{ width: 9, height: 0, borderTop: '1px solid black', marginTop: 1 }} />
                             </div>
                           </div>
                           <div style={{ width: 19, display: 'flex', marginLeft: 4, marginBottom: 2 }}>
-                            <div style={{ width: 4, height: 2, borderBottom: '1px solid black', marginRight: 1, opacity: 0.5 }}></div>
+                            <div
+                              style={{
+                                width: 4,
+                                height: 2,
+                                borderBottom: '1px solid black',
+                                marginRight: 1,
+                                opacity: 0.5
+                              }}
+                            />
                             <div>
-                              <div style={{ width: 12, height: 0, borderTop: '1px solid black', marginTop: 1 }}></div>
-                              <div style={{ width: 12, height: 0, borderTop: '1px solid black', marginTop: 1 }}></div>
-                              <div style={{ width: 8, height: 0, borderTop: '1px solid black', marginTop: 1 }}></div>
+                              <div style={{ width: 12, height: 0, borderTop: '1px solid black', marginTop: 1 }} />
+                              <div style={{ width: 12, height: 0, borderTop: '1px solid black', marginTop: 1 }} />
+                              <div style={{ width: 8, height: 0, borderTop: '1px solid black', marginTop: 1 }} />
                             </div>
                           </div>
                           <div style={{ width: 19, display: 'flex', marginLeft: 4, marginBottom: 2 }}>
-                            <div style={{ width: 4, height: 2, borderBottom: '1px solid black', marginRight: 1, opacity: 0.5 }}></div>
+                            <div
+                              style={{
+                                width: 4,
+                                height: 2,
+                                borderBottom: '1px solid black',
+                                marginRight: 1,
+                                opacity: 0.5
+                              }}
+                            />
                             <div style={{ display: 'flex' }}>
-                              <div style={{ width: 2, height: 0, borderTop: '1px solid black', marginTop: 1 }}></div>
-                              <div style={{ width: 2, height: 0, borderTop: '1px solid black', marginLeft: 1, marginTop: 1 }}></div>
-                              <div style={{ width: 2, height: 0, borderTop: '1px solid black', marginLeft: 1, marginTop: 1 }}></div>
+                              <div style={{ width: 2, height: 0, borderTop: '1px solid black', marginTop: 1 }} />
+                              <div
+                                style={{
+                                  width: 2,
+                                  height: 0,
+                                  borderTop: '1px solid black',
+                                  marginLeft: 1,
+                                  marginTop: 1
+                                }}
+                              />
+                              <div
+                                style={{
+                                  width: 2,
+                                  height: 0,
+                                  borderTop: '1px solid black',
+                                  marginLeft: 1,
+                                  marginTop: 1
+                                }}
+                              />
                             </div>
                           </div>
                           <div style={{ width: 19, height: 3, marginLeft: 9, display: 'flex' }}>
-                            <div style={{ width: 6, height: 3, border: '1px solid black' }}></div>
+                            <div style={{ width: 6, height: 3, border: '1px solid black' }} />
                           </div>
                         </div>
                         <span>详情页面</span>
                       </Radio.Button>
                       <Radio.Button className="ccms-page-template" value="opera">
                         <div className="ccms-page-template-icon">
-                          <div style={{ width: 18, height: 7, border: '1px solid black', marginLeft: 4, marginTop: 8, borderRadius: 2, display: 'flex', position: 'relative' }}>
-                            <div style={{ width: 2, borderTop: '1px solid black', marginLeft: 2, marginTop: 2 }}></div>
-                            <div style={{ width: 9, borderTop: '1px solid black', marginLeft: 1, marginTop: 2, opacity: 0.5 }}></div>
-                            <div style={{ width: 8, borderTop: '1px solid black', position: 'absolute', left: 12, top: 4, transform: 'rotate(90deg)', transformOrigin: 'left top' }}></div>
-                            <div style={{ width: 8, borderTop: '1px solid black', position: 'absolute', left: 12, top: 4, transform: 'rotate(35deg)', transformOrigin: 'left top' }}></div>
+                          <div
+                            style={{
+                              width: 18,
+                              height: 7,
+                              border: '1px solid black',
+                              marginLeft: 4,
+                              marginTop: 8,
+                              borderRadius: 2,
+                              display: 'flex',
+                              position: 'relative'
+                            }}
+                          >
+                            <div style={{ width: 2, borderTop: '1px solid black', marginLeft: 2, marginTop: 2 }} />
+                            <div
+                              style={{
+                                width: 9,
+                                borderTop: '1px solid black',
+                                marginLeft: 1,
+                                marginTop: 2,
+                                opacity: 0.5
+                              }}
+                            />
+                            <div
+                              style={{
+                                width: 8,
+                                borderTop: '1px solid black',
+                                position: 'absolute',
+                                left: 12,
+                                top: 4,
+                                transform: 'rotate(90deg)',
+                                transformOrigin: 'left top'
+                              }}
+                            />
+                            <div
+                              style={{
+                                width: 8,
+                                borderTop: '1px solid black',
+                                position: 'absolute',
+                                left: 12,
+                                top: 4,
+                                transform: 'rotate(35deg)',
+                                transformOrigin: 'left top'
+                              }}
+                            />
                           </div>
                         </div>
                         <span>操作按钮</span>
@@ -457,26 +713,37 @@ class App extends React.Component<AppProps, CCMSConsigState> {
               <>
                 <CCMSForm
                   key={activeTab}
-                  data={[{
-                    ...(pageConfig.steps || [])[activeTab],
-                    applicationName,
-                    businessSuffix: type === 'business' ? '/business' : '',
-                    version: this.props.version,
-                    subversion: this.props.subversion,
-                    configDomain: this.props.configDomain
-                  }]}
+                  data={[
+                    {
+                      ...(pageConfig.steps || [])[activeTab],
+                      applicationName,
+                      businessSuffix: type === 'business' ? '/business' : '',
+                      version: this.props.version,
+                      subversion: this.props.subversion,
+                      configDomain: this.props.configDomain
+                    }
+                  ]}
                   config={(StepConfigs[((pageConfig.steps || [])[activeTab] || {}).type] || {}) as FormConfig}
                   onChange={(data) => {
                     const { pageConfig } = this.state
                     const { steps = [] } = pageConfig
                     steps[this.state.activeTab] = data
                     pageConfig.steps = steps
-                    this.setState({
-                      pageConfig
-                    })
+                    this.setState(
+                      {
+                        ready: false,
+                        pageConfig
+                      },
+                      () => {
+                        this.setState({
+                          ready: true
+                        })
+                      }
+                    )
                   }}
                   loadDomain={this.props.loadDomain}
                   loadPageList={loadPageList}
+                  loadCustomSource={loadCustomSource}
                   baseRoute={this.props.baseRoute}
                 />
               </>
@@ -489,7 +756,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
           configStringify={configStringify}
           defaultValue={JSON.stringify(pageConfig, undefined, 2)}
           onOk={(pageConfig) => {
-            this.setState({ pageConfig, configStringify: false });
+            this.setState({ pageConfig, configStringify: false })
             this.handleRefreshPreview()
           }}
           onCancel={() => this.setState({ configStringify: false })}
@@ -497,7 +764,6 @@ class App extends React.Component<AppProps, CCMSConsigState> {
       </div>
     )
   }
-
 }
 
-export default App;
+export default App

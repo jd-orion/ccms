@@ -41,10 +41,11 @@ export interface ColumnProps<T, V = any> {
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
   loadPageFrameURL: (pageID: any) => Promise<string>
   loadPageList: () => Promise<Array<PageListItem>>
+  loadCustomSource: (customName: string, version: string) => string
   loadDomain: (domain: string) => Promise<string>
 }
 
-interface ColumnState {}
+interface ColumnState { }
 
 export default class Column<T, E, V = any, S = {}>
   extends React.Component<ColumnProps<T, V>, ColumnState & S>
@@ -52,7 +53,7 @@ export default class Column<T, E, V = any, S = {}>
 {
   constructor(props: ColumnProps<T>) {
     super(props)
-    this.state = {} as (ColumnState & S)
+    this.state = {} as ColumnState & S
   }
 
   static defaultProps = {

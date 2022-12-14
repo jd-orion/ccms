@@ -17,7 +17,6 @@ export interface IColorField {
 export default class ColorField extends Field<ColorFieldConfig, IColorField, string> implements IField<string> {
   reset: () => Promise<string> = async () => {
     const defaults = await this.defaultValue()
-    console.log(defaults, 'color default')
     if (defaults === undefined) {
       return ''
     } else {

@@ -110,6 +110,7 @@ type OperationsHelperProps<Operation = OperationConfig> = {
   loadPageFrameURL: (pageID: unknown) => Promise<string>
   loadPageConfig: (pageID: unknown) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
+  loadCustomSource: (customName: string, version: string) => string
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void

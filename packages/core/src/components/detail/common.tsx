@@ -99,6 +99,7 @@ export interface DetailFieldProps<C extends DetailFieldConfig, T> {
   loadDomain: (domain: string) => Promise<string>
   loadPageConfig: (pageID: unknown) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
+  loadCustomSource: (customName: string, version: string) => string
   handlePageRedirect: (path: string) => void
   checkPageAuth: (pageID: unknown) => Promise<boolean>
   onUnmount: (reload?: boolean, data?: unknown) => Promise<void>

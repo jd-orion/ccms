@@ -61,6 +61,7 @@ interface OperationHelperProps {
   loadPageFrameURL: (pageID: unknown) => Promise<string>
   loadPageConfig: (pageID: unknown) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
+  loadCustomSource: (customName: string, version: string) => string
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void
@@ -145,6 +146,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
       loadPageFrameURL,
       loadPageConfig,
       loadPageList,
+      loadCustomSource,
       loadDomain,
       handlePageRedirect,
       callback,
@@ -168,6 +170,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
                 loadPageFrameURL,
                 loadPageConfig,
                 loadPageList,
+                loadCustomSource,
                 loadDomain,
                 handlePageRedirect,
                 callback: (success) => {
@@ -197,6 +200,7 @@ export default class OperationHelper extends React.Component<OperationHelperProp
               loadPageFrameURL,
               loadPageConfig,
               loadPageList,
+              loadCustomSource,
               loadDomain,
               handlePageRedirect,
               callback: (success) => {

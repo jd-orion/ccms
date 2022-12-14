@@ -1,10 +1,14 @@
-import { FieldConfigs } from "ccms/dist/src/components/formFields";
+import { FieldConfigs } from 'ccms/dist/src/components/formFields'
 
 const config: FieldConfigs[] = [
   {
-    "field": "entry",
-    "label": "入口文件",
-    "type": "text"
+    label: '',
+    field: '',
+    type: 'custom',
+    entry: 'http://ossin.jd.com/swm-plus/select-component-pre/index.html',
+    customDefault: {
+      type: 'ccms-form'
+    }
   }
 ]
 
