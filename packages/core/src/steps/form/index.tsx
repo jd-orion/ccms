@@ -737,6 +737,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
               loadPageFrameURL={this.props.loadPageFrameURL}
               loadPageConfig={this.props.loadPageConfig}
               loadPageList={this.props.loadPageList}
+              loadCustomSource={this.props.loadCustomSource}
               baseRoute={this.props.baseRoute}
               loadDomain={this.props.loadDomain}
               handlePageRedirect={this.props.handlePageRedirect}
@@ -750,11 +751,11 @@ export default class FormStep extends Step<FormConfig, FormState> {
                   mode: actions[index].mode,
                   onClick: submitValidate
                     ? async () => {
-                        await this.handleValidations()
-                        if (this.canSubmit) {
-                          onClick()
-                        }
+                      await this.handleValidations()
+                      if (this.canSubmit) {
+                        onClick()
                       }
+                    }
                     : onClick
                 })
               }
@@ -849,12 +850,12 @@ export default class FormStep extends Step<FormConfig, FormState> {
                 subLabel: this.handleSubLabelContent(formFieldConfig),
                 columns: columns?.enable
                   ? {
-                      type: formFieldConfig.columns?.type || columns?.type || 'span',
-                      value: formFieldConfig.columns?.value || columns?.value || 1,
-                      wrap: formFieldConfig.columns?.wrap || columns?.wrap || false,
-                      gap: columns?.gap || 0,
-                      rowGap: columns?.rowGap || 0
-                    }
+                    type: formFieldConfig.columns?.type || columns?.type || 'span',
+                    value: formFieldConfig.columns?.value || columns?.value || 1,
+                    wrap: formFieldConfig.columns?.wrap || columns?.wrap || false,
+                    gap: columns?.gap || 0,
+                    rowGap: columns?.rowGap || 0
+                  }
                   : undefined,
                 status,
                 message: formData[formFieldIndex]?.message || '',
@@ -906,6 +907,7 @@ export default class FormStep extends Step<FormConfig, FormState> {
                     loadPageURL={async (pageID) => this.props.loadPageURL(pageID)}
                     loadPageFrameURL={async (pageID) => this.props.loadPageFrameURL(pageID)}
                     loadPageConfig={async (pageID) => this.props.loadPageConfig(pageID)}
+                    loadCustomSource={(customName, version) => this.props.loadCustomSource(customName, version)}
                     loadPageList={async () => this.props.loadPageList()}
                     baseRoute={this.props.baseRoute}
                     loadDomain={async (domain: string) => this.props.loadDomain(domain)}

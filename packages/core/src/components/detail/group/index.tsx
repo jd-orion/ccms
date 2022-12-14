@@ -214,12 +214,12 @@ export default class GroupField
               label: detailFieldConfig.label,
               columns: config.columns?.enable
                 ? {
-                    type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
-                    value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
-                    wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
-                    gap: config.columns?.gap || 0,
-                    rowGap: config.columns?.rowGap || 0
-                  }
+                  type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                  value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
+                  wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                  gap: config.columns?.gap || 0,
+                  rowGap: config.columns?.rowGap || 0
+                }
                 : undefined,
               styles: detailFieldConfig.styles,
               layout: formLayout,
@@ -232,6 +232,7 @@ export default class GroupField
                   loadPageFrameURL={this.props.loadPageFrameURL}
                   loadPageConfig={this.props.loadPageConfig}
                   loadPageList={this.props.loadPageList}
+                  loadCustomSource={this.props.loadCustomSource}
                   handlePageRedirect={this.props.handlePageRedirect}
                   onUnmount={this.props.onUnmount}
                   key={detailFieldIndex}

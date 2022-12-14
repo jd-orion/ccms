@@ -554,87 +554,87 @@ export default class TableStep extends Step<TableConfig, TableState> {
     const { pageAuth } = this.state
     return tableOperationsList.length > 0
       ? this.renderTableOperationComponent({
-          children: tableOperationsList.map((operation: TableOperationsType, index: number) => {
-            if (operation.type === 'button') {
-              let hidden = false
-              if (operation.handle && operation.handle.type === 'ccms') {
-                hidden = operation.handle.page === undefined || !pageAuth[(operation.handle.page as string).toString()]
-                operation.handle.page !== undefined && this.checkPageAuth((operation.handle.page as string).toString())
-              }
+        children: tableOperationsList.map((operation: TableOperationsType, index: number) => {
+          if (operation.type === 'button') {
+            let hidden = false
+            if (operation.handle && operation.handle.type === 'ccms') {
+              hidden = operation.handle.page === undefined || !pageAuth[(operation.handle.page as string).toString()]
+              operation.handle.page !== undefined && this.checkPageAuth((operation.handle.page as string).toString())
+            }
 
-              return (
-                <React.Fragment key={index}>
-                  {hidden
-                    ? null
-                    : this.renderTableOperationButtonComponent({
-                        label: operation.label,
-                        level: operation.level || 'normal',
+            return (
+              <React.Fragment key={index}>
+                {hidden
+                  ? null
+                  : this.renderTableOperationButtonComponent({
+                    label: operation.label,
+                    level: operation.level || 'normal',
+                    onClick: async () => {
+                      await this.handleRowOperation(operation)
+                    }
+                  })}
+              </React.Fragment>
+            )
+          }
+          if (operation.type === 'group') {
+            return (
+              <React.Fragment key={index}>
+                {this.renderTableOperationGroupComponent({
+                  label: operation.label,
+                  children: (operation.operations || []).map((currrentOperation) => {
+                    let hidden = false
+                    if (currrentOperation.handle && currrentOperation.handle.type === 'ccms') {
+                      hidden =
+                        currrentOperation.handle.page === undefined ||
+                        !pageAuth[(currrentOperation.handle.page as string).toString()]
+                      currrentOperation.handle.page !== undefined &&
+                        this.checkPageAuth((currrentOperation.handle.page as string).toString())
+                    }
+                    return hidden
+                      ? null
+                      : this.renderTableOperationGroupItemComponent({
+                        label: currrentOperation.label,
+                        level: currrentOperation.level || 'normal',
                         onClick: async () => {
-                          await this.handleRowOperation(operation)
+                          await this.handleRowOperation(currrentOperation)
                         }
-                      })}
-                </React.Fragment>
-              )
-            }
-            if (operation.type === 'group') {
-              return (
-                <React.Fragment key={index}>
-                  {this.renderTableOperationGroupComponent({
-                    label: operation.label,
-                    children: (operation.operations || []).map((currrentOperation) => {
-                      let hidden = false
-                      if (currrentOperation.handle && currrentOperation.handle.type === 'ccms') {
-                        hidden =
-                          currrentOperation.handle.page === undefined ||
-                          !pageAuth[(currrentOperation.handle.page as string).toString()]
-                        currrentOperation.handle.page !== undefined &&
-                          this.checkPageAuth((currrentOperation.handle.page as string).toString())
-                      }
-                      return hidden
-                        ? null
-                        : this.renderTableOperationGroupItemComponent({
-                            label: currrentOperation.label,
-                            level: currrentOperation.level || 'normal',
-                            onClick: async () => {
-                              await this.handleRowOperation(currrentOperation)
-                            }
-                          })
-                    })
-                  })}
-                </React.Fragment>
-              )
-            }
-            if (operation.type === 'dropdown') {
-              return (
-                <React.Fragment key={index}>
-                  {this.renderTableOperationDropdownComponent({
-                    label: operation.label,
-                    children: (operation.operations || []).map((currrentOperation) => {
-                      let hidden = false
-                      if (currrentOperation.handle && currrentOperation.handle.type === 'ccms') {
-                        hidden =
-                          currrentOperation.handle.page === undefined ||
-                          !pageAuth[(currrentOperation.handle.page as string).toString()]
-                        currrentOperation.handle.page !== undefined &&
-                          this.checkPageAuth((currrentOperation.handle.page as string).toString())
-                      }
-                      return hidden
-                        ? null
-                        : this.renderTableOperationDropdownItemComponent({
-                            label: currrentOperation.label,
-                            level: currrentOperation.level || 'normal',
-                            onClick: async () => {
-                              await this.handleRowOperation(currrentOperation)
-                            }
-                          })
-                    })
-                  })}
-                </React.Fragment>
-              )
-            }
-            return <React.Fragment key={index} />
-          })
+                      })
+                  })
+                })}
+              </React.Fragment>
+            )
+          }
+          if (operation.type === 'dropdown') {
+            return (
+              <React.Fragment key={index}>
+                {this.renderTableOperationDropdownComponent({
+                  label: operation.label,
+                  children: (operation.operations || []).map((currrentOperation) => {
+                    let hidden = false
+                    if (currrentOperation.handle && currrentOperation.handle.type === 'ccms') {
+                      hidden =
+                        currrentOperation.handle.page === undefined ||
+                        !pageAuth[(currrentOperation.handle.page as string).toString()]
+                      currrentOperation.handle.page !== undefined &&
+                        this.checkPageAuth((currrentOperation.handle.page as string).toString())
+                    }
+                    return hidden
+                      ? null
+                      : this.renderTableOperationDropdownItemComponent({
+                        label: currrentOperation.label,
+                        level: currrentOperation.level || 'normal',
+                        onClick: async () => {
+                          await this.handleRowOperation(currrentOperation)
+                        }
+                      })
+                  })
+                })}
+              </React.Fragment>
+            )
+          }
+          return <React.Fragment key={index} />
         })
+      })
       : null
   }
 
@@ -708,6 +708,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                       loadPageFrameURL={this.props.loadPageFrameURL}
                       loadPageConfig={this.props.loadPageConfig}
                       loadPageList={this.props.loadPageList}
+                      loadCustomSource={this.props.loadCustomSource}
                       loadDomain={async (domain: string) => this.props.loadDomain(domain)}
                     />
                   </ColumnStyleComponent>
@@ -870,12 +871,12 @@ export default class TableStep extends Step<TableConfig, TableState> {
                       {hidden
                         ? null
                         : this.renderRowOperationButtonComponent({
-                            label: operation.label,
-                            level: operation.level || 'normal',
-                            onClick: async () => {
-                              await this.handleRowOperation(operation, record)
-                            }
-                          })}
+                          label: operation.label,
+                          level: operation.level || 'normal',
+                          onClick: async () => {
+                            await this.handleRowOperation(operation, record)
+                          }
+                        })}
                     </React.Fragment>
                   )
                 }
@@ -910,12 +911,12 @@ export default class TableStep extends Step<TableConfig, TableState> {
                           return hidden
                             ? null
                             : this.renderRowOperationDropdownItemComponent({
-                                label: operationGroupDropdown.label,
-                                level: operationGroupDropdown.level || 'normal',
-                                onClick: async () => {
-                                  await this.handleRowOperation(operationGroupDropdown, record)
-                                }
-                              })
+                              label: operationGroupDropdown.label,
+                              level: operationGroupDropdown.level || 'normal',
+                              onClick: async () => {
+                                await this.handleRowOperation(operationGroupDropdown, record)
+                              }
+                            })
                         })
                       })}
                     </React.Fragment>
@@ -959,6 +960,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
                   loadPageFrameURL={this.props.loadPageFrameURL}
                   loadPageConfig={this.props.loadPageConfig}
                   loadPageList={this.props.loadPageList}
+                  loadCustomSource={this.props.loadCustomSource}
                   loadDomain={this.props.loadDomain}
                   handlePageRedirect={this.props.handlePageRedirect}
                   onMount={() => {
@@ -998,6 +1000,7 @@ export default class TableStep extends Step<TableConfig, TableState> {
               loadPageFrameURL={this.props.loadPageFrameURL}
               loadPageConfig={this.props.loadPageConfig}
               loadPageList={this.props.loadPageList}
+              loadCustomSource={this.props.loadCustomSource}
               loadDomain={this.props.loadDomain}
               handlePageRedirect={this.props.handlePageRedirect}
               onMount={() => {

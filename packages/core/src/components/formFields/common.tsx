@@ -132,6 +132,7 @@ export interface FieldProps<C extends FieldConfig, T> {
   loadPageFrameURL: (pageID: unknown) => Promise<string>
   loadPageConfig: (pageID: unknown) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
+  loadCustomSource: (customName: string, version: string) => string
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
   containerPath: string // 容器组件所在路径以字段拼接展示  1.3.0新增

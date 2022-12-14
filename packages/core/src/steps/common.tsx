@@ -8,7 +8,7 @@ import StatementHelper from '../util/statement'
  * - type: 类型，对应各子类
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface StepConfig {}
+export interface StepConfig { }
 
 /**
  * 页面步骤基类 - 入参格式
@@ -33,6 +33,7 @@ export interface StepProps<C extends StepConfig> {
   loadPageFrameURL: (pageID: unknown) => Promise<string>
   loadPageConfig: (pageID: unknown) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
+  loadCustomSource: (customName: string, version: string) => string
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
   handlePageRedirect?: (path: string, replaceHistory: boolean) => void

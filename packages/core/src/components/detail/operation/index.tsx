@@ -99,7 +99,7 @@ export default class DetailOperation extends DetailField<OperationDetailConfig, 
    * 处理按钮列表按钮项回调
    * @param action 按钮项配置
    */
-  handleCallback = async (action: ActionConfig, success: boolean) => {}
+  handleCallback = async (action: ActionConfig, success: boolean) => { }
 
   render = () => {
     const {
@@ -133,6 +133,7 @@ export default class DetailOperation extends DetailField<OperationDetailConfig, 
             loadPageFrameURL={this.props.loadPageFrameURL}
             loadPageConfig={this.props.loadPageConfig}
             loadPageList={this.props.loadPageList}
+            loadCustomSource={this.props.loadCustomSource}
             baseRoute={this.props.baseRoute}
             loadDomain={this.props.loadDomain}
             handlePageRedirect={this.props.handlePageRedirect}
@@ -161,7 +162,6 @@ export default class DetailOperation extends DetailField<OperationDetailConfig, 
         actions_.push(OperationHelperWrapper)
       }
     }
-    console.log(actions_, 'actions')
     return <> {this.renderComponent({ actions: actions_ })}</>
   }
 }

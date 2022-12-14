@@ -563,6 +563,7 @@ export default class TableField
                       loadPageFrameURL={this.props.loadPageFrameURL}
                       loadPageConfig={this.props.loadPageConfig}
                       loadPageList={this.props.loadPageList}
+                      loadCustomSource={this.props.loadCustomSource}
                       loadDomain={async (domain: string) => this.props.loadDomain(domain)}
                     />
                   </ColumnStyleComponent>
@@ -636,12 +637,12 @@ export default class TableField
                       {hidden
                         ? null
                         : this.renderRowOperationButtonComponent({
-                            label: operation.label,
-                            level: operation.level || 'normal',
-                            onClick: async () => {
-                              await this.handleRowOperation(operation, record)
-                            }
-                          })}
+                          label: operation.label,
+                          level: operation.level || 'normal',
+                          onClick: async () => {
+                            await this.handleRowOperation(operation, record)
+                          }
+                        })}
                     </React.Fragment>
                   )
                 }
@@ -667,12 +668,12 @@ export default class TableField
                           return hidden
                             ? null
                             : this.renderRowOperationGroupItemComponent({
-                                label: operationGroup.label,
-                                level: operationGroup.level || 'normal',
-                                onClick: async () => {
-                                  await this.handleRowOperation(operationGroup, record)
-                                }
-                              })
+                              label: operationGroup.label,
+                              level: operationGroup.level || 'normal',
+                              onClick: async () => {
+                                await this.handleRowOperation(operationGroup, record)
+                              }
+                            })
                         })
                       })}
                     </React.Fragment>
@@ -703,12 +704,12 @@ export default class TableField
                           return hidden
                             ? null
                             : this.renderRowOperationDropdownItemComponent({
-                                label: operationDropdown.label,
-                                level: operationDropdown.level || 'normal',
-                                onClick: async () => {
-                                  await this.handleRowOperation(operationDropdown, record)
-                                }
-                              })
+                              label: operationDropdown.label,
+                              level: operationDropdown.level || 'normal',
+                              onClick: async () => {
+                                await this.handleRowOperation(operationDropdown, record)
+                              }
+                            })
                         })
                       })}
                     </React.Fragment>
@@ -740,6 +741,7 @@ export default class TableField
                   loadPageFrameURL={this.props.loadPageFrameURL}
                   loadPageConfig={this.props.loadPageConfig}
                   loadPageList={this.props.loadPageList}
+                  loadCustomSource={this.props.loadCustomSource}
                   config={operationConfig}
                   sourceData={operationData}
                   baseRoute={this.props.baseRoute}
@@ -782,6 +784,7 @@ export default class TableField
               loadPageFrameURL={this.props.loadPageFrameURL as (pageID: unknown) => Promise<string>}
               loadPageConfig={this.props.loadPageConfig as (pageID: unknown) => Promise<CCMSConfig>}
               loadPageList={this.props.loadPageList}
+              loadCustomSource={this.props.loadCustomSource}
               loadDomain={this.props.loadDomain}
               handlePageRedirect={this.props.handlePageRedirect}
               onMount={() => {

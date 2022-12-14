@@ -63,6 +63,7 @@ export interface FormContainerProps {
   loadPageFrameURL: (pageID: unknown) => Promise<string>
   loadPageConfig: (pageID: unknown) => Promise<CCMSConfig>
   loadPageList: () => Promise<Array<PageListItem>>
+  loadCustomSource: (customName: string, version: string) => string
   baseRoute: string
   loadDomain: (domain: string) => Promise<string>
 }
@@ -246,6 +247,7 @@ export default class FormContainer extends React.Component<FormContainerProps, F
       loadPageFrameURL,
       loadPageConfig,
       loadPageList,
+      loadCustomSource,
       baseRoute,
       loadDomain
     } = this.props
@@ -378,6 +380,7 @@ export default class FormContainer extends React.Component<FormContainerProps, F
                 loadPageFrameURL={async (pageID) => loadPageFrameURL(pageID)}
                 loadPageConfig={async (pageID) => loadPageConfig(pageID)}
                 loadPageList={async () => loadPageList()}
+                loadCustomSource={(name, version) => loadCustomSource(name, version)}
                 baseRoute={baseRoute}
                 loadDomain={async (domain: string) => loadDomain(domain)}
                 onReportFields={async (field: string) => this.handleReportFields(field)}

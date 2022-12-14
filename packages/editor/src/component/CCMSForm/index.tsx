@@ -1,13 +1,15 @@
-import React from "react";
-import { FormStep } from "ccms-antd-mini";
-import { FormConfig } from "ccms/dist/src/steps/form";
-import { PageListItem } from "ccms/dist/src/main";
+import React from 'react'
+import { FormStep } from 'ccms-antd-mini'
+import { FormConfig } from 'ccms/dist/src/steps/form'
+import { PageListItem } from 'ccms/dist/src/main'
+
 interface CCMSFormProps {
   data: any
   config: FormConfig
   onChange: (data: any) => void
   loadDomain: (name: string) => Promise<string>
-  loadPageList: () => Promise<Array<PageListItem>>,
+  loadPageList: () => Promise<Array<PageListItem>>
+  loadCustomSource: (customName: string, version: string) => string
   baseRoute: string
 }
 
@@ -20,7 +22,7 @@ export default class CCMSForm extends React.Component<CCMSFormProps, CCMSFormSta
     formMounted: false
   }
 
-  render () {
+  render() {
     return (
       <FormStep
         ref={(form: any) => {
@@ -43,6 +45,7 @@ export default class CCMSForm extends React.Component<CCMSFormProps, CCMSFormSta
         loadPageFrameURL={async () => ''}
         loadPageConfig={async () => ({})}
         loadPageList={this.props.loadPageList}
+        loadCustomSource={this.props.loadCustomSource}
         loadDomain={this.props.loadDomain}
         baseRoute={this.props.baseRoute}
       />

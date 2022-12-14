@@ -34,11 +34,11 @@ export interface HeaderConfig extends StepConfig {
     enable?: boolean
   }
   mainContent?:
-    | plainContentConfig
-    | markdownContentConfig
-    | htmlContentConfig
-    | detailContentConfig
-    | statisticContentConfig
+  | plainContentConfig
+  | markdownContentConfig
+  | htmlContentConfig
+  | detailContentConfig
+  | statisticContentConfig
   extraContent?: statisticContentConfig | imageContentConfig
 }
 
@@ -268,6 +268,7 @@ export default class HeaderStep extends Step<HeaderConfig> {
         loadPageFrameURL={this.props.loadPageFrameURL}
         loadPageConfig={this.props.loadPageConfig}
         loadPageList={this.props.loadPageList}
+        loadCustomSource={this.props.loadCustomSource}
         loadDomain={this.props.loadDomain}
         handlePageRedirect={this.props.handlePageRedirect}
       />
@@ -278,11 +279,11 @@ export default class HeaderStep extends Step<HeaderConfig> {
     return (config.statistics || []).map((statistic, index) => {
       const value = statistic.value
         ? ParamHelper(statistic.value, {
-            data: this.props.data,
-            step: this.props.step,
-            containerPath: '',
-            record: {}
-          })
+          data: this.props.data,
+          step: this.props.step,
+          containerPath: '',
+          record: {}
+        })
         : undefined
       switch (statistic.type) {
         case 'value':
@@ -374,6 +375,7 @@ export default class HeaderStep extends Step<HeaderConfig> {
             loadPageFrameURL={this.props.loadPageFrameURL}
             loadPageConfig={this.props.loadPageConfig}
             loadPageList={this.props.loadPageList}
+            loadCustomSource={this.props.loadCustomSource}
             baseRoute={this.props.baseRoute}
             loadDomain={this.props.loadDomain}
             handlePageRedirect={this.props.handlePageRedirect}
