@@ -7,6 +7,11 @@ import { cloneDeep } from 'lodash'
 export interface CustomDetailConfig extends DetailFieldConfig {
   type: 'custom'
   entry: string
+  component?: {
+    name: string
+    version: string
+  }
+  customDefault?: any
 }
 
 export default class CustomDtail extends DetailField<CustomDetailConfig, {}, any> implements IDetailField<any> {
@@ -17,16 +22,29 @@ export default class CustomDtail extends DetailField<CustomDetailConfig, {}, any
   _get: () => Promise<any> = async () => this.props.value
 
   componentDidMount () {
-    this.loadCustomField(this.props.config.entry)
+    const entry = this.getEntry()
+    this.loadCustomField(entry)
   }
 
   getSnapshotBeforeUpdate () {
     const snapshot: string[] = []
-    if (this.entry !== this.props.config.entry) {
+    if (this.getEntry() !== this.props.config.entry) {
       snapshot.push('entry')
     }
     return snapshot
   }
+
+  getEntry() {
+    const { entry, component } = this.props.config
+    let componentUrl = ''
+    if (component && this.props.loadCustomSource) {
+      const url = this.props.loadCustomSource(component.name, component.version)
+      componentUrl = `${url}index.html`
+    }
+    this.entry = entry || componentUrl
+    return this.entry
+  }
+
 
   get = async (): Promise<any> => {
     return await this._get()

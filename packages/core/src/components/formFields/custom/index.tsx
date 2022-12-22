@@ -34,7 +34,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
 
   getSnapshotBeforeUpdate() {
     const snapshot: string[] = []
-    if (this.entry !== this.getEntry()) {
+    if (this.props.config.entry !== this.getEntry()) {
       snapshot.push('entry')
     }
     return snapshot
@@ -69,7 +69,7 @@ export default class CustomField extends Field<CustomFieldConfig, {}, any> imple
 
   componentDidUpdate(_: FieldProps<CustomFieldConfig, any>, __: {}, snapshot: string[]) {
     if (snapshot.includes('entry')) {
-      const entry = this.getEntry()
+      const { entry } = this.props.config
       this.loadCustomField(entry)
     } else {
       if (this.customField && this.customField.update) {
