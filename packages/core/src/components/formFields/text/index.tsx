@@ -94,6 +94,16 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
       }
     }
 
+    if (value !== undefined && value !== '' && regExp !== undefined && regExp.expression !== undefined) {
+      if (!(new RegExp(regExp.expression)).test(value)) {
+        if (regExp.message) {
+          errors.push(new FieldError(regExp.message))
+        } else {
+          errors.push(new FieldError('格式错误'))
+        }
+      }
+    }
+
     if (maxLength !== undefined) {
       let valueMaxLength = value
       if (cjkLength !== undefined) {
@@ -119,16 +129,6 @@ export default class TextField extends Field<TextFieldConfig, ITextField, string
       }
       if (valueMinLength && valueMinLength.length < minLength) {
         errors.push(new FieldError(`最短需输入${minLength}个字符。`))
-      }
-    }
-
-    if (value !== undefined && value !== '' && regExp !== undefined && regExp.expression !== undefined) {
-      if (!(new RegExp(regExp.expression)).test(value)) {
-        if (regExp.message) {
-          errors.push(new FieldError(regExp.message))
-        } else {
-          errors.push(new FieldError('格式错误'))
-        }
       }
     }
 
