@@ -1,17 +1,16 @@
 import React from 'react'
 import { Drawer, Button, Modal, message, Card, Space, Radio, Dropdown, Menu } from 'antd'
-import { DownOutlined } from '@ant-design/icons'
+import { DownOutlined, DeleteOutlined, ArrowUpOutlined, ArrowDownOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { CCMS as CCMSAntDesign } from 'ccms-antd'
 import { CCMSConfig, BasicConfig, PageListItem } from 'ccms/dist/src/main'
 import { FormConfig } from 'ccms/dist/src/steps/form'
 import { cloneDeep } from 'lodash'
 import copy from 'copy-html-to-clipboard'
-import { PageTemplate, PageTemplates, StepConfigs, StepTemplates } from './steps'
+import { PageTemplate, PageTemplates, StepConfigs, StepTemplates, stepName } from './steps'
 import CCMSForm from './component/CCMSForm'
 import './antd.less' // 加载antd样式（用于样式隔离）
 import './app.less'
 import ConfigJSON from './component/ConfigJSON'
-
 /**
  * 页面配置
  */
@@ -114,20 +113,25 @@ export interface CCMSConsigState {
   activeTab: number
   pageTemplate: PageTemplate
   configStringify: boolean
+  customizeTeplates: { step: string; label: string }[]
 }
 
 class App extends React.Component<AppProps, CCMSConsigState> {
   state: CCMSConsigState = {
-    pageConfig: cloneDeep(this.props.config) as PageConfig, // 页面配置
+    pageConfig: cloneDeep(this.props.config || basicForm) as PageConfig, // 页面配置
     activeTab: -1, // 活跃tab
     pageTemplate: 'normal-form', // 页面类型
     ready: true, // 是否展示，用于刷新
-    configStringify: false
+    configStringify: false,
+    customizeTeplates: []
   }
 
   componentDidMount() {
     const { pageConfig } = this.state
     const steps = pageConfig.steps || []
+
+    // 是否为自定义流程页面
+    let isCustomize = true
 
     for (const [pageTemplate, stepTemplates] of Object.entries(PageTemplates)) {
       if (stepTemplates.length === steps.length) {
@@ -142,9 +146,26 @@ class App extends React.Component<AppProps, CCMSConsigState> {
           this.setState({
             pageTemplate: pageTemplate as PageTemplate
           })
+          isCustomize = false
           break
         }
       }
+    }
+
+    if (isCustomize) {
+      const customizeTeplates: { step: string; label: string }[] = []
+
+      for (let i = 0; i < steps.length; i++) {
+        customizeTeplates.push({
+          step: steps[i].type,
+          label: stepName[steps[i].type]
+        })
+      }
+
+      this.setState({
+        pageTemplate: 'customize' as PageTemplate,
+        customizeTeplates
+      })
     }
 
     if (!pageConfig.ui) {
@@ -178,8 +199,10 @@ class App extends React.Component<AppProps, CCMSConsigState> {
    * 页面保存
    */
   handleSave = () => {
-    if (this.props.onSubmit) {
-      this.props.onSubmit(this.state.pageConfig)
+    const { onSubmit } = this.props
+    const { pageConfig } = this.state
+    if (onSubmit) {
+      onSubmit(pageConfig)
     }
   }
 
@@ -218,17 +241,113 @@ class App extends React.Component<AppProps, CCMSConsigState> {
           pageTemplate,
           pageConfig
         })
+
+        const isCustomize = pageTemplate === 'customize'
+        if (isCustomize) {
+          // const customizeTeplates: { step: string; label: string }[] = []
+
+          // for (const step of steps) {
+          //   customizeTeplates.push(StepTemplates[steps[step]])
+          // }
+
+          this.setState({
+            customizeTeplates: steps
+          })
+        }
       },
       getContainer: () => document.getElementById('ccms-config') || document.body
     })
   }
 
+  changeCustomType = (step, i) => {
+    console.log(step, i)
+    const { customizeTeplates, pageConfig } = this.state
+    customizeTeplates[i] = {
+      label: stepName[step],
+      step
+    }
+    if (pageConfig && pageConfig.steps) {
+      pageConfig.steps[i] = { type: step }
+    }
+
+    this.setState({
+      customizeTeplates,
+      pageConfig
+    })
+  }
+
+  addCustomType = (start) => {
+    const { customizeTeplates, pageConfig } = this.state
+    if (customizeTeplates.length === 6) {
+      message.info('自定义流程建议保持在6个以内')
+      // return
+    }
+    const step = 'header'
+    const defaultAdd = {
+      label: stepName[step],
+      step
+    }
+    start ? customizeTeplates.unshift(defaultAdd) : customizeTeplates.push(defaultAdd)
+
+    if (pageConfig && pageConfig.steps) {
+      start ? pageConfig?.steps.unshift({ type: step }) : pageConfig?.steps.push({ type: step })
+    }
+
+    this.setState({
+      customizeTeplates,
+      pageConfig
+    })
+  }
+
+  exchangeCustomType = (i, exchangeType) => {
+    const { customizeTeplates, pageConfig } = this.state
+
+    const startIndex = i
+    const endIndex = exchangeType === 'up' ? i - 1 : i + 1
+
+      ;[customizeTeplates[startIndex], customizeTeplates[endIndex]] = [
+        customizeTeplates[endIndex],
+        customizeTeplates[startIndex]
+      ]
+
+    if (pageConfig && pageConfig.steps) {
+      ;[pageConfig.steps[startIndex], pageConfig.steps[endIndex]] = [
+        pageConfig.steps[endIndex],
+        pageConfig.steps[startIndex]
+      ]
+
+      this.setState({
+        customizeTeplates,
+        pageConfig
+      })
+    }
+  }
+
+  deleteCustomType = (i) => {
+    const { customizeTeplates, pageConfig } = this.state
+    customizeTeplates.splice(i, 1)
+
+    if (pageConfig && pageConfig.steps) {
+      pageConfig?.steps.splice(i, 1)
+    }
+
+    this.setState({
+      customizeTeplates,
+      pageConfig
+    })
+  }
+
   render() {
-    const { ready, pageConfig, activeTab, pageTemplate, configStringify } = this.state
+    const { ready, pageConfig, activeTab, pageTemplate, configStringify, customizeTeplates } = this.state
 
     const {
       applicationName,
+      version,
+      subversion,
+      configDomain,
       type,
+      baseRoute,
+      sourceData,
       checkPageAuth,
       loadPageURL,
       loadPageFrameURL,
@@ -242,6 +361,10 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 
     const CCMS = CCMSAntDesign
 
+    const isCustomize = pageTemplate === 'customize'
+
+    const PageTemplatesList = isCustomize ? customizeTeplates : PageTemplates[pageTemplate]
+
     return (
       <div id="ccms-config" className="ccms-config">
         {/* 预览CCMS */}
@@ -251,13 +374,14 @@ class App extends React.Component<AppProps, CCMSConsigState> {
               checkPageAuth={checkPageAuth}
               loadPageURL={loadPageURL}
               loadPageFrameURL={loadPageFrameURL}
+              // @ts-ignore
               loadPageConfig={loadPageConfig}
               loadPageList={loadPageList}
               loadCustomSource={loadCustomSource}
               loadDomain={loadDomain}
               handlePageRedirect={handlePageRedirect}
-              sourceData={this.props.sourceData}
-              baseRoute={this.props.baseRoute}
+              sourceData={sourceData}
+              baseRoute={baseRoute}
               callback={() => {
                 // if (window.history.length > 1) {
                 //   window.history.back()
@@ -265,13 +389,14 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                 //   window.close()
                 // }
               }}
+              // @ts-ignore
               config={pageConfig}
             />
           )}
         </div>
 
         {/* 配置化步骤内容 */}
-        <Drawer width={350} mask={false} placement="right" closable={false} visible getContainer={false}>
+        <Drawer width={365} mask={false} placement="right" closable={false} visible getContainer={false}>
           <Card
             title="页面配置"
             extra={
@@ -310,7 +435,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                 key: '-1',
                 tab: '基本信息'
               },
-              ...PageTemplates[this.state.pageTemplate].map(({ label, step }, index) => ({
+              ...PageTemplatesList.map(({ label, step }, index) => ({
                 key: index.toString(),
                 tab: label
               }))
@@ -342,7 +467,7 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                     </Radio.Group>
                   </div>
                 </div>
-                <div style={{ marginTop: 16 }}>
+                <div className="margin-top16">
                   <div>页面类型：</div>
                   <div>
                     <Radio.Group
@@ -705,9 +830,86 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                         </div>
                         <span>操作按钮</span>
                       </Radio.Button>
+                      <Radio.Button className="ccms-page-template" value="customize">
+                        <div className="ccms-page-template-icon">
+                          <PlusCircleOutlined />
+                        </div>
+                        <span>自定义</span>
+                      </Radio.Button>
                     </Radio.Group>
                   </div>
                 </div>
+                {isCustomize && (
+                  <div className="margin-top16">
+                    <div>自定义流程：</div>
+                    <div className="add-customize" onClick={() => this.addCustomType(true)}>
+                      + 插入流程
+                    </div>
+
+                    <div className="customize-body">
+                      {customizeTeplates.map((l, i) => {
+                        const stepList: { key: any; label: JSX.Element }[] = []
+                        Object.keys(stepName).forEach((v) => {
+                          stepList.push({
+                            key: v,
+                            label: stepName[v]
+                          })
+                        })
+                        return (
+                          <div key={i} className="customize-list">
+                            <div>
+                              <span>{`流程${i + 1} `}</span>
+                              <Dropdown
+                                overlay={
+                                  <div className="customize-list-select">
+                                    <Radio.Group
+                                      onChange={(e) => this.changeCustomType(e.target.value, i)}
+                                      value={l.step}
+                                    >
+                                      {Object.keys(stepName).map((stepType, sindex) => {
+                                        return (
+                                          <Radio.Button value={stepType} key={`${stepType}${sindex}`}>
+                                            {stepName[stepType]}
+                                          </Radio.Button>
+                                        )
+                                      })}
+                                    </Radio.Group>
+                                  </div>
+                                }
+                                arrow
+                              >
+                                <a onClick={(e) => e.preventDefault()}>
+                                  <Space>
+                                    {l.label}
+                                    <DownOutlined />
+                                  </Space>
+                                </a>
+                              </Dropdown>
+                            </div>
+                            <div>
+                              {i > 0 && i !== customizeTeplates.length - 1 && (
+                                <ArrowUpOutlined
+                                  className="customize-icon"
+                                  onClick={() => this.exchangeCustomType(i, 'up')}
+                                />
+                              )}
+                              {i > 0 && i !== customizeTeplates.length - 1 && (
+                                <ArrowDownOutlined
+                                  className="customize-icon"
+                                  onClick={() => this.exchangeCustomType(i, 'down')}
+                                />
+                              )}
+                              <DeleteOutlined className="customize-icon" onClick={() => this.deleteCustomType(i)} />
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                    <div className="add-customize" onClick={() => this.addCustomType(false)}>
+                      + 追加流程
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <>
@@ -718,16 +920,16 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                       ...(pageConfig.steps || [])[activeTab],
                       applicationName,
                       businessSuffix: type === 'business' ? '/business' : '',
-                      version: this.props.version,
-                      subversion: this.props.subversion,
-                      configDomain: this.props.configDomain
+                      version,
+                      subversion,
+                      configDomain
                     }
                   ]}
                   config={(StepConfigs[((pageConfig.steps || [])[activeTab] || {}).type] || {}) as FormConfig}
                   onChange={(data) => {
                     const { pageConfig } = this.state
                     const { steps = [] } = pageConfig
-                    steps[this.state.activeTab] = data
+                    steps[activeTab] = data
                     pageConfig.steps = steps
                     this.setState(
                       {
@@ -741,10 +943,10 @@ class App extends React.Component<AppProps, CCMSConsigState> {
                       }
                     )
                   }}
-                  loadDomain={this.props.loadDomain}
+                  loadDomain={loadDomain}
                   loadPageList={loadPageList}
                   loadCustomSource={loadCustomSource}
-                  baseRoute={this.props.baseRoute}
+                  baseRoute={baseRoute}
                 />
               </>
             )}

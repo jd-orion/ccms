@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { CCMSConfig } from 'ccms/dist/src/main'
 import App from './app'
 import DefaultConfig from './DefaultConfig'
 import appInfo from '../package.json'
@@ -301,7 +302,7 @@ const render = () => {
       type="application"
       version={appInfo.version}
       subversion="0"
-      config={DefaultConfig}
+      config={DefaultConfig as CCMSConfig}
       sourceData={sourceData}
       baseRoute="/"
       configDomain={'/ccms/config/1.0.0/0' || `https://cdn.jsdelivr.net/npm/ccms-editor@${appInfo.version}/dist/config`}

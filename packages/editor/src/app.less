@@ -1,34 +1,34 @@
-
 .ccms-config {
-  position: relative;
-  height: calc(100vh - 20px);
+  position  : relative;
+  height    : calc(100vh - 20px);
   min-height: 478px;
-  padding: 20px;
-  & > .preview {
-    width: calc(100% - 350px);
-    height: 100%;
+  padding   : 20px;
+
+  &>.preview {
+    width   : calc(100% - 350px);
+    height  : 100%;
     overflow: auto;
   }
 
-  & > :nth-child(2) > .ant-drawer {
-    height: auto;
+  &> :nth-child(2)>.ant-drawer {
+    height  : auto;
     position: absolute;
-    bottom: 0px;
+    bottom  : 0px;
 
-    & > .ant-drawer-content-wrapper > .ant-drawer-content > .ant-drawer-wrapper-body > .ant-drawer-body {
+    &>.ant-drawer-content-wrapper>.ant-drawer-content>.ant-drawer-wrapper-body>.ant-drawer-body {
       padding: 0;
 
-      & > .ant-card {
+      &>.ant-card {
         height: 100%;
 
-        & > .ant-card-head {
-          & > .ant-tabs {
+        &>.ant-card-head {
+          &>.ant-tabs {
             margin-right: -23px;
           }
         }
 
-        & > .ant-card-body {
-          height: calc(100% - 86px);
+        &>.ant-card-body {
+          height  : calc(100% - 86px);
           overflow: auto;
 
           .ant-form-item {
@@ -37,19 +37,19 @@
 
           .ant-radio-group-small {
             .ant-radio-button-wrapper.ccms-page-template {
-              width: 75px;
-              height: 60px;
+              width     : 75px;
+              height    : 60px;
               text-align: center;
 
               .ccms-page-template-icon {
-                width: 28px;
-                height: 28px;
-                margin: auto;
-                margin-top: 7px;
+                width        : 28px;
+                height       : 28px;
+                margin       : auto;
+                margin-top   : 7px;
                 margin-bottom: 0;
-                border: 1px solid black;
+                border       : 1px solid black;
                 border-radius: 2px;
-                border-color: #666;
+                border-color : #666;
 
                 div {
                   border-color: #666 !important;
@@ -70,5 +70,41 @@
         }
       }
     }
+  }
+
+  .margin-top16 {
+    margin-top: 16px;
+  }
+
+  .customize-body {
+    margin-top   : 10px;
+    border-bottom: 1px solid #d9d9d9;
+
+  }
+
+  .customize-list {
+    height         : 46px;
+    border         : 1px solid #d9d9d9;
+    align-items    : center;
+    display        : flex;
+    padding        : 10px;
+    flex-direction : row;
+    justify-content: space-between;
+    border-radius  : 3px 3px 0 0;
+    border-bottom  : 0;
+  }
+
+  .customize-list-select {
+    width           : 100px;
+    background-color: #fff;
+    padding         : 10px;
+  }
+
+  .add-customize {
+    text-align: right;
+  }
+
+  .customize-icon {
+    margin-right: 5px;
   }
 }
