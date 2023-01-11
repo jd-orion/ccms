@@ -1,11 +1,11 @@
-import { Config as FetchStepConfig, Template as FetchStepTemplate } from "./fetch"
-import { Config as FormStepConfig, Template as FormStepTemplate } from "./form"
-import { Config as TableStepConfig, Template as TableStepTemplate } from "./table"
-import { Config as FilterStepConfig, Template as FilterStepTemplate } from "./filter"
-import { Config as SkipStepConfig, Template as SkipStepTemplate } from "./skip"
-import { Config as HeaderStepConfig, Template as HeaderStepTemplate } from "./header"
-import { Config as DetailStepConfig, Template as DetailStepTemplate } from "./detail"
-import { StepConfigs as IStepConfigs  } from "ccms/dist/src/steps"
+import { StepConfigs as IStepConfigs } from 'ccms/dist/src/steps'
+import { Config as FetchStepConfig, Template as FetchStepTemplate } from './fetch'
+import { Config as FormStepConfig, Template as FormStepTemplate } from './form'
+import { Config as TableStepConfig, Template as TableStepTemplate } from './table'
+import { Config as FilterStepConfig, Template as FilterStepTemplate } from './filter'
+import { Config as SkipStepConfig, Template as SkipStepTemplate } from './skip'
+import { Config as HeaderStepConfig, Template as HeaderStepTemplate } from './header'
+import { Config as DetailStepConfig, Template as DetailStepTemplate } from './detail'
 
 // 页面配置数据
 export const StepConfigs = {
@@ -30,8 +30,14 @@ export const StepTemplates: { [type: string]: IStepConfigs } = {
 }
 
 // 页面类型列表
-export type PageTemplate = 'normal-table' | 'filter-table' | 'normal-form' | 'edit-form' | 'detail' | 'opera'
-
+export type PageTemplate =
+  | 'normal-table'
+  | 'filter-table'
+  | 'normal-form'
+  | 'edit-form'
+  | 'detail'
+  | 'opera'
+  | 'customize'
 
 // 页面类型数据
 export const PageTemplates = {
@@ -57,12 +63,25 @@ export const PageTemplates = {
     { label: '表单', step: 'form' },
     { label: '提交接口', step: 'fetch' }
   ],
-  'detail': [
+  detail: [
     { label: '接口信息', step: 'fetch' },
     { label: '页面信息', step: 'header' },
     { label: '详情信息', step: 'detail' }
   ],
-  'opera': [
+  opera: [{ label: '接口信息', step: 'fetch' }],
+  customize: [
+    { label: '接口信息', step: 'fetch' },
+    { label: '页面信息', step: 'header' },
+    { label: '表单信息', step: 'form' },
     { label: '接口信息', step: 'fetch' }
   ]
+}
+
+export const stepName = {
+  header: '页面信息',
+  fetch: '接口信息',
+  table: '列表信息',
+  filter: '筛选信息',
+  form: '表单信息',
+  detail: '详情信息'
 }
