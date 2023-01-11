@@ -641,6 +641,7 @@ export default class FormField
                               loadPageFrameURL={async (pageID) => this.props.loadPageFrameURL(pageID)}
                               loadPageConfig={async (pageID) => this.props.loadPageConfig(pageID)}
                               loadPageList={async () => this.props.loadPageList()}
+                              loadCustomSource={this.props.loadCustomSource}
                               baseRoute={this.props.baseRoute}
                               loadDomain={async (domain: string) => this.props.loadDomain(domain)}
                               containerPath={getChainPath(this.props.containerPath, this.props.config.field, index)}

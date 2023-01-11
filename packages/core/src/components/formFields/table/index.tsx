@@ -303,6 +303,7 @@ export default class TableField<UIState = object>
       loadPageFrameURL,
       loadPageConfig,
       loadPageList,
+      loadCustomSource,
       baseRoute,
       loadDomain,
       containerPath
@@ -380,6 +381,7 @@ export default class TableField<UIState = object>
                           loadPageFrameURL={loadPageFrameURL}
                           loadPageConfig={loadPageConfig}
                           loadPageList={loadPageList}
+                          loadCustomSource={loadCustomSource}
                           baseRoute={baseRoute}
                           loadDomain={loadDomain}
                         >
@@ -420,6 +422,7 @@ export default class TableField<UIState = object>
                           loadPageFrameURL={loadPageFrameURL}
                           loadPageConfig={loadPageConfig}
                           loadPageList={loadPageList}
+                          loadCustomSource={loadCustomSource}
                           baseRoute={baseRoute}
                           loadDomain={loadDomain}
                           containerPath={getChainPath(containerPath, config.field, index)}
@@ -452,6 +455,7 @@ export default class TableField<UIState = object>
               loadPageFrameURL={loadPageFrameURL}
               loadPageConfig={loadPageConfig}
               loadPageList={loadPageList}
+              loadCustomSource={loadCustomSource}
               baseRoute={baseRoute}
               loadDomain={loadDomain}
             />
@@ -497,6 +501,7 @@ export default class TableField<UIState = object>
               loadPageFrameURL={loadPageFrameURL}
               loadPageConfig={loadPageConfig}
               loadPageList={loadPageList}
+              loadCustomSource={loadCustomSource}
               baseRoute={baseRoute}
               loadDomain={loadDomain}
             />
@@ -525,6 +530,7 @@ export default class TableField<UIState = object>
                           loadPageFrameURL={loadPageFrameURL}
                           loadPageConfig={loadPageConfig}
                           loadPageList={loadPageList}
+                          loadCustomSource={loadCustomSource}
                           baseRoute={baseRoute}
                           loadDomain={loadDomain}
                         >
@@ -564,6 +570,7 @@ export default class TableField<UIState = object>
                           loadPageFrameURL={loadPageFrameURL}
                           loadPageConfig={loadPageConfig}
                           loadPageList={loadPageList}
+                          loadCustomSource={loadCustomSource}
                           baseRoute={baseRoute}
                           loadDomain={loadDomain}
                           containerPath={getChainPath(containerPath, config.field, data.length)}
@@ -590,6 +597,7 @@ export default class TableField<UIState = object>
               loadPageFrameURL={loadPageFrameURL}
               loadPageConfig={loadPageConfig}
               loadPageList={loadPageList}
+              loadCustomSource={loadCustomSource}
               baseRoute={baseRoute}
               loadDomain={loadDomain}
             />
