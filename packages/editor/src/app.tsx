@@ -254,7 +254,6 @@ class App extends React.Component<AppProps, CCMSConsigState> {
   }
 
   changeCustomType = (step, i) => {
-    console.log(step, i)
     const { customizeTeplates, pageConfig } = this.state
     customizeTeplates[i] = {
       label: stepName[step],
