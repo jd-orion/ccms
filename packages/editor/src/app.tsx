@@ -244,12 +244,6 @@ class App extends React.Component<AppProps, CCMSConsigState> {
 
         const isCustomize = pageTemplate === 'customize'
         if (isCustomize) {
-          // const customizeTeplates: { step: string; label: string }[] = []
-
-          // for (const step of steps) {
-          //   customizeTeplates.push(StepTemplates[steps[step]])
-          // }
-
           this.setState({
             customizeTeplates: steps
           })
