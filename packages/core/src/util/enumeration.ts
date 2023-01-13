@@ -114,7 +114,7 @@ export default class EnumerationHelper {
               }))
             }
             if (config.format.type === 'list') {
-              return (data as unknown[]).map((item: unknown) => {
+              return ((data as unknown[]) || []).map((item: unknown) => {
                 const formatConfig = config.format as InterfaceEnumerationOptionsListConfig
                 let extra = {}
                 if (formatConfig.extra) {
