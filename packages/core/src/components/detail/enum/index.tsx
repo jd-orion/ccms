@@ -163,7 +163,7 @@ export default class EnumDetail
                     .join(',')
                 })
               } else if (options.format.type === 'list') {
-                tempOptions = (data as unknown[]).map((item: unknown) => {
+                tempOptions = ((data as unknown[]) || []).map((item: unknown) => {
                   if (options.format && options.format.type === 'list') {
                     return {
                       value: getValue(item, options.format.keyField),
