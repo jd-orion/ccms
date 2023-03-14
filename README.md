@@ -6,9 +6,7 @@
 <hr/>
 配置化自动生成中后台（CMS）页面。CCMS是一套完善、通用的可配置化的方案，提供丰富的CMS后台管理系统的JSON配置项，通过JSON自动生成后台管理系统页面，实现零代码生成后台管理前端页面。  
 
-[文档](https://oriondoc.jd.com/) 
-<!-- [CCMS使用](http://ccms-home-5395.preview-pf.jd.com/docs) | -->
-<!-- [配置化编辑器](http://ccms-home-5395.preview-pf.jd.com/editor)   -->
+[详情](https://jd-orion.github.io/) 
 <hr/>
 
 # ✨  特点
@@ -81,7 +79,7 @@ UI层，通过核心库的配置化文件支持引入不同UI组件库。
 # 📖 API文档
 👉 [Api文档]
 
-[Api文档]:https://oriondoc.jd.com/
+[Api文档]:https://jd-orion.github.io/docs
 
 
 
