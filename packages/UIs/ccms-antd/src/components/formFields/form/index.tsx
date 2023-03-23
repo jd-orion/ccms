@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FormField } from 'ccms'
 import { Form, Button, Collapse, Space } from 'antd'
 import { PlusOutlined, ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons'
@@ -42,8 +42,8 @@ export default class FormFieldComponent extends FormField {
   }
 
   renderItemComponent = (props: IFormFieldItem) => {
+  
     const { title, index, isLastIndex, onRemove, onSort, canCollapse, children } = props
-
     return (
       <Collapse.Panel
         header={<div style={{ display: 'inline-block', width: 'calc(100% - 60px)' }}>{title}</div>}

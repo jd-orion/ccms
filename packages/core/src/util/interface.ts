@@ -18,6 +18,7 @@ export interface InterfaceConfig {
 
   params?: { field: string; data: ParamConfig }[]
   data?: { field: string; data: ParamConfig }[]
+  headers?: { field: string; data: ParamConfig }[]
 
   condition?: {
     enable?: boolean
@@ -60,11 +61,13 @@ export default class InterfaceHelper {
 
   private _url = ''
 
-  private _params: object = {}
+  private _params: any = {}
 
-  private _data: object = {}
+  private _data: any = {}
 
-  private _response: unknown
+  private _response: any
+
+  private _headers: any = {}
 
   protected renderSuccessModal: (props: IRenderSuccessModal) => Promise<void> = () => {
     return new Promise((resolve) => {
@@ -146,6 +149,7 @@ export default class InterfaceHelper {
       // 数据处理
       let params: { [key: string]: unknown } = {}
       let data = config.contentType === 'form-data' ? new FormData() : {}
+      let headers = {}
       if ((config.method || 'GET') === 'GET') {
         params = source || {}
       } else if (config.contentType === 'form-data') {
@@ -166,8 +170,21 @@ export default class InterfaceHelper {
           }
         })
       }
-      if (option && option.extraData && option.extraData.params) {
-        merge(params, option.extraData.params)
+
+      if (config.headers) {
+        config.headers.forEach((param) => {
+          if (param.field !== undefined && param.data !== undefined) {
+            if (param.field === '') {
+              headers = ParamHelper(param.data, datas, _this)
+            } else {
+              headers = set(headers, param.field, ParamHelper(param.data, datas, _this))
+            }
+          }
+        })
+      }
+
+      if (option && option.extra_data && option.extra_data.params) {
+        merge(params, option.extra_data.params)
       }
       if (config.contentType === 'form-data') {
         if (config.data) {
@@ -209,7 +226,8 @@ export default class InterfaceHelper {
         isEqual(this._config, config) &&
         isEqual(this._url, url) &&
         isEqual(this._params, params) &&
-        isEqual(this._data, data)
+        isEqual(this._data, data) &&
+        isEqual(this._headers, headers)
       ) {
         resolve(this._response)
       } else if (
@@ -227,6 +245,7 @@ export default class InterfaceHelper {
         this._url = url
         this._params = params
         this._data = data
+        this._headers = headers
 
         const request: AxiosRequestConfig = {
           url,

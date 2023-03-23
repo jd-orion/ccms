@@ -1,4 +1,5 @@
 import React from 'react'
+import { Modal} from 'antd';
 import { Field, FieldConfig, FieldConfigs, FieldError, FieldProps, IField } from '../common'
 import getALLComponents from '..'
 // import { cloneDeep } from 'lodash'
@@ -6,6 +7,9 @@ import { getValue, getBoolean, getChainPath } from '../../../util/value'
 import { set, setValue, sort, splice } from '../../../util/produce'
 import ConditionHelper from '../../../util/condition'
 import StatementHelper from '../../../util/statement'
+import { config } from 'process'
+import { type } from 'os'
+
 
 export interface FormFieldConfig extends FieldConfig {
   type: 'form'
@@ -20,6 +24,7 @@ export interface FormFieldConfig extends FieldConfig {
   canRemove?: boolean
   canSort?: boolean
   canCollapse?: boolean // 是否用Collapse折叠展示
+  inputMax?: number //最大可添加字表单数
   stringify?: string[] // 序列号字段
   unstringify?: string[] // 反序列化字段
 }
@@ -131,6 +136,8 @@ export default class FormField
 
       itemErrorMsg.length > 0 && (childrenErrorMsg[formItemsIndex] = itemErrorMsg)
     }
+
+
 
     await this.setState({
       formDataList
@@ -273,13 +280,21 @@ export default class FormField
   }
 
   handleInsert = async () => {
+    console.log(this.props.config.canInsert)
+    //this.props.config.canInsert = true
     const index = (this.props.value || []).length
-
     const formDataList = set(this.state.formDataList, `[${index}]`, [])
+    const inputmaxnumber = this.props.config.inputMax as number
+    if(index+1 > inputmaxnumber){
+      console.log("超出最大可添加项");
+      alert("超出最大可添加项")
+      return 
+    }
     this.setState({
       formDataList
     })
-
+    console.log("formdatalist"+JSON.stringify(formDataList))
+   
     this.formFieldsList = set(this.formFieldsList, `${index}`, [])
     this.formFieldsMountedList = set(this.formFieldsMountedList, `${index}`, [])
 
@@ -291,6 +306,7 @@ export default class FormField
   }
 
   handleRemove = async (index: number) => {
+    
     const formDataList = splice(this.state.formDataList, '', index, 1)
     this.setState({
       formDataList
@@ -298,6 +314,7 @@ export default class FormField
     this.formFieldsList = splice(this.formFieldsList, '', index, 1)
     this.formFieldsMountedList = splice(this.formFieldsMountedList, '', index, 1)
     await this.props.onValueListSplice('', index, 1, true)
+
   }
 
   handleSort = async (index: number, sortType: 'up' | 'down') => {
@@ -492,7 +509,18 @@ export default class FormField
       value = [],
       formLayout,
       data,
-      config: { label, fields, primaryField, insertText, removeText, canInsert, canRemove, canSort, canCollapse }
+      config: {
+        label,
+        fields,
+        primaryField,
+        insertText,
+        removeText,
+        canInsert,
+        canRemove,
+        canSort,
+        canCollapse,
+        inputMax
+      }
     } = this.props
 
     return (
@@ -507,6 +535,7 @@ export default class FormField
                   <React.Fragment key={index}>
                     {this.renderItemComponent({
                       index,
+                      
                       isLastIndex: value.length - 1 === index,
                       title:
                         primaryField !== undefined
