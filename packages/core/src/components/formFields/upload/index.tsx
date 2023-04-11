@@ -2,8 +2,7 @@ import React from 'react'
 import { merge } from 'lodash'
 import { Field, FieldConfig, FieldError, IField } from '../common'
 import { getBoolean, getValue } from '../../../util/value'
-import { InterfaceHelper } from '../../..'
-import { InterfaceConfig } from '../../../util/interface'
+import InterfaceHelper, { InterfaceConfig } from '../../../util/interface'
 
 export type UploadFieldConfig = UploadFieldConfigImage | UploadFieldConfigFile
 export interface UploadFieldConfigBasic extends FieldConfig {
