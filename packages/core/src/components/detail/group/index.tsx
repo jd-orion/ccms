@@ -25,13 +25,13 @@ export default class GroupField
   extends DetailField<GroupFieldConfig, IGroupField, { [key: string]: unknown }>
   implements IDetailField<{ [key: string]: unknown }>
 {
-  ALLComponents = {
+  static ALLComponents = {
     ...BaseComponents,
     group: GroupField
   }
 
   // 各表单项对应的类型所使用的UI组件的类
-  getALLComponents = (type: string): typeof DetailField => this.ALLComponents[type]
+  getALLComponents = (type: string): typeof DetailField => GroupField.ALLComponents[type]
 
   detailFields: Array<DetailField<DetailFieldConfigs, unknown, unknown> | null> = []
 
