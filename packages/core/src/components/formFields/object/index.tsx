@@ -630,6 +630,7 @@ export default class ObjectField<S>
                                   loadPageURL={async (pageID) => this.props.loadPageURL(pageID)}
                                   loadPageFrameURL={async (pageID) => this.props.loadPageFrameURL(pageID)}
                                   loadPageConfig={async (pageID) => this.props.loadPageConfig(pageID)}
+                                  loadCustomSource={(name, version) => this.props.loadCustomSource(name, version)}
                                   loadPageList={async () => this.props.loadPageList()}
                                   baseRoute={this.props.baseRoute}
                                   loadDomain={async (domain: string) => this.props.loadDomain(domain)}

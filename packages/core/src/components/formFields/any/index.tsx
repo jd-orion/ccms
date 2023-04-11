@@ -98,6 +98,7 @@ export default class AnyField
                 baseRoute={this.props.baseRoute}
                 loadDomain={this.props.loadDomain}
                 containerPath={getChainPath(this.props.containerPath, '')}
+                loadCustomSource={(name, version) => this.props.loadCustomSource(name, version)}
                 loadPageList={this.props.loadPageList}
               />
             ) : type === 'number' ? (
@@ -127,6 +128,7 @@ export default class AnyField
                 baseRoute={this.props.baseRoute}
                 loadDomain={this.props.loadDomain}
                 containerPath={getChainPath(this.props.containerPath, '')}
+                loadCustomSource={(name, version) => this.props.loadCustomSource(name, version)}
                 loadPageList={this.props.loadPageList}
               />
             ) : (
@@ -154,6 +156,7 @@ export default class AnyField
                 baseRoute={this.props.baseRoute}
                 loadDomain={this.props.loadDomain}
                 containerPath={getChainPath(this.props.containerPath, '')}
+                loadCustomSource={(name, version) => this.props.loadCustomSource(name, version)}
                 loadPageList={this.props.loadPageList}
               />
             )

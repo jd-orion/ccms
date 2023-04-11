@@ -132,6 +132,7 @@ export default class OperationColumn extends Column<OperationColumnConfig, IOper
             loadPageURL={this.props.loadPageURL}
             loadPageFrameURL={this.props.loadPageFrameURL}
             loadPageConfig={this.props.loadPageConfig}
+            loadCustomSource={(name, version) => this.props.loadCustomSource(name, version)}
             loadPageList={this.props.loadPageList}
             baseRoute={this.props.baseRoute}
             loadDomain={this.props.loadDomain}

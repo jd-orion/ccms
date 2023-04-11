@@ -63,7 +63,10 @@ export function push<T>(current: T, path: string, value?: unknown): T {
  */
 export function splice<T>(current: T, path: string, index: number, count: number): T {
   const target = produce<unknown>(current, (draft) => {
-    const list = path === '' ? draft : lodash.get(draft, path, [])
+    const list =
+      path === ''
+        ? (draft as Array<{ [key: string]: unknown }>)
+        : lodash.get(draft as Array<{ [key: string]: unknown }>, path, [])
     list.splice(index, count)
   })
   return target as T
@@ -84,7 +87,10 @@ export function sort<T>(
   sortType: 'up' | 'down' | 'top' | 'bottom' | number
 ): T {
   const target = produce<unknown>(current, (draft) => {
-    const list = path === '' ? draft : lodash.get(draft, path, [])
+    const list =
+      path === ''
+        ? (draft as Array<{ [key: string]: unknown }>)
+        : lodash.get(draft as Array<{ [key: string]: unknown }>, path, [])
     listItemMove(list, index, sortType)
   })
   return target as T

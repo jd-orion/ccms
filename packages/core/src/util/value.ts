@@ -2,7 +2,7 @@ import queryString from 'query-string'
 import { set, get, isArray, assignInWith, isObject, isUndefined } from 'lodash'
 import { ParamConfig } from '../interface'
 
-export const getValue = (obj: unknown, path: string, defaultValue: unknown = undefined) => {
+export const getValue = (obj: unknown, path: string, defaultValue: unknown = undefined): any => {
   if (path === undefined) {
     return defaultValue
   }

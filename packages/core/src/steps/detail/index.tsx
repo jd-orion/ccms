@@ -418,6 +418,7 @@ export default class DetailStep extends Step<DetailConfig, DetailState> {
                     onUnmount={this.props.onUnmount}
                     checkPageAuth={this.props.checkPageAuth}
                     loadPageConfig={this.props.loadPageConfig}
+                    loadCustomSource={(name, version) => this.props.loadCustomSource(name, version)}
                     loadPageList={this.props.loadPageList}
                     loadPageURL={this.props.loadPageURL}
                     loadPageFrameURL={this.props.loadPageFrameURL}
