@@ -2,10 +2,12 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 import { setValue, getValue, getChainPath } from '../../../util/value'
 import { DetailField, DetailFieldConfig, DetailFieldProps, IDetailField } from '../common'
-import getALLComponents, { DetailFieldConfigs } from '..'
+import BaseComponents, { DetailBaseFieldConfigs } from '../base'
 import { IDetailItem } from '../../../steps/detail'
 import ConditionHelper from '../../../util/condition'
 import { ColumnsConfig } from '../../../interface'
+
+type DetailFieldConfigs = DetailBaseFieldConfigs | GroupFieldConfig
 
 export interface GroupFieldConfig extends DetailFieldConfig {
   type: 'group'
@@ -23,8 +25,13 @@ export default class GroupField
   extends DetailField<GroupFieldConfig, IGroupField, { [key: string]: unknown }>
   implements IDetailField<{ [key: string]: unknown }>
 {
+  static ALLComponents = {
+    ...BaseComponents,
+    group: GroupField
+  }
+
   // 各表单项对应的类型所使用的UI组件的类
-  getALLComponents = (type: string): typeof DetailField => getALLComponents[type]
+  getALLComponents = (type: string): typeof DetailField => GroupField.ALLComponents[type]
 
   detailFields: Array<DetailField<DetailFieldConfigs, unknown, unknown> | null> = []
 
@@ -214,12 +221,12 @@ export default class GroupField
               label: detailFieldConfig.label,
               columns: config.columns?.enable
                 ? {
-                  type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
-                  value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
-                  wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
-                  gap: config.columns?.gap || 0,
-                  rowGap: config.columns?.rowGap || 0
-                }
+                    type: detailFieldConfig.columns?.type || config.childColumns?.type || 'span',
+                    value: detailFieldConfig.columns?.value || config.childColumns?.value || 1,
+                    wrap: detailFieldConfig.columns?.wrap || config.childColumns?.wrap || false,
+                    gap: config.columns?.gap || 0,
+                    rowGap: config.columns?.rowGap || 0
+                  }
                 : undefined,
               styles: detailFieldConfig.styles,
               layout: formLayout,
